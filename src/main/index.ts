@@ -1,4 +1,6 @@
 import {app, BrowserWindow} from 'electron';
+import ObjectStorageServiceFactory from './services';
+import {ObjectStorageServiceType} from './services/types';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
@@ -14,7 +16,9 @@ const createWindow = () => {
     width: 800,
   });
 
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {
+    console.log('加载页面成功~');
+  });
 
   mainWindow.webContents.openDevTools();
 
@@ -35,4 +39,12 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+const factory = ObjectStorageServiceFactory.create;
+const ak = 'WEkzRxMlRNk5IZdmqVkhdymoQhQnhchTLlF0I6uJ';
+const sk = '6n4LI7KtPcwC5glXSXWoLlKpslpveLORgRE_qNzO';
+const qiniu = factory(ObjectStorageServiceType.Qiniu, ak, sk);
+qiniu.getBucketList().then((res) => {
+  console.log('成功：', res);
 });

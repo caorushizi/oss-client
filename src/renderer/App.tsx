@@ -1,13 +1,16 @@
 import React from 'react';
 import './App.scss';
+import Aside from './components/aside';
 
 function App() {
     return (
-        <div className='App'>
-            <header className='App-header'>
-                <p>Edit <code>src/App.js</code> and save to reload.</p>
-            </header>
-        </div>
+      <div className='App'>
+        <header className='header'>header</header>
+        <main className='main'>
+          <Aside/>
+          <section>main</section>
+        </main>
+      </div>
     );
 }
 
