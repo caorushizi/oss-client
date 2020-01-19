@@ -1,17 +1,15 @@
-import Bucket from './bucket';
-
 export default class Service {
   public ak: string;
   public sk: string;
   public index = 0;
-  public buckets: Bucket[];
+  public buckets: string[] = [];
 
   constructor(ak: string, sk: string) {
     this.ak = ak;
     this.sk = sk;
   }
 
-  public getCurrentBucket(): Bucket {
+  public getCurrentBucket(): string {
     return this.buckets[this.index];
   }
 

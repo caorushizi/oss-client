@@ -7,7 +7,7 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-let mainWindow: Electron.BrowserWindow;
+let mainWindow: Electron.BrowserWindow | null;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
