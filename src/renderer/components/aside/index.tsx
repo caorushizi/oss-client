@@ -6,18 +6,28 @@ import './index.scss';
 function Aside() {
   const [bucketList, setBucketList] = useState([]);
 
-  ipcRenderer.on('asynchronous-reply', (event, list) => {
-    setBucketList(list);
-  });
+  ipcRenderer.on(
+    'get-buckets-response',
+    (event, list) => {
+      setBucketList(list);
+    },
+  );
 
   useEffect(() => {
-    return ipcRenderer.send('asynchronous-message');
+    console.log('testtest')
+    ipcRenderer.send('get-buckets-request');
   }, []);
 
   return (
-    <div className='wrapper'>
+    <div className='aside-wrapper'>
       <ul>
-        {bucketList.map((item) => (<li key={item}>{item}</li>))}
+        {bucketList.map((item) => (<li key={item}>
+          <button onClick={() => {
+            ipcRenderer.send('get-files-request', item);
+          }}>
+            {item}
+          </button>
+        </li>))}
       </ul>
     </div>
   );

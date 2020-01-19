@@ -4,7 +4,7 @@ import './index.scss';
 
 function Header() {
   return (
-    <div className='wrapper'>
+    <div className='header-wrapper'>
       header
     </div>
   );
