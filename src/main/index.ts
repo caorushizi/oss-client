@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import ObjectStorageServiceFactory from './services';
 import {ObjectStorageServiceType} from './services/types';
 
@@ -13,6 +13,8 @@ let mainWindow: Electron.BrowserWindow;
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     height: 600,
+    // FIXME: 渲染进程不使用 node
+    webPreferences: {nodeIntegration: true},
     width: 800,
   });
 
@@ -42,9 +44,13 @@ app.on('activate', () => {
 });
 
 const factory = ObjectStorageServiceFactory.create;
-const ak = 'WEkzRxMlRNk5IZdmqVkhdymoQhQnhchTLlF0I6uJ';
-const sk = '6n4LI7KtPcwC5glXSXWoLlKpslpveLORgRE_qNzO';
+const ak = 'aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD';
+const sk = '7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL';
 const qiniu = factory(ObjectStorageServiceType.Qiniu, ak, sk);
-qiniu.getBucketList().then((res) => {
-  console.log('成功：', res);
+
+ipcMain.on('asynchronous-message', (event, arg) => {
+  console.log('testtesttest');
+  qiniu.getBucketList().then((res) => {
+    event.reply('asynchronous-reply', res);
+  });
 });
