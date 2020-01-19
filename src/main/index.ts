@@ -15,6 +15,7 @@ const createWindow = () => {
     // FIXME: 渲染进程不使用 node
     webPreferences: {nodeIntegration: true},
     width: 800,
+    titleBarStyle: 'hidden'
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {

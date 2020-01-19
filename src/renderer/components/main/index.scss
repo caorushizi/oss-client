@@ -1,3 +1,20 @@
 .main-wrapper {
   overflow: auto;
 }
+
+.main-wrapper-enter {
+  transform: translate(0, -100vh);
+}
+
+.main-wrapper-enter-active {
+  transform: translate(0, 0);
+  transition: transform 1200ms ease;
+}
+
+.main-wrapper-exit {
+}
+
+.main-wrapper-exit-active {
+  transform: translate(0, -100vh);
+  transition: transform 1200ms ease;
+}

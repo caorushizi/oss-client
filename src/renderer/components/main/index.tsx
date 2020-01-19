@@ -1,5 +1,6 @@
 import {ipcRenderer} from 'electron';
 import React, {useEffect, useState} from 'react';
+import {CSSTransition} from 'react-transition-group';
 
 import './index.scss';
 
@@ -16,12 +17,31 @@ function Main() {
     );
   }, []);
 
+  const [inProp, setInProp] = useState(false);
+  const [show, setShow] = useState(true);
+
   return (
-    <div className='main-wrapper'>
-      <ul>
-        {files.map((item: any) => (<li key={item.key}>{item.key}</li>))}
-      </ul>
-    </div>
+    <>
+      <div>
+        <CSSTransition
+          in={inProp}
+          timeout={1200}
+          classNames="main-wrapper"
+          unmountOnExit
+          onEnter={() => setShow(false)}
+          onExited={() => setShow(true)}
+        >
+          <div>
+            <ul>
+              {files.map((item: any) => (<li key={item.key}>{item.key}</li>))}
+            </ul>
+          </div>
+        </CSSTransition>
+        <button type="button" onClick={() => setInProp(!inProp)}>
+          Click to Enter
+        </button>
+      </div>
+    </>
   );
 }
 

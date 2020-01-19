@@ -1,25 +1,15 @@
 .App {
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  overflow: hidden;
+  flex-direction: row;
+  background-image: linear-gradient(#924e79, #38374f);
 
-  .header-wrapper {
-    min-height: 70px;
+  .aside-wrapper {
+    background-image: linear-gradient(rgba(144, 147, 153, 0.1), rgba(144, 147, 153, 0.5));
   }
 
-  .app-main {
-    overflow: hidden;
+  .main-wrapper {
     flex: 1;
-    display: flex;
-    flex-direction: row;
-
-    .aside-wrapper {
-      min-width: 100px;
-    }
-
-    .main-wrapper {
-      flex: 1;
-      background-color: orange;
-    }
   }
 }

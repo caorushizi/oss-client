@@ -1,2 +1,38 @@
 .aside-wrapper {
+  min-width: 225px;
+  max-width: 225px;
+
+  .title-bar {
+    height: 30px;
+    line-height: 30px;
+    text-align: right;
+    padding-right: 20px;
+    color: #909399;
+  }
+
+  .container {
+    .title {
+      height: 30px;
+      line-height: 30px;
+      color: #C0C4CC;
+      padding: 0 10px;
+      font-size: 13px;
+    }
+
+    .list {
+      .item {
+        height: 30px;
+        line-height: 30px;
+        margin: 0 10px;
+        color: #F2F6FC;
+        padding: 0 10px;
+        font-size: 13px;
+
+        &.active {
+          background-color: #655868;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
 }
