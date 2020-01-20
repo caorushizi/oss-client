@@ -31,3 +31,10 @@ ipcMain.on('get-files-request', (event, name) => {
     event.reply('get-files-response', files);
   });
 });
+
+ipcMain.on('req:file:download', (event, bucket, remotePath) => {
+  console.log(bucket, remotePath)
+  // qiniu.downloadFile(bucket, remotePath).then((res) => {
+  //   console.log('下载完成', res)
+  // })
+});

@@ -1,9 +1,9 @@
 .App {
   height: 100vh;
-  display: flex;
-  overflow: hidden;
-  flex-direction: row;
   background-image: linear-gradient(#924e79, #38374f);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 
   .aside-wrapper {
     background-image: linear-gradient(rgba(144, 147, 153, 0.1), rgba(144, 147, 153, 0.5));

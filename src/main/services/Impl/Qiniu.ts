@@ -16,21 +16,21 @@ export default class Qiniu implements IObjectStorageService {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(bucketName: string, key: string): Promise<any> {
+  public downloadFile(bucketName: string, remotePath: string): Promise<any> {
     return Promise.resolve();
   }
 
-  public uploadFile(bucketName: string, key: string, filePath: string): Promise<any> {
+  public uploadFile(bucketName: string, remotePath: string, filePath: string): Promise<any> {
     // generate uploadToken
     const putPolicy = new qiniu.rs.PutPolicy({
-      scope: `${bucketName}:${key}`,
+      scope: `${bucketName}:${remotePath}`,
     });
     const token = putPolicy.uploadToken(this.mac);
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
     // 文件上传
     return new Promise((resolve, reject) => {
-      formUploader.putFile(token, key, filePath, putExtra,
+      formUploader.putFile(token, remotePath, filePath, putExtra,
         (err, respBody, respInfo) => {
           if (err) {
             reject(err);
@@ -46,11 +46,11 @@ export default class Qiniu implements IObjectStorageService {
     });
   }
 
-  public deleteFile(bucketName: string, key: string): Promise<any> {
+  public deleteFile(bucketName: string, remotePath: string): Promise<any> {
     const config = new qiniu.conf.Config();
     const bucketManager = new qiniu.rs.BucketManager(this.mac, config);
     return new Promise((resolve, reject) => {
-      bucketManager.delete(bucketName, key, (err, respBody, respInfo) => {
+      bucketManager.delete(bucketName, remotePath, (err, respBody, respInfo) => {
         if (err) {
           reject(err);
         } else {

@@ -1,20 +1,18 @@
 .main-wrapper {
   overflow: auto;
-}
+  padding-top: 30px;
 
-.main-wrapper-enter {
-  transform: translate(0, -100vh);
-}
+  .main-list {
 
-.main-wrapper-enter-active {
-  transform: translate(0, 0);
-  transition: transform 1200ms ease;
-}
+    .main-item {
+      color: #F2F6FC;
+      text-indent: 10px;
+      height: 25px;
+      line-height: 25px;
 
-.main-wrapper-exit {
-}
-
-.main-wrapper-exit-active {
-  transform: translate(0, -100vh);
-  transition: transform 1200ms ease;
+      &:hover {
+        color: red;
+      }
+    }
+  }
 }
