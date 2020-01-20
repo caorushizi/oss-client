@@ -33,8 +33,19 @@ ipcMain.on('get-files-request', (event, name) => {
 });
 
 ipcMain.on('req:file:download', (event, bucket, remotePath) => {
-  console.log(bucket, remotePath)
+  console.log(bucket, remotePath);
   // qiniu.downloadFile(bucket, remotePath).then((res) => {
   //   console.log('下载完成', res)
   // })
 });
+
+// todo: 开发环境
+const {default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} = require('electron-devtools-installer');
+
+installExtension(REACT_DEVELOPER_TOOLS)
+  .then((name: string) => console.log(`Added Extension:  ${name}`))
+  .catch((err: Error) => console.log('An error occurred: ', err));
+
+installExtension(REDUX_DEVTOOLS)
+  .then((name: string) => console.log(`Added Extension:  ${name}`))
+  .catch((err: Error) => console.log('An error occurred: ', err));
