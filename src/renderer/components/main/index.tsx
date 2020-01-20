@@ -5,6 +5,7 @@ import {fileContextMenu} from '../../helper/contextMenu';
 import QiniuAdapter from '../../lib/adapter/qiniu';
 import {Vdir} from '../../lib/vdir';
 import {RootState} from '../../store';
+import {setVdir} from '../../store/app/actions';
 import {increase} from '../../store/counter/actions';
 
 import './index.scss';
@@ -12,6 +13,8 @@ import './index.scss';
 const Main = () => {
   const selectCount = (state: RootState) => state.counter.count;
   const count = useSelector(selectCount);
+  const selectApp = (state: RootState) => state.app.vdir;
+  const app = useSelector(selectApp);
   const dispatch = useDispatch();
 
   const [files, setFiles] = useState<string[]>([]);
@@ -26,6 +29,7 @@ const Main = () => {
         const arr = adapter.adaptItems(items);
         const dir = Vdir.from(arr);
         console.log(dir);
+        dispatch(setVdir(dir));
         const files1 = dir.listFiles()
         setFiles(files1);
       },
@@ -40,7 +44,7 @@ const Main = () => {
       <ul className='main-list'>
         {files.map((item: any, index) => (
           <li key={index} className='main-item'
-              onContextMenu={() => fileContextMenu(item)}>{item}</li>
+              onContextMenu={() => fileContextMenu(item, app)}>{item}</li>
         ))}
       </ul>
     </div>

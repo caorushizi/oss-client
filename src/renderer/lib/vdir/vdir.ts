@@ -1,8 +1,7 @@
-import Item from "./item";
-import {basename, dirname, normalizePath} from "./utils";
-import {ItemType} from "./types";
+import Item from './item';
+import {ItemType} from './types';
+import {basename, dirname, normalizePath} from './utils';
 // TODO: 正则表达式
-
 
 type child = Vdir | Item
 type parent = Vdir | null
@@ -72,7 +71,4 @@ export default class Vdir {
     return this.children.map(item => item.name)
   }
 
-  get test() {
-    return 123
-  }
 }

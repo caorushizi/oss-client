@@ -1,7 +1,8 @@
-import {remote, ipcRenderer} from 'electron';
-import {Item} from "../lib/vdir";
+import {ipcRenderer, remote} from 'electron';
+import {Item} from '../lib/vdir';
 
-export function fileContextMenu(file: Item) {
+export function fileContextMenu(file: Item, app: any) {
+  console.log('app : ', app);
   const menu = remote.Menu
     .buildFromTemplate([{
       label: '全选',
