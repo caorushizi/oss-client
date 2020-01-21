@@ -10,7 +10,7 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSta
     case GET_VDIR:
       return state;
     case SET_VDIR:
-      return {...state, ...action.vdir};
+      return {...state, vdir: action.vdir};
     default:
       return state;
   }

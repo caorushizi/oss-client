@@ -10,6 +10,8 @@ import {increase} from '../../store/counter/actions';
 
 import './index.scss';
 
+const adapter = new QiniuAdapter();
+
 const Main = () => {
   const selectCount = (state: RootState) => state.counter.count;
   const count = useSelector(selectCount);
@@ -23,15 +25,9 @@ const Main = () => {
     ipcRenderer.on(
       'get-files-response',
       (event, {items}) => {
-        console.log(items);
-
-        const adapter = new QiniuAdapter();
-        const arr = adapter.adaptItems(items);
-        const dir = Vdir.from(arr);
-        console.log(dir);
+        const dir = Vdir.from(adapter.adaptItems(items));
         dispatch(setVdir(dir));
-        const files1 = dir.listFiles()
-        setFiles(files1);
+        setFiles(dir.listFiles());
       },
     );
   }, []);
@@ -44,10 +40,7 @@ const Main = () => {
       <ul className='main-list'>
         {files.map((item: any, index) => (
           <li key={index} className='main-item'
-              onContextMenu={() => {
-                console.log('a:', app)
-                fileContextMenu(item, app)
-              }}>{item}</li>
+              onContextMenu={() => fileContextMenu(item, app)}>{item}</li>
         ))}
       </ul>
     </div>

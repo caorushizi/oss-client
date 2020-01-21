@@ -1,5 +1,5 @@
 import {app, BrowserWindow} from 'electron';
-import './bootstrap';
+import bootstrap from "./bootstrap";
 
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -43,3 +43,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+bootstrap();

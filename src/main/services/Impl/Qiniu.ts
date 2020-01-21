@@ -17,7 +17,20 @@ export default class Qiniu implements IObjectStorageService {
   }
 
   public downloadFile(bucketName: string, remotePath: string): Promise<any> {
-    return Promise.resolve();
+    // 获取 domains
+    const reqURL = `http://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
+    const digest = qiniu.util.generateAccessToken(this.mac, reqURL);
+    return new Promise<any>((resolve, reject) => {
+      qiniu.rpc.postWithoutForm(reqURL, digest, (err, res) => {
+        if (!err || res.length > 0) {
+          res = res[0];
+          const url = this.bucketManager.publicDownloadUrl(res, remotePath)
+          resolve(url)
+        } else {
+          reject(new Error('没有域名或者获取域名出错！'))
+        }
+      })
+    })
   }
 
   public uploadFile(bucketName: string, remotePath: string, filePath: string): Promise<any> {

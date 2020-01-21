@@ -1,8 +1,9 @@
 import {ipcRenderer, remote} from 'electron';
 import {Item} from '../lib/vdir';
+import item from "../lib/vdir/item";
 
-export function fileContextMenu(file: Item, app: any) {
-  console.log('app : ', app);
+export function fileContextMenu(file: string, vdir: any) {
+  const item = vdir.children.find((i: Item) => i.name === file);
   const menu = remote.Menu
     .buildFromTemplate([{
       label: '全选',
@@ -16,7 +17,7 @@ export function fileContextMenu(file: Item, app: any) {
     }, {type: 'separator'}, {
       label: '下载',
       click: () => {
-        ipcRenderer.send('req:file:download', '123', file)
+        ipcRenderer.send('req:file:download', '123', item)
       },
     }, {
       label: '删除',

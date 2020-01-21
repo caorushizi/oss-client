@@ -1,7 +1,6 @@
 import Item from './item';
 import {ItemType} from './types';
 import {basename, dirname, normalizePath} from './utils';
-// TODO: 正则表达式
 
 type child = Vdir | Item
 type parent = Vdir | null
@@ -69,6 +68,10 @@ export default class Vdir {
 
   public listFiles() {
     return this.children.map(item => item.name)
+  }
+
+  get [name]() {
+    return this.children.find(i => i.name === name)
   }
 
 }

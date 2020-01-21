@@ -16,7 +16,6 @@ function Aside() {
   );
 
   useEffect(() => {
-    console.log('testtest')
     ipcRenderer.send('get-buckets-request');
   }, []);
 
