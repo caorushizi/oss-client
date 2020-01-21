@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import qiniu from 'qiniu';
 import http from '../../helper/http';
 import {IObjectStorageService} from '../types';
@@ -16,21 +17,27 @@ export default class Qiniu implements IObjectStorageService {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(bucketName: string, remotePath: string): Promise<any> {
+  public downloadFile(bucketName: string, remotePath: string, localpath: string): Promise<any> {
     // 获取 domains
-    const reqURL = `http://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
-    const digest = qiniu.util.generateAccessToken(this.mac, reqURL);
-    return new Promise<any>((resolve, reject) => {
-      qiniu.rpc.postWithoutForm(reqURL, digest, (err, res) => {
-        if (!err || res.length > 0) {
-          res = res[0];
-          const url = this.bucketManager.publicDownloadUrl(res, remotePath)
-          resolve(url)
-        } else {
-          reject(new Error('没有域名或者获取域名出错！'))
+    const url = `http://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
+    const accessToken = qiniu.util.generateAccessToken(this.mac, url);
+    return http.get(url, {headers: {Authorization: accessToken}})
+      .then((data: any) => {
+        debugger
+        if (!Array.isArray(data) || data.length <= 0) {
+          throw new Error('没有获取到域名');
         }
+        const url = `http://${data[0]}/${remotePath}`;
+        return http.get(url, {responseType: 'stream', headers: {'Cache-Control': 'no-cache'}});
       })
-    })
+      .then((data: any) => {
+        return new Promise((resolve, reject) => {
+          const writer = fs.createWriteStream(localpath);
+          data.pipe(writer);
+          writer.on('finish', resolve);
+          writer.on('error', reject);
+        });
+      });
   }
 
   public uploadFile(bucketName: string, remotePath: string, filePath: string): Promise<any> {

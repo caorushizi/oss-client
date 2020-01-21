@@ -70,6 +70,7 @@ export default class Vdir {
     return this.children.map(item => item.name)
   }
 
+  // todo: delete
   get [name]() {
     return this.children.find(i => i.name === name)
   }

@@ -2,7 +2,6 @@ import {ipcMain} from 'electron';
 import ObjectStorageServiceFactory from './services';
 import {ObjectStorageServiceType} from './services/types';
 
-
 export default function bootstrap() {
   const factory = ObjectStorageServiceFactory.create;
   const ak = 'aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD';
@@ -24,11 +23,18 @@ export default function bootstrap() {
   });
 
   ipcMain.on('req:file:download', (event, bucket, item) => {
+    debugger
     bucket = bucketName;
     const remotePath = item.webkitRelativePath;
-    qiniu.downloadFile(bucket, remotePath).then((res) => {
-      console.log('get link done!', res)
-    })
+    const dir = '/Users/caorushizi/Desktop/';
+    const p = `${dir}${item.webkitRelativePath}`;
+    qiniu.downloadFile(bucket, remotePath, p)
+      .then((res) => {
+        console.log('get link done!', res);
+      })
+      .catch((err) => {
+        console.log('下载出错：', err);
+      });
   });
 }
 

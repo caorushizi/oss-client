@@ -1,7 +1,7 @@
 export interface IObjectStorageService {
-  uploadFile(bucketName: string, remotePath: string, filePath: string): Promise<any>;
+  uploadFile(bucketName: string, remotepath: string, filepath: string): Promise<any>;
 
-  downloadFile(bucketName: string, remotePath: string): Promise<any>;
+  downloadFile(bucketName: string, remotepath: string, localpath: string): Promise<any>;
 
   deleteFile(bucketName: string, remotePath: string): Promise<any>;
 
