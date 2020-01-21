@@ -2,17 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {applyMiddleware, compose, createStore} from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import App from './App';
 import './index.scss';
 import {rootReducer} from './store';
 
+const devTools: any = process.env.NODE_ENV === 'development' ?
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : null
+
 // todo: 开发环境
 const store = createStore(rootReducer,
   compose(
     applyMiddleware(thunk),
-    composeWithDevTools()
+    devTools
   ),
 );
 

@@ -1,6 +1,7 @@
 import {app, BrowserWindow} from 'electron';
 import './bootstrap';
 
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
 if (require('electron-squirrel-startup')) {
@@ -19,7 +20,7 @@ const createWindow = () => {
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {
-    console.log('加载页面成功~');
+    console.log('page loaded ~');
   });
 
   mainWindow.webContents.openDevTools();

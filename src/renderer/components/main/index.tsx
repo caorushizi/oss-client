@@ -44,12 +44,15 @@ const Main = () => {
       <ul className='main-list'>
         {files.map((item: any, index) => (
           <li key={index} className='main-item'
-              onContextMenu={() => fileContextMenu(item, app)}>{item}</li>
+              onContextMenu={() => {
+                console.log('a:', app)
+                fileContextMenu(item, app)
+              }}>{item}</li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
 export default Main;
 
