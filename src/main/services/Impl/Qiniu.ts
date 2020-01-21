@@ -1,8 +1,10 @@
+import axios, {AxiosResponse} from 'axios';
 import * as fs from 'fs';
 import qiniu from 'qiniu';
 import http from '../../helper/http';
-import {IObjectStorageService} from '../types';
+import {CallbackFunc, IObjectStorageService} from '../types';
 
+// todo: http 与 axios
 export default class Qiniu implements IObjectStorageService {
   private mac: qiniu.auth.digest.Mac;
   // private domains: string[];
@@ -17,7 +19,7 @@ export default class Qiniu implements IObjectStorageService {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(bucketName: string, remotePath: string, localpath: string): Promise<any> {
+  public downloadFile(bucketName: string, remotePath: string, localpath: string, cb: CallbackFunc): Promise<any> {
     // 获取 domains
     const url = `http://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
@@ -27,13 +29,24 @@ export default class Qiniu implements IObjectStorageService {
         if (!Array.isArray(data) || data.length <= 0) {
           throw new Error('没有获取到域名');
         }
-        const url = `http://${data[0]}/${remotePath}`;
-        return http.get(url, {responseType: 'stream', headers: {'Cache-Control': 'no-cache'}});
+        const url = encodeURI(`http://${data[0]}/${remotePath}`);
+        // todo： 测试是不是流式下载，性能优化
+        return axios.get(url, {
+          responseType: 'stream',
+          headers: {'Cache-Control': 'no-cache'},
+        });
       })
-      .then((data: any) => {
+      .then((rep: AxiosResponse) => {
+        const {data, headers} = rep;
         return new Promise((resolve, reject) => {
           const writer = fs.createWriteStream(localpath);
           data.pipe(writer);
+          let length = 0;
+          const totalLength = headers['content-length'];
+          data.on('data', (thunk: any) => {
+            length = length + thunk.length;
+            console.log('thunk progress: ', length / totalLength);
+          });
           writer.on('finish', resolve);
           writer.on('error', reject);
         });

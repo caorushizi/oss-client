@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron';
 import ObjectStorageServiceFactory from './services';
-import {ObjectStorageServiceType} from './services/types';
+import {CallbackFunc, ObjectStorageServiceType} from './services/types';
 
 export default function bootstrap() {
   const factory = ObjectStorageServiceFactory.create;
@@ -28,11 +28,15 @@ export default function bootstrap() {
     const remotePath = item.webkitRelativePath;
     const dir = '/Users/caorushizi/Desktop/';
     const p = `${dir}${item.webkitRelativePath}`;
-    qiniu.downloadFile(bucket, remotePath, p)
-      .then((res) => {
+    const callback: CallbackFunc = (id, progress) => {
+      console.log('id: ', id);
+      console.log('progress: ', progress);
+    };
+    qiniu.downloadFile(bucket, remotePath, p, callback)
+      .then((res: any) => {
         console.log('get link done!', res);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log('下载出错：', err);
       });
   });
