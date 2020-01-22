@@ -4,7 +4,7 @@ const initialState: CounterState = {
   count: 10
 };
 
-function counterReducer(state = initialState, action: CounterActionTypes): CounterState {
+export function counterReducer(state = initialState, action: CounterActionTypes): CounterState {
   switch (action.type) {
     case INCREASE:
       return { count: state.count + 1 };
@@ -14,5 +14,3 @@ function counterReducer(state = initialState, action: CounterActionTypes): Count
       return state;
   }
 }
-
-export default { counterReducer };

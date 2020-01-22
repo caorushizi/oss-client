@@ -1,22 +1,22 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { ipcRenderer, remote } from "electron";
 import { Item } from "../lib/vdir";
-import item from "../lib/vdir/item";
 
 export function fileContextMenu(file: string, vdir: any) {
   const item = vdir.children.find((i: Item) => i.name === file);
   const menu = remote.Menu.buildFromTemplate([
     {
       label: "全选",
-      click: () => console.log(123123)
+      click: f => f
     },
     { type: "separator" },
     {
       label: "复制链接",
-      click: () => console.log(123123)
+      click: f => f
     },
     {
       label: "复制链接（markdown）",
-      click: () => console.log(123123)
+      click: f => f
     },
     { type: "separator" },
     {
@@ -27,7 +27,7 @@ export function fileContextMenu(file: string, vdir: any) {
     },
     {
       label: "删除",
-      click: () => console.log(123123)
+      click: f => f
     }
   ]);
   menu.popup();

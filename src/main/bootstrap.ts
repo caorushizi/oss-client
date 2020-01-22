@@ -23,7 +23,6 @@ export default function bootstrap() {
   });
 
   ipcMain.on("req:file:download", (event, bucket, item) => {
-    debugger;
     const remotePath = item.webkitRelativePath;
     const downloadDir = app.getPath("downloads");
     const downloadPath = path.join(downloadDir, item.webkitRelativePath);

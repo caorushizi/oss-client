@@ -1,13 +1,13 @@
 import React from "react";
 import "./App.scss";
-import aside from "./components/aside";
-import main from "./components/main";
+import Aside from "./components/Aside";
+import Main from "./components/Main";
 
 function app() {
   return (
     <div className="App">
-      <aside />
-      <main />
+      <Aside />
+      <Main />
     </div>
   );
 }

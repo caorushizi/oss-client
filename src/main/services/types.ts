@@ -1,7 +1,12 @@
 export interface IObjectStorageService {
   uploadFile(bucketName: string, remotepath: string, filepath: string): Promise<any>;
 
-  downloadFile(bucketName: string, remotepath: string, localpath: string, cb: CallbackFunc): Promise<any>;
+  downloadFile(
+    bucketName: string,
+    remotepath: string,
+    localpath: string,
+    cb: CallbackFunc
+  ): Promise<any>;
 
   deleteFile(bucketName: string, remotePath: string): Promise<any>;
 
@@ -18,5 +23,5 @@ export interface CallbackFunc {
 
 export enum ObjectStorageServiceType {
   Qiniu,
-  Ali,
+  Ali
 }

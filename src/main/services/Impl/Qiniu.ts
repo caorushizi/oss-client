@@ -33,13 +33,12 @@ export default class Qiniu implements IObjectStorageService {
     return http
       .get(url, { headers: { Authorization: accessToken } })
       .then((data: any) => {
-        debugger;
         if (!Array.isArray(data) || data.length <= 0) {
           throw new Error("没有获取到域名");
         }
-        const url = encodeURI(`http://${data[0]}/${remotePath}`);
+        const thisurl = encodeURI(`http://${data[0]}/${remotePath}`);
         // todo： 测试是不是流式下载，性能优化
-        return axios.get(url, {
+        return axios.get(thisurl, {
           responseType: "stream",
           headers: { "Cache-Control": "no-cache" }
         });

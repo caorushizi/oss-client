@@ -1,11 +1,11 @@
-import {Vdir} from '../../lib/vdir';
+import { Vdir } from "../../lib/vdir";
 
 export interface AppState {
-  vdir: Vdir
+  vdir: Vdir;
 }
 
-export const SET_VDIR = 'SET_VDIR';
-export const GET_VDIR = 'GET_VDIR';
+export const SET_VDIR = "SET_VDIR";
+export const GET_VDIR = "GET_VDIR";
 
 interface GetVdirAction {
   type: typeof GET_VDIR;
@@ -16,4 +16,4 @@ interface SetVdirAction {
   vdir: Vdir;
 }
 
-export type AppActionTypes = GetVdirAction | SetVdirAction
+export type AppActionTypes = GetVdirAction | SetVdirAction;

@@ -1,25 +1,29 @@
-import {ItemType} from "./types";
+import { ItemType } from "./types";
 
 export default class Item {
   name: string;
+
   webkitRelativePath: string;
+
   meta: any;
+
   type?: string;
+
   size?: number;
+
   lastModified?: number;
+
   lastModifiedDate?: Date;
 
-  constructor(
-    {
-      name,
-      webkitRelativePath,
-      meta,
-      type,
-      size,
-      lastModified,
-      lastModifiedDate,
-    }: ItemType
-  ) {
+  constructor({
+    name,
+    webkitRelativePath,
+    meta,
+    type,
+    size,
+    lastModified,
+    lastModifiedDate
+  }: ItemType) {
     this.name = name;
     this.type = type;
     this.size = size;
@@ -28,5 +32,4 @@ export default class Item {
     this.webkitRelativePath = webkitRelativePath;
     this.meta = meta;
   }
-
 }

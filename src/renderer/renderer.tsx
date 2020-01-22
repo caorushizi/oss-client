@@ -9,15 +9,12 @@ import { rootReducer } from "./store";
 
 const devTools: any =
   process.env.NODE_ENV === "development"
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
+    ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
     : null;
 
 // todo: 开发环境
-const store = createStore(
-  rootReducer,
-  compose(applyMiddleware(reduxThunk), devTools)
-);
+const store = createStore(rootReducer, compose(applyMiddleware(reduxThunk), devTools));
 
 const rooElement = document.getElementById("root");
 reactDom.render(
@@ -36,4 +33,4 @@ reactDom.render(
  * 5、Immutable.js
  */
 
-// TODO : !!!!!!! airbnb
+// TODO : !!!!!!! airbnb prettier

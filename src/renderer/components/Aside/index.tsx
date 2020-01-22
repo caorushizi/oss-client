@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { ipcRenderer } from "electron";
+import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 
-function aside() {
+function Aside() {
   const [bucketList, setBucketList] = useState([]);
-  const [active, setActive] = useState("");
 
   ipcRenderer.on("get-buckets-response", (event, list) => {
     setBucketList(list);
@@ -16,6 +16,10 @@ function aside() {
     ipcRenderer.send("get-buckets-request");
   }, []);
 
+  function getFileReq(item: string) {
+    ipcRenderer.send("get-files-request", item);
+  }
+
   return (
     <div className="aside-wrapper">
       <section className="title-bar">
@@ -25,14 +29,10 @@ function aside() {
         <p className="title">buckets</p>
         <ul className="list">
           {bucketList.map(item => (
-            <li
-              className="item"
-              key={item}
-              onClick={() => {
-                ipcRenderer.send("get-files-request", item);
-              }}
-            >
-              <div title={item}>{item}</div>
+            <li className="item" key={item}>
+              <button type="button" title={item} onClick={() => getFileReq(item)}>
+                {item}
+              </button>
             </li>
           ))}
         </ul>
