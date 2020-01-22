@@ -37,7 +37,6 @@ export default class Qiniu implements IObjectStorageService {
           throw new Error("没有获取到域名");
         }
         const thisurl = encodeURI(`http://${data[0]}/${remotePath}`);
-        // todo： 测试是不是流式下载，性能优化
         return axios.get(thisurl, {
           responseType: "stream",
           headers: { "Cache-Control": "no-cache" }
@@ -52,7 +51,8 @@ export default class Qiniu implements IObjectStorageService {
           const totalLength = headers["content-length"];
           data.on("data", (thunk: any) => {
             length += thunk.length;
-            console.log("thunk progress: ", length / totalLength);
+            const process = (length / totalLength).toFixed(3);
+            cb("this is download #id!", process);
           });
           writer.on("finish", resolve);
           writer.on("error", reject);
@@ -60,25 +60,49 @@ export default class Qiniu implements IObjectStorageService {
       });
   }
 
-  public uploadFile(bucketName: string, remotePath: string, filePath: string): Promise<any> {
+  public uploadFile(
+    bucketName: string,
+    remotePath: string,
+    filepath: string,
+    cb: CallbackFunc
+  ): Promise<any> {
     // generate uploadToken
-    const putPolicy = new qiniu.rs.PutPolicy({
-      scope: `${bucketName}:${remotePath}`
-    });
+    const putPolicy = new qiniu.rs.PutPolicy({ scope: `${bucketName}:${remotePath}` });
     const token = putPolicy.uploadToken(this.mac);
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
-    // 文件上传
-    return new Promise((resolve, reject) => {
-      formUploader.putFile(token, remotePath, filePath, putExtra, (err, respBody, respInfo) => {
-        if (err) {
-          reject(err);
-        } else if (respInfo.statusCode === 200) {
-          console.log(respBody);
+    // 获取文件大小
+    return new Promise<number>((resolve, reject) => {
+      fs.stat(filepath, (error, stats) => {
+        if (error) {
+          reject(new Error("获取文件大小失败"));
         } else {
-          console.log(respInfo.statusCode);
-          console.log(respBody);
+          // 文件大小
+          resolve(stats.size);
         }
+      });
+    }).then(fileSize => {
+      // 文件上传
+      return new Promise((resolve, reject) => {
+        // todo: readableStream readStream
+        const reader: any = fs.createReadStream(filepath);
+
+        let length = 0;
+        reader.on("data", (thunk: any) => {
+          length += thunk.length;
+          const progress = (length / fileSize).toFixed(3);
+          cb("this is upload #id!", progress);
+        });
+        formUploader.putStream(token, remotePath, reader, putExtra, (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
+          } else if (respInfo.statusCode === 200) {
+            console.log(respBody);
+          } else {
+            console.log(respInfo.statusCode);
+            console.log(respBody);
+          }
+        });
       });
     });
   }

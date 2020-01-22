@@ -34,9 +34,22 @@ const Main = () => {
 
   return (
     <div className="main-wrapper">
-      <div>{count}</div>
+      <span>{count}</span>
       <button type="button" onClick={handleIncrease}>
         increase
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          ipcRenderer.send(
+            "req:file:upload",
+            "downloads",
+            "/",
+            "C:\\Users\\admin\\Desktop\\刁振源-2019年终总结.docx"
+          );
+        }}
+      >
+        upload
       </button>
       <ul className="main-list">
         {files.map((item: any) => (

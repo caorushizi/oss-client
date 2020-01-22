@@ -9,9 +9,13 @@
       text-indent: 10px;
       height: 25px;
       line-height: 25px;
+      border-bottom: 1px #fff solid;
+      //todo: 显示省略号
+      overflow: hidden;
 
       &:hover {
         color: red;
+        background: #ffffff;
       }
     }
   }

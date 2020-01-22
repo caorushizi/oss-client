@@ -3,6 +3,8 @@ import path from "path";
 import services from "./services";
 import { CallbackFunc, ObjectStorageServiceType } from "./services/types";
 
+import IpcMainEvent = Electron.IpcMainEvent;
+
 export default function bootstrap() {
   const factory = services.create;
   const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
@@ -39,4 +41,21 @@ export default function bootstrap() {
         console.log("下载出错：", err);
       });
   });
+
+  ipcMain.on(
+    "req:file:upload",
+    (event: IpcMainEvent, bucket: string, remoteDir: string, filepath: string) => {
+      const filename = path.basename(filepath);
+      const remotePath = remoteDir === "/" ? filename : `${remoteDir}${filepath}`;
+      // eslint-disable-next-line no-debugger
+      debugger;
+      const callback: CallbackFunc = (id, progress) => {
+        console.log("id: ", id);
+        console.log("progress: ", progress);
+      };
+      qiniu.uploadFile(bucketName, remotePath, filepath, callback).then(() => {
+        console.log("upload done!");
+      });
+    }
+  );
 }

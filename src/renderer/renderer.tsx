@@ -13,7 +13,6 @@ const devTools: any =
       (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
     : null;
 
-// todo: 开发环境
 const store = createStore(rootReducer, compose(applyMiddleware(reduxThunk), devTools));
 
 const rooElement = document.getElementById("root");
@@ -32,5 +31,3 @@ reactDom.render(
  * 4、mobx
  * 5、Immutable.js
  */
-
-// TODO : !!!!!!! airbnb prettier

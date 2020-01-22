@@ -1,5 +1,10 @@
 export interface IObjectStorageService {
-  uploadFile(bucketName: string, remotepath: string, filepath: string): Promise<any>;
+  uploadFile(
+    bucketName: string,
+    remotepath: string,
+    filepath: string,
+    cb: CallbackFunc
+  ): Promise<any>;
 
   downloadFile(
     bucketName: string,
