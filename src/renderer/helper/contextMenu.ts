@@ -22,12 +22,14 @@ export function fileContextMenu(file: string, vdir: any) {
     {
       label: "下载",
       click: () => {
-        ipcRenderer.send("req:file:download", "123", item);
+        ipcRenderer.send("req:file:download", "downloads", item);
       }
     },
     {
       label: "删除",
-      click: f => f
+      click: () => {
+        ipcRenderer.send("req:file:delete", "downloads", item);
+      }
     }
   ]);
   menu.popup();

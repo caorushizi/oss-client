@@ -96,11 +96,11 @@ export default class Qiniu implements IObjectStorageService {
         formUploader.putStream(token, remotePath, reader, putExtra, (err, respBody, respInfo) => {
           if (err) {
             reject(err);
-          } else if (respInfo.statusCode === 200) {
-            console.log(respBody);
+          }
+          if (respInfo.statusCode === 200) {
+            resolve(respBody);
           } else {
-            console.log(respInfo.statusCode);
-            console.log(respBody);
+            reject(new Error(respBody.error));
           }
         });
       });
@@ -108,14 +108,16 @@ export default class Qiniu implements IObjectStorageService {
   }
 
   public deleteFile(bucketName: string, remotePath: string): Promise<any> {
-    const config = new qiniu.conf.Config();
-    const bucketManager = new qiniu.rs.BucketManager(this.mac, config);
+    const bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
     return new Promise((resolve, reject) => {
       bucketManager.delete(bucketName, remotePath, (err, respBody, respInfo) => {
         if (err) {
           reject(err);
+        }
+        if (respInfo.statusCode === 200) {
+          resolve(respBody);
         } else {
-          resolve({ respBody, respInfo });
+          reject(new Error(respBody.error));
         }
       });
     });
