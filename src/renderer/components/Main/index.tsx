@@ -39,6 +39,7 @@ const Main = () => {
         increase
       </button>
       <button
+        className="none"
         type="button"
         onClick={() => {
           ipcRenderer.send(

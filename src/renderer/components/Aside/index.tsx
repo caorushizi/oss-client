@@ -16,10 +16,6 @@ function Aside() {
     ipcRenderer.send("get-buckets-request");
   }, []);
 
-  function getFileReq(item: string) {
-    ipcRenderer.send("get-files-request", item);
-  }
-
   return (
     <div className="aside-wrapper">
       <section className="title-bar">
@@ -30,7 +26,14 @@ function Aside() {
         <ul className="list">
           {bucketList.map(item => (
             <li className="item" key={item}>
-              <button type="button" title={item} onClick={() => getFileReq(item)}>
+              <button
+                className="none"
+                type="button"
+                title={item}
+                onClick={() => {
+                  ipcRenderer.send("get-files-request", item);
+                }}
+              >
                 {item}
               </button>
             </li>
