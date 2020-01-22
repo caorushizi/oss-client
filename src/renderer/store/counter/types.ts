@@ -1,20 +1,20 @@
 export interface CounterState {
-  count: number
+  count: number;
 }
 
-export const INCREASE = 'INCREASE';
-export const DECREASE = 'DECREASE';
+export const INCREASE = "INCREASE";
+export const DECREASE = "DECREASE";
 
 interface IncreaseAction {
-  type: typeof INCREASE
-  payload: string
+  type: typeof INCREASE;
+  payload: string;
 }
 
 interface DecreaseAction {
-  type: typeof DECREASE
+  type: typeof DECREASE;
   meta: {
-    timestamp: number
-  }
+    timestamp: number;
+  };
 }
 
-export type CounterActionTypes = IncreaseAction | DecreaseAction
+export type CounterActionTypes = IncreaseAction | DecreaseAction;

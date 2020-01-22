@@ -2,7 +2,7 @@ import React from 'react';
 
 import './index.scss';
 
-function Header() {
+function header() {
   return (
     <div className='header-wrapper'>
       header
@@ -10,4 +10,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default header;

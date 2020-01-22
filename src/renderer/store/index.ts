@@ -1,10 +1,12 @@
-import {combineReducers} from 'redux';
-import {appReducer} from './app/reducers';
-import {counterReducer} from './counter/reducers';
+import { combineReducers } from "redux";
+import { appReducer } from "./app/reducers";
+import { counterReducer } from "./counter/reducers";
 
-export const rootReducer: any = combineReducers({
+const rootReducer: any = combineReducers({
   counter: counterReducer,
-  app: appReducer,
+  app: appReducer
 });
 
-export type RootState = ReturnType<typeof rootReducer>
+type RootState = ReturnType<typeof rootReducer>;
+
+export default { rootReducer };

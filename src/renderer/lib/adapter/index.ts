@@ -1,5 +1,5 @@
-import {ItemType} from "../vdir/types";
+import { ItemType } from "../vdir/types";
 
 export interface Adapter {
-  adaptItems(data: any): ItemType[]
+  adaptItems(data: any): ItemType[];
 }

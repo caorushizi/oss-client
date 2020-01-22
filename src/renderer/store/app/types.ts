@@ -1,4 +1,4 @@
-import Vdir from '../../lib/vdir/vdir';
+import {Vdir} from '../../lib/vdir';
 
 export interface AppState {
   vdir: Vdir

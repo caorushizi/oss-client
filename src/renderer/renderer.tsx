@@ -1,28 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
-import {applyMiddleware, compose, createStore} from 'redux';
-import thunk from 'redux-thunk';
-import App from './App';
-import './index.scss';
-import {rootReducer} from './store';
+import React from "react";
+import reactDom from "react-dom";
+import { Provider } from "react-redux";
+import { applyMiddleware, compose, createStore } from "redux";
+import reduxThunk from "redux-thunk";
+import App from "./App";
+import "./index.scss";
+import { rootReducer } from "./store";
 
-const devTools: any = process.env.NODE_ENV === 'development' ?
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : null
+const devTools: any =
+  process.env.NODE_ENV === "development"
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
+    : null;
 
 // todo: 开发环境
-const store = createStore(rootReducer,
-  compose(
-    applyMiddleware(thunk),
-    devTools
-  ),
+const store = createStore(
+  rootReducer,
+  compose(applyMiddleware(reduxThunk), devTools)
 );
 
-const rooElement = document.getElementById('root');
-ReactDOM.render(
+const rooElement = document.getElementById("root");
+reactDom.render(
   <Provider store={store}>
-    <App/>
+    <App />
   </Provider>,
   rooElement
 );
@@ -35,6 +35,5 @@ ReactDOM.render(
  * 4、mobx
  * 5、Immutable.js
  */
-
 
 // TODO : !!!!!!! airbnb

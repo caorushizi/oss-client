@@ -1,16 +1,15 @@
-import React from 'react';
-import './App.scss';
-import Aside from './components/aside';
-import Main from './components/main';
+import React from "react";
+import "./App.scss";
+import aside from "./components/aside";
+import main from "./components/main";
 
-function App() {
-
+function app() {
   return (
-    <div className='App'>
-      <Aside/>
-      <Main/>
+    <div className="App">
+      <aside />
+      <main />
     </div>
   );
 }
 
-export default App;
+export default app;

@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "import/no-unresolved": 0,
+    "react/jsx-filename-extension": 2,
+    "import/extensions": 2,
+    "prettier/prettier": "error"
+  },
+  "settings": {
+    "import/extensions": [
+      ".js",
+      ".jsx"
+    ]
+  }
+}

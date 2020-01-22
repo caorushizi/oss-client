@@ -12,7 +12,7 @@ import './index.scss';
 
 const adapter = new QiniuAdapter();
 
-const Main = () => {
+const main = () => {
   const selectCount = (state: RootState) => state.counter.count;
   const count = useSelector(selectCount);
   const selectApp = (state: RootState) => state.app.vdir;
@@ -47,5 +47,5 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default main;
 

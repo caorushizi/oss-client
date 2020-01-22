@@ -1,9 +1,9 @@
-import {CounterActionTypes, DECREASE, INCREASE} from './types';
+import { CounterActionTypes, DECREASE, INCREASE } from "./types";
 
 export function increase(): CounterActionTypes {
   return {
     type: INCREASE,
-    payload: 'newMessage'
+    payload: "newMessage"
   };
 }
 
@@ -11,7 +11,7 @@ export function increase(): CounterActionTypes {
 export function decrease(timestamp: number): CounterActionTypes {
   return {
     type: DECREASE,
-    meta: {timestamp}
+    meta: { timestamp }
   };
 }
 // TODO: 异步

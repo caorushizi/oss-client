@@ -1,10 +1,9 @@
-import {app, BrowserWindow} from 'electron';
+import { app, BrowserWindow } from "electron";
 import bootstrap from "./bootstrap";
-
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
-if (require('electron-squirrel-startup')) {
+if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
@@ -14,31 +13,31 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     height: 600,
     // FIXME: 渲染进程不使用 node
-    webPreferences: {nodeIntegration: true},
+    webPreferences: { nodeIntegration: true },
     width: 800,
-    titleBarStyle: 'hidden'
+    titleBarStyle: "hidden"
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {
-    console.log('page loaded ~');
+    console.log("page loaded ~");
   });
 
   mainWindow.webContents.openDevTools();
 
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     mainWindow = null;
   });
 };
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
