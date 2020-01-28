@@ -7,18 +7,15 @@ import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Vdir } from "../../lib/vdir";
 import { RootState } from "../../store";
 import { setVdir } from "../../store/app/actions";
-import { increase } from "../../store/counter/actions";
 
 import "./index.scss";
 
 const Main = () => {
-  const selectCount = (state: RootState) => state.counter.count;
-  const count = useSelector(selectCount);
   const selectApp = (state: RootState) => state.app.vdir;
   const app = useSelector(selectApp);
   const dispatch = useDispatch();
 
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
   // TODO:为什么不放在 useEffect 中会不断执行
   useEffect(() => {
     ipcRenderer.on("get-files-response", (event, { items }) => {
@@ -28,16 +25,8 @@ const Main = () => {
     });
   }, []);
 
-  function handleIncrease() {
-    dispatch(increase());
-  }
-
   return (
     <div className="main-wrapper">
-      <span>{count}</span>
-      <button type="button" onClick={handleIncrease}>
-        increase
-      </button>
       <button
         className="none"
         type="button"
@@ -50,12 +39,34 @@ const Main = () => {
           );
         }}
       >
-        upload
+        上传
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          app.back();
+          setFiles(app.listFiles());
+        }}
+      >
+        回到根目录
       </button>
       <ul className="main-list">
         {files.map((item: any) => (
-          <li key={item} className="main-item" onContextMenu={() => fileContextMenu(item, app)}>
-            {item}
+          <li
+            key={item.name}
+            className="main-item"
+            onContextMenu={() => fileContextMenu(item.name, app)}
+            onDoubleClick={() => {
+              if (item.type === "dir") {
+                console.log(app);
+                app.changeDir(item.name);
+                setFiles(app.listFiles());
+              }
+            }}
+          >
+            {item.type}
+            <span>\</span>
+            {item.name}
           </li>
         ))}
       </ul>

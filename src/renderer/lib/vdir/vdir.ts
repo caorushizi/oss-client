@@ -1,6 +1,7 @@
 import Item from "./item";
 import { ItemType } from "./types";
 import { basename, dirname, normalizePath } from "./utils";
+import instance from "../../../main/helper/http";
 
 type child = Vdir | Item;
 type parent = Vdir | null;
@@ -12,10 +13,16 @@ export default class Vdir {
 
   private children: child[];
 
+  private cursor: Vdir;
+
+  private navigator: string[] = [];
+
   constructor(name: string, parent: parent = null) {
     this.name = name;
     this.parent = parent;
     this.children = [];
+
+    this.cursor = this;
   }
 
   /**
@@ -65,6 +72,22 @@ export default class Vdir {
   }
 
   public listFiles() {
-    return this.children.map(item => item.name);
+    return this.cursor.children.map(item => ({
+      name: item.name,
+      type: item instanceof Item ? "file" : "dir"
+    }));
+  }
+
+  public changeDir(path: string) {
+    this.cursor =
+      (this.children.find(item => item.name === path && item instanceof Vdir) as Vdir) ||
+      this.cursor;
+    this.navigator.push(path);
+  }
+
+  public back() {
+    console.log(this);
+    this.cursor = this;
+    this.navigator.pop();
   }
 }
