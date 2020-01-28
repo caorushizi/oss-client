@@ -1,7 +1,6 @@
 import Item from "./item";
 import { ItemType } from "./types";
 import { basename, dirname, normalizePath } from "./utils";
-import instance from "../../../main/helper/http";
 
 type child = Vdir | Item;
 type parent = Vdir | null;
@@ -71,11 +70,8 @@ export default class Vdir {
     return dir;
   }
 
-  public listFiles() {
-    return this.cursor.children.map(item => ({
-      name: item.name,
-      type: item instanceof Item ? "file" : "dir"
-    }));
+  public listFiles(): child[] {
+    return this.cursor.children;
   }
 
   public changeDir(path: string) {

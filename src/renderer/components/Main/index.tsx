@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fileContextMenu } from "../../helper/contextMenu";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
-import { Vdir } from "../../lib/vdir";
+import { Item, Vdir } from "../../lib/vdir";
 import { RootState } from "../../store";
 import { setVdir } from "../../store/app/actions";
+import Icon from "../Icon";
 
 import "./index.scss";
 
@@ -51,21 +52,20 @@ const Main = () => {
         回到根目录
       </button>
       <ul className="main-list">
-        {files.map((item: any) => (
+        {files.map((item: Vdir | Item) => (
           <li
             key={item.name}
             className="main-item"
             onContextMenu={() => fileContextMenu(item.name, app)}
             onDoubleClick={() => {
-              if (item.type === "dir") {
+              if (item instanceof Vdir) {
                 console.log(app);
                 app.changeDir(item.name);
                 setFiles(app.listFiles());
               }
             }}
           >
-            {item.type}
-            <span>\</span>
+            <Icon item={item} />
             {item.name}
           </li>
         ))}

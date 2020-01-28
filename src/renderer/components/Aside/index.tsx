@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
-import { getBuckets, getFiles } from "../../assets/script/ipc";
+import { getBuckets, getFiles } from "../../helper/ipc";
 
 function Aside() {
   const [bucketList, setBucketList] = useState([]);
