@@ -1,25 +1,17 @@
 export interface IObjectStorageService {
-  uploadFile(
-    bucketName: string,
-    remotepath: string,
-    filepath: string,
-    cb: CallbackFunc
-  ): Promise<any>;
+  uploadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any>;
 
-  downloadFile(
-    bucketName: string,
-    remotepath: string,
-    localpath: string,
-    cb: CallbackFunc
-  ): Promise<any>;
+  downloadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any>;
 
-  deleteFile(bucketName: string, remotePath: string): Promise<any>;
+  deleteFile(remotePath: string): Promise<any>;
 
   getBucketList(): Promise<string[]>;
 
-  getBucketFiles(bucketName: string): Promise<any[]>;
+  getBucketFiles(): Promise<any[]>;
 
-  getBucketDomainList(bucketName: string): Promise<any>;
+  getBucketDomainList(): Promise<any>;
+
+  setBucket(bucket: string): void;
 }
 
 export interface CallbackFunc {

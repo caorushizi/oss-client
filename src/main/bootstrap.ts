@@ -10,6 +10,7 @@ export default function bootstrap() {
   const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
   const sk = "7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL";
   const qiniu = factory(ObjectStorageServiceType.Qiniu, ak, sk);
+  qiniu.setBucket("downloads");
 
   ipcMain.on("get-buckets-request", event => {
     qiniu
@@ -22,9 +23,9 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("get-files-request", (event, bucketName) => {
+  ipcMain.on("get-files-request", event => {
     qiniu
-      .getBucketFiles(bucketName)
+      .getBucketFiles()
       .then(files => {
         event.reply("get-files-response", files);
       })
@@ -42,7 +43,7 @@ export default function bootstrap() {
       console.log("progress: ", progress);
     };
     qiniu
-      .downloadFile(bucketName, remotePath, downloadPath, callback)
+      .downloadFile(remotePath, downloadPath, callback)
       .then((res: any) => {
         console.log("get link done!", res);
       })
@@ -59,11 +60,11 @@ export default function bootstrap() {
       console.log("progress: ", progress);
     };
     qiniu
-      .uploadFile(bucket, remotePath, filepath, callback)
+      .uploadFile(remotePath, filepath, callback)
       .then(() => {
         console.log("upload done!");
       })
-      .catch(err => {
+      .catch((err: Error) => {
         console.log(err);
       });
   });
@@ -71,7 +72,7 @@ export default function bootstrap() {
   ipcMain.on("req:file:delete", (event, bucketName: string, item: Item) => {
     const remotePath = item.webkitRelativePath;
     qiniu
-      .deleteFile(bucketName, remotePath)
+      .deleteFile(remotePath)
       .then(res => {
         console.log("delete done!", res);
       })

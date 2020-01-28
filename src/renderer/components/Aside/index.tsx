@@ -1,19 +1,15 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { ipcRenderer } from "electron";
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
+import { getBuckets, getFiles } from "../../assets/script/ipc";
 
 function Aside() {
   const [bucketList, setBucketList] = useState([]);
 
-  ipcRenderer.on("get-buckets-response", (event, list) => {
-    setBucketList(list);
-    ipcRenderer.send("get-files-request", "downloads");
-  });
-
   useEffect(() => {
-    ipcRenderer.send("get-buckets-request");
+    getBuckets((event, list) => {
+      setBucketList(list);
+    });
   }, []);
 
   return (
@@ -26,14 +22,7 @@ function Aside() {
         <ul className="list">
           {bucketList.map(item => (
             <li className="item" key={item}>
-              <button
-                className="none"
-                type="button"
-                title={item}
-                onClick={() => {
-                  ipcRenderer.send("get-files-request", item);
-                }}
-              >
+              <button className="none" type="button" title={item} onClick={getFiles}>
                 {item}
               </button>
             </li>

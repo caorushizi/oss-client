@@ -6,10 +6,11 @@ import { CallbackFunc, IObjectStorageService } from "../types";
 
 // todo: http 与 axios
 export default class Qiniu implements IObjectStorageService {
-  private mac: qiniu.auth.digest.Mac;
+  private bucket = "";
 
-  // private domains: string[];
-  private config: qiniu.conf.Config;
+  private readonly mac: qiniu.auth.digest.Mac;
+
+  private readonly config: qiniu.conf.Config;
 
   private bucketManager: qiniu.rs.BucketManager;
 
@@ -21,14 +22,9 @@ export default class Qiniu implements IObjectStorageService {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(
-    bucketName: string,
-    remotePath: string,
-    localpath: string,
-    cb: CallbackFunc
-  ): Promise<any> {
+  public downloadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any> {
     // 获取 domains
-    const url = `http://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
+    const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     return http
       .get(url, { headers: { Authorization: accessToken } })
@@ -45,7 +41,7 @@ export default class Qiniu implements IObjectStorageService {
       .then((rep: AxiosResponse) => {
         const { data, headers } = rep;
         return new Promise((resolve, reject) => {
-          const writer = fs.createWriteStream(localpath);
+          const writer = fs.createWriteStream(localPath);
           data.pipe(writer);
           let length = 0;
           const totalLength = headers["content-length"];
@@ -60,20 +56,15 @@ export default class Qiniu implements IObjectStorageService {
       });
   }
 
-  public uploadFile(
-    bucketName: string,
-    remotePath: string,
-    filepath: string,
-    cb: CallbackFunc
-  ): Promise<any> {
+  public uploadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any> {
     // generate uploadToken
-    const putPolicy = new qiniu.rs.PutPolicy({ scope: `${bucketName}:${remotePath}` });
+    const putPolicy = new qiniu.rs.PutPolicy({ scope: `${this.bucket}:${remotePath}` });
     const token = putPolicy.uploadToken(this.mac);
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
     // 获取文件大小
     return new Promise<number>((resolve, reject) => {
-      fs.stat(filepath, (error, stats) => {
+      fs.stat(localPath, (error, stats) => {
         if (error) {
           reject(new Error("获取文件大小失败"));
         } else {
@@ -85,7 +76,7 @@ export default class Qiniu implements IObjectStorageService {
       // 文件上传
       return new Promise((resolve, reject) => {
         // todo: readableStream readStream
-        const reader: any = fs.createReadStream(filepath);
+        const reader: any = fs.createReadStream(localPath);
 
         let length = 0;
         reader.on("data", (thunk: any) => {
@@ -107,10 +98,10 @@ export default class Qiniu implements IObjectStorageService {
     });
   }
 
-  public deleteFile(bucketName: string, remotePath: string): Promise<any> {
+  public deleteFile(remotePath: string): Promise<any> {
     const bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
     return new Promise((resolve, reject) => {
-      bucketManager.delete(bucketName, remotePath, (err, respBody, respInfo) => {
+      bucketManager.delete(this.bucket, remotePath, (err, respBody, respInfo) => {
         if (err) {
           reject(err);
         }
@@ -123,15 +114,15 @@ export default class Qiniu implements IObjectStorageService {
     });
   }
 
-  public getBucketDomainList(bucketName: string): Promise<any> {
-    const url = `https://api.qiniu.com/v6/domain/list?tbl=${bucketName}`;
+  public getBucketDomainList(): Promise<any> {
+    const url = `https://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
     return http.get(url, options);
   }
 
-  public getBucketFiles(bucketName: string): Promise<any[]> {
-    const url = `https://rsf.qbox.me/list?bucket=${bucketName}`;
+  public getBucketFiles(): Promise<any[]> {
+    const url = `https://rsf.qbox.me/list?bucket=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
     return http.get(url, options);
@@ -142,5 +133,9 @@ export default class Qiniu implements IObjectStorageService {
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
     return http.get(url, options);
+  }
+
+  setBucket(bucket: string): void {
+    this.bucket = bucket;
   }
 }
