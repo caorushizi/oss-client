@@ -9,7 +9,7 @@ export interface IObjectStorageService {
 
   getBucketFiles(): Promise<any[]>;
 
-  getBucketDomainList(): Promise<any>;
+  getBucketDomainList(): Promise<string[]>;
 
   setBucket(bucket: string): void;
 }

@@ -2,6 +2,7 @@
 import { ipcRenderer } from "electron";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { fileContextMenu } from "../../helper/contextMenu";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item, Vdir } from "../../lib/vdir";
@@ -10,13 +11,21 @@ import { setVdir } from "../../store/app/actions";
 import Icon from "../Icon";
 
 import "./index.scss";
+import { getFiles } from "../../helper/ipc";
 
-const Main = () => {
+type file = Vdir | Item;
+
+const Bucket = () => {
+  const { name }: { name?: string } = useParams();
+  if (name) {
+    getFiles(name);
+  }
+
+  const [files, setFiles] = useState<file[]>([]);
   const selectApp = (state: RootState) => state.app.vdir;
   const app = useSelector(selectApp);
   const dispatch = useDispatch();
 
-  const [files, setFiles] = useState<any[]>([]);
   // TODO:为什么不放在 useEffect 中会不断执行
   useEffect(() => {
     ipcRenderer.on("get-files-response", (event, { items }) => {
@@ -62,6 +71,8 @@ const Main = () => {
                 console.log(app);
                 app.changeDir(item.name);
                 setFiles(app.listFiles());
+              } else {
+                console.log("文件类型");
               }
             }}
           >
@@ -74,4 +85,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Bucket;

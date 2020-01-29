@@ -14,6 +14,8 @@ export default class Qiniu implements IObjectStorageService {
 
   private bucketManager: qiniu.rs.BucketManager;
 
+  private domainList: string[] = [];
+
   constructor(accessKey: string, secretKey: string) {
     this.mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
     this.config = new qiniu.conf.Config({
@@ -114,11 +116,14 @@ export default class Qiniu implements IObjectStorageService {
     });
   }
 
-  public getBucketDomainList(): Promise<any> {
+  public getBucketDomainList(): Promise<string[]> {
     const url = `https://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return http.get(url, options);
+    return axios.get<string[]>(url, options).then(({ data }) => {
+      this.domainList = data;
+      return data;
+    });
   }
 
   public getBucketFiles(): Promise<any[]> {
@@ -132,7 +137,12 @@ export default class Qiniu implements IObjectStorageService {
     const url = "https://rs.qbox.me/buckets";
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return http.get(url, options);
+    return axios.get<string[]>(url, options).then(({ data }) => {
+      if (data.length > 0) {
+        this.setBucket(data[0]);
+      }
+      return data;
+    });
   }
 
   setBucket(bucket: string): void {

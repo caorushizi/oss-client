@@ -23,7 +23,8 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("get-files-request", event => {
+  ipcMain.on("get-files-request", (event, bucketName: string) => {
+    qiniu.setBucket(bucketName);
     qiniu
       .getBucketFiles()
       .then(files => {
