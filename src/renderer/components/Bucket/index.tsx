@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fileContextMenu } from "../../helper/contextMenu";
+import { dialog } from "../../helper/remote";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item, Vdir } from "../../lib/vdir";
 import { RootState } from "../../store";
@@ -17,16 +18,18 @@ type file = Vdir | Item;
 
 const Bucket = () => {
   const { name }: { name?: string } = useParams();
-  if (name) {
-    getFiles(name);
-  }
-
   const [files, setFiles] = useState<file[]>([]);
   const selectApp = (state: RootState) => state.app.vdir;
   const app = useSelector(selectApp);
   const dispatch = useDispatch();
 
   // TODO:为什么不放在 useEffect 中会不断执行
+  useEffect(() => {
+    if (name) {
+      getFiles(name);
+    }
+  }, [name]);
+
   useEffect(() => {
     ipcRenderer.on("get-files-response", (event, { items }) => {
       const dir = Vdir.from(qiniuAdapter(items));

@@ -19,7 +19,7 @@ export default function bootstrap() {
         event.reply("get-buckets-response", buckets);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   });
 
@@ -31,7 +31,7 @@ export default function bootstrap() {
         event.reply("get-files-response", files);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   });
 
@@ -48,8 +48,8 @@ export default function bootstrap() {
       .then((res: any) => {
         console.log("get link done!", res);
       })
-      .catch((err: any) => {
-        console.log("下载出错：", err);
+      .catch(err => {
+        console.log(err.message);
       });
   });
 
@@ -66,7 +66,7 @@ export default function bootstrap() {
         console.log("upload done!");
       })
       .catch((err: Error) => {
-        console.log(err);
+        console.log(err.message);
       });
   });
 
@@ -78,7 +78,7 @@ export default function bootstrap() {
         console.log("delete done!", res);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   });
 }
