@@ -23,7 +23,6 @@ const Bucket = () => {
   const app = useSelector(selectApp);
   const dispatch = useDispatch();
 
-  // TODO:为什么不放在 useEffect 中会不断执行
   useEffect(() => {
     if (name) {
       getFiles(name);
