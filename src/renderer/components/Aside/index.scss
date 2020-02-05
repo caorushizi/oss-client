@@ -1,6 +1,6 @@
 .aside-wrapper {
-  min-width: 225px;
-  max-width: 225px;
+  min-width: 224px;
+  max-width: 224px;
 
   .title-bar {
     height: 30px;
@@ -12,24 +12,38 @@
 
   .container {
     .title {
-      height: 30px;
-      line-height: 30px;
-      color: #C0C4CC;
-      padding: 0 10px;
-      font-size: 13px;
+      line-height: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-bottom: 16px;
+      padding-left: 15px;
     }
 
     .list {
       .item {
-        height: 30px;
-        line-height: 30px;
-        margin: 0 10px;
+        height: 26px;
+        line-height: 17px;
         color: #F2F6FC;
-        padding: 0 10px;
-        font-size: 13px;
+        font-size: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-left: 20px;
+        margin: 0 8px;
+
+        .icon {
+          height: 11px;
+          width: 13px;
+        }
+
+        a {
+          padding-left: 10px;
+          color: rgba(255, 255, 255, 0.5);
+          text-decoration: none;
+        }
 
         &.active {
-          background-color: #655868;
+          background-color: rgba(0, 0, 0, .15);
           border-radius: 10px;
         }
       }

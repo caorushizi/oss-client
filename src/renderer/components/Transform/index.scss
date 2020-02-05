@@ -1,2 +1,48 @@
 .transform-wrapper {
+  flex: 1;
+
+  .transform-list {
+    margin-top: 20px;
+
+    .transform-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px rgba(255, 255, 255, 0.1) solid;
+      padding: 10px;
+
+      .sub {
+        display: flex;
+        align-items: center;
+
+        #icon {
+          height: 31px;
+          width: 36px;
+        }
+
+        .name {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 14px;
+          line-height: 20px;
+        }
+
+        .size {
+          color: #999999;
+          font-size: 12px;
+          line-height: 17px;
+        }
+      }
+
+      .icon {
+        height: 25px;
+        width: 25px;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        border-bottom: 1px rgba(255, 255, 255, 0.1) solid;
+      }
+    }
+  }
 }

@@ -40,7 +40,7 @@ const Bucket = () => {
   return (
     <div className="main-wrapper">
       <button
-        className="none"
+        className="oss-button"
         type="button"
         onClick={() => {
           ipcRenderer.send(
@@ -55,6 +55,7 @@ const Bucket = () => {
       </button>
       <button
         type="button"
+        className="oss-button"
         onClick={() => {
           app.back();
           setFiles(app.listFiles());
@@ -78,7 +79,7 @@ const Bucket = () => {
               }
             }}
           >
-            <Icon item={item} />
+            <Icon />
             {item.name}
           </li>
         ))}

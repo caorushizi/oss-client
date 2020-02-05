@@ -1,13 +1,14 @@
 import React from "react";
 import "./index.scss";
-import { Item, Vdir } from "../../lib/vdir";
+import icon from "./images/icon.png";
 
-const Icon = ({ item }: { item: Vdir | Item }) => {
+const Icon = () => {
   return (
     <div id="icon">
-      <svg className="icon-test" aria-hidden="true">
-        {item instanceof Vdir ? <use xlinkHref="#icon-wenjian" /> : <use xlinkHref="#icon-sql" />}
-      </svg>
+      {/* <svg className="icon-test" aria-hidden="true"> */}
+      {/*  {item instanceof Vdir ? <use xlinkHref="#icon-wenjian" /> : <use xlinkHref="#icon-sql" />} */}
+      {/* </svg> */}
+      <img src={icon} alt="icon" />
     </div>
   );
 };

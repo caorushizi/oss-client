@@ -7,12 +7,16 @@
     .main-item {
       color: #F2F6FC;
       text-indent: 10px;
-      height: 25px;
-      line-height: 25px;
       border-bottom: 1px #fff solid;
       //todo: 显示省略号
-      overflow: hidden;
       display: flex;
+      align-items: center;
+
+      #icon {
+        img {
+          height: 38px;
+        }
+      }
 
       &:hover {
         color: red;
