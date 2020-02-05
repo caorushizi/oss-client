@@ -2,7 +2,7 @@ const isDev = process.env.NODE_ENV === "development";
 const rules = [
   // Add support for native node modules
   {
-    test: /\.(png|jpg)/,
+    test: /\.(png|jpg)$/,
     loaders: ["url-loader"]
   },
   {

@@ -15,12 +15,12 @@ const devTools: any =
 
 const store = createStore(rootReducer, compose(applyMiddleware(reduxThunk), devTools));
 
-const rooElement = document.getElementById("root");
+const rootElement = document.getElementById("root");
 reactDom.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  rooElement
+  rootElement
 );
 
 /**

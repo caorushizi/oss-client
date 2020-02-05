@@ -1,9 +1,9 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Icon from "../Icon";
 import stopIcon from "./images/stop.png";
 import terminateIcon from "./images/terminate.png";
 import folderIcon from "./images/folder.png";
-
 import "./index.scss";
 
 const TransformItem = () => (
@@ -18,7 +18,7 @@ const TransformItem = () => (
     <img className="icon" src={stopIcon} alt="stop" />
     <img className="icon" src={terminateIcon} alt="terminateIcon" />
     <img className="icon" src={folderIcon} alt="folderIcon" />
-    <i className="fas fa-camera">123</i>
+    <FontAwesomeIcon icon="coffee" />
   </li>
 );
 
