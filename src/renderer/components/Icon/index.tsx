@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.scss";
 import icon from "./images/icon.png";
+// import "./iconfont/iconfont";
 
 const Icon = () => {
   return (
