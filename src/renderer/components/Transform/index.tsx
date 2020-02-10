@@ -9,7 +9,7 @@ import "./index.scss";
 const TransformItem = () => (
   <li className="transform-item">
     <div className="sub">
-      <Icon />
+      <Icon filename="123.txt" />
       <div>
         <div className="name">testtesttest.css</div>
         <div className="size">55MB</div>

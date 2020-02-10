@@ -1,15 +1,6 @@
-#icon {
+.my-icon {
   padding: 5px;
-
-  //.icon-test {
-  //  height: 1rem;
-  //  width: 1rem;
-  //  vertical-align: -0.15em;
-  //  fill: currentColor;
-  //  overflow: hidden;
-  //}
-  img {
-    width: inherit;
-    height: inherit;
-  }
+  height: 40px;
+  width: 40px;
+  box-sizing: border-box;
 }

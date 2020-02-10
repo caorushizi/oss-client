@@ -1,16 +1,23 @@
 import React from "react";
 import "./index.scss";
-import icon from "./images/icon.png";
-// import "./iconfont/iconfont";
+import classnames from "classnames";
+import mime from "mime";
 
-const Icon = () => {
-  return (
-    <div id="icon">
-      {/* <svg className="icon-test" aria-hidden="true"> */}
-      {/*  {item instanceof Vdir ? <use xlinkHref="#icon-wenjian" /> : <use xlinkHref="#icon-sql" />} */}
-      {/* </svg> */}
-      <img src={icon} alt="icon" />
-    </div>
+const scriptElem = document.createElement("script");
+scriptElem.src = "//at.alicdn.com/t/font_1257166_49oq6sv8biv.js";
+document.body.appendChild(scriptElem);
+
+const Icon = ({ className, filename }: { className?: any; filename?: string }) => {
+  return filename ? (
+    // 文件
+    <svg className={classnames("my-icon", className)} aria-hidden="true">
+      <use xlinkHref="#icon-documents" />
+    </svg>
+  ) : (
+    // 文件夹
+    <svg className={classnames("my-icon", className)} aria-hidden="true">
+      <use xlinkHref="#icon-wenjian" />
+    </svg>
   );
 };
 

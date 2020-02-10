@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fileContextMenu } from "../../helper/contextMenu";
-import { dialog } from "../../helper/remote";
+import { getFiles } from "../../helper/ipc";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item, Vdir } from "../../lib/vdir";
 import { RootState } from "../../store";
@@ -12,7 +12,6 @@ import { setVdir } from "../../store/app/actions";
 import Icon from "../Icon";
 
 import "./index.scss";
-import { getFiles } from "../../helper/ipc";
 
 type file = Vdir | Item;
 
@@ -39,9 +38,10 @@ const Bucket = () => {
 
   return (
     <div className="main-wrapper">
-      <button
+      <input
         className="oss-button"
         type="button"
+        value="上传"
         onClick={() => {
           ipcRenderer.send(
             "req:file:upload",
@@ -50,40 +50,52 @@ const Bucket = () => {
             "C:\\Users\\admin\\Desktop\\刁振源-2019年终总结.docx"
           );
         }}
-      >
-        上传
-      </button>
-      <button
+      />
+      <input
         type="button"
         className="oss-button"
+        value="回到根目录"
         onClick={() => {
           app.back();
           setFiles(app.listFiles());
         }}
-      >
-        回到根目录
-      </button>
-      <ul className="main-list">
-        {files.map((item: Vdir | Item) => (
-          <li
-            key={item.name}
-            className="main-item"
-            onContextMenu={() => fileContextMenu(item.name, app)}
-            onDoubleClick={() => {
-              if (item instanceof Vdir) {
-                console.log(app);
+      />
+      <table className="main-table">
+        {files.map((item: Vdir | Item) =>
+          Vdir.isDir(item) ? (
+            // 文件夹
+            <tr
+              key={item.name}
+              className="main-item"
+              onContextMenu={() => fileContextMenu(item.name, app)}
+              onDoubleClick={() => {
                 app.changeDir(item.name);
                 setFiles(app.listFiles());
-              } else {
+              }}
+            >
+              <td>
+                <Icon className="icon" />
+              </td>
+              <td>{item.name}</td>
+            </tr>
+          ) : (
+            // 文件
+            <tr
+              key={item.name}
+              className="main-item"
+              onContextMenu={() => fileContextMenu(item.name, app)}
+              onDoubleClick={() => {
                 console.log("文件类型");
-              }
-            }}
-          >
-            <Icon />
-            {item.name}
-          </li>
-        ))}
-      </ul>
+              }}
+            >
+              <td>
+                <Icon className="icon" filename="123.txt" />
+              </td>
+              <td>{item.name}</td>
+            </tr>
+          )
+        )}
+      </table>
     </div>
   );
 };

@@ -86,4 +86,8 @@ export default class Vdir {
     this.cursor = this;
     this.navigator.pop();
   }
+
+  static isDir(o: any) {
+    return o instanceof Vdir;
+  }
 }

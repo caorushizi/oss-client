@@ -5,6 +5,7 @@
     margin-top: 20px;
 
     .transform-item {
+      height: 50px;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -15,11 +16,6 @@
       .sub {
         display: flex;
         align-items: center;
-
-        #icon {
-          height: 31px;
-          width: 36px;
-        }
 
         .name {
           color: rgba(255, 255, 255, 0.9);
