@@ -1,10 +1,12 @@
-import React from "react";
-import "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { Layout } from "../../store/app/types";
 import { switchLayout } from "../../store/app/actions";
+import { Layout } from "../../store/app/types";
+import Breadcrumb from "../Breadcrumb";
+import Input from "../Input";
+import "./index.scss";
 
 const ToolBar = () => {
   const dispatch = useDispatch();
@@ -13,31 +15,29 @@ const ToolBar = () => {
 
   return (
     <div className="toolbar-wrapper">
-      <FontAwesomeIcon icon="angle-left" className="fa-button" />
-      <FontAwesomeIcon icon="undo-alt" className="fa-button" />
-      <div>搜索</div>
-      {Layout.grid === layout ? (
-        // grid
-        <FontAwesomeIcon
-          icon="bars"
-          onClick={() => {
-            console.log(123123);
-            dispatch(switchLayout(Layout.table));
-          }}
-          className="fa-button"
-        />
-      ) : (
-        // table
-        <FontAwesomeIcon
-          icon="border-all"
-          onClick={() => {
-            console.log(123123);
-            console.log(123123);
-            dispatch(switchLayout(Layout.grid));
-          }}
-          className="fa-button"
-        />
-      )}
+      <div className="toolbar-left">
+        <FontAwesomeIcon icon="angle-left" className="icon-button" />
+        <FontAwesomeIcon icon="undo-alt" className="icon-button" />
+        <Breadcrumb />
+      </div>
+      <div className="toolbar-right">
+        <Input icon="search" placeholder="搜索" />
+        {Layout.grid === layout ? (
+          // grid
+          <FontAwesomeIcon
+            icon="bars"
+            onClick={() => dispatch(switchLayout(Layout.table))}
+            className="icon-button"
+          />
+        ) : (
+          // table
+          <FontAwesomeIcon
+            icon="border-all"
+            onClick={() => dispatch(switchLayout(Layout.grid))}
+            className="icon-button"
+          />
+        )}
+      </div>
     </div>
   );
 };

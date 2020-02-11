@@ -1,0 +1,31 @@
+.oss-input--wrapper {
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .15);
+  padding: 0 10px;
+
+  .oss-input {
+    color: #fff;
+    background: transparent;
+    border: none;
+    height: 26px;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #fff;
+      font-size: 14px;
+    }
+  }
+
+  .icon {
+    color: #fff;
+    line-height: 26px;
+    padding-right: 5px;
+    font-size: 14px;
+  }
+}
+

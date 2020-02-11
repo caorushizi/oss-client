@@ -3,55 +3,78 @@
   display: flex;
   flex-direction: column;
 
+  .buttons-wrapper {
+    margin-top: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // todo: 简化 toolbar 布局
   .toolbar-wrapper {
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding: 5px 0;
+    height: 40px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    color: #fff;
 
-    .fa-button {
-      color: #fff;
-      font-size: 15px;
-      margin: 0 5px;
+    .icon-button {
+      padding: 0 10px;
+      height: 26px;
+      line-height: 26px;
+    }
+
+    .toolbar-left {
+      display: flex;
+    }
+
+    .toolbar-right {
+      display: flex;
     }
   }
 
-  .main-table {
+  .main-table-wrapper {
     flex: 1;
     overflow: auto;
 
-    .main-table__row {
-      color: #F2F6FC;
-      height: 40px;
-      font-size: 12px;
-      line-height: 17px;
+    .main-table {
+      width: 100%;
 
-      .main-table__row_cell {
-        text-align: left;
-        vertical-align: middle;
+      .main-table__row {
+        color: #F2F6FC;
+        height: 40px;
+        font-size: 12px;
+        line-height: 17px;
 
-        .icon {
-          position: relative;
-          top: 7px;
+        .main-table__row_cell {
+          text-align: left;
+          vertical-align: middle;
+
+          .icon {
+            position: relative;
+            top: 7px;
+          }
+
+          &.index {
+            width: 50px;
+          }
+
+          &.title {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
 
-        &.index {
-          width: 50px;
-        }
-
-        &.title {
-          max-width: 150px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        &:hover {
+          background: rgba(255, 255, 255, .15);
         }
       }
 
-      &:hover {
-        background: rgba(255, 255, 255, .15);
-      }
     }
-
   }
 
   .main-grid {
@@ -88,10 +111,7 @@
   }
 
   .footer {
-    .real {
-      line-height: 50px;
-      height: 50px;
-      background: red;
-    }
+    height: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 }

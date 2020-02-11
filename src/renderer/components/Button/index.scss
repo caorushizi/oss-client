@@ -1,0 +1,26 @@
+.oss-button {
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  border-radius: 5px;
+  box-sizing: content-box;
+  background-color: rgba(255, 255, 255, .15);
+  margin: 5px 10px;
+  font-size: 12px;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 15px;
+
+  .icon {
+    padding-right: 5px;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    color: rgba(255, 255, 255, .35);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
