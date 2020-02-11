@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./index.scss";
+import { useSelector } from "react-redux";
 import { getBuckets } from "../../helper/ipc";
 import publicIcon from "./images/public.png";
 import aboutIcon from "./images/about.png";
 import uploadIcon from "./images/upload.png";
 import doneIcon from "./images/done.png";
 import settingIcon from "./images/setting.png";
+import { RootState } from "../../store";
 
 function Aside() {
   const [bucketList, setBucketList] = useState<string[]>([]);
+  const selectAsideColor = (state: RootState) => state.app.asideColor;
+  const asideColor = useSelector(selectAsideColor);
 
   useEffect(() => {
     getBuckets((event, list) => {
@@ -18,7 +22,7 @@ function Aside() {
   }, []);
 
   return (
-    <div className="aside-wrapper">
+    <div className="aside-wrapper" style={{ background: asideColor }}>
       <section className="title-bar">
         <span>OSS Client X</span>
       </section>

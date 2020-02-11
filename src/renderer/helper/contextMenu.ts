@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ipcRenderer, remote } from "electron";
-import { Item } from "../lib/vdir";
+import { Ffile } from "../lib/vdir";
 
 export function fileContextMenu(file: string, vdir: any) {
-  const item = vdir.children.find((i: Item) => i.name === file);
+  const item = vdir.children.find((i: Ffile) => i.name === file);
   const menu = remote.Menu.buildFromTemplate([
     {
       label: "全选",

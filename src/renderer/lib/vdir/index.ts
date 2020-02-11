@@ -1,4 +1,4 @@
-import Item from "./item";
+import Ffile from "./ffile";
 import Vdir from "./vdir";
 
-export { Vdir, Item };
+export { Vdir, Ffile };

@@ -3,7 +3,7 @@ import { ipcMain, app } from "electron";
 import path from "path";
 import services from "./services";
 import { CallbackFunc, ObjectStorageServiceType } from "./services/types";
-import { Item } from "../renderer/lib/vdir";
+import { Ffile } from "../renderer/lib/vdir";
 
 export default function bootstrap() {
   const factory = services.create;
@@ -35,7 +35,7 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("req:file:download", (event, bucketName, item: Item) => {
+  ipcMain.on("req:file:download", (event, bucketName, item: Ffile) => {
     const remotePath = item.webkitRelativePath;
     const downloadDir = app.getPath("downloads");
     const downloadPath = path.join(downloadDir, item.webkitRelativePath);
@@ -70,7 +70,7 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("req:file:delete", (event, bucketName: string, item: Item) => {
+  ipcMain.on("req:file:delete", (event, bucketName: string, item: Ffile) => {
     const remotePath = item.webkitRelativePath;
     qiniu
       .deleteFile(remotePath)

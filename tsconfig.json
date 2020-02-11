@@ -18,7 +18,8 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "jsx": "react"
+    "jsx": "react",
+    "resolveJsonModule": true
   },
   "include": [
     "src"

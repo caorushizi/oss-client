@@ -1,22 +1,25 @@
-import Item from "./item";
-import { ItemType } from "./types";
+import Ffile from "./ffile";
+import { Item, ItemType, Parent } from "./types";
 import { basename, dirname, normalizePath } from "./utils";
 
-type child = Vdir | Item;
-type parent = Vdir | null;
-
 export default class Vdir {
-  parent: Vdir | null;
+  parent: Parent;
 
   name: string;
 
-  private children: child[];
+  size = 0;
+
+  lastModified = 0;
+
+  lastModifiedDate = new Date(0);
+
+  private children: Item[];
 
   private cursor: Vdir;
 
   private navigator: string[] = [];
 
-  constructor(name: string, parent: parent = null) {
+  constructor(name: string, parent: Parent = null) {
     this.name = name;
     this.parent = parent;
     this.children = [];
@@ -35,7 +38,7 @@ export default class Vdir {
   }
 
   private makeDir(name: string): Vdir {
-    const find = this.children.find(i => i.name === name && i instanceof Vdir);
+    const find = this.children.find(i => i.name === name && Vdir.isDir(i));
     if (find) return find as Vdir;
 
     const dir = new Vdir(name, this);
@@ -48,19 +51,26 @@ export default class Vdir {
    * @param item 对于根目录的相对路径，第一个字符不是 .
    * @param r 是否递归创建， false 直接以 vpath 为 name 创建文件
    */
-  private touchFile(item: ItemType, r = true): Item {
+  private touchFile(item: ItemType, r = true): Ffile {
     const vpath = normalizePath(item.webkitRelativePath);
     const dirPath = dirname(vpath);
 
+    let cursor: Vdir;
     if (r && dirPath !== "") {
-      const base = basename(dirPath);
-      const dir = this.mkdir(dirPath);
-      const file = new Item(item);
-      dir.children.push(file);
-      return file;
+      // const base = basename(dirPath);
+      cursor = this.mkdir(dirPath);
+    } else {
+      cursor = this;
     }
-    const file = new Item(item);
-    this.children.push(file);
+    const file = new Ffile(item);
+    // 计算文件夹大小、修改时间
+    cursor.size += file.size || 0;
+    if (cursor.lastModified < file.lastModified) {
+      cursor.lastModified = file.lastModified;
+      cursor.lastModifiedDate = new Date(cursor.lastModified);
+    }
+
+    cursor.children.push(file);
     return file;
   }
 
@@ -70,19 +80,17 @@ export default class Vdir {
     return dir;
   }
 
-  public listFiles(): child[] {
+  public listFiles(): Item[] {
     return this.cursor.children;
   }
 
   public changeDir(path: string) {
     this.cursor =
-      (this.children.find(item => item.name === path && item instanceof Vdir) as Vdir) ||
-      this.cursor;
+      (this.children.find(item => item.name === path && Vdir.isDir(item)) as Vdir) || this.cursor;
     this.navigator.push(path);
   }
 
   public back() {
-    console.log(this);
     this.cursor = this;
     this.navigator.pop();
   }

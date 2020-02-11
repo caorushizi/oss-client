@@ -1,6 +1,6 @@
 import { ItemType } from "./types";
 
-export default class Item {
+export default class Ffile {
   name: string;
 
   webkitRelativePath: string;
@@ -9,11 +9,11 @@ export default class Item {
 
   type?: string;
 
-  size?: number;
+  size = 0;
 
-  lastModified?: number;
+  lastModified = 0;
 
-  lastModifiedDate?: Date;
+  lastModifiedDate = new Date();
 
   constructor({
     name,

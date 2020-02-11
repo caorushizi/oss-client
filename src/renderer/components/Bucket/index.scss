@@ -4,24 +4,39 @@
 
   .main-table {
     width: 100%;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
 
-    .main-item {
+    .main-table__row {
       color: #F2F6FC;
-      text-indent: 10px;
-      border-bottom: 1px #fff solid;
-      //todo: 显示省略号
-      display: flex;
-      align-items: center;
+      height: 40px;
+      font-size: 12px;
+      line-height: 17px;
 
-      .icon {
-        height: 50px;
-        width: 50px;
+      .main-table__row_cell {
+        text-align: left;
+        vertical-align: middle;
+
+        .icon {
+          position: relative;
+          top: 7px;
+        }
+
+        &.index {
+          width: 50px;
+        }
+
+        &.title {
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
 
       &:hover {
-        color: red;
-        background: #ffffff;
+        background: rgba(255, 255, 255, .15);
       }
     }
+
   }
 }
