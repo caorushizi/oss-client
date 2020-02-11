@@ -1,12 +1,10 @@
 .App {
   height: 100vh;
-  //background: linear-gradient(#895B76, #38394F);
   display: flex;
   flex-direction: row;
   align-items: stretch;
 
   .aside-wrapper {
-    //background: linear-gradient(#895B76, #454A58);
     overflow: auto;
   }
 

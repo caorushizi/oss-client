@@ -1,6 +1,7 @@
-.main-wrapper {
-  overflow: auto;
-  padding-top: 30px;
+.bucket-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   .toolbar-wrapper {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
@@ -16,7 +17,8 @@
   }
 
   .main-table {
-    width: 100%;
+    flex: 1;
+    overflow: auto;
 
     .main-table__row {
       color: #F2F6FC;
@@ -53,11 +55,11 @@
   }
 
   .main-grid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex: 1;
+    overflow: auto;
 
     .main-grid__cell {
+      float: left;
       height: 80px;
       width: 80px;
       margin: 5px;
@@ -82,6 +84,14 @@
         text-align: center;
         padding-top: 10px;
       }
+    }
+  }
+
+  .footer {
+    .real {
+      line-height: 50px;
+      height: 50px;
+      background: red;
     }
   }
 }

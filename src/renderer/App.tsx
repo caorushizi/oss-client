@@ -21,10 +21,12 @@ function app() {
   return (
     <div className="App" style={{ background: appColor }}>
       <Aside />
-      {page === Page.bucket && <Bucket />}
-      {page === Page.transferList && <Transform />}
-      {page === Page.transferDone && <Transform />}
-      {page === Page.setting && <Setting />}
+      <section className="main-wrapper">
+        {page === Page.bucket && <Bucket />}
+        {page === Page.transferList && <Transform />}
+        {page === Page.transferDone && <Transform />}
+        {page === Page.setting && <Setting />}
+      </section>
     </div>
   );
 }

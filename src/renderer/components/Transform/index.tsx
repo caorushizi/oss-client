@@ -1,24 +1,20 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Icon from "../Icon";
-import stopIcon from "./images/stop.png";
-import terminateIcon from "./images/terminate.png";
-import folderIcon from "./images/folder.png";
 import "./index.scss";
 
 const TransformItem = () => (
   <li className="transform-item">
     <div className="sub">
-      <Icon filename="123.txt" />
+      <Icon filename="testtesttest.css" />
       <div>
         <div className="name">testtesttest.css</div>
         <div className="size">55MB</div>
       </div>
     </div>
-    <img className="icon" src={stopIcon} alt="stop" />
-    <img className="icon" src={terminateIcon} alt="terminateIcon" />
-    <img className="icon" src={folderIcon} alt="folderIcon" />
-    <FontAwesomeIcon icon="folder" />
+    <FontAwesomeIcon className="icon" icon="pause" />
+    <FontAwesomeIcon className="icon" icon="trash-alt" />
+    <FontAwesomeIcon className="icon" icon="folder" />
   </li>
 );
 

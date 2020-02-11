@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { ipcRenderer } from "electron";
 import { getBuckets, getFiles } from "../../helper/ipc";
 import { RootState } from "../../store";
-import { setVdir, switchPage } from "../../store/app/actions";
+import { randomColor, setVdir, switchPage } from "../../store/app/actions";
 import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
@@ -22,6 +22,10 @@ function Aside() {
   const page = useSelector(selectPage);
   const selectBucket = (state: RootState) => state.app.bucket;
   const bucket = useSelector(selectBucket);
+
+  useEffect(() => {
+    dispatch(randomColor());
+  }, [bucket, page]);
 
   useEffect(() => {
     getBuckets((event, list) => {
