@@ -1,19 +1,38 @@
-import { AppActionTypes, GET_VDIR, SET_COLOR, SET_VDIR } from "./types";
+import {
+  AppActionTypes,
+  GET_VDIR,
+  Layout,
+  Page,
+  SET_COLOR,
+  SET_VDIR,
+  SWITCH_LAYOUT,
+  SWITCH_PAGE
+} from "./types";
 import { Vdir } from "../../lib/vdir";
 
 export function setVdir(vdir: Vdir): AppActionTypes {
-  return { vdir, type: SET_VDIR };
+  return { type: SET_VDIR, payload: { vdir } };
 }
 
 export function getVdir(): AppActionTypes {
-  return {
-    type: GET_VDIR
-  };
+  return { type: GET_VDIR };
 }
 
 export function randomColor(): AppActionTypes {
-  console.log(123123123123123123);
+  return { type: SET_COLOR };
+}
+
+export function switchLayout(layout: Layout): AppActionTypes {
   return {
-    type: SET_COLOR
+    type: SWITCH_LAYOUT,
+    payload: { layout }
+  };
+}
+
+export function switchPage(page: Page, bucket?: string): AppActionTypes {
+  if (page === Page.bucket && !bucket) throw new Error("需要传递bucket参数");
+  return {
+    type: SWITCH_PAGE,
+    payload: { page, bucket }
   };
 }

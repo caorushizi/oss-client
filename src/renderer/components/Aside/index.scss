@@ -32,15 +32,21 @@
         margin: 0 8px;
 
         .icon {
-          height: 11px;
-          width: 13px;
+          font-size: 12px;
         }
 
-        a {
+        .link {
+          border: none;
+          background: transparent;
           padding-left: 10px;
           color: rgba(255, 255, 255, 0.5);
-          text-decoration: none;
+          cursor: pointer;
+
+          &:focus {
+            outline: none;
+          }
         }
+
 
         &.active {
           background-color: rgba(0, 0, 0, .15);

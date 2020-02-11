@@ -18,7 +18,7 @@ const TransformItem = () => (
     <img className="icon" src={stopIcon} alt="stop" />
     <img className="icon" src={terminateIcon} alt="terminateIcon" />
     <img className="icon" src={folderIcon} alt="folderIcon" />
-    <FontAwesomeIcon icon="coffee" />
+    <FontAwesomeIcon icon="folder" />
   </li>
 );
 

@@ -1,5 +1,15 @@
 import { Vdir } from "../../lib/vdir";
-import { AppActionTypes, AppState, GET_VDIR, SET_VDIR, SET_COLOR } from "./types";
+import {
+  AppActionTypes,
+  AppState,
+  GET_VDIR,
+  Layout,
+  Page,
+  SET_COLOR,
+  SET_VDIR,
+  SWITCH_LAYOUT,
+  SWITCH_PAGE
+} from "./types";
 
 const styles = [
   {
@@ -27,11 +37,15 @@ const styles = [
     asideColor: "linear-gradient(#8B5C68, #484B58)"
   }
 ];
+
 const getColor = () => styles[Math.floor(Math.random() * styles.length)];
+const initialColor = getColor();
+
 const initialState: AppState = {
   vdir: new Vdir("#"),
-  appColor: getColor().appColor,
-  asideColor: getColor().asideColor
+  layout: Layout.grid,
+  page: Page.bucket,
+  ...initialColor
 };
 
 export function appReducer(state = initialState, action: AppActionTypes): AppState {
@@ -39,9 +53,13 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSta
     case GET_VDIR:
       return state;
     case SET_VDIR:
-      return { ...state, vdir: action.vdir };
+      return { ...state, ...action.payload };
     case SET_COLOR:
-      return { ...state, appColor: getColor().appColor, asideColor: getColor().asideColor };
+      return { ...state, ...getColor() };
+    case SWITCH_LAYOUT:
+      return { ...state, ...action.payload };
+    case SWITCH_PAGE:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

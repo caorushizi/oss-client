@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import "./index.scss";
-import { useSelector } from "react-redux";
-import { getBuckets } from "../../helper/ipc";
-import publicIcon from "./images/public.png";
-import aboutIcon from "./images/about.png";
-import uploadIcon from "./images/upload.png";
-import doneIcon from "./images/done.png";
-import settingIcon from "./images/setting.png";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { ipcRenderer } from "electron";
+import { getBuckets, getFiles } from "../../helper/ipc";
 import { RootState } from "../../store";
+import { setVdir, switchPage } from "../../store/app/actions";
+import { Page } from "../../store/app/types";
+import { Vdir } from "../../lib/vdir";
+import { qiniuAdapter } from "../../lib/adapter/qiniu";
 
 function Aside() {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const selectAsideColor = (state: RootState) => state.app.asideColor;
   const asideColor = useSelector(selectAsideColor);
+  const dispatch = useDispatch();
+
+  const selectPage = (state: RootState) => state.app.page;
+  const page = useSelector(selectPage);
+  const selectBucket = (state: RootState) => state.app.bucket;
+  const bucket = useSelector(selectBucket);
 
   useEffect(() => {
     getBuckets((event, list) => {
       setBucketList(list);
+    });
+
+    ipcRenderer.on("get-files-response", (event, { items }) => {
+      const dir = Vdir.from(qiniuAdapter(items));
+      dispatch(setVdir(dir));
     });
   }, []);
 
@@ -29,12 +42,24 @@ function Aside() {
       <section className="container">
         <p className="title">储存空间</p>
         <ul className="list">
-          {bucketList.map(item => (
-            <li className="item" key={item}>
-              <img className="icon" src={publicIcon} alt="bucket" />
-              <Link to={`/bucket/${item}`} title={item}>
-                {item}
-              </Link>
+          {bucketList.map((bucketName: string) => (
+            <li
+              className={classNames("item", {
+                active: page === Page.bucket && bucket === bucketName
+              })}
+              key={bucketName}
+            >
+              <FontAwesomeIcon className="icon" icon="folder" />
+              <input
+                type="button"
+                className="link"
+                onClick={() => {
+                  getFiles(bucketName);
+                  dispatch(switchPage(Page.bucket, bucketName));
+                }}
+                title={bucketName}
+                value={bucketName}
+              />
             </li>
           ))}
         </ul>
@@ -42,26 +67,37 @@ function Aside() {
       <section className="container">
         <p className="title">传输列表</p>
         <ul className="list">
-          <li className="item active">
-            <img className="icon" src={uploadIcon} alt="关于" />
-            <Link to="/transform">传输列表</Link>
+          <li className={classNames("item", { active: page === Page.transferList })}>
+            <FontAwesomeIcon className="icon" icon="arrow-up" />
+            <input
+              type="button"
+              value="传输列表"
+              className="link"
+              onClick={() => dispatch(switchPage(Page.transferList))}
+            />
           </li>
-          <li className="item">
-            <img className="icon" src={doneIcon} alt="关于" />
-            <Link to="/transform">传输完成</Link>
+          <li className={classNames("item", { active: page === Page.transferDone })}>
+            <FontAwesomeIcon className="icon" icon="check-circle" />
+            <input
+              type="button"
+              value="传输完成"
+              className="link"
+              onClick={() => dispatch(switchPage(Page.transferDone))}
+            />
           </li>
         </ul>
       </section>
       <section className="container">
         <p className="title">设置</p>
         <ul className="list">
-          <li className="item">
-            <img className="icon" src={settingIcon} alt="关于" />
-            <Link to="/setting">设置</Link>
-          </li>
-          <li className="item">
-            <img className="icon" src={aboutIcon} alt="关于" />
-            <Link to="/setting">关于</Link>
+          <li className={classNames("item", { active: page === Page.setting })}>
+            <FontAwesomeIcon className="icon" icon="cog" />
+            <input
+              type="button"
+              value="设置"
+              className="link"
+              onClick={() => dispatch(switchPage(Page.setting))}
+            />
           </li>
         </ul>
       </section>
