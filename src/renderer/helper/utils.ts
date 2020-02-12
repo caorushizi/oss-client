@@ -12,3 +12,32 @@ export function fileSizeFormatter(value = 0): string {
 export function dateFormatter(dateVal = 0) {
   return moment(dateVal).format("YYYY-MM-DD HH:mm:ss");
 }
+
+const styles = [
+  {
+    appColor: "linear-gradient(#8B5C68, #37394E)",
+    asideColor: "linear-gradient(#8B5C68, #484B58)"
+  },
+  {
+    appColor: "linear-gradient(#875D56, #3A3B4E)",
+    asideColor: "linear-gradient(#895E56, #444A57)"
+  },
+  {
+    appColor: "linear-gradient(#546F67, #333B4E)",
+    asideColor: "linear-gradient(#557067, #444B57)"
+  },
+  {
+    appColor: "linear-gradient(#7D5A86, #39394E)",
+    asideColor: "linear-gradient(#7C5985, #484B58)"
+  },
+  {
+    appColor: "linear-gradient(#80865A, #39394E)",
+    asideColor: "linear-gradient(#80865A, #39394E)"
+  },
+  {
+    appColor: "linear-gradient(#8B5C68, #37394E)",
+    asideColor: "linear-gradient(#8B5C68, #484B58)"
+  }
+];
+
+export const getThemeColor = () => styles[Math.floor(Math.random() * styles.length)];

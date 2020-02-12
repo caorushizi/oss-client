@@ -1,43 +1,41 @@
+@import "../../variable";
+
 .transform-wrapper {
   flex: 1;
 
-  .transform-list {
-    margin-top: 20px;
+  .toolbar {
+    height: 30px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 
-    .transform-item {
-      height: 50px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px rgba(255, 255, 255, 0.1) solid;
-      padding: 10px;
+    .toolbar-left {
+    }
 
-      .sub {
-        display: flex;
-        align-items: center;
+    .toolbar-right {
+    }
+  }
 
-        .name {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 14px;
-          line-height: 20px;
-        }
+  .transfer-table {
+    width: 100%;
+    vertical-align: middle;
 
-        .size {
-          color: #999999;
-          font-size: 12px;
-          line-height: 17px;
-        }
+    .transfer-table__row {
+      border-top: 1px solid $color-border;
+
+      .transfer-table__row_item {
+        padding: 10px 0;
       }
 
-      .icon {
-        font-size: 15px;
-        cursor: pointer;
-        color: #ffffff;
+      .meta {
+        display: flex;
+        flex-direction: row;
       }
 
       &:last-child {
-        border-bottom: 1px rgba(255, 255, 255, 0.1) solid;
+        border-bottom: 1px solid $color-border;
       }
     }
   }

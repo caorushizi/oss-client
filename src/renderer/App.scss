@@ -1,8 +1,11 @@
+@import "variable";
+
 .App {
   height: 100vh;
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  color: $color-font;
 
   .aside-wrapper {
     overflow: auto;
@@ -10,5 +13,6 @@
 
   .main-wrapper {
     flex: 1;
+    padding-top: 40px;
   }
 }

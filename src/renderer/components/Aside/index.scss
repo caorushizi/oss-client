@@ -1,13 +1,16 @@
+@import "../../variable";
+
 .aside-wrapper {
   min-width: 224px;
   max-width: 224px;
 
   .title-bar {
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
     text-align: right;
     padding-right: 20px;
-    color: #909399;
+    color: #fff;
+    opacity: .5;
   }
 
   .container {
@@ -15,7 +18,6 @@
 
     .title {
       line-height: 20px;
-      color: rgba(255, 255, 255, 0.5);
       font-size: 14px;
       margin-bottom: 10px;
       padding-left: 16px;
@@ -41,8 +43,8 @@
           border: none;
           background: transparent;
           padding-left: 10px;
-          color: rgba(255, 255, 255, 0.5);
           cursor: pointer;
+          color: $color-font;
 
           &:focus {
             outline: none;

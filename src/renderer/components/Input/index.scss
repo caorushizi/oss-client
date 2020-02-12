@@ -1,3 +1,5 @@
+@import "../../variable";
+
 .oss-input--wrapper {
   height: 26px;
   border-radius: 8px;
@@ -16,7 +18,7 @@
     }
 
     &::placeholder {
-      color: #fff;
+      color: $color-font;
       font-size: 14px;
     }
   }

@@ -41,7 +41,7 @@ function Aside() {
   return (
     <div className="aside-wrapper" style={{ background: asideColor }}>
       <section className="title-bar">
-        <span>OSS Client X</span>
+        <span>OSS Client</span>
       </section>
       <section className="container">
         <p className="title">储存空间</p>

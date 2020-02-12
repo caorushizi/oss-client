@@ -27,7 +27,6 @@ reactDom.render(
  * TODO LIST
  * 1、在渲染进程中不使用 node；
  * 2、熟悉脚手架工具；
- * 3、尝试使用 gulp；
- * 4、mobx
- * 5、Immutable.js
+ * 3、mobx
+ * 4、Immutable.js
  */
