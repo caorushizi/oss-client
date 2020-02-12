@@ -18,7 +18,7 @@ const ToolBar = () => {
       <div className="toolbar-left">
         <FontAwesomeIcon icon="angle-left" className="icon-button" />
         <FontAwesomeIcon icon="undo-alt" className="icon-button" />
-        <Breadcrumb />
+        <Breadcrumb routes={["1", "2", "3"]} />
       </div>
       <div className="toolbar-right">
         <Input icon="search" placeholder="搜索" />
