@@ -44,7 +44,7 @@
       width: 100%;
 
       .main-table__row {
-        color: #F2F6FC;
+        color: #f2f6fc;
         height: 40px;
         font-size: 12px;
         line-height: 17px;
@@ -71,10 +71,9 @@
         }
 
         &:hover {
-          background: rgba(255, 255, 255, .15);
+          background: rgba(255, 255, 255, 0.15);
         }
       }
-
     }
   }
 

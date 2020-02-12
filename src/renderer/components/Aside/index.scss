@@ -10,7 +10,7 @@
     text-align: right;
     padding-right: 20px;
     color: #fff;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   .container {
@@ -27,7 +27,7 @@
       .item {
         height: 26px;
         line-height: 17px;
-        color: #F2F6FC;
+        color: #f2f6fc;
         font-size: 12px;
         display: flex;
         flex-direction: row;
@@ -51,9 +51,8 @@
           }
         }
 
-
         &.active {
-          background-color: rgba(0, 0, 0, .15);
+          background-color: rgba(0, 0, 0, 0.15);
           border-radius: 10px;
         }
       }
