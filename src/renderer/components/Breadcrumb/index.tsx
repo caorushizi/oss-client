@@ -10,7 +10,11 @@ const Breadcrumb = ({ routes }: { routes: string[] }) => {
           <div className="oss-breadcrumb-item">{item}</div>
           {index >= routes.length - 1 || (
             <div className="oss-breadcrumb-separator">
-              <FontAwesomeIcon icon="greater-than" onClick={f => f} className="icon-button" />
+              <FontAwesomeIcon
+                icon="greater-than"
+                onClick={f => f}
+                className="icon-button"
+              />
             </div>
           )}
         </div>

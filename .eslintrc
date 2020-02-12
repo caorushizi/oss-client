@@ -11,7 +11,8 @@
     "no-unused-vars": 0
   },
   "settings": {
-    "import/extensions": [".js", ".jsx"]
+    "import/extensions": [".js", ".jsx"],
+    "import/core-modules": ["electron"]
   },
   "env": {
     "browser": true,

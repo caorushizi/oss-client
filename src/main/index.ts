@@ -1,5 +1,3 @@
-// todo: electron
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { app, BrowserWindow } from "electron";
 import bootstrap from "./bootstrap";
 import "./database";
