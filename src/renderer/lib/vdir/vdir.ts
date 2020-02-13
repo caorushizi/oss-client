@@ -34,7 +34,9 @@ export default class Vdir {
   private mkdir(vpath: string) {
     return vpath === ""
       ? this
-      : vpath.split("/").reduce((prev: Vdir, cur: string) => prev.makeDir(cur), this);
+      : vpath
+          .split("/")
+          .reduce((prev: Vdir, cur: string) => prev.makeDir(cur), this);
   }
 
   private makeDir(name: string): Vdir {
@@ -86,7 +88,9 @@ export default class Vdir {
 
   public changeDir(path: string) {
     this.cursor =
-      (this.children.find(item => item.name === path && Vdir.isDir(item)) as Vdir) || this.cursor;
+      (this.children.find(
+        item => item.name === path && Vdir.isDir(item)
+      ) as Vdir) || this.cursor;
     this.navigator.push(path);
   }
 

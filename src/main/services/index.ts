@@ -1,14 +1,15 @@
 import Qiniu from "./Impl/Qiniu";
-import { IObjectStorageService, ObjectStorageServiceType } from "./types";
+import { IObjectStorageService } from "./types";
+import { OssType } from "../types";
 
-export default class ObjectStorageServiceFactory {
+export default class OssFactory {
   public static create(
-    type: ObjectStorageServiceType,
+    type: OssType,
     ak: string,
     sk: string
   ): IObjectStorageService {
     switch (type) {
-      case ObjectStorageServiceType.Qiniu:
+      case OssType.qiniu:
         return new Qiniu(ak, sk);
       default:
         throw Error("not support this oss yet");

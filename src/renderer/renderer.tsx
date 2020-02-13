@@ -13,7 +13,10 @@ const devTools: any =
       (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
     : null;
 
-const store = createStore(rootReducer, compose(applyMiddleware(reduxThunk), devTools));
+const store = createStore(
+  rootReducer,
+  compose(applyMiddleware(reduxThunk), devTools)
+);
 
 const rootElement = document.getElementById("root");
 reactDom.render(

@@ -8,6 +8,7 @@ const mapType: MyMapLikeType = {
   "image/png": "icon-png",
   "image/jpeg": "icon-jpg",
   "application/octet-stream": "icon-exe",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "icon-doc"
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "icon-doc"
 };
 export default mapType;

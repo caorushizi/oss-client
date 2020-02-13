@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from "electron";
 import bootstrap from "./bootstrap";
-import "./database";
+import store from "./store";
+import { OssType } from "./types";
 
-declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // todo: require
 // eslint-disable-next-line global-require
@@ -17,8 +18,8 @@ const createWindow = () => {
     height: 600,
     // FIXME: 渲染进程不使用 node
     webPreferences: { nodeIntegration: true },
-    width: 800,
-    titleBarStyle: "hidden"
+    width: 930,
+    titleBarStyle: "hiddenInset"
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {

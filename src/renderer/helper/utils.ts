@@ -40,4 +40,5 @@ const styles = [
   }
 ];
 
-export const getThemeColor = () => styles[Math.floor(Math.random() * styles.length)];
+export const getThemeColor = () =>
+  styles[Math.floor(Math.random() * styles.length)];

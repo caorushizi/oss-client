@@ -2,14 +2,15 @@
 import { ipcMain, app } from "electron";
 import path from "path";
 import services from "./services";
-import { CallbackFunc, ObjectStorageServiceType } from "./services/types";
+import { CallbackFunc } from "./services/types";
 import { Ffile } from "../renderer/lib/vdir";
+import { OssType } from "./types";
 
 export default function bootstrap() {
   const factory = services.create;
   const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
   const sk = "7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL";
-  const qiniu = factory(ObjectStorageServiceType.Qiniu, ak, sk);
+  const qiniu = factory(OssType.qiniu, ak, sk);
   qiniu.setBucket("downloads");
 
   ipcMain.on("get-buckets-request", event => {
@@ -53,22 +54,26 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("req:file:upload", (event, bucket: string, remoteDir: string, filepath: string) => {
-    const filename = path.basename(filepath);
-    const remotePath = remoteDir === "/" ? filename : `${remoteDir}${filepath}`;
-    const callback: CallbackFunc = (id, progress) => {
-      console.log("id: ", id);
-      console.log("progress: ", progress);
-    };
-    qiniu
-      .uploadFile(remotePath, filepath, callback)
-      .then(() => {
-        console.log("upload done!");
-      })
-      .catch((err: Error) => {
-        console.log(err.message);
-      });
-  });
+  ipcMain.on(
+    "req:file:upload",
+    (event, bucket: string, remoteDir: string, filepath: string) => {
+      const filename = path.basename(filepath);
+      const remotePath =
+        remoteDir === "/" ? filename : `${remoteDir}${filepath}`;
+      const callback: CallbackFunc = (id, progress) => {
+        console.log("id: ", id);
+        console.log("progress: ", progress);
+      };
+      qiniu
+        .uploadFile(remotePath, filepath, callback)
+        .then(() => {
+          console.log("upload done!");
+        })
+        .catch((err: Error) => {
+          console.log(err.message);
+        });
+    }
+  );
 
   ipcMain.on("req:file:delete", (event, bucketName: string, item: Ffile) => {
     const remotePath = item.webkitRelativePath;

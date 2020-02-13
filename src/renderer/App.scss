@@ -6,6 +6,14 @@
   flex-direction: row;
   align-items: stretch;
   color: $color-font;
+  font-size: 14px;
+
+  .drag-area {
+    position: absolute;
+    height: 40px;
+    width: 100vw;
+    -webkit-app-region: drag;
+  }
 
   .aside-wrapper {
     overflow: auto;

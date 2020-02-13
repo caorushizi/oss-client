@@ -42,8 +42,12 @@ const Table = ({ vdir }: { vdir: Vdir }) => {
                   <Icon className="icon" />
                   <span>{item.name}</span>
                 </td>
-                <td className="main-table__row_cell size">{fileSizeFormatter(item.size)}</td>
-                <td className="main-table__row_cell date">{dateFormatter(item.lastModified)}</td>
+                <td className="main-table__row_cell size">
+                  {fileSizeFormatter(item.size)}
+                </td>
+                <td className="main-table__row_cell date">
+                  {dateFormatter(item.lastModified)}
+                </td>
               </tr>
             ) : (
               // 文件
@@ -51,17 +55,19 @@ const Table = ({ vdir }: { vdir: Vdir }) => {
                 key={item.name}
                 className="main-table__row"
                 onContextMenu={() => fileContextMenu(item.name, vdir)}
-                onDoubleClick={() => {
-                  console.log("文件类型");
-                }}
+                onDoubleClick={() => {}}
               >
                 <td className="main-table__row_cell index">{index}</td>
                 <td className="main-table__row_cell title">
                   <Icon className="icon" filename={item.name} />
                   <span>{item.name}</span>
                 </td>
-                <td className="main-table__row_cell size">{fileSizeFormatter(item.size)}</td>
-                <td className="main-table__row_cell date">{dateFormatter(item.lastModified)}</td>
+                <td className="main-table__row_cell size">
+                  {fileSizeFormatter(item.size)}
+                </td>
+                <td className="main-table__row_cell date">
+                  {dateFormatter(item.lastModified)}
+                </td>
               </tr>
             )
           )}

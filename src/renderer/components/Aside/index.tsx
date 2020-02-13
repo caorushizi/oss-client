@@ -3,14 +3,14 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { ipcRenderer } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import { getBuckets, getFiles } from "../../helper/ipc";
 import { RootState } from "../../store";
 import { randomColor, setVdir, switchPage } from "../../store/app/actions";
 import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
+import Loading from "../Loading";
 
 function Aside() {
   const [bucketList, setBucketList] = useState<string[]>([]);
@@ -23,6 +23,9 @@ function Aside() {
   const selectBucket = (state: RootState) => state.app.bucket;
   const bucket = useSelector(selectBucket);
 
+  const [curBucket, setCurBucket] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(randomColor());
   }, [bucket, page]);
@@ -32,11 +35,21 @@ function Aside() {
       setBucketList(list);
     });
 
-    ipcRenderer.on("get-files-response", (event, { items }) => {
+    const getFilesResponse = (
+      event: IpcRendererEvent,
+      { items }: { items: string[] }
+    ) => {
       const dir = Vdir.from(qiniuAdapter(items));
       dispatch(setVdir(dir));
-    });
-  }, []);
+      dispatch(switchPage(Page.bucket, curBucket));
+      setLoading(false);
+    };
+
+    ipcRenderer.on("get-files-response", getFilesResponse);
+    return () => {
+      ipcRenderer.removeListener("get-files-response", getFilesResponse);
+    };
+  }, [curBucket]);
 
   return (
     <div className="aside-wrapper" style={{ background: asideColor }}>
@@ -44,7 +57,10 @@ function Aside() {
         <span>OSS Client</span>
       </section>
       <section className="container">
-        <p className="title">储存空间</p>
+        <div className="title">
+          储存空间
+          {loading && <Loading className="loading" />}
+        </div>
         <ul className="list">
           {bucketList.map((bucketName: string) => (
             <li
@@ -59,7 +75,8 @@ function Aside() {
                 className="link"
                 onClick={() => {
                   getFiles(bucketName);
-                  dispatch(switchPage(Page.bucket, bucketName));
+                  setCurBucket(bucketName);
+                  setLoading(true);
                 }}
                 title={bucketName}
                 value={bucketName}
@@ -69,9 +86,13 @@ function Aside() {
         </ul>
       </section>
       <section className="container">
-        <p className="title">传输列表</p>
+        <div className="title">传输列表</div>
         <ul className="list">
-          <li className={classNames("item", { active: page === Page.transferList })}>
+          <li
+            className={classNames("item", {
+              active: page === Page.transferList
+            })}
+          >
             <FontAwesomeIcon className="icon" icon="arrow-up" />
             <input
               type="button"
@@ -80,7 +101,11 @@ function Aside() {
               onClick={() => dispatch(switchPage(Page.transferList))}
             />
           </li>
-          <li className={classNames("item", { active: page === Page.transferDone })}>
+          <li
+            className={classNames("item", {
+              active: page === Page.transferDone
+            })}
+          >
             <FontAwesomeIcon className="icon" icon="check-circle" />
             <input
               type="button"
@@ -92,7 +117,7 @@ function Aside() {
         </ul>
       </section>
       <section className="container">
-        <p className="title">设置</p>
+        <div className="title">设置</div>
         <ul className="list">
           <li className={classNames("item", { active: page === Page.setting })}>
             <FontAwesomeIcon className="icon" icon="cog" />

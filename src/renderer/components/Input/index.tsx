@@ -3,11 +3,21 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./index.scss";
 
-const Input = ({ placeholder, icon }: { placeholder?: string; icon?: IconProp }) => {
+const Input = ({
+  placeholder,
+  icon
+}: {
+  placeholder?: string;
+  icon?: IconProp;
+}) => {
   return (
     <div className="oss-input--wrapper">
       {icon && <FontAwesomeIcon className="icon" icon={icon} />}
-      <input className="oss-input" type="input" placeholder={placeholder || ""} />
+      <input
+        className="oss-input"
+        type="input"
+        placeholder={placeholder || ""}
+      />
     </div>
   );
 };

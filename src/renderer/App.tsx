@@ -1,8 +1,13 @@
 import React from "react";
 import "./App.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheckSquare, faCoffee, fas } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckSquare,
+  faCoffee,
+  fas
+} from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
+import { Motion, spring } from "react-motion";
 import Aside from "./components/Aside";
 import { RootState } from "./store";
 import { Page } from "./store/app/types";
@@ -20,6 +25,7 @@ function app() {
   const page = useSelector(selectPage);
   return (
     <div className="App" style={{ background: appColor }}>
+      <div className="drag-area" />
       <Aside />
       <section className="main-wrapper">
         {page === Page.bucket && <Bucket />}

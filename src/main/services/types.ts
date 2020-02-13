@@ -18,7 +18,3 @@ export interface CallbackFunc {
   (id: string, progress: string): void;
 }
 
-export enum ObjectStorageServiceType {
-  Qiniu,
-  Ali
-}
