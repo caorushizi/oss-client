@@ -1,7 +1,9 @@
+import { getThemeColor } from "../../helper/utils";
 import { Vdir } from "../../lib/vdir";
 import {
   AppActionTypes,
   AppState,
+  Direction,
   GET_VDIR,
   Layout,
   Page,
@@ -10,7 +12,6 @@ import {
   SWITCH_LAYOUT,
   SWITCH_PAGE
 } from "./types";
-import { getThemeColor } from "../../helper/utils";
 
 const initialColor = getThemeColor();
 
@@ -18,7 +19,8 @@ const initialState: AppState = {
   vdir: new Vdir("#"),
   layout: Layout.grid,
   page: Page.bucket,
-  ...initialColor
+  ...initialColor,
+  direction: Direction.down
 };
 
 export function appReducer(
@@ -35,7 +37,12 @@ export function appReducer(
     case SWITCH_LAYOUT:
       return { ...state, ...action.payload };
     case SWITCH_PAGE:
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+        direction:
+          state.page < action.payload.page ? Direction.down : Direction.up
+      };
     default:
       return state;
   }

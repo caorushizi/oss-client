@@ -7,6 +7,12 @@ export interface AppState {
   layout: Layout;
   page: Page;
   bucket?: string;
+  direction: Direction;
+}
+
+export enum Direction {
+  up,
+  down
 }
 
 export enum Layout {
@@ -16,9 +22,9 @@ export enum Layout {
 
 export enum Page {
   bucket,
-  setting,
   transferList,
-  transferDone
+  transferDone,
+  setting
 }
 
 export const SET_VDIR = "SET_VDIR";
