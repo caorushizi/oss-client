@@ -21,7 +21,10 @@ const initialState: AppState = {
   ...initialColor
 };
 
-export function appReducer(state = initialState, action: AppActionTypes): AppState {
+export function appReducer(
+  state = initialState,
+  action: AppActionTypes
+): AppState {
   switch (action.type) {
     case GET_VDIR:
       return state;
