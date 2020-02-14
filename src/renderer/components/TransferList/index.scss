@@ -1,0 +1,70 @@
+@import "../../variable";
+
+.transfer-list-wrapper {
+  // todo: 布局方式
+  height: 100%;
+  .toolbar {
+    height: 30px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .toolbar-left {
+    }
+
+    .toolbar-right {
+    }
+  }
+
+  .transfer-table {
+    width: 100%;
+
+    .transfer-table__row {
+      border-top: 1px solid $color-border;
+      padding: 5px 10px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .transfer-table__row_item {
+      }
+
+      .meta {
+        display: flex;
+        flex-direction: row;
+        .icon {
+          height: 40px;
+          width: 40px;
+          padding: 5px;
+        }
+        .name-wrapper {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          .name {
+            font-size: 14px;
+            color: #fff;
+            line-height: 20px;
+          }
+          .size {
+            font-size: 12px;
+            color: #999;
+            line-height: 17px;
+          }
+        }
+      }
+
+      .action-button {
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        border-bottom: 1px solid $color-border;
+      }
+    }
+  }
+}

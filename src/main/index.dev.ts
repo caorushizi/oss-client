@@ -10,7 +10,10 @@ require("electron-debug")({ showDevTools: true });
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 require("electron").app.on("ready", () => {
-  Promise.all([installExtension(REACT_DEVELOPER_TOOLS), installExtension(REDUX_DEVTOOLS)])
+  Promise.all([
+    installExtension(REACT_DEVELOPER_TOOLS),
+    installExtension(REDUX_DEVTOOLS)
+  ])
     .then(() => {
       console.log("all loaded ~");
     })

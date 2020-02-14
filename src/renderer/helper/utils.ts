@@ -1,4 +1,5 @@
 import moment from "moment";
+import { TaskType } from "../../main/types";
 
 export function fileSizeFormatter(value = 0): string {
   if (!value) return "0 Bytes";
@@ -42,3 +43,6 @@ const styles = [
 
 export const getThemeColor = () =>
   styles[Math.floor(Math.random() * styles.length)];
+
+export const taskTypeFormatter = (type: TaskType) =>
+  type === TaskType.download ? "下载" : "上传";

@@ -12,7 +12,7 @@ const Transmitting = () => {
   const selectTransfers = (state: RootState) => state.app.transfers;
   const transfers = useSelector(selectTransfers);
   return (
-    <div className="transform-wrapper">
+    <div className="transmitting-wrapper">
       <div className="toolbar">
         <span className="toolbar-left">正在下载 3 项/ 总共 18 项</span>
         <div className="toolbar-right">

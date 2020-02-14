@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,7 @@ import Transmitting from "./components/Transmitting";
 import { RootState } from "./store";
 import { Direction, Page } from "./store/app/types";
 import Bucket from "./components/Bucket";
-import Transform from "./components/Transform";
+import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
 
 library.add(fas);
@@ -26,9 +26,21 @@ function app() {
   const selectDirection = (state: RootState) => state.app.direction;
   const direction = useSelector(selectDirection);
 
-  const willEnter = () => ({ y: direction === Direction.down ? 100 : -100 });
+  const bgOffset = () => {
+    const bgOffsetX = Math.ceil(Math.random() * 800);
+    const bgOffsetY = Math.ceil(Math.random() * 100);
+    return { bgOffsetX, bgOffsetY };
+  };
+
+  const willEnter = () => ({
+    transitionY: direction === Direction.down ? 100 : -100,
+    ...bgOffset()
+  });
   const willLeave = () => ({
-    y: spring(direction === Direction.down ? -100 : 100, presets.noWobble)
+    transitionY: spring(
+      direction === Direction.down ? -100 : 100,
+      presets.noWobble
+    )
   });
 
   return (
@@ -38,7 +50,12 @@ function app() {
       <TransitionMotion
         willEnter={willEnter}
         willLeave={willLeave}
-        styles={[{ key: String(page), style: { y: spring(0) } }]}
+        styles={[
+          {
+            key: String(page),
+            style: { transitionY: spring(0), ...bgOffset() }
+          }
+        ]}
       >
         {val => (
           <>
@@ -47,11 +64,14 @@ function app() {
                 <section
                   className="main-wrapper"
                   key={String(config.key)}
-                  style={{ transform: `translateY(${config.style.y}vh)` }}
+                  style={{
+                    transform: `translateY(${config.style.transitionY}vh)`,
+                    backgroundPosition: `${config.style.bgOffsetX}px ${config.style.bgOffsetY}px`
+                  }}
                 >
                   {String(Page.bucket) === config.key && <Bucket />}
                   {String(Page.transferList) === config.key && <Transmitting />}
-                  {String(Page.transferDone) === config.key && <Transform />}
+                  {String(Page.transferDone) === config.key && <TransferList />}
                   {String(Page.setting) === config.key && <Setting />}
                 </section>
               );
