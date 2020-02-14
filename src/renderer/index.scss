@@ -8,17 +8,12 @@
 
 /* 滚动条 */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
 }
 
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-  height: 30%;
-  background: rgba(255, 255, 255, 0.15);
 }

@@ -1,17 +1,32 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { ipcMain, app } from "electron";
+import { app, ipcMain } from "electron";
 import path from "path";
+import uuid from "uuid/v1";
+import { Ffile } from "../renderer/lib/vdir";
 import services from "./services";
 import { CallbackFunc } from "./services/types";
-import { Ffile } from "../renderer/lib/vdir";
-import { OssType } from "./types";
+import { TaskRunner } from "./tasks";
+import { OssType, TaskType, TransferStatus, TransferStore } from "./types";
+import store from "./store";
+import events from "./events";
 
+// todo: store 加密
 export default function bootstrap() {
+  const taskRunner = new TaskRunner(5, true);
+
   const factory = services.create;
   const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
   const sk = "7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL";
   const qiniu = factory(OssType.qiniu, ak, sk);
   qiniu.setBucket("downloads");
+
+  events.on("done", (id: string) => {
+    store.update({ id }, { $set: { status: TransferStatus.done } });
+  });
+
+  events.on("failed", (id: string) => {
+    store.update({ id }, { $set: { status: TransferStatus.failed } });
+  });
 
   ipcMain.on("get-buckets-request", event => {
     qiniu
@@ -36,7 +51,7 @@ export default function bootstrap() {
       });
   });
 
-  ipcMain.on("req:file:download", (event, bucketName, item: Ffile) => {
+  ipcMain.on("req:file:download", async (event, bucketName, item: Ffile) => {
     const remotePath = item.webkitRelativePath;
     const downloadDir = app.getPath("downloads");
     const downloadPath = path.join(downloadDir, item.webkitRelativePath);
@@ -44,14 +59,25 @@ export default function bootstrap() {
       console.log("id: ", id);
       console.log("progress: ", progress);
     };
-    qiniu
-      .downloadFile(remotePath, downloadPath, callback)
-      .then((res: any) => {
-        console.log("get link done!", res);
-      })
-      .catch(err => {
-        console.log(err.message);
+    // fixme: _id
+    const id = uuid();
+    // todo：换成class
+    const newDoc = {
+      id,
+      name: item.name,
+      date: new Date().getTime(),
+      type: TaskType.download,
+      size: item.size,
+      status: TransferStatus.default
+    };
+    // 存储下载信息
+    store.insert(newDoc, (err, document) => {
+      // 添加任务，自动执行
+      taskRunner.addTask<any>({
+        ...document,
+        result: qiniu.downloadFile(id, remotePath, downloadPath, callback)
       });
+    });
   });
 
   ipcMain.on(
@@ -85,5 +111,19 @@ export default function bootstrap() {
       .catch(err => {
         console.log(err.message);
       });
+  });
+
+  ipcMain.on("transfers", event => {
+    store.find({ status: TransferStatus.done }, (err, documents) => {
+      if (err) throw new Error("查询出错");
+      event.reply("transfers-reply", documents);
+    });
+  });
+
+  ipcMain.on("transmitting", event => {
+    store.find({ $not: { status: TransferStatus.done } }, (err, documents) => {
+      if (err) throw new Error("查询出错");
+      event.reply("transmitting-reply", documents);
+    });
   });
 }

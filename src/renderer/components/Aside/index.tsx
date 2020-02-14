@@ -6,7 +6,12 @@ import classNames from "classnames";
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { getBuckets, getFiles } from "../../helper/ipc";
 import { RootState } from "../../store";
-import { randomColor, setVdir, switchPage } from "../../store/app/actions";
+import {
+  randomColor,
+  setTransfers,
+  setVdir,
+  switchPage
+} from "../../store/app/actions";
 import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
@@ -31,10 +36,28 @@ function Aside() {
   }, [bucket, page]);
 
   useEffect(() => {
-    getBuckets((event, list) => {
+    setLoading(true);
+    getBuckets((event, list: string[]) => {
+      // todo: 保存 cur bucket
       setBucketList(list);
+      if (list.length > 0) {
+        getFiles(list[0]);
+        setCurBucket(list[0]);
+      }
     });
 
+    ipcRenderer.on("transfers-reply", (event, documents) => {
+      dispatch(setTransfers(documents));
+      dispatch(switchPage(Page.transferDone));
+    });
+
+    ipcRenderer.on("transmitting-reply", (event, documents) => {
+      dispatch(setTransfers(documents));
+      dispatch(switchPage(Page.transferList));
+    });
+  }, []);
+
+  useEffect(() => {
     const getFilesResponse = (
       event: IpcRendererEvent,
       { items }: { items: string[] }
@@ -98,7 +121,7 @@ function Aside() {
               type="button"
               value="传输列表"
               className="link"
-              onClick={() => dispatch(switchPage(Page.transferList))}
+              onClick={() => ipcRenderer.send("transmitting")}
             />
           </li>
           <li
@@ -111,7 +134,7 @@ function Aside() {
               type="button"
               value="传输完成"
               className="link"
-              onClick={() => dispatch(switchPage(Page.transferDone))}
+              onClick={() => ipcRenderer.send("transfers")}
             />
           </li>
         </ul>

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { ipcRenderer } from "electron";
 import React from "react";
 import Button from "../Button";

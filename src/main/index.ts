@@ -1,7 +1,5 @@
 import { app, BrowserWindow } from "electron";
 import bootstrap from "./bootstrap";
-import store from "./store";
-import { OssType } from "./types";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 

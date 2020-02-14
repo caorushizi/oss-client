@@ -8,7 +8,7 @@ import Button from "../Button";
 import Icon from "../Icon";
 import "./index.scss";
 
-const Transform = () => {
+const Transmitting = () => {
   const selectTransfers = (state: RootState) => state.app.transfers;
   const transfers = useSelector(selectTransfers);
   return (
@@ -24,7 +24,7 @@ const Transform = () => {
         <tbody>
           {transfers
             .filter(
-              (item: TransferStore) => item.status === TransferStatus.done
+              (item: TransferStore) => item.status !== TransferStatus.done
             )
             .map((item: TransferStore) => (
               <tr className="transfer-table__row">
@@ -52,4 +52,4 @@ const Transform = () => {
   );
 };
 
-export default Transform;
+export default Transmitting;

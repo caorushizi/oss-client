@@ -20,7 +20,8 @@ const initialState: AppState = {
   layout: Layout.grid,
   page: Page.bucket,
   ...initialColor,
-  direction: Direction.down
+  direction: Direction.down,
+  transfers: []
 };
 
 export function appReducer(
@@ -43,6 +44,8 @@ export function appReducer(
         direction:
           state.page < action.payload.page ? Direction.down : Direction.up
       };
+    case "SET_TRANSFERS":
+      return { ...state, ...action.payload };
     default:
       return state;
   }

@@ -24,7 +24,12 @@ export default class Qiniu implements IObjectStorageService {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any> {
+  public downloadFile(
+    id: string,
+    remotePath: string,
+    localPath: string,
+    cb: CallbackFunc
+  ): Promise<any> {
     // 获取 domains
     const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
@@ -50,7 +55,7 @@ export default class Qiniu implements IObjectStorageService {
           data.on("data", (thunk: any) => {
             length += thunk.length;
             const process = (length / totalLength).toFixed(3);
-            cb("this is download #id!", process);
+            cb(id, process);
           });
           writer.on("finish", resolve);
           writer.on("error", reject);
@@ -58,9 +63,15 @@ export default class Qiniu implements IObjectStorageService {
       });
   }
 
-  public uploadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any> {
+  public uploadFile(
+    remotePath: string,
+    localPath: string,
+    cb: CallbackFunc
+  ): Promise<any> {
     // generate uploadToken
-    const putPolicy = new qiniu.rs.PutPolicy({ scope: `${this.bucket}:${remotePath}` });
+    const putPolicy = new qiniu.rs.PutPolicy({
+      scope: `${this.bucket}:${remotePath}`
+    });
     const token = putPolicy.uploadToken(this.mac);
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
@@ -86,7 +97,33 @@ export default class Qiniu implements IObjectStorageService {
           const progress = (length / fileSize).toFixed(3);
           cb("this is upload #id!", progress);
         });
-        formUploader.putStream(token, remotePath, reader, putExtra, (err, respBody, respInfo) => {
+        formUploader.putStream(
+          token,
+          remotePath,
+          reader,
+          putExtra,
+          (err, respBody, respInfo) => {
+            if (err) {
+              reject(err);
+            }
+            if (respInfo.statusCode === 200) {
+              resolve(respBody);
+            } else {
+              reject(new Error(respBody.error));
+            }
+          }
+        );
+      });
+    });
+  }
+
+  public deleteFile(remotePath: string): Promise<any> {
+    const bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
+    return new Promise((resolve, reject) => {
+      bucketManager.delete(
+        this.bucket,
+        remotePath,
+        (err, respBody, respInfo) => {
           if (err) {
             reject(err);
           }
@@ -95,24 +132,8 @@ export default class Qiniu implements IObjectStorageService {
           } else {
             reject(new Error(respBody.error));
           }
-        });
-      });
-    });
-  }
-
-  public deleteFile(remotePath: string): Promise<any> {
-    const bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
-    return new Promise((resolve, reject) => {
-      bucketManager.delete(this.bucket, remotePath, (err, respBody, respInfo) => {
-        if (err) {
-          reject(err);
         }
-        if (respInfo.statusCode === 200) {
-          resolve(respBody);
-        } else {
-          reject(new Error(respBody.error));
-        }
-      });
+      );
     });
   }
 

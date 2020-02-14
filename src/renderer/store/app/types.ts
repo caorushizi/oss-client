@@ -1,7 +1,9 @@
+import { TransferStore } from "../../../main/types";
 import { Vdir } from "../../lib/vdir";
 
 export interface AppState {
   vdir: Vdir;
+  transfers: TransferStore[];
   appColor: string;
   asideColor: string;
   layout: Layout;
@@ -32,6 +34,7 @@ export const GET_VDIR = "GET_VDIR";
 export const SET_COLOR = "SET_COLOR";
 export const SWITCH_LAYOUT = "SWITCH_LAYOUT";
 export const SWITCH_PAGE = "SWITCH_PAGE";
+export const SET_TRANSFERS = "SET_TRANSFERS";
 
 interface GetVdirAction {
   type: typeof GET_VDIR;
@@ -56,9 +59,15 @@ interface SwitchPage {
   payload: { page: Page; bucket?: string };
 }
 
+interface SetTransfers {
+  type: typeof SET_TRANSFERS;
+  payload: { transfers: TransferStore[] };
+}
+
 export type AppActionTypes =
   | GetVdirAction
   | SetVdirAction
   | RandomColor
   | SwitchLayout
-  | SwitchPage;
+  | SwitchPage
+  | SetTransfers;

@@ -1,7 +1,16 @@
 export interface IObjectStorageService {
-  uploadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any>;
+  uploadFile(
+    remotePath: string,
+    localPath: string,
+    cb: CallbackFunc
+  ): Promise<any>;
 
-  downloadFile(remotePath: string, localPath: string, cb: CallbackFunc): Promise<any>;
+  downloadFile(
+    id: string,
+    remotePath: string,
+    localPath: string,
+    cb: CallbackFunc
+  ): Promise<any>;
 
   deleteFile(remotePath: string): Promise<any>;
 
@@ -17,4 +26,3 @@ export interface IObjectStorageService {
 export interface CallbackFunc {
   (id: string, progress: string): void;
 }
-
