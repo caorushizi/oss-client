@@ -7,6 +7,7 @@ const mapType: MyMapLikeType = {
   "image/gif": "icon-gif",
   "image/png": "icon-png",
   "image/jpeg": "icon-jpg",
+  // fixme: exe & dmg 类型有问题
   "application/octet-stream": "icon-exe",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
     "icon-doc"
