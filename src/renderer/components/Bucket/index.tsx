@@ -18,7 +18,7 @@ const Bucket = () => {
   return (
     <div className="bucket-wrapper">
       <Buttons />
-      <ToolBar />
+      <ToolBar vdir={vdir} />
       {Layout.grid === layout ? <Grid vdir={vdir} /> : <Table vdir={vdir} />}
       <Footer />
     </div>

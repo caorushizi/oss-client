@@ -3,11 +3,13 @@ import { Vdir } from "../../lib/vdir";
 import {
   AppActionTypes,
   AppState,
+  CHANGE_NOTIFIER,
   Direction,
   GET_VDIR,
   Layout,
   Page,
   SET_COLOR,
+  SET_TRANSFERS,
   SET_VDIR,
   SWITCH_LAYOUT,
   SWITCH_PAGE
@@ -17,11 +19,12 @@ const initialColor = getThemeColor();
 
 const initialState: AppState = {
   vdir: new Vdir("#"),
-  layout: Layout.grid,
+  layout: Layout.table,
   page: Page.bucket,
   ...initialColor,
   direction: Direction.down,
-  transfers: []
+  transfers: [],
+  notifier: false
 };
 
 export function appReducer(
@@ -44,8 +47,10 @@ export function appReducer(
         direction:
           state.page < action.payload.page ? Direction.down : Direction.up
       };
-    case "SET_TRANSFERS":
+    case SET_TRANSFERS:
       return { ...state, ...action.payload };
+    case CHANGE_NOTIFIER:
+      return { ...state, notifier: !state.notifier };
     default:
       return state;
   }

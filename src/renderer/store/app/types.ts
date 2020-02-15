@@ -10,6 +10,7 @@ export interface AppState {
   page: Page;
   bucket?: string;
   direction: Direction;
+  notifier: boolean;
 }
 
 export enum Direction {
@@ -35,6 +36,7 @@ export const SET_COLOR = "SET_COLOR";
 export const SWITCH_LAYOUT = "SWITCH_LAYOUT";
 export const SWITCH_PAGE = "SWITCH_PAGE";
 export const SET_TRANSFERS = "SET_TRANSFERS";
+export const CHANGE_NOTIFIER = "CHANGE_NOTIFIER";
 
 interface GetVdirAction {
   type: typeof GET_VDIR;
@@ -64,10 +66,15 @@ interface SetTransfers {
   payload: { transfers: TransferStore[] };
 }
 
+interface ChangeNotifier {
+  type: typeof CHANGE_NOTIFIER;
+}
+
 export type AppActionTypes =
   | GetVdirAction
   | SetVdirAction
   | RandomColor
   | SwitchLayout
   | SwitchPage
-  | SetTransfers;
+  | SetTransfers
+  | ChangeNotifier;

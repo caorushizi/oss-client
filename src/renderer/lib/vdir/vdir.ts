@@ -1,6 +1,6 @@
 import Ffile from "./ffile";
 import { Item, ItemType, Parent } from "./types";
-import { basename, dirname, normalizePath } from "./utils";
+import { dirname, normalizePath } from "./utils";
 
 export default class Vdir {
   parent: Parent;
@@ -88,15 +88,28 @@ export default class Vdir {
 
   public changeDir(path: string) {
     this.cursor =
-      (this.children.find(
+      (this.cursor.children.find(
         item => item.name === path && Vdir.isDir(item)
       ) as Vdir) || this.cursor;
     this.navigator.push(path);
   }
 
   public back() {
-    this.cursor = this;
-    this.navigator.pop();
+    if (this.cursor.parent) {
+      this.navigator.pop();
+      this.cursor = this.cursor.parent;
+    }
+  }
+
+  public backTo(name: string) {
+    console.log(this);
+    // TODO: 返回某一个文件夹
+    // if (this.cursor.navigator.indexOf(name) >= 0) {
+    // }
+  }
+
+  public getNav() {
+    return this.navigator;
   }
 
   static isDir(o: any) {

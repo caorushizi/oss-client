@@ -1,6 +1,7 @@
 import { TransferStore } from "../../../main/types";
 import {
   AppActionTypes,
+  CHANGE_NOTIFIER,
   GET_VDIR,
   Layout,
   Page,
@@ -35,4 +36,8 @@ export function switchPage(page: Page, bucket?: string): AppActionTypes {
 
 export function setTransfers(transfers: TransferStore[]): AppActionTypes {
   return { type: SET_TRANSFERS, payload: { transfers } };
+}
+
+export function changeNotifier(): AppActionTypes {
+  return { type: CHANGE_NOTIFIER };
 }
