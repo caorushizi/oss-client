@@ -5,11 +5,11 @@ import { Ffile } from "../renderer/lib/vdir";
 import services from "./services";
 import { CallbackFunc } from "./services/types";
 import { TaskRunner } from "./tasks";
-import { OssType, TaskType, TransferStatus, TransferStore } from "./types";
-import store from "./store";
+import { OssType, TaskType, TransferStatus } from "./types";
+import transfers from "./store/transfers";
 import events from "./events";
 
-// todo: store 加密
+// todo: transfers 加密
 export default function bootstrap() {
   const taskRunner = new TaskRunner(5, true);
 
@@ -20,11 +20,11 @@ export default function bootstrap() {
   qiniu.setBucket("downloads");
 
   events.on("done", (id: string) => {
-    store.update({ id }, { $set: { status: TransferStatus.done } });
+    transfers.update({ id }, { $set: { status: TransferStatus.done } });
   });
 
   events.on("failed", (id: string) => {
-    store.update({ id }, { $set: { status: TransferStatus.failed } });
+    transfers.update({ id }, { $set: { status: TransferStatus.failed } });
   });
 
   ipcMain.on("get-buckets-request", event => {
@@ -70,7 +70,7 @@ export default function bootstrap() {
       status: TransferStatus.default
     };
     // 存储下载信息
-    store.insert(newDoc, (err, document) => {
+    transfers.insert(newDoc, (err, document) => {
       // 添加任务，自动执行
       taskRunner.addTask<any>({
         ...document,
@@ -99,7 +99,7 @@ export default function bootstrap() {
         status: TransferStatus.default
       };
       // 存储下载信息
-      store.insert(newDoc, (err, document) => {
+      transfers.insert(newDoc, (err, document) => {
         // 添加任务，自动执行
         taskRunner.addTask<any>({
           ...document,
@@ -122,16 +122,19 @@ export default function bootstrap() {
   });
 
   ipcMain.on("transfers", event => {
-    store.find({ status: TransferStatus.done }, (err, documents) => {
+    transfers.find({ status: TransferStatus.done }, (err, documents) => {
       if (err) throw new Error("查询出错");
       event.reply("transfers-reply", documents);
     });
   });
 
   ipcMain.on("transmitting", event => {
-    store.find({ $not: { status: TransferStatus.done } }, (err, documents) => {
-      if (err) throw new Error("查询出错");
-      event.reply("transmitting-reply", documents);
-    });
+    transfers.find(
+      { $not: { status: TransferStatus.done } },
+      (err, documents) => {
+        if (err) throw new Error("查询出错");
+        event.reply("transmitting-reply", documents);
+      }
+    );
   });
 }

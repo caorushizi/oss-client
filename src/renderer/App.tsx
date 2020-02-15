@@ -27,8 +27,8 @@ function app() {
   const direction = useSelector(selectDirection);
 
   const bgOffset = () => {
-    const bgOffsetX = Math.ceil(Math.random() * 800);
-    const bgOffsetY = Math.ceil(Math.random() * 100);
+    const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
+    const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
     return { bgOffsetX, bgOffsetY };
   };
 

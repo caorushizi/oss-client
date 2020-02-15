@@ -39,3 +39,10 @@ export type Store = {
   config: AppConfig;
   secrets: string[];
 };
+
+export type SecretStore = {
+  id: string;
+  ak: string;
+  sk: string;
+  name: string;
+};
