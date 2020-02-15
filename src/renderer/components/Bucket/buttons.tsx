@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import React from "react";
 import Button from "../Button";
 
@@ -9,19 +9,22 @@ const Buttons = () => {
         value="上传文件"
         icon="arrow-up"
         onClick={() => {
-          ipcRenderer.send(
-            "req:file:upload",
-            "downloads",
-            "/",
-            "C:\\Users\\admin\\Desktop\\刁振源-2019年终总结.docx"
-          );
-        }}
-      />
-      <Button
-        value="回到根目录"
-        onClick={() => {
-          // vdir.back();
-          // setFiles(vdir.listFiles());
+          const userPath = remote.app.getPath("documents");
+          remote.dialog
+            .showOpenDialog({
+              defaultPath: userPath,
+              properties: ["openFile"]
+            })
+            .then(result => {
+              if (!result.canceled) {
+                result.filePaths.forEach(item => {
+                  ipcRenderer.send("req:file:upload", "downloads", "/", item);
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }}
       />
       <Button value="上传" disabled onClick={() => {}} />

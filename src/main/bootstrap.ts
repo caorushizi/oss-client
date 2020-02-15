@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { app, ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v1";
@@ -90,14 +89,23 @@ export default function bootstrap() {
         console.log("id: ", id);
         console.log("progress: ", progress);
       };
-      qiniu
-        .uploadFile(remotePath, filepath, callback)
-        .then(() => {
-          console.log("upload done!");
-        })
-        .catch((err: Error) => {
-          console.log(err.message);
+      const id = uuid();
+      const newDoc = {
+        id,
+        name: filename,
+        date: new Date().getTime(),
+        type: TaskType.upload,
+        size: 0,
+        status: TransferStatus.default
+      };
+      // 存储下载信息
+      store.insert(newDoc, (err, document) => {
+        // 添加任务，自动执行
+        taskRunner.addTask<any>({
+          ...document,
+          result: qiniu.uploadFile(remotePath, filepath, callback)
         });
+      });
     }
   );
 
