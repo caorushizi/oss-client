@@ -4,6 +4,12 @@
   user-select: none;
 }
 
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
 // todo: 字体
 
 /* 滚动条 */
