@@ -6,6 +6,25 @@
 #floatWindow {
   height: 100px;
   width: 100px;
-  -webkit-app-region: drag;
-  background: url("./bg.png") no-repeat center;
+
+  #background {
+    margin-top: 11px;
+    margin-left: 11px;
+    position: absolute;
+    height: 72px;
+    width: 71px;
+    border-radius: 50%;
+    background: #484b58;
+  }
+
+  #background-image {
+    margin: 3px;
+    position: absolute;
+    height: 88px;
+    width: 88px;
+    background-image: url("./bg.png");
+    background-repeat: no-repeat;
+    background-position-x: -6px;
+    background-position-y: -4px;
+  }
 }

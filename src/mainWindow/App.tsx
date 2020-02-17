@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.scss";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,9 @@ import { Direction, Page } from "./store/app/types";
 import Bucket from "./components/Bucket";
 import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
+import { platform } from "./helper/utils";
+import { Platform } from "./types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 library.add(fas);
 
@@ -46,6 +49,17 @@ function app() {
   return (
     <div className="App" style={{ background: appColor }}>
       <div className="drag-area" />
+      {platform === Platform.windows && (
+        <div className="app-button">
+          <FontAwesomeIcon
+            className="icon"
+            icon="minus-circle"
+            onClick={() => console.log(123132)}
+          />
+          <FontAwesomeIcon className="icon" icon="plus-circle" />
+          <FontAwesomeIcon className="icon" icon="times-circle" />
+        </div>
+      )}
       <Aside />
       <TransitionMotion
         willEnter={willEnter}

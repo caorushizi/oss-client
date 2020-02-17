@@ -20,15 +20,11 @@ function getIconName(filename?: string): string {
   return iconName;
 }
 
-const Icon = ({
-  className,
-  filename
-}: {
-  className?: any;
-  filename?: string;
-}) => {
+type PropType = { className?: string; filename?: string };
+
+const Icon = ({ className, filename }: PropType) => {
   return (
-    <svg className={classNames("my-icon", className)} aria-hidden="true">
+    <svg className={classNames("oss-icon", className)} aria-hidden="true">
       <use xlinkHref={`#${getIconName(filename)}`} />
     </svg>
   );

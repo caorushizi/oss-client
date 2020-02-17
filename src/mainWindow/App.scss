@@ -8,6 +8,17 @@
   color: $color-font;
   font-size: 14px;
 
+  .app-button {
+    -webkit-app-region: no-drag;
+    position: absolute;
+    right: 10px;
+    z-index: 100;
+    .icon {
+      cursor: pointer;
+      margin: 10px 7px;
+    }
+  }
+
   .drag-area {
     position: absolute;
     height: 40px;
