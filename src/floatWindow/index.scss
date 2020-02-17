@@ -1,0 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#floatWindow {
+  height: 100px;
+  width: 100px;
+  -webkit-app-region: drag;
+  background: url("./bg.png") no-repeat center;
+}

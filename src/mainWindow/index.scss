@@ -14,6 +14,8 @@ body {
 
 /* 滚动条 */
 ::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
 }
 
 /* 滚动槽 */
@@ -22,4 +24,5 @@ body {
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
 }

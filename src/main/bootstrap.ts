@@ -1,7 +1,7 @@
 import { app, ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v1";
-import { Ffile } from "../renderer/lib/vdir";
+import { Ffile } from "../mainWindow/lib/vdir";
 import services from "./services";
 import { CallbackFunc } from "./services/types";
 import { TaskRunner } from "./tasks";

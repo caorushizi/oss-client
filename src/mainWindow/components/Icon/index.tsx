@@ -1,6 +1,6 @@
 import React from "react";
 import "./index.scss";
-import classnames from "classnames";
+import classNames from "classnames";
 import mime from "mime";
 import mapType from "./mapType";
 
@@ -28,7 +28,7 @@ const Icon = ({
   filename?: string;
 }) => {
   return (
-    <svg className={classnames("my-icon", className)} aria-hidden="true">
+    <svg className={classNames("my-icon", className)} aria-hidden="true">
       <use xlinkHref={`#${getIconName(filename)}`} />
     </svg>
   );
