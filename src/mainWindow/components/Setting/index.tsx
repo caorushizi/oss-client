@@ -4,6 +4,8 @@ import "rc-switch/assets/index.css";
 import Input from "../Input";
 import Radio from "../Radio";
 import "./index.scss";
+import { Platform } from "../../types";
+import { platform } from "../../helper/utils";
 
 const Setting = () => {
   return (
@@ -59,26 +61,30 @@ const Setting = () => {
           </div>
         </div>
       </section>
-      <section className="section">
-        <p className="title">悬浮窗设置</p>
-        <div className="settings">
-          <div className="setting-item">
-            <div className="setting-item-title">悬浮窗样式 ：</div>
-            <div>
-              <Radio value="圆形" name="test1" checked />
-              <Radio value="椭圆形" name="test1" checked />
+      {platform === Platform.windows && (
+        <section className="section">
+          <p className="title">悬浮窗设置</p>
+          <div className="settings">
+            <div className="setting-item">
+              <div className="setting-item-title">悬浮窗样式 ：</div>
+              <div>
+                <Radio value="圆形" name="test1" checked />
+                <Radio value="椭圆形" name="test1" checked />
+              </div>
+            </div>
+            <div className="setting-item">
+              <div className="setting-item-title">默认上传位置：</div>
+              <Input />
+            </div>
+            <div className="setting-item">
+              <div className="setting-item-title">
+                复制url或者markdown格式：
+              </div>
+              <Switch />
             </div>
           </div>
-          <div className="setting-item">
-            <div className="setting-item-title">默认上传位置：</div>
-            <Input />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">复制url或者markdown格式：</div>
-            <Switch />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };
