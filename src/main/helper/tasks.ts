@@ -1,4 +1,4 @@
-import { Task } from "./types";
+import { Task } from "../types";
 import events from "./events";
 
 export class TaskRunner {

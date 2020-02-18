@@ -4,10 +4,10 @@ import uuid from "uuid/v1";
 import { Ffile } from "../mainWindow/lib/vdir";
 import services from "./services";
 import { CallbackFunc } from "./services/types";
-import { TaskRunner } from "./tasks";
+import { TaskRunner } from "./helper/tasks";
 import { OssType, TaskType, TransferStatus } from "./types";
 import transfers from "./store/transfers";
-import events from "./events";
+import events from "./helper/events";
 
 // todo: transfers 加密
 export default function bootstrap() {
