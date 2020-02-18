@@ -52,14 +52,10 @@
         .main-table__row_cell {
           text-align: left;
           vertical-align: middle;
-
-          .icon {
-            position: relative;
-            top: 7px;
-          }
+          padding: 0 5px;
 
           &.index {
-            width: 50px;
+            width: 30px;
           }
 
           &.title {
@@ -67,6 +63,19 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+
+            .icon {
+              position: relative;
+              top: 2px;
+              height: 30px;
+              width: 30px;
+            }
+
+            span {
+              vertical-align: middle;
+              position: relative;
+              top: -9px;
+            }
           }
         }
 
@@ -87,12 +96,13 @@
       width: 80px;
       margin: 5px;
       padding: 5px;
-
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+      }
 
       .icon {
         margin: 0 auto;
@@ -106,6 +116,9 @@
         color: #fff;
         text-align: center;
         padding-top: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

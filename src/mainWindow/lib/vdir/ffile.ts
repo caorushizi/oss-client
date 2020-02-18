@@ -7,7 +7,7 @@ export default class Ffile {
 
   meta: any;
 
-  type?: string;
+  type: string;
 
   size = 0;
 
