@@ -1,0 +1,44 @@
+@import "variable";
+
+.App {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  color: $color-font;
+  font-size: 14px;
+
+  .app-button {
+    -webkit-app-region: no-drag;
+    position: absolute;
+    right: 10px;
+    z-index: 100;
+    .icon {
+      cursor: pointer;
+      margin: 10px 7px;
+    }
+  }
+
+  .drag-area {
+    position: absolute;
+    height: 40px;
+    width: 100vw;
+    -webkit-app-region: drag;
+  }
+
+  .aside-wrapper {
+    overflow: auto;
+    min-width: 225px;
+    max-width: 225px;
+  }
+
+  .main-wrapper {
+    height: 100vh;
+    box-sizing: border-box;
+    padding-top: 40px;
+    position: absolute;
+    left: 225px;
+    right: 0;
+    background: url("./assets/images/global.png") no-repeat;
+  }
+}

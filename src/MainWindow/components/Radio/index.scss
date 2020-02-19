@@ -1,0 +1,24 @@
+.oss-radio {
+  margin-right: 5px;
+  input {
+    -webkit-appearance: none;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #999;
+    transition: 0.2s all linear;
+    outline: none;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+  }
+
+  input:checked {
+    border: 5px solid white;
+  }
+
+  label {
+    margin-right: 15px;
+    line-height: 32px;
+  }
+}

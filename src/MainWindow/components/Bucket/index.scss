@@ -1,0 +1,132 @@
+@import "../../variable";
+
+.bucket-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .buttons-wrapper {
+    border-bottom: 1px solid $color-border;
+  }
+
+  // todo: 简化 toolbar 布局
+  .toolbar-wrapper {
+    height: 40px;
+    box-sizing: border-box;
+    border-bottom: 1px solid $color-border;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    color: #fff;
+
+    .icon-button {
+      padding: 0 10px;
+      height: 26px;
+      line-height: 26px;
+    }
+
+    .toolbar-left {
+      display: flex;
+    }
+
+    .toolbar-right {
+      display: flex;
+    }
+  }
+
+  .main-table-wrapper {
+    flex: 1;
+    overflow: auto;
+
+    .main-table {
+      width: 100%;
+
+      .main-table__row {
+        color: #f2f6fc;
+        height: 40px;
+        font-size: 12px;
+        line-height: 17px;
+
+        .main-table__row_cell {
+          text-align: left;
+          vertical-align: middle;
+          padding: 0 5px;
+
+          &.index {
+            width: 30px;
+          }
+
+          &.title {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            .icon {
+              position: relative;
+              top: 2px;
+              height: 30px;
+              width: 30px;
+            }
+
+            span {
+              vertical-align: middle;
+              position: relative;
+              top: -9px;
+            }
+          }
+        }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+        }
+      }
+    }
+  }
+
+  .main-grid {
+    flex: 1;
+    overflow: auto;
+
+    .main-grid__cell {
+      float: left;
+      height: 80px;
+      width: 80px;
+      margin: 5px;
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+      }
+
+      .icon {
+        margin: 0 auto;
+        height: 50px;
+        width: 50px;
+      }
+
+      span {
+        font-size: 12px;
+        line-height: 17px;
+        color: #fff;
+        text-align: center;
+        padding-top: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .footer {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    border-top: 1px solid $color-border;
+  }
+}
