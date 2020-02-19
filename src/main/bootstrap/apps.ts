@@ -1,8 +1,6 @@
-import appStore from "../store/secrets";
-import { SecretStore } from "../types";
+import { AppStore, getAppById } from "../store/apps";
 
-export function initApp(id: string) {
-  appStore.findOne({ id }, (err, app: SecretStore) => {
-    console.log(app);
-  });
+export async function initApp(id: string): Promise<AppStore> {
+  const app = await getAppById(id);
+  return app;
 }

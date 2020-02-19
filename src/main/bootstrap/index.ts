@@ -8,10 +8,21 @@ import { TaskRunner } from "../helper/tasks";
 import { OssType, TaskType, TransferStatus } from "../types";
 import transfers from "../store/transfers";
 import events from "../helper/events";
+import { initConfig } from "./config";
+import { initApp } from "./apps";
+
+const taskRunner = new TaskRunner(5, true);
 
 // todo: transfers 加密
-export default function index() {
-  const taskRunner = new TaskRunner(5, true);
+export default async function index() {
+  // 获取当前的app
+  const config = await initConfig();
+  const currentAppId = config.currentApp;
+  if (!currentAppId) {
+    console.log("还没有 app ！");
+  } else {
+    const a = await initApp(currentAppId);
+  }
 
   const factory = services.create;
   const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";

@@ -6,25 +6,25 @@ import Button from "../Button";
 const Apps = () => {
   const columns = [
     {
-      title: "Name",
+      title: "名称",
       dataIndex: "name",
       key: "name",
       width: 100
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "ak",
+      dataIndex: "ak",
+      key: "ak",
       width: 100
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "sk",
+      dataIndex: "sk",
+      key: "sk",
       width: 200
     },
     {
-      title: "Operations",
+      title: "action",
       dataIndex: "",
       key: "operations",
       render: () => <button type="button">Delete</button>
