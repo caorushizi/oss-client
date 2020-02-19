@@ -14,6 +14,7 @@ import Setting from "./components/Setting";
 import { platform } from "./helper/utils";
 import { Platform } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Apps from "./components/Apps";
 
 library.add(fas);
 
@@ -87,6 +88,7 @@ function app() {
                   {String(Page.transferList) === config.key && <Transmitting />}
                   {String(Page.transferDone) === config.key && <TransferList />}
                   {String(Page.setting) === config.key && <Setting />}
+                  {String(Page.apps) === config.key && <Apps />}
                 </section>
               );
             })}

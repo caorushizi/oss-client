@@ -1,0 +1,16 @@
+.apps-wrapper {
+  .toolbar {
+    height: 30px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .toolbar-left {
+    }
+
+    .toolbar-right {
+    }
+  }
+}

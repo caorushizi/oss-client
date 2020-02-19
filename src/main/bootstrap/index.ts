@@ -1,16 +1,16 @@
 import { app, ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v1";
-import { Ffile } from "../MainWindow/lib/vdir";
-import services from "./services";
-import { CallbackFunc } from "./services/types";
-import { TaskRunner } from "./helper/tasks";
-import { OssType, TaskType, TransferStatus } from "./types";
-import transfers from "./store/transfers";
-import events from "./helper/events";
+import { Ffile } from "../../MainWindow/lib/vdir";
+import services from "../services";
+import { CallbackFunc } from "../services/types";
+import { TaskRunner } from "../helper/tasks";
+import { OssType, TaskType, TransferStatus } from "../types";
+import transfers from "../store/transfers";
+import events from "../helper/events";
 
 // todo: transfers 加密
-export default function bootstrap() {
+export default function index() {
   const taskRunner = new TaskRunner(5, true);
 
   const factory = services.create;

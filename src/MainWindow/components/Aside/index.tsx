@@ -151,6 +151,15 @@ function Aside() {
               onClick={() => dispatch(switchPage(Page.setting))}
             />
           </li>
+          <li className={classNames("item", { active: page === Page.apps })}>
+            <FontAwesomeIcon className="icon" icon="rocket" />
+            <input
+              type="button"
+              value="apps"
+              className="link"
+              onClick={() => dispatch(switchPage(Page.apps))}
+            />
+          </li>
         </ul>
       </section>
     </div>

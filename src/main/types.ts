@@ -32,17 +32,37 @@ export enum TransferStatus {
   failed
 }
 
-export type AppConfig = {};
+export interface AppConfig {
+  useHttps: boolean;
+  deleteShowDialog: boolean;
+  uploadOverwrite: boolean;
+  theme: Theme;
+  downloadDir: string;
+  cacheDir: string;
+  closeApp: boolean;
 
-export type Store = {
-  transfer: TransferStore[];
-  config: AppConfig;
-  secrets: string[];
-};
+  transferDoneTip: boolean;
+  markdown: boolean;
+
+  floatWindowStyle: FlowWindowStyle;
+}
+
+export enum Theme {
+  simple,
+  colorful
+}
+
+export enum FlowWindowStyle {
+  circle,
+  oval
+}
 
 export type SecretStore = {
   id: string;
   ak: string;
   sk: string;
   name: string;
+  bucket: string;
+  uploadBucket: string;
+  uploadPrefix: string;
 };

@@ -27,7 +27,8 @@ export enum Page {
   bucket,
   transferList,
   transferDone,
-  setting
+  setting,
+  apps
 }
 
 export const SET_VDIR = "SET_VDIR";

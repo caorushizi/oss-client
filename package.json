@@ -128,6 +128,7 @@
     "normalize.css": "^8.0.1",
     "qiniu": "^7.3.0",
     "rc-switch": "^1.9.0",
+    "rc-table": "^7.0.0-rc.10",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-motion": "^0.5.2",

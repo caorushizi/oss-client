@@ -72,16 +72,6 @@ const Setting = () => {
                 <Radio value="椭圆形" name="test1" checked />
               </div>
             </div>
-            <div className="setting-item">
-              <div className="setting-item-title">默认上传位置：</div>
-              <Input />
-            </div>
-            <div className="setting-item">
-              <div className="setting-item-title">
-                复制url或者markdown格式：
-              </div>
-              <Switch />
-            </div>
           </div>
         </section>
       )}

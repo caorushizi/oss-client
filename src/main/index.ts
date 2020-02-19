@@ -1,5 +1,5 @@
 import { app } from "electron";
-import bootstrap from "./bootstrap";
+import index from "./bootstrap";
 import { initTray } from "./tray";
 import { initWindows } from "./windows";
 
@@ -13,4 +13,4 @@ initWindows();
 
 initTray();
 
-bootstrap();
+index();
