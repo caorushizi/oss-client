@@ -1,4 +1,5 @@
 import { app, BrowserWindow, screen } from "electron";
+import { Platform } from "../MainWindow/types";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
@@ -7,7 +8,7 @@ export function initWindows() {
   let mainWindow: Electron.BrowserWindow | null;
   let floatWindow: Electron.BrowserWindow | null;
 
-  const createWindow = () => {
+  const createMainWindow = () => {
     mainWindow = new BrowserWindow({
       frame: false,
       height: 600,
@@ -26,7 +27,9 @@ export function initWindows() {
     mainWindow.on("closed", () => {
       mainWindow = null;
     });
+  };
 
+  const createFloatWindow = () => {
     floatWindow = new BrowserWindow({
       transparent: true,
       frame: false,
@@ -51,6 +54,13 @@ export function initWindows() {
     floatWindow.on("closed", () => {
       floatWindow = null;
     });
+  };
+
+  const createWindow = () => {
+    createMainWindow();
+    if (process.platform !== Platform.macos) {
+      createFloatWindow();
+    }
   };
 
   app.on("ready", createWindow);
