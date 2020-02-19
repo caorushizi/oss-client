@@ -4,8 +4,9 @@ import { Provider } from "react-redux";
 import { applyMiddleware, compose, createStore } from "redux";
 import reduxThunk from "redux-thunk";
 import App from "./App";
-import "./index.scss";
 import { rootReducer } from "./store";
+import "normalize.css/normalize.css";
+import "./index.scss";
 
 const devTools: any =
   process.env.NODE_ENV === "development"

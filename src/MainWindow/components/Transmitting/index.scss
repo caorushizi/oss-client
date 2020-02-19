@@ -21,6 +21,8 @@
   .transfer-table {
     width: 100%;
     vertical-align: middle;
+    margin: 0;
+    padding: 0;
 
     .transfer-table__row {
       border-top: 1px solid $color-border;
