@@ -50,13 +50,13 @@
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
                 {
-                  "html": "./src/mainWindow/index.html",
-                  "js": "./src/mainWindow/index.tsx",
+                  "html": "./src/MainWindow/index.html",
+                  "js": "./src/MainWindow/index.tsx",
                   "name": "main_window"
                 },
                 {
-                  "html": "./src/floatWindow/index.html",
-                  "js": "./src/floatWindow/index.ts",
+                  "html": "./src/FloatWindow/index.html",
+                  "js": "./src/FloatWindow/index.ts",
                   "name": "float_window"
                 }
               ]
