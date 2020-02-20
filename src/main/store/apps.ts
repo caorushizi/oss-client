@@ -1,13 +1,15 @@
 import DataStore from "nedb";
 import * as path from "path";
 import { appDir } from "../helper/dir";
+import { OssType } from "../types";
 
 export type AppStore = {
-  id: string;
+  id?: string;
+  type: OssType;
   ak: string;
   sk: string;
   name: string;
-  bucket: string;
+  bucket?: string;
   uploadBucket: string;
   uploadPrefix: string;
 };

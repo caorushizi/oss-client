@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
-import Table from "rc-table";
 import { ipcRenderer } from "electron";
-import Modal from "react-modal";
-import Select from "react-select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Button from "../Button";
 import { AppStore } from "../../../main/store/apps";
+import Button from "../Button";
+import Input from "../Input";
+import { OssType } from "../../../main/types";
 
 const Apps = () => {
-  const [apps, setApps] = useState<AppStore[]>();
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<any>();
+  const [apps, setApps] = useState<AppStore[]>([]);
+  const [currentApp, setCurrentApp] = useState<AppStore>();
 
   useEffect(() => {
     ipcRenderer.send("getApps");
@@ -19,92 +16,76 @@ const Apps = () => {
       setApps(args);
     });
   }, []);
-  const columns = [
-    {
-      title: "名称",
-      dataIndex: "name",
-      key: "name",
-      width: 100
-    },
-    {
-      title: "ak",
-      dataIndex: "ak",
-      key: "ak",
-      width: 100
-    },
-    {
-      title: "sk",
-      dataIndex: "sk",
-      key: "sk",
-      width: 200
-    },
-    {
-      title: "action",
-      dataIndex: "",
-      key: "operations",
-      render: () => <button type="button">Delete</button>
-    }
-  ];
-  Modal.setAppElement("#root");
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" }
-  ];
 
   return (
     <div className="apps-wrapper">
-      <div className="toolbar">
-        <span className="toolbar-left">Apps</span>
-        <div className="toolbar-right">
-          <Button
-            value="添加"
-            onClick={() => {
-              setIsOpen(true);
-            }}
-          />
-        </div>
-      </div>
-      <Table columns={columns} data={apps} />
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Example Modal"
-        className="add-app-modal"
-        overlayClassName="add-app-overlay"
-      >
-        <section className="modal-header">
-          <span>选择云存储</span>
-          <FontAwesomeIcon
-            className="icon"
-            icon="times-circle"
-            onClick={closeModal}
-          />
-        </section>
-        <section className="modal-content__wrapper">
-          <ul>
-            <li>123</li>
-            <li>1123</li>
-            <li>123</li>
+      <section className="apps-main">
+        <div className="main-left">
+          <div className="header">
+            <Button
+              value="添加"
+              onClick={() => {
+                const app: AppStore = {
+                  ak: "",
+                  sk: "",
+                  name: "默认名称",
+                  type: OssType.qiniu,
+                  uploadBucket: "",
+                  uploadPrefix: ""
+                };
+                setApps([...apps, app]);
+                setCurrentApp(app);
+              }}
+            />
+          </div>
+          <ul className="list">
+            {apps.length > 0 ? (
+              apps.map(app => (
+                <li className="item active">
+                  <svg className="icon" aria-hidden="true">
+                    <use xlinkHref="#icon-qiniuyun1" />
+                  </svg>
+                  <span>名称</span>
+                </li>
+              ))
+            ) : (
+              <li className="no-result">
+                <p>没有 Apps</p>
+                <p>暂时没有搜索到 apps</p>
+              </li>
+            )}
           </ul>
-          <Select
-            value={selectedOption}
-            onChange={selected => {
-              setSelectedOption(selected);
-            }}
-            options={options}
-          />
-        </section>
-        <section className="modal-footer">123</section>
-      </Modal>
+        </div>
+        <div className="main-right">
+          <div className="name">名称</div>
+          {currentApp ? (
+            <ul className="config-list">
+              <li className="config-item">
+                <span className="title">名称</span>
+                <Input placeholder="请输入名称" />
+              </li>
+              <li className="config-item">
+                <span className="title">ak</span>
+                <Input placeholder="请输入相应服务商 ak" />
+              </li>
+              <li className="config-item">
+                <span className="title">sk</span>
+                <Input placeholder="请输入相应服务商 sk" />
+              </li>
+              <li className="config-item">
+                <span className="title">bucket</span>
+                <Input placeholder="请输入 bucket" />
+              </li>
+              <li className="config-item">
+                <span className="title">prefix</span>
+                <Input placeholder="请输入 prefix" />
+              </li>
+            </ul>
+          ) : (
+            <div>12123</div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

@@ -1,56 +1,72 @@
 .apps-wrapper {
-  .toolbar {
-    height: 30px;
-    padding: 0 10px;
+  height: 100%;
+
+  .apps-main {
+    height: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    overflow: auto;
 
-    .toolbar-left {
+    .main-left {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+
+      .header {
+        height: 50px;
+      }
+      .list {
+        flex: 1;
+        padding: 0;
+        margin: 0;
+        overflow: auto;
+        .no-result {
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        }
+        .item {
+          height: 40px;
+          margin: 5px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding-left: 15px;
+
+          .icon {
+            height: 30px;
+            width: 30px;
+            padding-right: 15px;
+          }
+
+          &.active {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+          }
+        }
+      }
     }
-
-    .toolbar-right {
+    .main-right {
+      flex: 1;
+      .name {
+        color: #fff;
+        font-size: 25px;
+      }
+      .config-list {
+        padding: 50px 0 0 15px;
+        margin: 0;
+        .config-item {
+          height: 40px;
+          display: flex;
+          flex-direction: row;
+          .title {
+            width: 80px;
+          }
+        }
+      }
     }
   }
-}
-
-.add-app-modal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 280px;
-  width: 520px;
-  border-radius: 15px;
-  outline: none;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(15px);
-  display: flex;
-  flex-direction: column;
-  .modal-header {
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-    font-size: 14px;
-    color: #fff;
-  }
-  .modal-content__wrapper {
-    flex: 1;
-  }
-  .modal-footer {
-    height: 50px;
-  }
-}
-
-.add-app-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
 }
