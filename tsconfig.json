@@ -11,8 +11,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "typeRoots": ["node_modules/@types"],
-    "jsx": "react",
-    "resolveJsonModule": true
+    "jsx": "react"
   },
   "include": ["src"]
 }

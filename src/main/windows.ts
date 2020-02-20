@@ -11,10 +11,10 @@ export function initWindows() {
   const createMainWindow = () => {
     mainWindow = new BrowserWindow({
       frame: false,
-      height: 600,
+      height: 645,
       // FIXME: 渲染进程不使用 node
       webPreferences: { nodeIntegration: true },
-      width: 930,
+      width: 1090,
       titleBarStyle: "hiddenInset"
     });
 

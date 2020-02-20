@@ -32,3 +32,14 @@ export function getAppById(id: string): Promise<AppStore> {
     });
   });
 }
+
+export function getApps(): Promise<AppStore[]> {
+  return new Promise((resolve, reject) => {
+    appStore.find({}, (err, documents: AppStore[]) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(documents);
+    });
+  });
+}

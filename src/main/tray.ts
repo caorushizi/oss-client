@@ -6,7 +6,7 @@ const dirname = path.dirname(__filename);
 const iconPath =
   process.platform === Platform.windows
     ? path.join(dirname, "../../src/main/icon.ico")
-    : path.join(dirname, "../../src/main/icon.icns");
+    : "/Users/caorushizi/Desktop/icon.icns";
 
 export function initTray() {
   let tray = null;

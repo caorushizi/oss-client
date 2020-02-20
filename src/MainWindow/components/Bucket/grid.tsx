@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../Icon";
-import Ffile from "../../lib/vdir/ffile";
 import { changeNotifier } from "../../store/app/actions";
 import { RootState } from "../../store";
 

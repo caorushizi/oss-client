@@ -10,6 +10,7 @@ import transfers from "../store/transfers";
 import events from "../helper/events";
 import { initConfig } from "./config";
 import { initApp } from "./apps";
+import { getApps } from "../store/apps";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -147,5 +148,9 @@ export default async function index() {
         event.reply("transmitting-reply", documents);
       }
     );
+  });
+
+  ipcMain.on("getApps", event => {
+    getApps().then(apps => event.reply("appsRep", apps));
   });
 }

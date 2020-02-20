@@ -14,3 +14,43 @@
     }
   }
 }
+
+.add-app-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 280px;
+  width: 520px;
+  border-radius: 15px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+  .modal-header {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: 14px;
+    color: #fff;
+  }
+  .modal-content__wrapper {
+    flex: 1;
+  }
+  .modal-footer {
+    height: 50px;
+  }
+}
+
+.add-app-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
