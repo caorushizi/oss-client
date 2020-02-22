@@ -23,34 +23,41 @@ const Grid = ({ vdir }: PropTypes) => {
 
   return (
     <div className="main-grid">
-      {files.map((item: Item) =>
-        Vdir.isDir(item) ? (
-          // vdir
-          <div
-            className="main-grid__cell"
-            key={item.name}
-            onContextMenu={() => vdirContextMenu(item as Vdir)}
-            onDoubleClick={() => {
-              dispatch(changeNotifier());
-              vdir.changeDir(item.name);
-              setFiles(vdir.listFiles());
-              console.log(vdir.getNav());
-            }}
-          >
-            <Icon className="icon" />
-            <span>{item.name}</span>
-          </div>
-        ) : (
-          // file
-          <div
-            className="main-grid__cell"
-            key={item.name}
-            onContextMenu={() => fileContextMenu(item as Ffile)}
-          >
-            <Icon className="icon" filename={item.name} />
-            <span>{item.name}</span>
-          </div>
+      {files.length > 0 ? (
+        files.map((item: Item) =>
+          Vdir.isDir(item) ? (
+            // vdir
+            <div
+              className="main-grid__cell"
+              key={item.name}
+              onContextMenu={() => vdirContextMenu(item as Vdir)}
+              onDoubleClick={() => {
+                dispatch(changeNotifier());
+                vdir.changeDir(item.name);
+                setFiles(vdir.listFiles());
+                console.log(vdir.getNav());
+              }}
+            >
+              <Icon className="icon" />
+              <span>{item.name}</span>
+            </div>
+          ) : (
+            // file
+            <div
+              className="main-grid__cell"
+              key={item.name}
+              onContextMenu={() => fileContextMenu(item as Ffile)}
+            >
+              <Icon className="icon" filename={item.name} />
+              <span>{item.name}</span>
+            </div>
+          )
         )
+      ) : (
+        <div className="no-files">
+          <div className="title">没有文件</div>
+          <div className="sub-title">当前 bucket 中没有文件</div>
+        </div>
       )}
     </div>
   );
