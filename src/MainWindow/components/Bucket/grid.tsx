@@ -5,12 +5,15 @@ import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../Icon";
 import { changeNotifier } from "../../store/app/actions";
+import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
+import Ffile from "../../lib/vdir/ffile";
 import { RootState } from "../../store";
 
-const Grid = ({ vdir }: { vdir: Vdir }) => {
+type PropTypes = { vdir: Vdir };
+
+const Grid = ({ vdir }: PropTypes) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState<Item[]>([]);
-
   const selectNotifier = (state: RootState) => state.app.notifier;
   const notifier = useSelector(selectNotifier);
 
@@ -22,9 +25,11 @@ const Grid = ({ vdir }: { vdir: Vdir }) => {
     <div className="main-grid">
       {files.map((item: Item) =>
         Vdir.isDir(item) ? (
+          // vdir
           <div
             className="main-grid__cell"
             key={item.name}
+            onContextMenu={() => vdirContextMenu(item as Vdir)}
             onDoubleClick={() => {
               dispatch(changeNotifier());
               vdir.changeDir(item.name);
@@ -36,7 +41,12 @@ const Grid = ({ vdir }: { vdir: Vdir }) => {
             <span>{item.name}</span>
           </div>
         ) : (
-          <div className="main-grid__cell" key={item.name}>
+          // file
+          <div
+            className="main-grid__cell"
+            key={item.name}
+            onContextMenu={() => fileContextMenu(item as Ffile)}
+          >
             <Icon className="icon" filename={item.name} />
             <span>{item.name}</span>
           </div>

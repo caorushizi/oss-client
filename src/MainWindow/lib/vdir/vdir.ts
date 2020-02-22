@@ -112,7 +112,16 @@ export default class Vdir {
     return this.navigator;
   }
 
+  public getPathPrefix(): string {
+    // todo ： 对 // \\ 处理
+    return `${this.navigator.join("/")}/`;
+  }
+
   static isDir(o: any) {
     return o instanceof Vdir;
+  }
+
+  public getTotalItem(): number {
+    return this.cursor.children.length;
   }
 }

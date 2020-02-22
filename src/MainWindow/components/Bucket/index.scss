@@ -125,8 +125,21 @@
 
   .footer {
     height: 40px;
-    line-height: 40px;
     padding: 0 10px;
     border-top: 1px solid $color-border;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+
+    .footer-left {
+      .current-select {
+        color: rgba(255, 255, 255, 1);
+      }
+      .current-total {
+        color: rgba(255, 255, 255, 0.75);
+      }
+    }
   }
 }

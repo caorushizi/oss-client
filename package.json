@@ -134,6 +134,7 @@
     "rc-table": "^7.0.0-rc.10",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-file-drop": "^0.2.8",
     "react-modal": "^3.11.1",
     "react-motion": "^0.5.2",
     "react-redux": "^7.1.3",

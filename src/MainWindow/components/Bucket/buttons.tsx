@@ -1,8 +1,10 @@
 import { ipcRenderer, remote } from "electron";
 import React from "react";
 import Button from "../Button";
+import Vdir from "../../lib/vdir/vdir";
 
-const Buttons = () => {
+type PropTypes = { vdir: Vdir };
+const Buttons = ({ vdir }: PropTypes) => {
   return (
     <section className="buttons-wrapper">
       <Button
@@ -17,8 +19,13 @@ const Buttons = () => {
             })
             .then(result => {
               if (!result.canceled) {
-                result.filePaths.forEach(item => {
-                  ipcRenderer.send("req:file:upload", "downloads", "/", item);
+                result.filePaths.forEach(filPath => {
+                  ipcRenderer.send(
+                    "req:file:upload",
+                    "downloads",
+                    vdir.getPathPrefix(),
+                    filPath
+                  );
                 });
               }
             })

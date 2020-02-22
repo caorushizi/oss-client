@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { useSelector } from "react-redux";
+import FileDrop from "react-file-drop";
 import ToolBar from "./toolbar";
 import Table from "./table";
 import { Layout } from "../../store/app/types";
@@ -14,13 +15,27 @@ const Bucket = () => {
   const layout = useSelector(selectLayout);
   const selectVdir = (state: RootState) => state.app.vdir;
   const vdir = useSelector(selectVdir);
+  const styles = {
+    border: "1px solid black",
+    width: 600,
+    color: "black",
+    padding: 20
+  };
 
   return (
     <div className="bucket-wrapper">
-      <Buttons />
+      <div style={styles}>
+        <FileDrop
+          onDrop={files => {
+            console.log(files);
+          }}
+        />
+      </div>
+
+      <Buttons vdir={vdir} />
       <ToolBar vdir={vdir} />
       {Layout.grid === layout ? <Grid vdir={vdir} /> : <Table vdir={vdir} />}
-      <Footer />
+      <Footer vdir={vdir} />
     </div>
   );
 };

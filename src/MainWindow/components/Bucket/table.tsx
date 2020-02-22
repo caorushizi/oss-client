@@ -3,13 +3,16 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { Item } from "../../lib/vdir/types";
 import { Vdir } from "../../lib/vdir";
-import { fileContextMenu } from "../../helper/contextMenu";
+import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
 import { RootState } from "../../store";
 import { changeNotifier } from "../../store/app/actions";
 import Icon from "../Icon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
+import Ffile from "../../lib/vdir/ffile";
 
-const Table = ({ vdir }: { vdir: Vdir }) => {
+type PropTypes = { vdir: Vdir };
+
+const Table = ({ vdir }: PropTypes) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState<Item[]>([]);
 
@@ -38,12 +41,11 @@ const Table = ({ vdir }: { vdir: Vdir }) => {
               <tr
                 key={item.name}
                 className="main-table__row"
-                onContextMenu={() => fileContextMenu(item.name, vdir)}
+                onContextMenu={() => vdirContextMenu(item as Vdir)}
                 onDoubleClick={() => {
                   dispatch(changeNotifier());
                   vdir.changeDir(item.name);
                   setFiles(vdir.listFiles());
-                  console.log(vdir.getNav());
                 }}
               >
                 <td className="main-table__row_cell index">{index}</td>
@@ -63,7 +65,7 @@ const Table = ({ vdir }: { vdir: Vdir }) => {
               <tr
                 key={item.name}
                 className="main-table__row"
-                onContextMenu={() => fileContextMenu(item.name, vdir)}
+                onContextMenu={() => fileContextMenu(item as Ffile)}
                 onDoubleClick={() => {}}
               >
                 <td className="main-table__row_cell index">{index}</td>

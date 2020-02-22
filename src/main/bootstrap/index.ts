@@ -96,7 +96,7 @@ export default async function index() {
     (event, bucket: string, remoteDir: string, filepath: string) => {
       const filename = path.basename(filepath);
       const remotePath =
-        remoteDir === "/" ? filename : `${remoteDir}${filepath}`;
+        remoteDir === "/" ? filename : `${remoteDir}${filename}`;
       const callback: CallbackFunc = (id, progress) => {
         console.log("id: ", id);
         console.log("progress: ", progress);
