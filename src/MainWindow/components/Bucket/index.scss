@@ -36,89 +36,118 @@
     }
   }
 
-  .main-table-wrapper {
+  .content-wrapper {
     flex: 1;
     overflow: auto;
+    position: relative;
 
-    .main-table {
-      width: 100%;
-
-      .main-table__row {
-        color: #f2f6fc;
-        height: 40px;
-        font-size: 12px;
-        line-height: 17px;
-
-        .main-table__row_cell {
-          text-align: left;
-          vertical-align: middle;
-          padding: 0 5px;
-
-          &.index {
-            width: 30px;
-          }
-
-          &.title {
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            .icon {
-              position: relative;
-              top: 2px;
-              height: 30px;
-              width: 30px;
-            }
-
-            span {
-              vertical-align: middle;
-              position: relative;
-              top: -9px;
-            }
-          }
+    .file-drop {
+      .file-drop-target {
+        &.file-drop-dragging-over-frame {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(5px);
         }
 
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
+        &.file-drop-dragging-over-target {
+          &::after {
+            z-index: 999;
+            content: "文件将储存到当前目录下";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            bottom: 10px;
+            right: 10px;
+            border: 2px #00b3ff dashed;
+            border-radius: 10px;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
         }
       }
     }
-  }
 
-  .main-grid {
-    flex: 1;
-    overflow: auto;
+    .main-table-wrapper {
+      .main-table {
+        width: 100%;
 
-    .main-grid__cell {
-      float: left;
-      height: 80px;
-      width: 80px;
-      margin: 5px;
-      padding: 5px;
-      display: flex;
-      flex-direction: column;
+        .main-table__row {
+          color: #f2f6fc;
+          height: 40px;
+          font-size: 12px;
+          line-height: 17px;
 
-      &:hover {
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 6px;
+          .main-table__row_cell {
+            text-align: left;
+            vertical-align: middle;
+            padding: 0 5px;
+
+            &.index {
+              width: 30px;
+            }
+
+            &.title {
+              max-width: 150px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+
+              .icon {
+                vertical-align: middle;
+                height: 30px;
+                width: 30px;
+              }
+
+              span {
+                vertical-align: middle;
+              }
+            }
+          }
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.15);
+          }
+        }
       }
+    }
 
-      .icon {
-        margin: 0 auto;
-        height: 50px;
-        width: 50px;
-      }
+    .main-grid {
+      .main-grid__cell {
+        float: left;
+        height: 80px;
+        width: 80px;
+        margin: 5px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
 
-      span {
-        font-size: 12px;
-        line-height: 17px;
-        color: #fff;
-        text-align: center;
-        padding-top: 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        &:hover {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 6px;
+        }
+
+        .icon {
+          margin: 0 auto;
+          height: 50px;
+          width: 50px;
+        }
+
+        span {
+          font-size: 12px;
+          line-height: 17px;
+          color: #fff;
+          text-align: center;
+          padding-top: 10px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
     }
   }

@@ -22,7 +22,6 @@ const Buttons = ({ vdir }: PropTypes) => {
                 result.filePaths.forEach(filPath => {
                   ipcRenderer.send(
                     "req:file:upload",
-                    "downloads",
                     vdir.getPathPrefix(),
                     filPath
                   );

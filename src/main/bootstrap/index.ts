@@ -3,7 +3,7 @@ import path from "path";
 import uuid from "uuid/v1";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import services from "../services";
-import { CallbackFunc } from "../services/types";
+import { CallbackFunc, IObjectStorageService } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { OssType, TaskType, TransferStatus } from "../types";
 import transfers from "../store/transfers";
@@ -11,10 +11,39 @@ import events from "../helper/events";
 import { initConfig } from "./config";
 import { initApp } from "./apps";
 import { getApps } from "../store/apps";
+import { fattenFileList } from "../helper/utils";
 
 const taskRunner = new TaskRunner(5, true);
 
-// todo: transfers 加密
+function uploadFile(
+  adapter: IObjectStorageService,
+  remoteDir: string,
+  baseDir: string,
+  filepath: string,
+  callback: CallbackFunc
+) {
+  const filename = filepath.replace(`${baseDir}/`, "");
+  const remotePath = remoteDir === "/" ? filename : `${remoteDir}${filename}`;
+  const id = uuid();
+  const newDoc = {
+    id,
+    name: filename,
+    date: new Date().getTime(),
+    type: TaskType.upload,
+    size: 0,
+    status: TransferStatus.default
+  };
+  // 存储下载信息
+  transfers.insert(newDoc, (err, document) => {
+    // 添加任务，自动执行
+    taskRunner.addTask<any>({
+      ...document,
+      result: adapter.uploadFile(remotePath, filepath, callback)
+    });
+  });
+}
+
+// todo: transfers 本地文件 加密
 export default async function index() {
   // 获取当前的app
   const config = await initConfig();
@@ -93,31 +122,13 @@ export default async function index() {
 
   ipcMain.on(
     "req:file:upload",
-    (event, bucket: string, remoteDir: string, filepath: string) => {
-      const filename = path.basename(filepath);
-      const remotePath =
-        remoteDir === "/" ? filename : `${remoteDir}${filename}`;
+    (event, remoteDir: string, filepath: string) => {
+      const baseDir = path.dirname(filepath);
       const callback: CallbackFunc = (id, progress) => {
         console.log("id: ", id);
         console.log("progress: ", progress);
       };
-      const id = uuid();
-      const newDoc = {
-        id,
-        name: filename,
-        date: new Date().getTime(),
-        type: TaskType.upload,
-        size: 0,
-        status: TransferStatus.default
-      };
-      // 存储下载信息
-      transfers.insert(newDoc, (err, document) => {
-        // 添加任务，自动执行
-        taskRunner.addTask<any>({
-          ...document,
-          result: qiniu.uploadFile(remotePath, filepath, callback)
-        });
-      });
+      uploadFile(qiniu, remoteDir, baseDir, filepath, callback);
     }
   );
 
@@ -153,4 +164,19 @@ export default async function index() {
   ipcMain.on("getApps", event => {
     getApps().then(apps => event.reply("appsRep", apps));
   });
+
+  ipcMain.on(
+    "drop-files",
+    async (event, remoteDir: string, fileList: string[]) => {
+      const baseDir = path.dirname(fileList[0]);
+      const list = fattenFileList(fileList);
+      list.forEach(filepath => {
+        const callback: CallbackFunc = (id, progress) => {
+          console.log("id: ", id);
+          console.log("progress: ", progress);
+        };
+        uploadFile(qiniu, remoteDir, baseDir, filepath, callback);
+      });
+    }
+  );
 }

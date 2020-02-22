@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./index.scss";
 import { useSelector } from "react-redux";
 import FileDrop from "react-file-drop";
+import { ipcRenderer } from "electron";
 import ToolBar from "./toolbar";
 import Table from "./table";
 import { Layout } from "../../store/app/types";
@@ -15,26 +16,25 @@ const Bucket = () => {
   const layout = useSelector(selectLayout);
   const selectVdir = (state: RootState) => state.app.vdir;
   const vdir = useSelector(selectVdir);
-  const styles = {
-    border: "1px solid black",
-    width: 600,
-    color: "black",
-    padding: 20
-  };
 
   return (
     <div className="bucket-wrapper">
-      <div style={styles}>
-        <FileDrop
-          onDrop={files => {
-            console.log(files);
-          }}
-        />
-      </div>
-
       <Buttons vdir={vdir} />
       <ToolBar vdir={vdir} />
-      {Layout.grid === layout ? <Grid vdir={vdir} /> : <Table vdir={vdir} />}
+      <div className="content-wrapper">
+        <FileDrop
+          onDrop={files => {
+            if (files) {
+              const filePaths: string[] = [];
+              for (let i = 0; i < files.length; i += 1) {
+                filePaths.push(files[i].path);
+              }
+              ipcRenderer.send("drop-files", vdir.getPathPrefix(), filePaths);
+            }
+          }}
+        />
+        {Layout.grid === layout ? <Grid vdir={vdir} /> : <Table vdir={vdir} />}
+      </div>
       <Footer vdir={vdir} />
     </div>
   );
