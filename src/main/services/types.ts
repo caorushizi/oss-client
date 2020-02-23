@@ -12,7 +12,7 @@ export interface IObjectStorageService {
     cb: CallbackFunc
   ): Promise<any>;
 
-  deleteFile(remotePath: string): Promise<any>;
+  deleteFile(remotePath: string): Promise<undefined>;
 
   getBucketList(): Promise<string[]>;
 

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { ipcRenderer, IpcRendererEvent } from "electron";
-import { getBuckets, getFiles } from "../../helper/ipc";
 import { RootState } from "../../store";
 import {
   randomColor,
@@ -37,11 +36,12 @@ function Aside() {
 
   useEffect(() => {
     setLoading(true);
-    getBuckets((event, list: string[]) => {
+    ipcRenderer.send("get-buckets-request");
+    ipcRenderer.on("get-buckets-response", (event, list: string[]) => {
       // todo: 保存 cur bucket
       setBucketList(list);
       if (list.length > 0) {
-        getFiles(list[0]);
+        ipcRenderer.send("get-files-request", list[0]);
         setCurBucket(list[0]);
       }
     });
@@ -97,7 +97,7 @@ function Aside() {
                 type="button"
                 className="link"
                 onClick={() => {
-                  getFiles(bucketName);
+                  ipcRenderer.send("get-files-request", bucketName);
                   setCurBucket(bucketName);
                   setLoading(true);
                 }}

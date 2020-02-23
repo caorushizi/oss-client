@@ -1,16 +1,7 @@
-import { app } from "electron";
 import index from "./bootstrap";
-import { initTray } from "./tray";
-import { initWindows } from "./windows";
+import App from "./app";
 
-// todo: require
-// eslint-disable-next-line global-require
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
-
-initWindows();
-
-initTray();
+const app = new App();
+app.init();
 
 index();

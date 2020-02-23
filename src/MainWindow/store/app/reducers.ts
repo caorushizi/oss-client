@@ -9,6 +9,7 @@ import {
   Layout,
   Page,
   SET_COLOR,
+  SET_DOMAINS,
   SET_TRANSFERS,
   SET_VDIR,
   SWITCH_LAYOUT,
@@ -24,7 +25,8 @@ const initialState: AppState = {
   ...initialColor,
   direction: Direction.down,
   transfers: [],
-  notifier: false
+  notifier: false,
+  domains: []
 };
 
 export function appReducer(
@@ -51,6 +53,8 @@ export function appReducer(
       return { ...state, ...action.payload };
     case CHANGE_NOTIFIER:
       return { ...state, notifier: !state.notifier };
+    case SET_DOMAINS:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

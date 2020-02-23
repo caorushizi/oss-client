@@ -11,6 +11,7 @@ export interface AppState {
   bucket?: string;
   direction: Direction;
   notifier: boolean;
+  domains: string[];
 }
 
 export enum Direction {
@@ -38,6 +39,7 @@ export const SWITCH_LAYOUT = "SWITCH_LAYOUT";
 export const SWITCH_PAGE = "SWITCH_PAGE";
 export const SET_TRANSFERS = "SET_TRANSFERS";
 export const CHANGE_NOTIFIER = "CHANGE_NOTIFIER";
+export const SET_DOMAINS = "SET_DOMAINS";
 
 interface GetVdirAction {
   type: typeof GET_VDIR;
@@ -71,6 +73,11 @@ interface ChangeNotifier {
   type: typeof CHANGE_NOTIFIER;
 }
 
+interface SetDomains {
+  type: typeof SET_DOMAINS;
+  payload: { domains: string[] };
+}
+
 export type AppActionTypes =
   | GetVdirAction
   | SetVdirAction
@@ -78,4 +85,5 @@ export type AppActionTypes =
   | SwitchLayout
   | SwitchPage
   | SetTransfers
-  | ChangeNotifier;
+  | ChangeNotifier
+  | SetDomains;

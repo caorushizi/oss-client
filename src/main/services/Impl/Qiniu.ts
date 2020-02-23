@@ -117,7 +117,7 @@ export default class Qiniu implements IObjectStorageService {
     });
   }
 
-  public deleteFile(remotePath: string): Promise<any> {
+  public deleteFile(remotePath: string): Promise<undefined> {
     const bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
     return new Promise((resolve, reject) => {
       bucketManager.delete(
@@ -128,7 +128,7 @@ export default class Qiniu implements IObjectStorageService {
             reject(err);
           }
           if (respInfo.statusCode === 200) {
-            resolve(respBody);
+            resolve();
           } else {
             reject(new Error(respBody.error));
           }

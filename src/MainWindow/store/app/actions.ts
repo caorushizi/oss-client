@@ -6,6 +6,7 @@ import {
   Layout,
   Page,
   SET_COLOR,
+  SET_DOMAINS,
   SET_TRANSFERS,
   SET_VDIR,
   SWITCH_LAYOUT,
@@ -40,4 +41,8 @@ export function setTransfers(transfers: TransferStore[]): AppActionTypes {
 
 export function changeNotifier(): AppActionTypes {
   return { type: CHANGE_NOTIFIER };
+}
+
+export function setDomains(domains: string[]): AppActionTypes {
+  return { type: SET_DOMAINS, payload: { domains } };
 }
