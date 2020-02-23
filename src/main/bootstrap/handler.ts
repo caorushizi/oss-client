@@ -1,4 +1,4 @@
-import uuid from "uuid/v1";
+import uuid from "uuid/v4";
 import { CallbackFunc, IObjectStorageService } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { TaskType, TransferStatus } from "../types";

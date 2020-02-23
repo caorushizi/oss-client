@@ -1,6 +1,6 @@
 import { app, ipcMain } from "electron";
 import path from "path";
-import uuid from "uuid/v1";
+import uuid from "uuid/v4";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
@@ -80,6 +80,7 @@ export default async function index() {
   ipcMain.on(
     "req:file:upload",
     (event, remoteDir: string, filepath: string) => {
+      console.log(123123123123123123);
       const baseDir = path.dirname(filepath);
       const callback: CallbackFunc = (id, progress) => {
         console.log(`${id} - progress ${progress}%`);
@@ -122,8 +123,7 @@ export default async function index() {
       const list = fattenFileList(fileList);
       list.forEach(filepath => {
         const callback: CallbackFunc = (id, progress) => {
-          console.log("id: ", id);
-          console.log("progress: ", progress);
+          console.log(`${id} - progress ${progress}%`);
         };
         uploadFile(oss, remoteDir, baseDir, filepath, taskRunner, callback);
       });
