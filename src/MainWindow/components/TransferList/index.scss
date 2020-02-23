@@ -3,6 +3,10 @@
 .transfer-list-wrapper {
   // todo: 布局方式
   height: 100%;
+  overflow: auto;
+  display: flex;
+
+  flex-direction: column;
   .toolbar {
     height: 30px;
     padding: 0 10px;
@@ -19,19 +23,14 @@
   }
 
   .transfer-table {
-    height: 100%;
+    //background: red;
     width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: auto;
+    flex: 1;
+    overflow: scroll;
 
     .transfer-table__row {
       border-top: 1px solid $color-border;
       padding: 5px 10px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
 
       .transfer-table__row_item {
       }

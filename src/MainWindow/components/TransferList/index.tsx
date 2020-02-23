@@ -24,29 +24,33 @@ const TransferList = () => {
           <Button value="全部取消" />
         </div>
       </div>
-      <ul className="transfer-table">
-        {transfers
-          .filter((item: TransferStore) => item.status === TransferStatus.done)
-          .map((item: TransferStore) => (
-            <li className="transfer-table__row" key={item.id}>
-              <div className="transfer-table__row_item meta">
-                <Icon className="icon" filename={item.name} />
-                <div className="name-wrapper">
-                  <div className="name">{item.name}</div>
-                  <div className="size">{fileSizeFormatter(item.size)}</div>
-                </div>
-              </div>
-              <div>{taskTypeFormatter(item.type)}</div>
-              <div>{dateFormatter(item.date)}</div>
-              <div className="transfer-table__row_item">
-                <FontAwesomeIcon className="action-button" icon="folder" />
-              </div>
-              <div className="transfer-table__row_item">
-                <FontAwesomeIcon className="action-button" icon="trash-alt" />
-              </div>
-            </li>
-          ))}
-      </ul>
+      <table className="transfer-table">
+        <tbody>
+          {transfers
+            .filter(
+              (item: TransferStore) => item.status === TransferStatus.done
+            )
+            .map((item: TransferStore) => (
+              <tr className="transfer-table__row" key={item.id + item.name}>
+                <td className="transfer-table__row_item meta">
+                  <Icon className="icon" filename={item.name} />
+                  <div className="name-wrapper">
+                    <div className="name">{item.name}</div>
+                    <div className="size">{fileSizeFormatter(item.size)}</div>
+                  </div>
+                </td>
+                <td>{taskTypeFormatter(item.type)}</td>
+                <td>{dateFormatter(item.date)}</td>
+                <td className="transfer-table__row_item">
+                  <FontAwesomeIcon className="action-button" icon="folder" />
+                </td>
+                <td className="transfer-table__row_item">
+                  <FontAwesomeIcon className="action-button" icon="trash-alt" />
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 };

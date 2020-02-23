@@ -4,6 +4,7 @@ import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/types";
 import AppTray from "./tray";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
+import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 
 export default class App {
   private mainWindow: MainWindow;
@@ -27,7 +28,10 @@ export default class App {
 
   init() {
     // 初始化 ipc 通道
-    this.registerIpcChannels([new SwitchBucketChannel()]);
+    this.registerIpcChannels([
+      new SwitchBucketChannel(),
+      new GetBucketsChannel()
+    ]);
 
     // 初始化 app
     app.on("ready", () => {

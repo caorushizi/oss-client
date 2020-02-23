@@ -2,7 +2,6 @@ import { app, ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v1";
 import { Ffile } from "../../MainWindow/lib/vdir";
-import services from "../services";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { OssType, TaskType, TransferStatus } from "../types";
@@ -13,6 +12,7 @@ import { initApp } from "./apps";
 import { getApps } from "../store/apps";
 import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
+import AppInstance from "../instance";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -27,10 +27,8 @@ export default async function index() {
     const a = await initApp(currentAppId);
   }
 
-  const factory = services.create;
-  const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
-  const sk = "7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL";
-  const qiniu = factory(OssType.qiniu, ak, sk);
+  const instance = AppInstance.getInstance();
+  const { oss } = instance;
 
   events.on("done", (id: string) => {
     transfers.update({ id }, { $set: { status: TransferStatus.done } });
@@ -41,13 +39,13 @@ export default async function index() {
   });
 
   ipcMain.on("get-buckets-request", async event => {
-    const buckets = await qiniu.getBucketList();
+    const buckets = await oss.getBucketList();
     event.reply("get-buckets-response", buckets);
   });
 
   ipcMain.on("get-files-request", async (event, bucketName: string) => {
-    qiniu.setBucket(bucketName);
-    const files = await qiniu.getBucketFiles();
+    oss.setBucket(bucketName);
+    const files = await oss.getBucketFiles();
     event.reply("get-files-response", files);
   });
 
@@ -75,7 +73,7 @@ export default async function index() {
       // 添加任务，自动执行
       taskRunner.addTask<any>({
         ...document,
-        result: qiniu.downloadFile(id, remotePath, downloadPath, callback)
+        result: oss.downloadFile(id, remotePath, downloadPath, callback)
       });
     });
   });
@@ -88,7 +86,7 @@ export default async function index() {
         console.log("id: ", id);
         console.log("progress: ", progress);
       };
-      uploadFile(qiniu, remoteDir, baseDir, filepath, taskRunner, callback);
+      uploadFile(oss, remoteDir, baseDir, filepath, taskRunner, callback);
     }
   );
 
@@ -96,7 +94,7 @@ export default async function index() {
     "req:file:delete",
     async (event, bucketName: string, item: Ffile) => {
       const remotePath = item.webkitRelativePath;
-      await qiniu.deleteFile(remotePath);
+      await oss.deleteFile(remotePath);
     }
   );
 
@@ -132,7 +130,7 @@ export default async function index() {
           console.log("id: ", id);
           console.log("progress: ", progress);
         };
-        uploadFile(qiniu, remoteDir, baseDir, filepath, taskRunner, callback);
+        uploadFile(oss, remoteDir, baseDir, filepath, taskRunner, callback);
       });
     }
   );

@@ -3,7 +3,7 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { ipcRenderer, IpcRendererEvent } from "electron";
+import { ipcRenderer } from "electron";
 import { RootState } from "../../store";
 import {
   randomColor,
@@ -16,7 +16,7 @@ import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import Loading from "../Loading";
-import { switchBucket } from "../../ipc";
+import { getbuckets, switchBucket } from "../../ipc";
 
 function Aside() {
   const dispatch = useDispatch();
@@ -36,21 +36,23 @@ function Aside() {
     setLoading(false);
   };
 
+  const handleGetBuckets = async () => {
+    const buckets = await getbuckets();
+    // todo: 保存 cur bucket
+    setBucketList(buckets);
+    if (buckets.length > 0) {
+      const bucketName = buckets[0];
+      await handleSwitchBucket(bucketName);
+    }
+  };
+
   useEffect(() => {
     dispatch(randomColor());
   }, [app.bucket, app.page]);
 
   useEffect(() => {
     setLoading(true);
-    ipcRenderer.send("get-buckets-request");
-    ipcRenderer.on("get-buckets-response", (event, list: string[]) => {
-      // todo: 保存 cur bucket
-      setBucketList(list);
-      if (list.length > 0) {
-        const bucketName = list[0];
-        handleSwitchBucket(bucketName);
-      }
-    });
+    handleGetBuckets();
 
     ipcRenderer.on("transfers-reply", (event, documents) => {
       dispatch(setTransfers(documents));

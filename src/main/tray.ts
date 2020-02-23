@@ -1,6 +1,5 @@
 import { app, Menu, Tray } from "electron";
 import * as path from "path";
-import { Platform } from "../MainWindow/types";
 
 export default class AppTray {
   private readonly iconPath: string;
@@ -8,10 +7,7 @@ export default class AppTray {
   private tray: Tray | null = null;
 
   constructor() {
-    this.iconPath =
-      process.platform === Platform.windows
-        ? path.join(path.dirname(__filename), "../../src/main/icon.ico")
-        : "/Users/caorushizi/Desktop/icon.icns";
+    this.iconPath = path.join(__dirname, "../../static/tray-icon.png");
   }
 
   init() {
