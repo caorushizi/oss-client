@@ -7,6 +7,7 @@ import { ipcRenderer, IpcRendererEvent } from "electron";
 import { RootState } from "../../store";
 import {
   randomColor,
+  setDomains,
   setTransfers,
   setVdir,
   switchPage
@@ -15,24 +16,29 @@ import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import Loading from "../Loading";
+import { switchBucket } from "../../ipc";
 
 function Aside() {
-  const [bucketList, setBucketList] = useState<string[]>([]);
-  const selectAsideColor = (state: RootState) => state.app.asideColor;
-  const asideColor = useSelector(selectAsideColor);
   const dispatch = useDispatch();
-
-  const selectPage = (state: RootState) => state.app.page;
-  const page = useSelector(selectPage);
-  const selectBucket = (state: RootState) => state.app.bucket;
-  const bucket = useSelector(selectBucket);
-
-  const [curBucket, setCurBucket] = useState<string>("");
+  const [bucketList, setBucketList] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const selectApp = (state: RootState) => state.app;
+  const app = useSelector(selectApp);
+
+  const handleSwitchBucket = async (bucketName: string) => {
+    setLoading(true);
+    const bucketObj = await switchBucket(bucketName);
+    const dir = Vdir.from(qiniuAdapter(bucketObj.files));
+    dispatch(setVdir(dir));
+    dispatch(switchPage(Page.bucket, bucketName));
+    dispatch(setDomains(bucketObj.domains));
+    setLoading(false);
+  };
 
   useEffect(() => {
     dispatch(randomColor());
-  }, [bucket, page]);
+  }, [app.bucket, app.page]);
 
   useEffect(() => {
     setLoading(true);
@@ -41,8 +47,8 @@ function Aside() {
       // todo: 保存 cur bucket
       setBucketList(list);
       if (list.length > 0) {
-        ipcRenderer.send("get-files-request", list[0]);
-        setCurBucket(list[0]);
+        const bucketName = list[0];
+        handleSwitchBucket(bucketName);
       }
     });
 
@@ -57,25 +63,8 @@ function Aside() {
     });
   }, []);
 
-  useEffect(() => {
-    const getFilesResponse = (
-      event: IpcRendererEvent,
-      { items }: { items: string[] }
-    ) => {
-      const dir = Vdir.from(qiniuAdapter(items));
-      dispatch(setVdir(dir));
-      dispatch(switchPage(Page.bucket, curBucket));
-      setLoading(false);
-    };
-
-    ipcRenderer.on("get-files-response", getFilesResponse);
-    return () => {
-      ipcRenderer.removeListener("get-files-response", getFilesResponse);
-    };
-  }, [curBucket]);
-
   return (
-    <div className="aside-wrapper" style={{ background: asideColor }}>
+    <div className="aside-wrapper" style={{ background: app.asideColor }}>
       <section className="title-bar">
         <span>OSS Client</span>
       </section>
@@ -88,7 +77,7 @@ function Aside() {
           {bucketList.map((bucketName: string) => (
             <li
               className={classNames("item", {
-                active: page === Page.bucket && bucket === bucketName
+                active: app.page === Page.bucket && app.bucket === bucketName
               })}
               key={bucketName}
             >
@@ -96,11 +85,7 @@ function Aside() {
               <input
                 type="button"
                 className="link"
-                onClick={() => {
-                  ipcRenderer.send("get-files-request", bucketName);
-                  setCurBucket(bucketName);
-                  setLoading(true);
-                }}
+                onClick={() => handleSwitchBucket(bucketName)}
                 title={bucketName}
                 value={bucketName}
               />
@@ -113,7 +98,7 @@ function Aside() {
         <ul className="list">
           <li
             className={classNames("item", {
-              active: page === Page.transferList
+              active: app.page === Page.transferList
             })}
           >
             <FontAwesomeIcon className="icon" icon="arrow-up" />
@@ -126,7 +111,7 @@ function Aside() {
           </li>
           <li
             className={classNames("item", {
-              active: page === Page.transferDone
+              active: app.page === Page.transferDone
             })}
           >
             <FontAwesomeIcon className="icon" icon="check-circle" />
@@ -142,7 +127,11 @@ function Aside() {
       <section className="container">
         <div className="title">设置</div>
         <ul className="list">
-          <li className={classNames("item", { active: page === Page.setting })}>
+          <li
+            className={classNames("item", {
+              active: app.page === Page.setting
+            })}
+          >
             <FontAwesomeIcon className="icon" icon="cog" />
             <input
               type="button"
@@ -151,7 +140,9 @@ function Aside() {
               onClick={() => dispatch(switchPage(Page.setting))}
             />
           </li>
-          <li className={classNames("item", { active: page === Page.apps })}>
+          <li
+            className={classNames("item", { active: app.page === Page.apps })}
+          >
             <FontAwesomeIcon className="icon" icon="rocket" />
             <input
               type="button"

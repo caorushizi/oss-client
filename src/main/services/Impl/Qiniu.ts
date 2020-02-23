@@ -151,7 +151,9 @@ export default class Qiniu implements IObjectStorageService {
     const url = `https://rsf.qbox.me/list?bucket=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return http.get(url, options);
+    return http.get(url, options).then((result: any) => {
+      return result.items;
+    });
   }
 
   public getBucketList(): Promise<string[]> {

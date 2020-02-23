@@ -3,7 +3,7 @@ import path from "path";
 import uuid from "uuid/v1";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import services from "../services";
-import { CallbackFunc, IObjectStorageService } from "../services/types";
+import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { OssType, TaskType, TransferStatus } from "../types";
 import transfers from "../store/transfers";

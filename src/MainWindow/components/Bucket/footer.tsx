@@ -11,6 +11,9 @@ const Footer = ({ vdir }: PropTypes) => {
   const selectNotifier = (state: RootState) => state.app.notifier;
   const notifier = useSelector(selectNotifier);
 
+  const selectDomains = (state: RootState) => state.app.domains;
+  const domains = useSelector(selectDomains);
+
   useEffect(() => {
     setTotalItem(vdir.getTotalItem());
   }, [notifier, vdir]);
@@ -21,7 +24,7 @@ const Footer = ({ vdir }: PropTypes) => {
         <span className="current-select">{`选中${0}项`}</span>
         <span className="current-total">{`/总共${totalItem}项`}</span>
       </div>
-      <span>ziying.site</span>
+      <span>{domains.length > 0 ? domains[0] : "没有绑定域名"}</span>
     </div>
   );
 };

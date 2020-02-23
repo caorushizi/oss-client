@@ -3,6 +3,7 @@ import { MainWindow, FloatWindow } from "./windows";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/types";
 import AppTray from "./tray";
+import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 
 export default class App {
   private mainWindow: MainWindow;
@@ -26,7 +27,7 @@ export default class App {
 
   init() {
     // 初始化 ipc 通道
-    this.registerIpcChannels([]);
+    this.registerIpcChannels([new SwitchBucketChannel()]);
 
     // 初始化 app
     app.on("ready", () => {
