@@ -64,6 +64,7 @@ export default class Qiniu implements IObjectStorageService {
   }
 
   public uploadFile(
+    id: string,
     remotePath: string,
     localPath: string,
     cb: CallbackFunc
@@ -95,7 +96,7 @@ export default class Qiniu implements IObjectStorageService {
         reader.on("data", (thunk: any) => {
           length += thunk.length;
           const progress = (length / fileSize).toFixed(3);
-          cb("this is upload #id!", progress);
+          cb(id, progress);
         });
         formUploader.putStream(
           token,

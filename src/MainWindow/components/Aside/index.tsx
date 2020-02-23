@@ -16,7 +16,7 @@ import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import Loading from "../Loading";
-import { getbuckets, switchBucket } from "../../ipc";
+import { getBuckets, switchBucket } from "../../ipc";
 
 function Aside() {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ function Aside() {
   };
 
   const handleGetBuckets = async () => {
-    const buckets = await getbuckets();
+    const buckets = await getBuckets();
     // todo: 保存 cur bucket
     setBucketList(buckets);
     if (buckets.length > 0) {

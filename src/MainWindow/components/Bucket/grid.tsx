@@ -14,12 +14,12 @@ type PropTypes = { vdir: Vdir };
 const Grid = ({ vdir }: PropTypes) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState<Item[]>([]);
-  const selectNotifier = (state: RootState) => state.app.notifier;
-  const notifier = useSelector(selectNotifier);
+  const selectApp = (state: RootState) => state.app;
+  const app = useSelector(selectApp);
 
   useEffect(() => {
     setFiles(vdir.listFiles());
-  }, [notifier]);
+  }, [app.notifier]);
 
   return (
     <div className="main-grid">
@@ -35,7 +35,6 @@ const Grid = ({ vdir }: PropTypes) => {
                 dispatch(changeNotifier());
                 vdir.changeDir(item.name);
                 setFiles(vdir.listFiles());
-                console.log(vdir.getNav());
               }}
             >
               <Icon className="icon" />
@@ -46,7 +45,10 @@ const Grid = ({ vdir }: PropTypes) => {
             <div
               className="main-grid__cell"
               key={item.name}
-              onContextMenu={() => fileContextMenu(item as Ffile)}
+              onContextMenu={() => {
+                const domain = app.domains.length > 0 ? app.domains[0] : "";
+                fileContextMenu(item as Ffile, domain);
+              }}
             >
               <Icon className="icon" filename={item.name} />
               <span>{item.name}</span>

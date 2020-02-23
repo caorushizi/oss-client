@@ -4,7 +4,7 @@ import uuid from "uuid/v1";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
-import { OssType, TaskType, TransferStatus } from "../types";
+import { TaskType, TransferStatus } from "../types";
 import transfers from "../store/transfers";
 import events from "../helper/events";
 import { initConfig } from "./config";
@@ -13,6 +13,7 @@ import { getApps } from "../store/apps";
 import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
 import AppInstance from "../instance";
+import { downloadDir } from "../helper/dir";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -49,13 +50,11 @@ export default async function index() {
     event.reply("get-files-response", files);
   });
 
-  ipcMain.on("req:file:download", async (event, bucketName, item: Ffile) => {
+  ipcMain.on("req:file:download", async (event, item: Ffile) => {
     const remotePath = item.webkitRelativePath;
-    const downloadDir = app.getPath("downloads");
     const downloadPath = path.join(downloadDir, item.webkitRelativePath);
     const callback: CallbackFunc = (id, progress) => {
-      console.log("id: ", id);
-      console.log("progress: ", progress);
+      console.log(`${id} - progress ${progress}%`);
     };
     // fixme: _id
     const id = uuid();
@@ -83,20 +82,16 @@ export default async function index() {
     (event, remoteDir: string, filepath: string) => {
       const baseDir = path.dirname(filepath);
       const callback: CallbackFunc = (id, progress) => {
-        console.log("id: ", id);
-        console.log("progress: ", progress);
+        console.log(`${id} - progress ${progress}%`);
       };
       uploadFile(oss, remoteDir, baseDir, filepath, taskRunner, callback);
     }
   );
 
-  ipcMain.on(
-    "req:file:delete",
-    async (event, bucketName: string, item: Ffile) => {
-      const remotePath = item.webkitRelativePath;
-      await oss.deleteFile(remotePath);
-    }
-  );
+  ipcMain.on("req:file:delete", async (event, item: Ffile) => {
+    const remotePath = item.webkitRelativePath;
+    await oss.deleteFile(remotePath);
+  });
 
   ipcMain.on("transfers", event => {
     transfers.find({ status: TransferStatus.done }, (err, documents) => {

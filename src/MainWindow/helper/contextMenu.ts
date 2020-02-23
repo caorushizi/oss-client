@@ -1,8 +1,8 @@
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer, remote, clipboard } from "electron";
 import { Ffile } from "../lib/vdir";
 import Vdir from "../lib/vdir/vdir";
 
-export function fileContextMenu(item: Ffile) {
+export function fileContextMenu(item: Ffile, domain: string) {
   const menu = remote.Menu.buildFromTemplate([
     {
       label: "全选",
@@ -11,23 +11,31 @@ export function fileContextMenu(item: Ffile) {
     { type: "separator" },
     {
       label: "复制链接",
-      click: f => f
+      enabled: !!domain,
+      click: () => {
+        clipboard.writeText(`http://${domain}/${item.webkitRelativePath}`);
+      }
     },
     {
       label: "复制链接（markdown）",
-      click: f => f
+      enabled: !!domain,
+      click: () => {
+        const link = `http://${domain}/${item.webkitRelativePath}`;
+        clipboard.writeText(`![${item.name}]("${link}")`);
+      }
     },
     { type: "separator" },
     {
       label: "下载",
+      enabled: !!domain,
       click: () => {
-        ipcRenderer.send("req:file:download", "downloads", item);
+        ipcRenderer.send("req:file:download", item);
       }
     },
     {
       label: "删除",
       click: () => {
-        ipcRenderer.send("req:file:delete", "downloads", item);
+        ipcRenderer.send("req:file:delete", item);
       }
     }
   ]);

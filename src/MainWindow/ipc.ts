@@ -13,7 +13,7 @@ export async function switchBucket(bucketName: string): Promise<BucketObj> {
   return bucketObj;
 }
 
-export async function getbuckets(): Promise<string[]> {
+export async function getBuckets(): Promise<string[]> {
   const bucketList = await ipc.send<string[]>("get-buckets");
   return bucketList;
 }

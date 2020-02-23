@@ -28,7 +28,7 @@ export function uploadFile(
     // 添加任务，自动执行
     taskRunner.addTask<any>({
       ...document,
-      result: adapter.uploadFile(remotePath, filepath, callback)
+      result: adapter.uploadFile(id, remotePath, filepath, callback)
     });
   });
 }

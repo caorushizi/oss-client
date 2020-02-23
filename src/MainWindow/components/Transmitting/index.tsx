@@ -27,7 +27,7 @@ const Transmitting = () => {
               (item: TransferStore) => item.status !== TransferStatus.done
             )
             .map((item: TransferStore) => (
-              <tr className="transfer-table__row">
+              <tr className="transfer-table__row" key={item.id + item.name}>
                 <td className="transfer-table__row_item meta">
                   <Icon filename={item.name} />
                   <div>

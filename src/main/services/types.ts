@@ -1,5 +1,6 @@
 export interface IObjectStorageService {
   uploadFile(
+    id: string,
     remotePath: string,
     localPath: string,
     cb: CallbackFunc

@@ -16,12 +16,12 @@ const Table = ({ vdir }: PropTypes) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState<Item[]>([]);
 
-  const selectNotifier = (state: RootState) => state.app.notifier;
-  const notifier = useSelector(selectNotifier);
+  const selectApp = (state: RootState) => state.app;
+  const app = useSelector(selectApp);
 
   useEffect(() => {
     setFiles(vdir.listFiles());
-  }, [notifier, vdir]);
+  }, [app.notifier, vdir]);
 
   return (
     <div className="main-table-wrapper">
@@ -66,7 +66,10 @@ const Table = ({ vdir }: PropTypes) => {
                 <tr
                   key={item.name}
                   className="main-table__row"
-                  onContextMenu={() => fileContextMenu(item as Ffile)}
+                  onContextMenu={() => {
+                    const domain = app.domains.length > 0 ? app.domains[0] : "";
+                    fileContextMenu(item as Ffile, domain);
+                  }}
                   onDoubleClick={() => {}}
                 >
                   <td className="main-table__row_cell index">{index}</td>

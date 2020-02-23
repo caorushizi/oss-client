@@ -9,7 +9,7 @@ import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 export default class App {
   private mainWindow: MainWindow;
 
-  private floatWindow: FloatWindow;
+  private floatWindow?: FloatWindow;
 
   private appTray: AppTray;
 
@@ -21,8 +21,9 @@ export default class App {
     }
 
     this.mainWindow = new MainWindow();
-    console.log("main window: ", this.mainWindow);
-    this.floatWindow = new FloatWindow();
+    if (process.platform === Platform.windows) {
+      this.floatWindow = new FloatWindow();
+    }
     this.appTray = new AppTray();
   }
 
@@ -45,16 +46,12 @@ export default class App {
 
   onActive() {
     this.mainWindow.onActivate();
-    this.floatWindow.onActivate();
+    if (this.floatWindow) this.floatWindow.onActivate();
   }
 
   appReady() {
-    console.log(this.mainWindow);
     this.mainWindow.createWindow();
-    if (process.platform === Platform.windows) {
-      console.log("在 windows 上运行");
-      this.floatWindow.createWindow();
-    }
+    if (this.floatWindow) this.floatWindow.createWindow();
     this.appTray.init();
   }
 
