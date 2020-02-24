@@ -21,52 +21,52 @@
     .toolbar-right {
     }
   }
-
-  .transfer-table {
-    //background: red;
-    width: 100%;
+  .transfer-table__wrapper {
     flex: 1;
-    overflow: scroll;
+    overflow: auto;
+    .transfer-table {
+      width: 100%;
 
-    .transfer-table__row {
-      border-top: 1px solid $color-border;
-      padding: 5px 10px;
+      .transfer-table__row {
+        border-top: 1px solid $color-border;
+        padding: 5px 10px;
 
-      .transfer-table__row_item {
-      }
-
-      .meta {
-        display: flex;
-        flex-direction: row;
-        .icon {
-          height: 40px;
-          width: 40px;
-          padding: 5px;
+        .transfer-table__row_item {
         }
-        .name-wrapper {
+
+        .meta {
           display: flex;
-          flex-direction: column;
-          justify-content: center;
-          .name {
-            font-size: 14px;
-            color: #fff;
-            line-height: 20px;
+          flex-direction: row;
+          .icon {
+            height: 40px;
+            width: 40px;
+            padding: 5px;
           }
-          .size {
-            font-size: 12px;
-            color: #999;
-            line-height: 17px;
+          .name-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .name {
+              font-size: 14px;
+              color: #fff;
+              line-height: 20px;
+            }
+            .size {
+              font-size: 12px;
+              color: #999;
+              line-height: 17px;
+            }
           }
         }
-      }
 
-      .action-button {
-        font-size: 20px;
-        cursor: pointer;
-      }
+        .action-button {
+          font-size: 20px;
+          cursor: pointer;
+        }
 
-      &:last-child {
-        border-bottom: 1px solid $color-border;
+        &:last-child {
+          border-bottom: 1px solid $color-border;
+        }
       }
     }
   }

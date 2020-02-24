@@ -3,6 +3,8 @@
 .transmitting-wrapper {
   // todo: 布局方式
   height: 100%;
+  display: flex;
+  flex-direction: column;
   .toolbar {
     height: 30px;
     padding: 0 10px;
@@ -17,26 +19,29 @@
     .toolbar-right {
     }
   }
+  .transfer-table__wrapper {
+    flex: 1;
+    overflow: auto;
+    .transfer-table {
+      width: 100%;
+      margin: 0;
+      padding: 0;
 
-  .transfer-table {
-    width: 100%;
-    margin: 0;
-    padding: 0;
+      .transfer-table__row {
+        border-top: 1px solid $color-border;
 
-    .transfer-table__row {
-      border-top: 1px solid $color-border;
+        .transfer-table__row_item {
+          padding: 10px 0;
+        }
 
-      .transfer-table__row_item {
-        padding: 10px 0;
-      }
+        .meta {
+          display: flex;
+          flex-direction: row;
+        }
 
-      .meta {
-        display: flex;
-        flex-direction: row;
-      }
-
-      &:last-child {
-        border-bottom: 1px solid $color-border;
+        &:last-child {
+          border-bottom: 1px solid $color-border;
+        }
       }
     }
   }
