@@ -19,7 +19,7 @@ const Grid = ({ vdir }: PropTypes) => {
 
   useEffect(() => {
     setFiles(vdir.listFiles());
-  }, [app.notifier]);
+  }, [app.notifier, vdir]);
 
   return (
     <div className="main-grid">
@@ -50,7 +50,18 @@ const Grid = ({ vdir }: PropTypes) => {
                 fileContextMenu(item as Ffile, domain);
               }}
             >
-              <Icon className="icon" filename={item.name} />
+              {(item as Ffile).type.startsWith("image/") &&
+              app.domains.length > 0 ? (
+                <img
+                  className="icon"
+                  src={`http://${app.domains[0]}/${
+                    (item as Ffile).webkitRelativePath
+                  }`}
+                  alt={item.name}
+                />
+              ) : (
+                <Icon className="icon" filename={item.name} />
+              )}
               <span>{item.name}</span>
             </div>
           )
