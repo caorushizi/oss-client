@@ -1,13 +1,12 @@
 import React from "react";
 import reactDom from "react-dom";
 import { Provider } from "react-redux";
-import { applyMiddleware, compose, createStore } from "redux";
-import reduxThunk from "redux-thunk";
+import { compose, createStore } from "redux";
+import "normalize.css/normalize.css";
+
 import App from "./App";
 import { rootReducer } from "./store";
-import "normalize.css/normalize.css";
 import "./index.scss";
-import IpcService from "./lib/service/IpcService";
 
 const devTools: any =
   process.env.NODE_ENV === "development"
@@ -15,15 +14,7 @@ const devTools: any =
       (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
     : null;
 
-const store = createStore(
-  rootReducer,
-  compose(applyMiddleware(reduxThunk), devTools)
-);
-(async () => {
-  const ipc = new IpcService();
-  const t = await ipc.send("system-info");
-  console.log(t);
-})();
+const store = createStore(rootReducer, compose(devTools));
 
 const rootElement = document.getElementById("root");
 reactDom.render(
