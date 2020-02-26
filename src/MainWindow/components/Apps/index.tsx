@@ -96,28 +96,48 @@ const Apps = () => {
           </ul>
         </div>
         <div className="main-right">
-          <div className="name">名称</div>
+          <div className="name">{currentApp?.name}</div>
           {currentApp ? (
             <ul className="config-list">
               <li className="config-item">
                 <span className="title">名称</span>
-                <Input placeholder="请输入名称" />
+                <Input
+                  placeholder="请输入名称"
+                  defaultValue={currentApp?.name}
+                  onChange={event => {
+                    event.persist();
+                    const { value } = event.target;
+                    setCurrentApp({ ...currentApp, name: value });
+                  }}
+                />
               </li>
               <li className="config-item">
                 <span className="title">ak</span>
-                <Input placeholder="请输入相应服务商 ak" />
+                <Input
+                  placeholder="请输入相应服务商 ak"
+                  defaultValue={currentApp?.ak}
+                />
               </li>
               <li className="config-item">
                 <span className="title">sk</span>
-                <Input placeholder="请输入相应服务商 sk" />
+                <Input
+                  placeholder="请输入相应服务商 sk"
+                  defaultValue={currentApp?.sk}
+                />
               </li>
               <li className="config-item">
                 <span className="title">bucket</span>
-                <Input placeholder="请输入 bucket" />
+                <Input
+                  placeholder="请输入 bucket"
+                  defaultValue={currentApp?.uploadBucket}
+                />
               </li>
               <li className="config-item">
                 <span className="title">prefix</span>
-                <Input placeholder="请输入 prefix" />
+                <Input
+                  placeholder="请输入 prefix"
+                  defaultValue={currentApp?.uploadPrefix}
+                />
               </li>
             </ul>
           ) : (

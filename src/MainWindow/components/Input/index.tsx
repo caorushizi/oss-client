@@ -1,14 +1,18 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./index.scss";
 
 const Input = ({
   placeholder,
-  icon
+  icon,
+  defaultValue,
+  onChange
 }: {
   placeholder?: string;
   icon?: IconProp;
+  defaultValue?: string | number | string[];
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 }) => {
   return (
     <div className="oss-input--wrapper">
@@ -17,6 +21,8 @@ const Input = ({
         className="oss-input"
         type="input"
         placeholder={placeholder || ""}
+        defaultValue={defaultValue}
+        onChange={onChange}
       />
     </div>
   );
