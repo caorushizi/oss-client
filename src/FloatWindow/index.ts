@@ -13,7 +13,7 @@ function moveEvent(e: MouseEvent) {
 function fileContextMenu() {
   const menu = remote.Menu.buildFromTemplate([
     {
-      label: "全选123123",
+      label: "test",
       click: f => f
     }
   ]);
