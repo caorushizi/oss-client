@@ -1,7 +1,5 @@
-import index from "./bootstrap";
+import bootstrap from "./bootstrap";
 import App from "./app";
 
 const app = new App();
-app.init();
-
-index();
+bootstrap(app);

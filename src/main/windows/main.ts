@@ -1,5 +1,4 @@
 import { BrowserWindow, app, ipcMain } from "electron";
-import { IpcChannelInterface } from "../IPC/IpcChannelInterface";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -31,5 +30,17 @@ export default class MainWindow {
     if (!this.window) {
       this.createWindow();
     }
+  }
+
+  close() {
+    if (this.window) this.window.close();
+  }
+
+  minimize() {
+    if (this.window) this.window.minimize();
+  }
+
+  maximize() {
+    if (this.window) this.window.maximize();
   }
 }

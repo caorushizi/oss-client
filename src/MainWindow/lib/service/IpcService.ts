@@ -28,4 +28,16 @@ export default class IpcService {
       });
     });
   }
+
+  public emit(channel: string, request: IpcRequest = {}) {
+    if (!this.ipcRenderer) {
+      this.initializeIpcRenderer();
+    }
+    if (!request.responseChannel) {
+      request.responseChannel = `${channel}_response_${new Date().getTime()}`;
+    }
+
+    const { ipcRenderer } = this;
+    ipcRenderer!.send(channel, request);
+  }
 }

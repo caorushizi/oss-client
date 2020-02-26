@@ -15,6 +15,7 @@ import { platform } from "./helper/utils";
 import { Platform } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Apps from "./components/Apps";
+import { closeMainApp, maximizeMainWindow, minimizeMainWindow } from "./ipc";
 
 library.add(fas);
 
@@ -55,10 +56,18 @@ function app() {
           <FontAwesomeIcon
             className="icon"
             icon="minus-circle"
-            onClick={() => console.log(123132)}
+            onClick={closeMainApp}
           />
-          <FontAwesomeIcon className="icon" icon="plus-circle" />
-          <FontAwesomeIcon className="icon" icon="times-circle" />
+          <FontAwesomeIcon
+            className="icon"
+            icon="plus-circle"
+            onClick={minimizeMainWindow}
+          />
+          <FontAwesomeIcon
+            className="icon"
+            icon="times-circle"
+            onClick={maximizeMainWindow}
+          />
         </div>
       )}
       <Aside />

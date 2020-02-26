@@ -5,16 +5,51 @@ import { AppStore } from "../../../main/store/apps";
 import Button from "../Button";
 import Input from "../Input";
 import { OssType } from "../../../main/types";
+import classNames from "classnames";
+
+const mockData: AppStore[] = [
+  {
+    id: "1",
+    ak: "1",
+    sk: "1",
+    name: "默认名称1",
+    type: OssType.qiniu,
+    uploadBucket: "",
+    uploadPrefix: ""
+  },
+  {
+    id: "2",
+    ak: "",
+    sk: "",
+    name: "默认名称2",
+    type: OssType.qiniu,
+    uploadBucket: "",
+    uploadPrefix: ""
+  },
+  {
+    id: "3",
+    ak: "",
+    sk: "",
+    name: "默认名称3",
+    type: OssType.qiniu,
+    uploadBucket: "",
+    uploadPrefix: ""
+  }
+];
 
 const Apps = () => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
   useEffect(() => {
-    ipcRenderer.send("getApps");
-    ipcRenderer.on("appsRep", (event, args: AppStore[]) => {
-      setApps(args);
-    });
+    // ipcRenderer.send("getApps");
+    // ipcRenderer.on("appsRep", (event, args: AppStore[]) => {
+    //   setApps(args);
+    // });
+    setApps(mockData);
+    if (!currentApp) {
+      setCurrentApp(mockData[0]);
+    }
   }, []);
 
   return (
@@ -38,14 +73,18 @@ const Apps = () => {
               }}
             />
           </div>
-          <ul className="list">
+          <ul className="app-list">
             {apps.length > 0 ? (
               apps.map(app => (
-                <li className="item active">
+                <li
+                  className={classNames("item", {
+                    active: app.id === currentApp?.id
+                  })}
+                >
                   <svg className="icon" aria-hidden="true">
                     <use xlinkHref="#icon-qiniuyun1" />
                   </svg>
-                  <span>名称</span>
+                  <span>{app.name}</span>
                 </li>
               ))
             ) : (

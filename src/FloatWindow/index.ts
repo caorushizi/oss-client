@@ -1,5 +1,6 @@
 import "./index.scss";
 import { remote } from "electron";
+import bgImg from "./bg.png";
 
 let biasX = 0;
 let biasY = 0;
@@ -41,3 +42,8 @@ if (realWindow) {
     realWindow.removeEventListener("mousemove", moveEvent);
   });
 }
+
+const image = document.getElementById("background-image");
+
+if (image) image.setAttribute("src", bgImg);
+if (image) image.draggable = false;

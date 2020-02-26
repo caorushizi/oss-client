@@ -18,13 +18,9 @@
   }
 
   #background-image {
-    margin: 3px;
     position: absolute;
-    height: 88px;
-    width: 88px;
-    background-image: url("./bg.png");
-    background-repeat: no-repeat;
-    background-position-x: -6px;
-    background-position-y: -4px;
+    top: 1px;
+    height: 96px;
+    width: 96px;
   }
 }

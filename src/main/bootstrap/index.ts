@@ -1,4 +1,4 @@
-import { app, ipcMain } from "electron";
+import { ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v4";
 import { Ffile } from "../../MainWindow/lib/vdir";
@@ -14,11 +14,13 @@ import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
 import AppInstance from "../instance";
 import { downloadDir } from "../helper/dir";
+import App from "../app";
 
 const taskRunner = new TaskRunner(5, true);
 
 // todo: transfers 本地文件 加密
-export default async function index() {
+export default async function bootstrap(app: App) {
+  app.init();
   // 获取当前的app
   const config = await initConfig();
   const currentAppId = config.currentApp;
@@ -111,10 +113,10 @@ export default async function index() {
     );
   });
 
-  ipcMain.on("getApps", async event => {
-    const apps = await getApps();
-    event.reply("appsRep", apps);
-  });
+  // ipcMain.on("getApps", async event => {
+  //   const apps = await getApps();
+  //   event.reply("appsRep", apps);
+  // });
 
   ipcMain.on(
     "drop-files",
@@ -129,4 +131,8 @@ export default async function index() {
       });
     }
   );
+
+  ipcMain.on("close-main-window", () => app.mainWindow.close());
+  ipcMain.on("minimize-main-window", () => app.mainWindow.minimize());
+  ipcMain.on("maximize-main-window", () => app.mainWindow.maximize());
 }

@@ -7,9 +7,9 @@ import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 
 export default class App {
-  private mainWindow: MainWindow;
+  mainWindow: MainWindow;
 
-  private floatWindow?: FloatWindow;
+  floatWindow?: FloatWindow;
 
   private appTray: AppTray;
 
