@@ -55,15 +55,34 @@
         color: #fff;
         font-size: 25px;
       }
-      .config-list {
+      .config-content {
         padding: 50px 0 0 15px;
         margin: 0;
         .config-item {
-          height: 40px;
+          height: 50px;
           display: flex;
           flex-direction: row;
+          align-items: center;
           .title {
             width: 80px;
+            color: #fff;
+          }
+
+          .input-item {
+            height: 35px;
+            width: 60%;
+          }
+
+          .select-item {
+            width: 60%;
+            background: rgba(0, 0, 0, 0.15);
+            border: none;
+            height: 35px;
+            backdrop-filter: blur(5px);
+            outline: none;
+            color: #fff;
+            -webkit-appearance: none;
+            padding: 0 15px;
           }
         }
       }

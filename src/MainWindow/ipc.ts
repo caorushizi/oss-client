@@ -1,4 +1,6 @@
 import IpcService from "./lib/service/IpcService";
+import { OssType } from "../main/types";
+import { AppStore } from "../main/store/apps";
 
 const ipc = new IpcService();
 
@@ -17,6 +19,18 @@ export async function switchBucket(bucketName: string): Promise<BucketObj> {
 export async function getBuckets(): Promise<string[]> {
   const bucketList = await ipc.send<string[]>("get-buckets");
   return bucketList;
+}
+
+export async function addApp(
+  name: string,
+  type: OssType,
+  ak: string,
+  sk: string
+): Promise<AppStore> {
+  const app = await ipc.send<AppStore>("add-app", {
+    params: { name, type, ak, sk }
+  });
+  return app;
 }
 
 export function closeMainApp() {

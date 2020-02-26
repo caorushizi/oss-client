@@ -4,8 +4,11 @@
   height: 26px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.15);
-  padding: 0 10px;
+  padding: 0 15px;
   backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
   .oss-input {
     color: #fff;

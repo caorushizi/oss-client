@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { ipcRenderer } from "electron";
+import classNames from "classnames";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../Button";
 import Input from "../Input";
 import { OssType } from "../../../main/types";
-import classNames from "classnames";
+import { addApp } from "../../ipc";
 
 const mockData: AppStore[] = [
   {
@@ -80,6 +81,7 @@ const Apps = () => {
                   className={classNames("item", {
                     active: app.id === currentApp?.id
                   })}
+                  key={app.name}
                 >
                   <svg className="icon" aria-hidden="true">
                     <use xlinkHref="#icon-qiniuyun1" />
@@ -96,12 +98,13 @@ const Apps = () => {
           </ul>
         </div>
         <div className="main-right">
-          <div className="name">{currentApp?.name}</div>
+          <div className="name">{currentApp?.name || "未命名"}</div>
           {currentApp ? (
-            <ul className="config-list">
-              <li className="config-item">
+            <div className="config-content">
+              <div className="config-item">
                 <span className="title">名称</span>
                 <Input
+                  className="input-item"
                   placeholder="请输入名称"
                   defaultValue={currentApp?.name}
                   onChange={event => {
@@ -110,39 +113,66 @@ const Apps = () => {
                     setCurrentApp({ ...currentApp, name: value });
                   }}
                 />
-              </li>
-              <li className="config-item">
+              </div>
+              <div className="config-item">
+                <span className="title">类型</span>
+                <select className="select-item" name="bucket" id="bucket">
+                  <option value={OssType.qiniu}>七牛云</option>
+                  <option value={OssType.ali}>阿里云</option>
+                  <option value={OssType.tencent}>腾讯云</option>
+                </select>
+              </div>
+              <div className="config-item">
                 <span className="title">ak</span>
                 <Input
+                  className="input-item"
                   placeholder="请输入相应服务商 ak"
                   defaultValue={currentApp?.ak}
                 />
-              </li>
-              <li className="config-item">
+              </div>
+              <div className="config-item">
                 <span className="title">sk</span>
                 <Input
+                  className="input-item"
                   placeholder="请输入相应服务商 sk"
                   defaultValue={currentApp?.sk}
                 />
-              </li>
-              <li className="config-item">
-                <span className="title">bucket</span>
-                <Input
-                  placeholder="请输入 bucket"
-                  defaultValue={currentApp?.uploadBucket}
-                />
-              </li>
-              <li className="config-item">
-                <span className="title">prefix</span>
-                <Input
-                  placeholder="请输入 prefix"
-                  defaultValue={currentApp?.uploadPrefix}
-                />
-              </li>
-            </ul>
+              </div>
+              {/* <div className="config-item"> */}
+              {/*  <span className="title">bucket</span> */}
+              {/*  <Input */}
+              {/*    className="input-item" */}
+              {/*    placeholder="请输入bucket" */}
+              {/*    defaultValue={currentApp?.bucket} */}
+              {/*  /> */}
+              {/* </div> */}
+              {/* <div className="config-item"> */}
+              {/*  <span className="title">prefix</span> */}
+              {/*  <Input */}
+              {/*    className="input-item" */}
+              {/*    placeholder="请输入 prefix" */}
+              {/*    defaultValue={currentApp?.uploadPrefix} */}
+              {/*  /> */}
+              {/* </div> */}
+            </div>
           ) : (
             <div>12123</div>
           )}
+          <div>
+            <Button
+              value="123"
+              onClick={() => {
+                addApp(
+                  currentApp!.name,
+                  currentApp!.type,
+                  currentApp!.ak,
+                  currentApp!.sk
+                ).then(app => {
+                  console.log(app);
+                });
+              }}
+            />
+          </div>
         </div>
       </section>
     </div>

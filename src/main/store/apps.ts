@@ -15,6 +15,7 @@ export type AppStore = {
 };
 
 const filename = path.join(appDir, "secrets");
+console.log(filename);
 const appStore = new DataStore<AppStore | AppStore[]>({
   filename,
   autoload: true
@@ -42,6 +43,23 @@ export function getApps(): Promise<AppStore[]> {
         reject(err);
       }
       resolve(documents);
+    });
+  });
+}
+
+export function addApp(name: string, type: OssType, ak: string, sk: string) {
+  return new Promise((resolve, reject) => {
+    const app: AppStore = {
+      name,
+      ak,
+      sk,
+      type,
+      uploadBucket: "",
+      uploadPrefix: ""
+    };
+    appStore.insert(app, (err, document) => {
+      if (err) reject(err);
+      resolve(document);
     });
   });
 }
