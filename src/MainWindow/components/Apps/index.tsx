@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
-import { ipcRenderer } from "electron";
 import classNames from "classnames";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../Button";
 import Input from "../Input";
 import { OssType } from "../../../main/types";
-import { addApp } from "../../ipc";
+import { addApp, getAppsChannel } from "../../ipc";
 
 const mockData: AppStore[] = [
   {
@@ -14,24 +13,6 @@ const mockData: AppStore[] = [
     ak: "1",
     sk: "1",
     name: "默认名称1",
-    type: OssType.qiniu,
-    uploadBucket: "",
-    uploadPrefix: ""
-  },
-  {
-    _id: "2",
-    ak: "",
-    sk: "",
-    name: "默认名称2",
-    type: OssType.qiniu,
-    uploadBucket: "",
-    uploadPrefix: ""
-  },
-  {
-    _id: "3",
-    ak: "",
-    sk: "",
-    name: "默认名称3",
     type: OssType.qiniu,
     uploadBucket: "",
     uploadPrefix: ""
@@ -43,14 +24,12 @@ const Apps = () => {
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
   useEffect(() => {
-    // ipcRenderer.send("getApps");
-    // ipcRenderer.on("appsRep", (event, args: AppStore[]) => {
-    //   setApps(args);
-    // });
-    setApps(mockData);
-    if (!currentApp) {
-      setCurrentApp(mockData[0]);
-    }
+    getAppsChannel().then(allApps => {
+      setApps(allApps);
+      if (!currentApp) {
+        setCurrentApp(allApps[0]);
+      }
+    });
   }, []);
 
   return (

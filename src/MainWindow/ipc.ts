@@ -21,6 +21,11 @@ export async function getBuckets(): Promise<string[]> {
   return bucketList;
 }
 
+export async function getAppsChannel(): Promise<AppStore[]> {
+  const apps = await ipc.send<AppStore[]>("get-apps");
+  return apps;
+}
+
 export async function addApp(
   name: string,
   type: OssType,

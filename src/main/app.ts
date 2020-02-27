@@ -6,6 +6,7 @@ import AppTray from "./tray";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 import { AddAppChannel } from "./IPC/AddAppChannel";
+import { GetAppsChannel } from "./IPC/GetAppsChannel";
 
 export default class App {
   mainWindow: MainWindow;
@@ -33,7 +34,8 @@ export default class App {
     this.registerIpcChannels([
       new SwitchBucketChannel(),
       new GetBucketsChannel(),
-      new AddAppChannel()
+      new AddAppChannel(),
+      new GetAppsChannel()
     ]);
 
     // 初始化 app

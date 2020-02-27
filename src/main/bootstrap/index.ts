@@ -127,11 +127,6 @@ export default async function bootstrap(app: App) {
     );
   });
 
-  // ipcMain.on("getApps", async event => {
-  //   const apps = await getApps();
-  //   event.reply("appsRep", apps);
-  // });
-
   ipcMain.on(
     "drop-files",
     async (event, remoteDir: string, fileList: string[]) => {

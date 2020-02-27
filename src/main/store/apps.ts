@@ -24,15 +24,10 @@ const appStore = new DataStore<AppStore | AppStore[]>({
 
 export function getAppById(id: string): Promise<AppStore> {
   return new Promise((resolve, reject) => {
-    appStore.findOne({ id }, (err, app: AppStore) => {
-      if (err) {
-        reject(err);
-      }
-      if (app) {
-        resolve(app);
-      } else {
-        reject(new Error("还没有 App ！"));
-      }
+    appStore.findOne({ _id: id }, (err, app: AppStore) => {
+      if (err) reject(err);
+      if (app) resolve(app);
+      else reject(new Error("还没有 App ！"));
     });
   });
 }
