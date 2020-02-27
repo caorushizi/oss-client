@@ -7,16 +7,18 @@ export default class AppInstance {
 
   private factory: IObjectStorageService;
 
-  private constructor() {
+  private constructor(type: OssType, ak: string, sk: string) {
     const factory = services.create;
-    const ak = "aKFa7HTRldSWSXpd3nUECT-M4lnGpTHVjKhHsWHD";
-    const sk = "7MODMEi2H4yNnHmeeLUG8OReMtcDCpuXHTIUlYtL";
-    this.factory = factory(OssType.qiniu, ak, sk);
+    this.factory = factory(type, ak, sk);
+  }
+
+  static changeApp(type: OssType, ak: string, sk: string) {
+    AppInstance.instance = new AppInstance(type, ak, sk);
   }
 
   static getInstance() {
     if (!AppInstance.instance) {
-      AppInstance.instance = new AppInstance();
+      throw new Error("没有初始化 app");
     }
     return AppInstance.instance;
   }

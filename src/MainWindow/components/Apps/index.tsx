@@ -10,7 +10,7 @@ import { addApp } from "../../ipc";
 
 const mockData: AppStore[] = [
   {
-    id: "1",
+    _id: "1",
     ak: "1",
     sk: "1",
     name: "默认名称1",
@@ -19,7 +19,7 @@ const mockData: AppStore[] = [
     uploadPrefix: ""
   },
   {
-    id: "2",
+    _id: "2",
     ak: "",
     sk: "",
     name: "默认名称2",
@@ -28,7 +28,7 @@ const mockData: AppStore[] = [
     uploadPrefix: ""
   },
   {
-    id: "3",
+    _id: "3",
     ak: "",
     sk: "",
     name: "默认名称3",
@@ -79,7 +79,7 @@ const Apps = () => {
               apps.map(app => (
                 <li
                   className={classNames("item", {
-                    active: app.id === currentApp?.id
+                    active: app._id === currentApp?._id
                   })}
                   key={app.name}
                 >

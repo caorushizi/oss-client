@@ -1,10 +1,11 @@
 import DataStore from "nedb";
 import * as path from "path";
+import uuid from "uuid/v4";
 import { appDir } from "../helper/dir";
 import { OssType } from "../types";
 
 export type AppStore = {
-  id?: string;
+  _id?: string;
   type: OssType;
   ak: string;
   sk: string;

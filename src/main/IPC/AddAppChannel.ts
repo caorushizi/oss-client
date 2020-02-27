@@ -4,7 +4,7 @@ import { IpcRequest } from "./IpcRequest";
 import { addApp } from "../store/apps";
 
 export class AddAppChannel implements IpcChannelInterface {
-  getName = (): string => "ass-app";
+  getName = (): string => "add-app";
 
   async handle(event: IpcMainEvent, request: IpcRequest): Promise<void> {
     if (!request.responseChannel) {
