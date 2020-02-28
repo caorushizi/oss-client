@@ -7,17 +7,14 @@ import Input from "../Input";
 import { OssType } from "../../../main/types";
 import { addApp, getAppsChannel } from "../../ipc";
 
-const mockData: AppStore[] = [
-  {
-    _id: "1",
-    ak: "1",
-    sk: "1",
-    name: "默认名称1",
-    type: OssType.qiniu,
-    uploadBucket: "",
-    uploadPrefix: ""
-  }
-];
+const defaultApp: AppStore = {
+  ak: "",
+  sk: "",
+  name: "默认名称",
+  type: OssType.qiniu,
+  uploadBucket: "",
+  uploadPrefix: ""
+};
 
 const Apps = () => {
   const [apps, setApps] = useState<AppStore[]>([]);
@@ -40,14 +37,7 @@ const Apps = () => {
             <Button
               value="添加"
               onClick={() => {
-                const app: AppStore = {
-                  ak: "",
-                  sk: "",
-                  name: "默认名称",
-                  type: OssType.qiniu,
-                  uploadBucket: "",
-                  uploadPrefix: ""
-                };
+                const app: AppStore = { ...defaultApp };
                 setApps([...apps, app]);
                 setCurrentApp(app);
               }}
@@ -55,17 +45,25 @@ const Apps = () => {
           </div>
           <ul className="app-list">
             {apps.length > 0 ? (
-              apps.map(app => (
+              apps.map((app, index) => (
                 <li
                   className={classNames("item", {
                     active: app._id === currentApp?._id
                   })}
-                  key={app.name}
+                  key={app.name + app.sk}
                 >
-                  <svg className="icon" aria-hidden="true">
-                    <use xlinkHref="#icon-qiniuyun1" />
-                  </svg>
-                  <span>{app.name}</span>
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => {
+                      setCurrentApp(apps[index]);
+                    }}
+                  >
+                    <svg className="icon" aria-hidden="true">
+                      <use xlinkHref="#icon-qiniuyun1" />
+                    </svg>
+                    <span>{app.name}</span>
+                  </button>
                 </li>
               ))
             ) : (
@@ -80,12 +78,13 @@ const Apps = () => {
           <div className="name">{currentApp?.name || "未命名"}</div>
           {currentApp ? (
             <div className="config-content">
+              {console.log(currentApp)}
               <div className="config-item">
                 <span className="title">名称</span>
                 <Input
                   className="input-item"
                   placeholder="请输入名称"
-                  defaultValue={currentApp?.name}
+                  value={currentApp?.name}
                   onChange={event => {
                     event.persist();
                     const { value } = event.target;
@@ -95,7 +94,16 @@ const Apps = () => {
               </div>
               <div className="config-item">
                 <span className="title">类型</span>
-                <select className="select-item" name="bucket" id="bucket">
+                <select
+                  className="select-item"
+                  name="bucket"
+                  id="bucket"
+                  onChange={event => {
+                    event.persist();
+                    const { value } = event.target;
+                    setCurrentApp({ ...currentApp, name: value });
+                  }}
+                >
                   <option value={OssType.qiniu}>七牛云</option>
                   <option value={OssType.ali}>阿里云</option>
                   <option value={OssType.tencent}>腾讯云</option>
@@ -106,7 +114,12 @@ const Apps = () => {
                 <Input
                   className="input-item"
                   placeholder="请输入相应服务商 ak"
-                  defaultValue={currentApp?.ak}
+                  value={currentApp?.ak}
+                  onChange={event => {
+                    event.persist();
+                    const { value } = event.target;
+                    setCurrentApp({ ...currentApp, name: value });
+                  }}
                 />
               </div>
               <div className="config-item">
@@ -114,7 +127,12 @@ const Apps = () => {
                 <Input
                   className="input-item"
                   placeholder="请输入相应服务商 sk"
-                  defaultValue={currentApp?.sk}
+                  value={currentApp?.sk}
+                  onChange={event => {
+                    event.persist();
+                    const { value } = event.target;
+                    setCurrentApp({ ...currentApp, name: value });
+                  }}
                 />
               </div>
               {/* <div className="config-item"> */}
@@ -122,7 +140,7 @@ const Apps = () => {
               {/*  <Input */}
               {/*    className="input-item" */}
               {/*    placeholder="请输入bucket" */}
-              {/*    defaultValue={currentApp?.bucket} */}
+              {/*    value={currentApp?.bucket} */}
               {/*  /> */}
               {/* </div> */}
               {/* <div className="config-item"> */}
@@ -130,12 +148,12 @@ const Apps = () => {
               {/*  <Input */}
               {/*    className="input-item" */}
               {/*    placeholder="请输入 prefix" */}
-              {/*    defaultValue={currentApp?.uploadPrefix} */}
+              {/*    value={currentApp?.uploadPrefix} */}
               {/*  /> */}
               {/* </div> */}
             </div>
           ) : (
-            <div>12123</div>
+            <div>当前没有选中的 App</div>
           )}
           <div>
             <Button

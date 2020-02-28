@@ -9,13 +9,15 @@ const Input = ({
   icon,
   defaultValue,
   onChange,
-  className
+  className,
+  value
 }: {
   placeholder?: string;
   icon?: IconProp;
   defaultValue?: string | number | string[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
   className?: string;
+  value?: number | string | string[];
 }) => {
   return (
     <div className={classNames("oss-input--wrapper", className)}>
@@ -26,6 +28,7 @@ const Input = ({
         placeholder={placeholder || ""}
         defaultValue={defaultValue}
         onChange={onChange}
+        value={value}
       />
     </div>
   );

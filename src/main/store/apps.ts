@@ -1,6 +1,5 @@
 import DataStore from "nedb";
 import * as path from "path";
-import uuid from "uuid/v4";
 import { appDir } from "../helper/dir";
 import { OssType } from "../types";
 

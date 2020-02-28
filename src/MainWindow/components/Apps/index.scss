@@ -30,15 +30,23 @@
         .item {
           height: 40px;
           margin: 5px;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
           padding-left: 15px;
 
-          .icon {
-            height: 30px;
-            width: 30px;
-            padding-right: 15px;
+          .button {
+            height: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            cursor: pointer;
+
+            .icon {
+              height: 30px;
+              width: 30px;
+              padding-right: 15px;
+            }
           }
 
           &.active {
