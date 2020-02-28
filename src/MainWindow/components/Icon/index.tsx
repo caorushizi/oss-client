@@ -4,10 +4,6 @@ import classNames from "classnames";
 import mime from "mime";
 import mapType from "./mapType";
 
-const scriptElem = document.createElement("script");
-scriptElem.src = "//at.alicdn.com/t/font_1257166_49oq6sv8biv.js";
-document.body.appendChild(scriptElem);
-
 function getIconName(filename?: string): string {
   let iconName: string;
   if (filename) {
