@@ -21,16 +21,9 @@ import { closeMainApp, maximizeMainWindow, minimizeMainWindow } from "./ipc";
 library.add(fas);
 
 // todo: 渐变颜色的问题
-
-function app() {
-  const selectAppColor = (state: RootState) => state.app.appColor;
-  const appColor = useSelector(selectAppColor);
-
-  const selectPage = (state: RootState) => state.app.page;
-  const page = useSelector(selectPage);
-
-  const selectDirection = (state: RootState) => state.app.direction;
-  const direction = useSelector(selectDirection);
+function App() {
+  const selectApp = (state: RootState) => state.app;
+  const app = useSelector(selectApp);
 
   const bgOffset = () => {
     const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
@@ -39,24 +32,24 @@ function app() {
   };
 
   const willEnter = () => ({
-    transitionY: direction === Direction.down ? 100 : -100,
+    transitionY: app.direction === Direction.down ? 100 : -100,
     ...bgOffset()
   });
   const willLeave = () => ({
     transitionY: spring(
-      direction === Direction.down ? -100 : 100,
+      app.direction === Direction.down ? -100 : 100,
       presets.noWobble
     )
   });
 
-  const apps = useMemo(() => <Apps />, [page]);
-  const transmitting = useMemo(() => <Transmitting />, [page]);
-  const transferList = useMemo(() => <TransferList />, [page]);
-  const setting = useMemo(() => <Setting />, [page]);
-  const bucket = useMemo(() => <Bucket />, [page]);
+  const apps = useMemo(() => <Apps />, [app.page]);
+  const transmitting = useMemo(() => <Transmitting />, [app.page]);
+  const transferList = useMemo(() => <TransferList />, [app.page]);
+  const setting = useMemo(() => <Setting />, [app.page]);
+  const bucket = useMemo(() => <Bucket />, [app.page]);
 
   return (
-    <div className="App" style={{ background: appColor }}>
+    <div className="App" style={{ background: app.appColor }}>
       <div className="drag-area" />
       {platform === Platform.windows && (
         <div className="app-button">
@@ -83,7 +76,7 @@ function app() {
         willLeave={willLeave}
         styles={[
           {
-            key: page,
+            key: app.page,
             style: { transitionY: spring(0), ...bgOffset() }
           }
         ]}
@@ -115,4 +108,4 @@ function app() {
   );
 }
 
-export default app;
+export default App;
