@@ -83,7 +83,7 @@ function app() {
         willLeave={willLeave}
         styles={[
           {
-            key: String(page),
+            key: page,
             style: { transitionY: spring(0), ...bgOffset() }
           }
         ]}
@@ -94,17 +94,17 @@ function app() {
               return (
                 <section
                   className="main-wrapper"
-                  key={String(config.key)}
+                  key={config.key}
                   style={{
                     transform: `translateY(${config.style.transitionY}vh)`,
                     backgroundPosition: `${config.style.bgOffsetX}px ${config.style.bgOffsetY}px`
                   }}
                 >
-                  {String(Page.bucket) === config.key && bucket}
-                  {String(Page.transferList) === config.key && transmitting}
-                  {String(Page.transferDone) === config.key && transferList}
-                  {String(Page.setting) === config.key && setting}
-                  {String(Page.apps) === config.key && apps}
+                  {Page.bucket === config.key && bucket}
+                  {Page.transferList === config.key && transmitting}
+                  {Page.transferDone === config.key && transferList}
+                  {Page.setting === config.key && setting}
+                  {Page.apps === config.key && apps}
                 </section>
               );
             })}

@@ -24,12 +24,13 @@ export enum Layout {
   table
 }
 
+// fixme: 首字母
 export enum Page {
-  bucket,
-  transferList,
-  transferDone,
-  setting,
-  apps
+  bucket = "0bucket",
+  transferList = "1transferList",
+  transferDone = "2transferDone",
+  setting = "3setting",
+  apps = "4apps"
 }
 
 export const SET_VDIR = "SET_VDIR";

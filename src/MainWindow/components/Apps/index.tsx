@@ -100,7 +100,7 @@ const Apps = () => {
                   onChange={event => {
                     event.persist();
                     const { value } = event.target;
-                    setCurrentApp({ ...currentApp, name: value });
+                    setCurrentApp({ ...currentApp, type: Number(value) });
                   }}
                 >
                   <option value={OssType.qiniu}>七牛云</option>
@@ -117,7 +117,7 @@ const Apps = () => {
                   onChange={event => {
                     event.persist();
                     const { value } = event.target;
-                    setCurrentApp({ ...currentApp, name: value });
+                    setCurrentApp({ ...currentApp, ak: value });
                   }}
                 />
               </div>
@@ -130,7 +130,7 @@ const Apps = () => {
                   onChange={event => {
                     event.persist();
                     const { value } = event.target;
-                    setCurrentApp({ ...currentApp, name: value });
+                    setCurrentApp({ ...currentApp, sk: value });
                   }}
                 />
               </div>
