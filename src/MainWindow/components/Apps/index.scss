@@ -8,6 +8,7 @@
     overflow: auto;
 
     .main-left {
+      padding: 0 5px;
       width: 300px;
       display: flex;
       flex-direction: column;
@@ -15,11 +16,14 @@
       .header {
         height: 50px;
       }
+
       .app-list {
         flex: 1;
         padding: 0;
         margin: 0;
         overflow: auto;
+        list-style: none;
+
         .no-result {
           height: 100%;
           display: flex;
@@ -27,25 +31,31 @@
           align-items: center;
           flex-direction: column;
         }
+
         .item {
           height: 40px;
           margin: 5px;
-          padding-left: 15px;
 
           .button {
             height: 100%;
+            width: 100%;
+            padding: 0 15px;
             background: none;
             border: none;
             outline: none;
             display: flex;
             flex-direction: row;
             align-items: center;
-            cursor: pointer;
+            justify-content: space-between;
+            color: #fff;
 
             .icon {
               height: 30px;
               width: 30px;
               padding-right: 15px;
+            }
+
+            .icon-button {
             }
           }
 
@@ -57,20 +67,25 @@
         }
       }
     }
+
     .main-right {
       flex: 1;
+
       .name {
         color: #fff;
         font-size: 25px;
       }
+
       .config-content {
         padding: 50px 0 0 15px;
         margin: 0;
+
         .config-item {
           height: 50px;
           display: flex;
           flex-direction: row;
           align-items: center;
+
           .title {
             width: 80px;
             color: #fff;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../Button";
 import Input from "../Input";
@@ -63,6 +64,7 @@ const Apps = () => {
                       <use xlinkHref="#icon-qiniuyun1" />
                     </svg>
                     <span>{app.name}</span>
+                    <FontAwesomeIcon className="icon-button" icon="random" />
                   </button>
                 </li>
               ))
