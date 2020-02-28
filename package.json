@@ -6,7 +6,7 @@
   "main": ".webpack/main",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron-forge start --inspect-electron",
-    "package": "cross-env NODE_ENV=production electron-forge package",
+    "package": "cross-env NODE_ENV=development electron-forge package",
     "make": "cross-env NODE_ENV=production electron-forge make",
     "publish": "cross-env NODE_ENV=production electron-forge publish"
   },
@@ -67,12 +67,12 @@
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.47",
-    "@electron-forge/maker-deb": "6.0.0-beta.47",
-    "@electron-forge/maker-rpm": "6.0.0-beta.47",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.47",
-    "@electron-forge/maker-zip": "6.0.0-beta.47",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.47",
+    "@electron-forge/cli": "6.0.0-beta.50",
+    "@electron-forge/maker-deb": "6.0.0-beta.50",
+    "@electron-forge/maker-rpm": "6.0.0-beta.50",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.50",
+    "@electron-forge/maker-zip": "6.0.0-beta.50",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.50",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "@types/classnames": "^2.2.9",
     "@types/klaw-sync": "^6.0.0",

@@ -165,9 +165,7 @@ const Apps = () => {
                   currentApp!.type,
                   currentApp!.ak,
                   currentApp!.sk
-                ).then(app => {
-                  console.log(app);
-                });
+                ).then(app => {});
               }}
             />
           </div>

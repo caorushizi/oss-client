@@ -100,13 +100,7 @@ export default class Vdir {
       this.cursor = this.cursor.parent;
     }
   }
-
-  public backTo(name: string) {
-    console.log(this);
-    // TODO: 返回某一个文件夹
-    // if (this.cursor.navigator.indexOf(name) >= 0) {
-    // }
-  }
+  // TODO: 返回某一个文件夹
 
   public getNav() {
     return this.navigator;

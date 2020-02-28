@@ -28,9 +28,7 @@ const Buttons = ({ vdir }: PropTypes) => {
                 });
               }
             })
-            .catch(err => {
-              console.log(err);
-            });
+            .catch(err => {});
         }}
       />
       <Button value="上传" disabled onClick={() => {}} />

@@ -16,12 +16,11 @@ const devTools: any =
 
 const store = createStore(rootReducer, compose(devTools));
 
-const rootElement = document.getElementById("root");
 reactDom.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  rootElement
+  document.getElementById("root")
 );
 
 /**
