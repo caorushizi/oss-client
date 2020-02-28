@@ -4,6 +4,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { presets, spring, TransitionMotion } from "react-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Aside from "./components/Aside";
 import Transmitting from "./components/Transmitting";
 import { RootState } from "./store";
@@ -13,7 +14,6 @@ import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
 import { platform } from "./helper/utils";
 import { Platform } from "./types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Apps from "./components/Apps";
 import { closeMainApp, maximizeMainWindow, minimizeMainWindow } from "./ipc";
 
@@ -56,17 +56,17 @@ function app() {
           <FontAwesomeIcon
             className="icon"
             icon="minus-circle"
-            onClick={closeMainApp}
-          />
-          <FontAwesomeIcon
-            className="icon"
-            icon="plus-circle"
             onClick={minimizeMainWindow}
           />
           <FontAwesomeIcon
             className="icon"
-            icon="times-circle"
+            icon="plus-circle"
             onClick={maximizeMainWindow}
+          />
+          <FontAwesomeIcon
+            className="icon"
+            icon="times-circle"
+            onClick={closeMainApp}
           />
         </div>
       )}
