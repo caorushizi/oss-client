@@ -78,7 +78,6 @@ const Apps = () => {
           <div className="name">{currentApp?.name || "未命名"}</div>
           {currentApp ? (
             <div className="config-content">
-              {console.log(currentApp)}
               <div className="config-item">
                 <span className="title">名称</span>
                 <Input

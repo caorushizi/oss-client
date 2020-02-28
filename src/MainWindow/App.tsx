@@ -1,10 +1,11 @@
-import React from "react";
-import "./App.scss";
+import React, { useMemo } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { presets, spring, TransitionMotion } from "react-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import "./App.scss";
 import Aside from "./components/Aside";
 import Transmitting from "./components/Transmitting";
 import { RootState } from "./store";
@@ -47,6 +48,12 @@ function app() {
       presets.noWobble
     )
   });
+
+  const apps = useMemo(() => <Apps />, [page]);
+  const transmitting = useMemo(() => <Transmitting />, [page]);
+  const transferList = useMemo(() => <TransferList />, [page]);
+  const setting = useMemo(() => <Setting />, [page]);
+  const bucket = useMemo(() => <Bucket />, [page]);
 
   return (
     <div className="App" style={{ background: appColor }}>
@@ -93,11 +100,11 @@ function app() {
                     backgroundPosition: `${config.style.bgOffsetX}px ${config.style.bgOffsetY}px`
                   }}
                 >
-                  {String(Page.bucket) === config.key && <Bucket />}
-                  {String(Page.transferList) === config.key && <Transmitting />}
-                  {String(Page.transferDone) === config.key && <TransferList />}
-                  {String(Page.setting) === config.key && <Setting />}
-                  {String(Page.apps) === config.key && <Apps />}
+                  {String(Page.bucket) === config.key && bucket}
+                  {String(Page.transferList) === config.key && transmitting}
+                  {String(Page.transferDone) === config.key && transferList}
+                  {String(Page.setting) === config.key && setting}
+                  {String(Page.apps) === config.key && apps}
                 </section>
               );
             })}
