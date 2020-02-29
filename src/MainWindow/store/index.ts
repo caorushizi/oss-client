@@ -1,8 +1,7 @@
 import { combineReducers } from "redux";
 import { appReducer } from "./app/reducers";
 
-debugger
-export const rootReducer: any = combineReducers({
+export const rootReducer = combineReducers({
   app: appReducer
 });
 
