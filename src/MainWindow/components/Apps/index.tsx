@@ -144,6 +144,7 @@ const Apps = () => {
               {/*    value={currentApp?.bucket} */}
               {/*  /> */}
               {/* </div> */}
+
               {/* <div className="config-item"> */}
               {/*  <span className="title">prefix</span> */}
               {/*  <Input */}
