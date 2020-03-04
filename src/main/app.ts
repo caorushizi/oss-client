@@ -1,8 +1,7 @@
 import { app, ipcMain } from "electron";
-import { MainWindow, FloatWindow } from "./windows";
+import { FloatWindow, MainWindow } from "./windows";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/types";
-import AppTray from "./tray";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 import { AddAppChannel } from "./IPC/AddAppChannel";
@@ -13,7 +12,7 @@ export default class App {
 
   floatWindow?: FloatWindow;
 
-  private appTray: AppTray;
+  // private appTray: AppTray;
 
   constructor() {
     // todo: require
@@ -26,7 +25,7 @@ export default class App {
     if (process.platform === Platform.windows) {
       this.floatWindow = new FloatWindow();
     }
-    this.appTray = new AppTray();
+    // this.appTray = new AppTray();
   }
 
   init() {
@@ -56,7 +55,7 @@ export default class App {
   appReady() {
     this.mainWindow.createWindow();
     if (this.floatWindow) this.floatWindow.createWindow();
-    this.appTray.init();
+    // this.appTray.init();
   }
 
   onWindowAllClosed = () => {
