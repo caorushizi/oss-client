@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
+
+import "./index.scss";
 import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../Icon";

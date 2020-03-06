@@ -1,8 +1,9 @@
 import React from "react";
-import "./index.scss";
 import { useSelector } from "react-redux";
 import FileDrop from "react-file-drop";
 import { ipcRenderer } from "electron";
+
+import "./index.scss";
 import ToolBar from "./toolbar";
 import Table from "./table";
 import { Layout } from "../../store/app/types";

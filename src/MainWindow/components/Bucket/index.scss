@@ -75,6 +75,7 @@
 
     .main-table-wrapper {
       height: 100%;
+
       .main-table {
         width: 100%;
 
@@ -120,6 +121,7 @@
 
     .main-grid {
       height: 100%;
+
       .main-grid__cell {
         float: left;
         height: 80px;
@@ -160,10 +162,12 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
       .title {
         font-size: 24px;
         color: #ffffff;
       }
+
       .sub-title {
         margin-top: 10px;
         font-size: 15px;
@@ -185,6 +189,7 @@
       .current-select {
         color: rgba(255, 255, 255, 1);
       }
+
       .current-total {
         color: rgba(255, 255, 255, 0.75);
       }
