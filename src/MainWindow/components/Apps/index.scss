@@ -35,18 +35,23 @@
         .item {
           height: 40px;
           margin: 5px;
+          padding: 0 15px;
+          color: #fff;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
 
           .button {
             height: 100%;
             width: 100%;
-            padding: 0 15px;
             background: none;
             border: none;
             outline: none;
+            text-align: left;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-between;
             color: #fff;
 
             .icon {

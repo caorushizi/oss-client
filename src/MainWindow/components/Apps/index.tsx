@@ -64,8 +64,15 @@ const Apps = () => {
                       <use xlinkHref="#icon-qiniuyun1" />
                     </svg>
                     <span>{app.name}</span>
-                    <FontAwesomeIcon className="icon-button" icon="random" />
                   </button>
+                  <FontAwesomeIcon
+                    className="icon-button"
+                    icon="random"
+                    onClick={() => {
+                      // 更换 App
+                      console.log(12312);
+                    }}
+                  />
                 </li>
               ))
             ) : (
@@ -159,7 +166,7 @@ const Apps = () => {
           )}
           <div>
             <Button
-              value="123"
+              value="添加"
               onClick={() => {
                 addApp(
                   currentApp!.name,
