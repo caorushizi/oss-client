@@ -12,7 +12,7 @@ export default class AppInstance {
     this.factory = factory(type, ak, sk);
   }
 
-  static changeApp(type: OssType, ak: string, sk: string) {
+  static changeApp(type: OssType, ak: string, sk: string): void {
     AppInstance.instance = new AppInstance(type, ak, sk);
   }
 
