@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { presets, spring, TransitionMotion } from "react-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -16,12 +16,70 @@ import Setting from "./components/Setting";
 import { platform } from "./helper/utils";
 import { Platform } from "./types";
 import Apps from "./components/Services";
-import { closeMainApp, maximizeMainWindow, minimizeMainWindow } from "./ipc";
+import {
+  closeMainApp,
+  getBuckets,
+  maximizeMainWindow,
+  minimizeMainWindow,
+  switchBucket
+} from "./ipc";
+import { qiniuAdapter } from "./lib/adapter/qiniu";
+import { Vdir } from "./lib/vdir";
+import { switchPage } from "./store/app/actions";
 
 library.add(fas);
 
 // todo: 渐变颜色的问题
 function App() {
+  const dispatch = useDispatch();
+
+  const [bucketLoading, setBucketLoading] = useState<boolean>(false);
+  const [activePage, setActivePage] = useState<Page>(Page.bucket);
+  const [activeBucket, setActiveBucket] = useState<string>("");
+  const [bucketList, setBucketList] = useState<string[]>([]);
+  const tabChange = (page: Page, bucket?: string) => {
+    setBucketLoading(true);
+    setActivePage(page);
+    if (bucket) setActiveBucket(bucket);
+    dispatch(switchPage(page, bucket));
+    setBucketLoading(false);
+  };
+  const handleSwitchBucket = async (bucketName: string) => {
+    setBucketLoading(true);
+    const bucketObj = await switchBucket(bucketName);
+    const dir = Vdir.from(qiniuAdapter(bucketObj.files));
+    // dispatch(setVdir(dir));
+    // dispatch(switchPage(Page.bucket, bucketName));
+    // dispatch(setDomains(bucketObj.domains));
+    setBucketLoading(false);
+  };
+
+  useEffect(() => {
+    setBucketLoading(true);
+
+    const handleGetBuckets = async () => {
+      const buckets = await getBuckets();
+      // todo: 保存 cur bucket
+      setBucketList(buckets);
+      if (buckets.length > 0) {
+        const bucketName = buckets[0];
+        await handleSwitchBucket(bucketName);
+      }
+    };
+
+    handleGetBuckets();
+
+    // ipcRenderer.on("transfers-reply", (event, documents) => {
+    //   dispatch(setTransfers(documents));
+    //   dispatch(switchPage(Page.transferDone));
+    // });
+    //
+    // ipcRenderer.on("transmitting-reply", (event, documents) => {
+    //   dispatch(setTransfers(documents));
+    //   dispatch(switchPage(Page.transferList));
+    // });
+  }, []);
+
   const selectApp = (state: RootState) => state.app;
   const app = useSelector(selectApp);
 
@@ -70,7 +128,13 @@ function App() {
           />
         </div>
       )}
-      <TheSidebar />
+      <TheSidebar
+        bucketLoading={bucketLoading}
+        bucketList={bucketList}
+        activeBucket={activeBucket}
+        activePage={activePage}
+        tabChange={tabChange}
+      />
       <TransitionMotion
         willEnter={willEnter}
         willLeave={willLeave}

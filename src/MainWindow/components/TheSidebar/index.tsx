@@ -1,70 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { ipcRenderer } from "electron";
 import { RootState } from "../../store";
-import {
-  randomColor,
-  setDomains,
-  setTransfers,
-  setVdir,
-  switchPage
-} from "../../store/app/actions";
+import { randomColor } from "../../store/app/actions";
 import { Page } from "../../store/app/types";
-import { Vdir } from "../../lib/vdir";
-import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import Loading from "../BaseLoading";
-import { getBuckets, switchBucket } from "../../ipc";
 
-function TheSidebar() {
+type PropTypes = {
+  bucketList: string[];
+  bucketLoading: boolean;
+  activeBucket: string;
+  activePage: Page;
+  tabChange: (page: Page, bucket?: string) => void;
+};
+
+function TheSidebar({
+  bucketList,
+  bucketLoading,
+  activeBucket,
+  activePage,
+  tabChange
+}: PropTypes) {
   const dispatch = useDispatch();
-  const [bucketList, setBucketList] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const selectApp = (state: RootState) => state.app;
   const app = useSelector(selectApp);
 
-  const handleSwitchBucket = async (bucketName: string) => {
-    setLoading(true);
-    const bucketObj = await switchBucket(bucketName);
-    const dir = Vdir.from(qiniuAdapter(bucketObj.files));
-    dispatch(setVdir(dir));
-    dispatch(switchPage(Page.bucket, bucketName));
-    dispatch(setDomains(bucketObj.domains));
-    setLoading(false);
-  };
-
   useEffect(() => {
     dispatch(randomColor());
-  }, [app.bucket, app.page]);
+  }, [activeBucket, activePage]);
 
-  useEffect(() => {
-    setLoading(true);
-
-    const handleGetBuckets = async () => {
-      const buckets = await getBuckets();
-      // todo: 保存 cur bucket
-      setBucketList(buckets);
-      if (buckets.length > 0) {
-        const bucketName = buckets[0];
-        await handleSwitchBucket(bucketName);
-      }
-    };
-
-    handleGetBuckets();
-
-    ipcRenderer.on("transfers-reply", (event, documents) => {
-      dispatch(setTransfers(documents));
-      dispatch(switchPage(Page.transferDone));
-    });
-
-    ipcRenderer.on("transmitting-reply", (event, documents) => {
-      dispatch(setTransfers(documents));
-      dispatch(switchPage(Page.transferList));
-    });
-  }, []);
+  const activeTag = (page: Page, bucket?: string) => ({
+    active: activePage === page && activeBucket === bucket
+  });
 
   return (
     <div className="aside-wrapper" style={{ background: app.asideColor }}>
@@ -74,23 +44,21 @@ function TheSidebar() {
       <section className="container">
         <div className="title">
           储存空间
-          {loading && <Loading className="loading" />}
+          {bucketLoading && <Loading className="loading" />}
         </div>
         <ul className="list">
-          {bucketList.map((bucketName: string) => (
+          {bucketList.map((bucket: string) => (
             <li
-              className={classNames("item", {
-                active: app.page === Page.bucket && app.bucket === bucketName
-              })}
-              key={bucketName}
+              className={classNames("item", activeTag(Page.bucket, bucket))}
+              key={bucket}
             >
               <FontAwesomeIcon className="icon" icon="folder" />
               <input
                 type="button"
                 className="link"
-                onClick={() => handleSwitchBucket(bucketName)}
-                title={bucketName}
-                value={bucketName}
+                onClick={() => tabChange(Page.bucket, bucket)}
+                title={bucket}
+                value={bucket}
               />
             </li>
           ))}
@@ -99,30 +67,22 @@ function TheSidebar() {
       <section className="container">
         <div className="title">传输列表</div>
         <ul className="list">
-          <li
-            className={classNames("item", {
-              active: app.page === Page.transferList
-            })}
-          >
+          <li className={classNames("item", activeTag(Page.transferList))}>
             <FontAwesomeIcon className="icon" icon="arrow-up" />
             <input
               type="button"
               value="传输列表"
               className="link"
-              onClick={() => ipcRenderer.send("transmitting")}
+              onClick={() => tabChange(Page.transferList)}
             />
           </li>
-          <li
-            className={classNames("item", {
-              active: app.page === Page.transferDone
-            })}
-          >
+          <li className={classNames("item", activeTag(Page.transferDone))}>
             <FontAwesomeIcon className="icon" icon="check-circle" />
             <input
               type="button"
               value="传输完成"
               className="link"
-              onClick={() => ipcRenderer.send("transfers")}
+              onClick={() => tabChange(Page.transferDone)}
             />
           </li>
         </ul>
@@ -130,28 +90,22 @@ function TheSidebar() {
       <section className="container">
         <div className="title">设置</div>
         <ul className="list">
-          <li
-            className={classNames("item", {
-              active: app.page === Page.setting
-            })}
-          >
+          <li className={classNames("item", activeTag(Page.setting))}>
             <FontAwesomeIcon className="icon" icon="cog" />
             <input
               type="button"
               value="设置"
               className="link"
-              onClick={() => dispatch(switchPage(Page.setting))}
+              onClick={() => tabChange(Page.setting)}
             />
           </li>
-          <li
-            className={classNames("item", { active: app.page === Page.apps })}
-          >
+          <li className={classNames("item", activeTag(Page.apps))}>
             <FontAwesomeIcon className="icon" icon="rocket" />
             <input
               type="button"
               value="apps"
               className="link"
-              onClick={() => dispatch(switchPage(Page.apps))}
+              onClick={() => tabChange(Page.apps)}
             />
           </li>
         </ul>
@@ -161,3 +115,6 @@ function TheSidebar() {
 }
 
 export default TheSidebar;
+
+// TODO: 修改 传输列表和传输完成的组件名
+// TODO: 修改组件内部命名

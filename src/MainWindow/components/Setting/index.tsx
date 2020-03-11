@@ -1,9 +1,10 @@
 import React from "react";
 import Switch from "rc-switch";
 import "rc-switch/assets/index.css";
+
+import "./index.scss";
 import Input from "../BaseInput";
 import Radio from "../BaseRadio";
-import "./index.scss";
 import { Platform } from "../../types";
 import { platform } from "../../helper/utils";
 

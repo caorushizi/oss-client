@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./index.scss";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import "./index.scss";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../BaseButton";
 import Input from "../BaseInput";
