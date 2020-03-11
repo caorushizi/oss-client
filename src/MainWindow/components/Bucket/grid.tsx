@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./index.scss";
 import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
-import Icon from "../Icon";
+import Icon from "../BaseIcon";
 import { changeNotifier } from "../../store/app/actions";
 import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
 import Ffile from "../../lib/vdir/ffile";

@@ -1,6 +1,6 @@
 import { ipcRenderer, remote } from "electron";
 import React from "react";
-import Button from "../Button";
+import Button from "../BaseButton";
 import Vdir from "../../lib/vdir/vdir";
 
 type PropTypes = { vdir: Vdir };
@@ -28,7 +28,7 @@ const Buttons = ({ vdir }: PropTypes) => {
                 });
               }
             })
-            .catch(err => {});
+            .catch(() => {});
         }}
       />
       <Button value="上传" disabled onClick={() => {}} />

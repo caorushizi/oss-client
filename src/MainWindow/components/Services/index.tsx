@@ -3,8 +3,8 @@ import "./index.scss";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppStore } from "../../../main/store/apps";
-import Button from "../Button";
-import Input from "../Input";
+import Button from "../BaseButton";
+import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import { addApp, getAppsChannel } from "../../ipc";
 
@@ -166,7 +166,7 @@ const Apps = () => {
                   currentApp!.type,
                   currentApp!.ak,
                   currentApp!.sk
-                ).then(app => {});
+                ).then(() => {});
               }}
             />
           </div>

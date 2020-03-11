@@ -5,8 +5,8 @@ import { Vdir } from "../../lib/vdir";
 import { RootState } from "../../store";
 import { changeNotifier, switchLayout } from "../../store/app/actions";
 import { Layout } from "../../store/app/types";
-import Breadcrumb from "../Breadcrumb";
-import Input from "../Input";
+import Breadcrumb from "../BaseBreadcrumb";
+import Input from "../BaseInput";
 import "./index.scss";
 
 const ToolBar = ({ vdir }: { vdir: Vdir }) => {

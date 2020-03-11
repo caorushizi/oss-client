@@ -8,8 +8,8 @@ import {
   taskTypeFormatter
 } from "../../helper/utils";
 import { RootState } from "../../store";
-import Button from "../Button";
-import Icon from "../Icon";
+import Button from "../BaseButton";
+import Icon from "../BaseIcon";
 import "./index.scss";
 
 const TransferList = () => {

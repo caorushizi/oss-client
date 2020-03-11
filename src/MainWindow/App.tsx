@@ -6,7 +6,7 @@ import { presets, spring, TransitionMotion } from "react-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./App.scss";
-import Aside from "./components/Aside";
+import TheSidebar from "./components/TheSidebar";
 import Transmitting from "./components/Transmitting";
 import { RootState } from "./store";
 import { Direction, Page } from "./store/app/types";
@@ -15,7 +15,7 @@ import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
 import { platform } from "./helper/utils";
 import { Platform } from "./types";
-import Apps from "./components/Apps";
+import Apps from "./components/Services";
 import { closeMainApp, maximizeMainWindow, minimizeMainWindow } from "./ipc";
 
 library.add(fas);
@@ -70,7 +70,7 @@ function App() {
           />
         </div>
       )}
-      <Aside />
+      <TheSidebar />
       <TransitionMotion
         willEnter={willEnter}
         willLeave={willLeave}

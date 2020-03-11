@@ -6,7 +6,7 @@ import { Vdir } from "../../lib/vdir";
 import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
 import { RootState } from "../../store";
 import { changeNotifier } from "../../store/app/actions";
-import Icon from "../Icon";
+import Icon from "../BaseIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
 import Ffile from "../../lib/vdir/ffile";
 

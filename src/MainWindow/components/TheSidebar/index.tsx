@@ -15,10 +15,10 @@ import {
 import { Page } from "../../store/app/types";
 import { Vdir } from "../../lib/vdir";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
-import Loading from "../Loading";
+import Loading from "../BaseLoading";
 import { getBuckets, switchBucket } from "../../ipc";
 
-function Aside() {
+function TheSidebar() {
   const dispatch = useDispatch();
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,22 +36,23 @@ function Aside() {
     setLoading(false);
   };
 
-  const handleGetBuckets = async () => {
-    const buckets = await getBuckets();
-    // todo: 保存 cur bucket
-    setBucketList(buckets);
-    if (buckets.length > 0) {
-      const bucketName = buckets[0];
-      await handleSwitchBucket(bucketName);
-    }
-  };
-
   useEffect(() => {
     dispatch(randomColor());
   }, [app.bucket, app.page]);
 
   useEffect(() => {
     setLoading(true);
+
+    const handleGetBuckets = async () => {
+      const buckets = await getBuckets();
+      // todo: 保存 cur bucket
+      setBucketList(buckets);
+      if (buckets.length > 0) {
+        const bucketName = buckets[0];
+        await handleSwitchBucket(bucketName);
+      }
+    };
+
     handleGetBuckets();
 
     ipcRenderer.on("transfers-reply", (event, documents) => {
@@ -159,4 +160,4 @@ function Aside() {
   );
 }
 
-export default Aside;
+export default TheSidebar;
