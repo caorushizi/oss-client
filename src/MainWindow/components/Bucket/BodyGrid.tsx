@@ -1,42 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
 import "./index.scss";
 import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../BaseIcon";
-import { changeNotifier } from "../../store/app/actions";
-import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
 import Ffile from "../../lib/vdir/ffile";
-import { RootState } from "../../store";
 
-type PropTypes = { vdir: Vdir };
+type PropTypes = {
+  items: Item[];
+  domains: string[];
+  onFolderSelect: (name: string) => void;
+  onFolderContextMenu: () => void;
+  onFileSelect: () => void;
+  onFileContextMenu: () => void;
+};
 
-const Grid = ({ vdir }: PropTypes) => {
-  const dispatch = useDispatch();
-  const [files, setFiles] = useState<Item[]>([]);
-  const selectApp = (state: RootState) => state.app;
-  const app = useSelector(selectApp);
-
-  useEffect(() => {
-    setFiles(vdir.listFiles());
-  }, [app.notifier, vdir]);
-
+const BodyGrid = ({
+  items,
+  domains,
+  onFolderSelect,
+  onFolderContextMenu,
+  onFileSelect,
+  onFileContextMenu
+}: PropTypes) => {
   return (
     <div className="main-grid">
-      {files.length > 0 ? (
-        files.map((item: Item) =>
+      {items.length > 0 ? (
+        items.map((item: Item) =>
           Vdir.isDir(item) ? (
             // vdir
             <div
               className="main-grid__cell"
               key={item.name}
-              onContextMenu={() => vdirContextMenu(item as Vdir)}
-              onDoubleClick={() => {
-                dispatch(changeNotifier());
-                vdir.changeDir(item.name);
-                setFiles(vdir.listFiles());
-              }}
+              onContextMenu={() => onFolderContextMenu()}
+              onDoubleClick={() => onFolderSelect(item.name)}
             >
               <Icon className="icon" />
               <span>{item.name}</span>
@@ -46,16 +43,14 @@ const Grid = ({ vdir }: PropTypes) => {
             <div
               className="main-grid__cell"
               key={item.name}
-              onContextMenu={() => {
-                const domain = app.domains.length > 0 ? app.domains[0] : "";
-                fileContextMenu(item as Ffile, domain);
-              }}
+              onContextMenu={onFileContextMenu}
+              onDoubleClick={onFileSelect}
             >
               {(item as Ffile).type.startsWith("image/") &&
-              app.domains.length > 0 ? (
+              domains.length > 0 ? (
                 <img
                   className="icon"
-                  src={`http://${app.domains[0]}/${
+                  src={`http://${domains[0]}/${
                     (item as Ffile).webkitRelativePath
                   }`}
                   alt={item.name}
@@ -77,4 +72,4 @@ const Grid = ({ vdir }: PropTypes) => {
   );
 };
 
-export default Grid;
+export default BodyGrid;

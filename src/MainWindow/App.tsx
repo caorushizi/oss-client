@@ -1,73 +1,61 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
 import { presets, spring, TransitionMotion } from "react-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./App.scss";
 import TheSidebar from "./components/TheSidebar";
 import Transmitting from "./components/Transmitting";
-import { RootState } from "./store";
 import { Direction, Page } from "./store/app/types";
 import Bucket from "./components/Bucket";
 import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
-import { platform } from "./helper/utils";
+import { getThemeColor, platform, ThemeColor } from "./helper/utils";
 import { Platform } from "./types";
 import Apps from "./components/Services";
 import {
   closeMainApp,
   getBuckets,
   maximizeMainWindow,
-  minimizeMainWindow,
-  switchBucket
+  minimizeMainWindow
 } from "./ipc";
-import { qiniuAdapter } from "./lib/adapter/qiniu";
-import { Vdir } from "./lib/vdir";
-import { switchPage } from "./store/app/actions";
 
 library.add(fas);
 
 // todo: 渐变颜色的问题
 function App() {
-  const dispatch = useDispatch();
-
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
+  const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [activePage, setActivePage] = useState<Page>(Page.bucket);
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
-  const tabChange = (page: Page, bucket?: string) => {
-    setBucketLoading(true);
+  const [direction, setDirection] = useState<Direction>(Direction.down);
+  const tabChange = async (page: Page, bucket?: string) => {
+    if (page < activePage) {
+      setDirection(Direction.down);
+    } else {
+      setDirection(Direction.up);
+    }
+    if (bucket) setBucketLoading(true);
     setActivePage(page);
     if (bucket) setActiveBucket(bucket);
-    dispatch(switchPage(page, bucket));
-    setBucketLoading(false);
   };
-  const handleSwitchBucket = async (bucketName: string) => {
-    setBucketLoading(true);
-    const bucketObj = await switchBucket(bucketName);
-    const dir = Vdir.from(qiniuAdapter(bucketObj.files));
-    // dispatch(setVdir(dir));
-    // dispatch(switchPage(Page.bucket, bucketName));
-    // dispatch(setDomains(bucketObj.domains));
+  const onLoadedBucket = () => {
     setBucketLoading(false);
   };
 
   useEffect(() => {
-    setBucketLoading(true);
+    setThemeColor(getThemeColor());
+  }, [activePage]);
 
-    const handleGetBuckets = async () => {
+  useEffect(() => {
+    (async () => {
       const buckets = await getBuckets();
       // todo: 保存 cur bucket
       setBucketList(buckets);
-      if (buckets.length > 0) {
-        const bucketName = buckets[0];
-        await handleSwitchBucket(bucketName);
-      }
-    };
-
-    handleGetBuckets();
+      if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
+    })();
 
     // ipcRenderer.on("transfers-reply", (event, documents) => {
     //   dispatch(setTransfers(documents));
@@ -80,9 +68,6 @@ function App() {
     // });
   }, []);
 
-  const selectApp = (state: RootState) => state.app;
-  const app = useSelector(selectApp);
-
   const bgOffset = () => {
     const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
     const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
@@ -90,24 +75,18 @@ function App() {
   };
 
   const willEnter = () => ({
-    transitionY: app.direction === Direction.down ? 100 : -100,
+    transitionY: direction === Direction.down ? 100 : -100,
     ...bgOffset()
   });
   const willLeave = () => ({
     transitionY: spring(
-      app.direction === Direction.down ? -100 : 100,
+      direction === Direction.down ? -100 : 100,
       presets.noWobble
     )
   });
 
-  const apps = useMemo(() => <Apps />, [app.page]);
-  const transmitting = useMemo(() => <Transmitting />, [app.page]);
-  const transferList = useMemo(() => <TransferList />, [app.page]);
-  const setting = useMemo(() => <Setting />, [app.page]);
-  const bucket = useMemo(() => <Bucket />, [app.page]);
-
   return (
-    <div className="App" style={{ background: app.appColor }}>
+    <div className="App" style={{ background: themeColor.appColor }}>
       <div className="drag-area" />
       {platform === Platform.windows && (
         <div className="app-button">
@@ -134,13 +113,14 @@ function App() {
         activeBucket={activeBucket}
         activePage={activePage}
         tabChange={tabChange}
+        color={themeColor.asideColor}
       />
       <TransitionMotion
         willEnter={willEnter}
         willLeave={willLeave}
         styles={[
           {
-            key: app.page,
+            key: activePage,
             style: { transitionY: spring(0), ...bgOffset() }
           }
         ]}
@@ -157,11 +137,16 @@ function App() {
                     backgroundPosition: `${config.style.bgOffsetX}px ${config.style.bgOffsetY}px`
                   }}
                 >
-                  {Page.bucket === config.key && bucket}
-                  {Page.transferList === config.key && transmitting}
-                  {Page.transferDone === config.key && transferList}
-                  {Page.setting === config.key && setting}
-                  {Page.apps === config.key && apps}
+                  {Page.bucket === config.key && (
+                    <Bucket
+                      bucket={activeBucket}
+                      onLoadedBucket={onLoadedBucket}
+                    />
+                  )}
+                  {Page.transferList === config.key && <Transmitting />}
+                  {Page.transferDone === config.key && <TransferList />}
+                  {Page.setting === config.key && <Setting />}
+                  {Page.apps === config.key && <Apps />}
                 </section>
               );
             })}

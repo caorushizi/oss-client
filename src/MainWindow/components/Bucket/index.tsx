@@ -1,46 +1,114 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import FileDrop from "react-file-drop";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 
 import "./index.scss";
-import ToolBar from "./toolbar";
-import Table from "./table";
+import HeaderToolbar from "./HeaderToolbar";
+import BodyTable from "./BodyTable";
 import { Layout } from "../../store/app/types";
-import { RootState } from "../../store";
-import Grid from "./grid";
-import Footer from "./footer";
-import Buttons from "./buttons";
+import BodyGrid from "./BodyGrid";
+import Footer from "./Footer";
+import HeaderButtonGroup from "./HeaderButtonGroup";
+import Vdir from "../../lib/vdir/vdir";
+import { switchBucket } from "../../ipc";
+import { qiniuAdapter } from "../../lib/adapter/qiniu";
+import { Item } from "../../lib/vdir/types";
 
-const Bucket = () => {
-  const selectLayout = (state: RootState) => state.app.layout;
-  const layout = useSelector(selectLayout);
-  const selectVdir = (state: RootState) => state.app.vdir;
-  const vdir = useSelector(selectVdir);
-  const selectBucket = (state: RootState) => state.app.bucket;
-  const bucket = useSelector(selectBucket);
+type PropTypes = {
+  bucket: string;
+  onLoadedBucket: () => void;
+};
+
+const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
+  const [layout, setLayout] = useState<Layout>(Layout.grid);
+  const [vFolder, setVFolder] = useState<Vdir>(new Vdir("root"));
+  const [domains, setDomains] = useState<string[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+
+  useEffect(() => {
+    switchBucket(bucket).then(bucketIpcRep => {
+      const adaptedFiles = qiniuAdapter(bucketIpcRep.files);
+      const vf = Vdir.from(adaptedFiles);
+      onLoadedBucket();
+      setDomains(bucketIpcRep.domains);
+      setVFolder(vf);
+      setItems(vf.listFiles());
+    });
+  }, [bucket]);
+
+  const fileUpload = () => {
+    // todo: 记录上次打开文件夹
+    const userPath = remote.app.getPath("documents");
+    remote.dialog
+      .showOpenDialog({
+        defaultPath: userPath,
+        properties: ["openFile"]
+      })
+      .then(result => {
+        if (!result.canceled) {
+          result.filePaths.forEach(filPath => {
+            ipcRenderer.send(
+              "req:file:upload",
+              vFolder.getPathPrefix(),
+              filPath
+            );
+          });
+        }
+      })
+      .catch(() => {});
+  };
+  const backspace = () => {
+    vFolder.back();
+  };
+  const onFileDrop = (files: FileList | null) => {
+    if (files) {
+      const filePaths: string[] = [];
+      for (let i = 0; i < files.length; i += 1) {
+        filePaths.push(files[i].path);
+      }
+      ipcRenderer.send("drop-files", vFolder.getPathPrefix(), filePaths);
+    }
+  };
+  const onFolderSelect = (name: string) => {
+    vFolder.changeDir(name);
+    setItems(vFolder.listFiles());
+  };
 
   return (
     <div className="bucket-wrapper">
-      <Buttons vdir={vdir} />
-      <ToolBar vdir={vdir} />
+      <HeaderButtonGroup fileUpload={fileUpload} />
+      <HeaderToolbar
+        backspace={backspace}
+        layout={layout}
+        changeLayout={() => {
+          if (layout === Layout.grid) {
+            setLayout(Layout.table);
+          } else {
+            setLayout(Layout.grid);
+          }
+        }}
+        navigators={vFolder.getNav()}
+      />
       {bucket ? (
         <div className="content-wrapper">
-          <FileDrop
-            onDrop={files => {
-              if (files) {
-                const filePaths: string[] = [];
-                for (let i = 0; i < files.length; i += 1) {
-                  filePaths.push(files[i].path);
-                }
-                ipcRenderer.send("drop-files", vdir.getPathPrefix(), filePaths);
-              }
-            }}
-          />
+          <FileDrop onDrop={onFileDrop} />
           {Layout.grid === layout ? (
-            <Grid vdir={vdir} />
+            <BodyGrid
+              domains={[]}
+              items={items}
+              onFolderSelect={onFolderSelect}
+              onFolderContextMenu={() => {}}
+              onFileSelect={() => {}}
+              onFileContextMenu={() => {}}
+            />
           ) : (
-            <Table vdir={vdir} />
+            <BodyTable
+              items={items}
+              onFolderSelect={onFolderSelect}
+              onFolderContextMenu={() => {}}
+              onFileSelect={() => {}}
+              onFileContextMenu={() => {}}
+            />
           )}
         </div>
       ) : (
@@ -51,7 +119,11 @@ const Bucket = () => {
           </div>
         </div>
       )}
-      <Footer vdir={vdir} />
+      <Footer
+        totalItem={vFolder.getTotalItem()}
+        selectedItem={0}
+        domains={domains}
+      />
     </div>
   );
 };

@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./index.scss";
-import { useDispatch, useSelector } from "react-redux";
 import { Item } from "../../lib/vdir/types";
 import { Vdir } from "../../lib/vdir";
-import { fileContextMenu, vdirContextMenu } from "../../helper/contextMenu";
-import { RootState } from "../../store";
-import { changeNotifier } from "../../store/app/actions";
 import Icon from "../BaseIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
-import Ffile from "../../lib/vdir/ffile";
 
-type PropTypes = { vdir: Vdir };
+type PropTypes = {
+  items: Item[];
+  onFolderSelect: (name: string) => void;
+  onFolderContextMenu: () => void;
+  onFileSelect: () => void;
+  onFileContextMenu: () => void;
+};
 
-const Table = ({ vdir }: PropTypes) => {
-  const dispatch = useDispatch();
-  const [files, setFiles] = useState<Item[]>([]);
-
-  const selectApp = (state: RootState) => state.app;
-  const app = useSelector(selectApp);
-
-  useEffect(() => {
-    setFiles(vdir.listFiles());
-  }, [app.notifier, vdir]);
-
+const BodyTable = ({
+  items,
+  onFolderSelect,
+  onFolderContextMenu,
+  onFileSelect,
+  onFileContextMenu
+}: PropTypes) => {
   return (
     <div className="main-table-wrapper">
-      {files.length > 0 ? (
+      {items.length > 0 ? (
         <table className="main-table">
           <thead>
             <tr className="main-table__row">
@@ -36,18 +33,14 @@ const Table = ({ vdir }: PropTypes) => {
             </tr>
           </thead>
           <tbody>
-            {files.map((item: Item, index) =>
+            {items.map((item: Item, index) =>
               Vdir.isDir(item) ? (
                 // 文件夹
                 <tr
                   key={item.name}
                   className="main-table__row"
-                  onContextMenu={() => vdirContextMenu(item as Vdir)}
-                  onDoubleClick={() => {
-                    dispatch(changeNotifier());
-                    vdir.changeDir(item.name);
-                    setFiles(vdir.listFiles());
-                  }}
+                  onContextMenu={onFolderContextMenu}
+                  onDoubleClick={() => onFolderSelect(item.name)}
                 >
                   <td className="main-table__row_cell index">{index}</td>
                   <td className="main-table__row_cell title">
@@ -66,11 +59,8 @@ const Table = ({ vdir }: PropTypes) => {
                 <tr
                   key={item.name}
                   className="main-table__row"
-                  onContextMenu={() => {
-                    const domain = app.domains.length > 0 ? app.domains[0] : "";
-                    fileContextMenu(item as Ffile, domain);
-                  }}
-                  onDoubleClick={() => {}}
+                  onContextMenu={onFileContextMenu}
+                  onDoubleClick={onFileSelect}
                 >
                   <td className="main-table__row_cell index">{index}</td>
                   <td className="main-table__row_cell title">
@@ -98,4 +88,4 @@ const Table = ({ vdir }: PropTypes) => {
   );
 };
 
-export default Table;
+export default BodyTable;

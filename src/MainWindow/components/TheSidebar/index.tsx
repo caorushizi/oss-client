@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
 import "./index.scss";
-import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { RootState } from "../../store";
-import { randomColor } from "../../store/app/actions";
 import { Page } from "../../store/app/types";
 import Loading from "../BaseLoading";
 
@@ -14,6 +11,7 @@ type PropTypes = {
   activeBucket: string;
   activePage: Page;
   tabChange: (page: Page, bucket?: string) => void;
+  color: string;
 };
 
 function TheSidebar({
@@ -21,23 +19,15 @@ function TheSidebar({
   bucketLoading,
   activeBucket,
   activePage,
-  tabChange
+  tabChange,
+  color
 }: PropTypes) {
-  const dispatch = useDispatch();
-
-  const selectApp = (state: RootState) => state.app;
-  const app = useSelector(selectApp);
-
-  useEffect(() => {
-    dispatch(randomColor());
-  }, [activeBucket, activePage]);
-
   const activeTag = (page: Page, bucket?: string) => ({
     active: activePage === page && activeBucket === bucket
   });
 
   return (
-    <div className="aside-wrapper" style={{ background: app.asideColor }}>
+    <div className="aside-wrapper" style={{ background: color }}>
       <section className="title-bar">
         <span>OSS Client</span>
       </section>

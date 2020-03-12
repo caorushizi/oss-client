@@ -14,7 +14,7 @@ export function dateFormatter(dateVal = 0) {
   return moment(dateVal).format("YYYY-MM-DD HH:mm:ss");
 }
 
-const styles = [
+const styles: ThemeColor[] = [
   {
     appColor: "linear-gradient(#8B5C68, #37394E)",
     asideColor: "linear-gradient(#8B5C68, #484B58)"
@@ -41,7 +41,12 @@ const styles = [
   }
 ];
 
-export const getThemeColor = () =>
+export interface ThemeColor {
+  appColor: string;
+  asideColor: string;
+}
+
+export const getThemeColor: () => ThemeColor = () =>
   styles[Math.floor(Math.random() * styles.length)];
 
 export const taskTypeFormatter = (type: TaskType) =>
