@@ -1,7 +1,5 @@
-import { ipcRenderer, remote } from "electron";
 import React from "react";
 import Button from "../BaseButton";
-import Vdir from "../../lib/vdir/vdir";
 
 type PropTypes = { fileUpload: () => void };
 const HeaderButtonGroup = ({ fileUpload }: PropTypes) => {

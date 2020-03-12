@@ -22,9 +22,12 @@ function TheSidebar({
   tabChange,
   color
 }: PropTypes) {
-  const activeTag = (page: Page, bucket?: string) => ({
-    active: activePage === page && activeBucket === bucket
-  });
+  const activeTag = (page: Page, bucket?: string) => {
+    if (bucket) {
+      return { active: activePage === page && activeBucket === bucket };
+    }
+    return { active: activePage === page };
+  };
 
   return (
     <div className="aside-wrapper" style={{ background: color }}>

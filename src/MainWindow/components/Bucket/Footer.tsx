@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./index.scss";
-import { useSelector } from "react-redux";
-import Vdir from "../../lib/vdir/vdir";
-import { RootState } from "../../store";
 
 type PropTypes = {
   totalItem: number;

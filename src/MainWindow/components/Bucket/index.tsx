@@ -26,6 +26,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
+    if (!bucket) return;
     switchBucket(bucket).then(bucketIpcRep => {
       const adaptedFiles = qiniuAdapter(bucketIpcRep.files);
       const vf = Vdir.from(adaptedFiles);

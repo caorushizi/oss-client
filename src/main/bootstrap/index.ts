@@ -4,45 +4,46 @@ import uuid from "uuid/v4";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
-import { TaskType, TransferStatus } from "../types";
+import { OssType, TaskType, TransferStatus } from "../types";
 import transfers from "../store/transfers";
 import events from "../helper/events";
-import { initConfig } from "./config";
-import { initApp } from "./apps";
-import { getApps } from "../store/apps";
 import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
 import AppInstance from "../instance";
 import { downloadDir } from "../helper/dir";
 import App from "../app";
-import { configStore } from "../store/config";
 
 const taskRunner = new TaskRunner(5, true);
 
 // todo: transfers 本地文件 加密
 export default async function bootstrap(app: App) {
   app.init();
-  try {
-    // 获取当前的app
-    await initConfig();
-    const currentAppId = configStore.get("currentApp");
-    if (!currentAppId) {
-      // 当前没有选中的 app
-      // 开始查询所有的apps
-      const apps = await getApps();
-      // 并将第一个 app 选中
-      if (apps.length > 0) {
-        const firstApp = apps[0];
-        configStore.set("currentApp", firstApp._id);
-        AppInstance.changeApp(firstApp.type, firstApp.ak, firstApp.sk);
-      }
-    } else {
-      const currentApp = await initApp(currentAppId);
-      AppInstance.changeApp(currentApp.type, currentApp.ak, currentApp.sk);
-    }
-  } catch (e) {
-    console.error(e);
-  }
+  AppInstance.changeApp(
+    OssType.qiniu,
+    "2gjJDvbpa3O0M71t-ouzkb6BLFbJyveFotGnRzCR",
+    "4h2AsbaLq6VAD8lVB-EH-JZ1fNDYPbWs_T5pn2T8"
+  );
+  // try {
+  //   // 获取当前的app
+  //   await initConfig();
+  //   const currentAppId = configStore.get("currentApp");
+  //   if (!currentAppId) {
+  //     // 当前没有选中的 app
+  //     // 开始查询所有的apps
+  //     const apps = await getApps();
+  //     // 并将第一个 app 选中
+  //     if (apps.length > 0) {
+  //       const firstApp = apps[0];
+  //       configStore.set("currentApp", firstApp._id);
+  //       AppInstance.changeApp(firstApp.type, firstApp.ak, firstApp.sk);
+  //     }
+  //   } else {
+  //     const currentApp = await initApp(currentAppId);
+  //     AppInstance.changeApp(currentApp.type, currentApp.ak, currentApp.sk);
+  //   }
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
   const instance = AppInstance.getInstance();
   const { oss } = instance;
