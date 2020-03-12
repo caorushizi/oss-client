@@ -11,10 +11,13 @@ export class GetBucketsChannel implements IpcChannelInterface {
       request.responseChannel = `${this.getName()}_response`;
     }
 
-    const instance = AppInstance.getInstance();
-    const { oss } = instance;
-    const buckets = await oss.getBucketList();
-
-    event.sender.send(request.responseChannel, buckets);
+    try {
+      const instance = AppInstance.getInstance();
+      const { oss } = instance;
+      const buckets = await oss.getBucketList();
+      event.sender.send(request.responseChannel, buckets);
+    } catch (e) {
+      event.sender.send(request.responseChannel, []);
+    }
   }
 }

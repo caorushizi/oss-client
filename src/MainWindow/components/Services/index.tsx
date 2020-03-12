@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
+import "./index.scss";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import "./index.scss";
 import { AppStore } from "../../../main/store/apps";
-import Button from "../BaseButton";
-import Input from "../BaseInput";
+import Button from "../Button";
+import Input from "../Input";
 import { OssType } from "../../../main/types";
 import { addApp, getAppsChannel } from "../../ipc";
 
@@ -161,23 +160,25 @@ const Apps = () => {
               {/*    value={currentApp?.uploadPrefix} */}
               {/*  /> */}
               {/* </div> */}
+
+              <Button
+                value="添加"
+                onClick={() => {
+                  addApp(
+                    currentApp!.name,
+                    currentApp!.type,
+                    currentApp!.ak,
+                    currentApp!.sk
+                  ).then(app => {});
+                }}
+              />
             </div>
           ) : (
-            <div>当前没有选中的 App</div>
+            <div className="no-result">
+              <p>没有 Apps</p>
+              <p>暂时没有搜索到 apps</p>
+            </div>
           )}
-          <div>
-            <Button
-              value="添加"
-              onClick={() => {
-                addApp(
-                  currentApp!.name,
-                  currentApp!.type,
-                  currentApp!.ak,
-                  currentApp!.sk
-                ).then(() => {});
-              }}
-            />
-          </div>
         </div>
       </section>
     </div>
