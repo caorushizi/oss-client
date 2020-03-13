@@ -1,5 +1,5 @@
 import IpcService from "./lib/service/IpcService";
-import { OssType } from "../main/types";
+import { OssType, TransferStore } from "../main/types";
 import { AppStore } from "../main/store/apps";
 
 const ipc = new IpcService();
@@ -9,37 +9,37 @@ export type BucketObj = {
   files: [];
 };
 
-export async function switchBucket(bucketName: string): Promise<BucketObj> {
-  const bucketObj = await ipc.send<BucketObj>("switch-bucket", {
+export function switchBucket(bucketName: string): Promise<BucketObj> {
+  return ipc.send<BucketObj>("switch-bucket", {
     params: bucketName
   });
-  return bucketObj;
 }
 
-export async function getBuckets(): Promise<string[]> {
-  const bucketList = await ipc.send<string[]>("get-buckets");
-  return bucketList;
+export function getBuckets(): Promise<string[]> {
+  return ipc.send<string[]>("get-buckets");
 }
 
-export async function getAppsChannel(): Promise<AppStore[]> {
-  const apps = await ipc.send<AppStore[]>("get-apps");
-  return apps;
+export function getAppsChannel(): Promise<AppStore[]> {
+  return ipc.send<AppStore[]>("get-apps");
 }
 
-export async function initOss(): Promise<void> {
-  await ipc.send("init-app");
+export function initOss(id?: string): Promise<void> {
+  return ipc.send("init-app", { params: { id } });
 }
 
-export async function addApp(
+export function getTransfers(): Promise<TransferStore[]> {
+  return ipc.send("get-transfer");
+}
+
+export function addApp(
   name: string,
   type: OssType,
   ak: string,
   sk: string
 ): Promise<AppStore> {
-  const app = await ipc.send<AppStore>("add-app", {
+  return ipc.send<AppStore>("add-app", {
     params: { name, type, ak, sk }
   });
-  return app;
 }
 
 export function closeMainApp() {

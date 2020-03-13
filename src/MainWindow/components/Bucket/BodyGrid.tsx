@@ -5,14 +5,15 @@ import Vdir from "../../lib/vdir/vdir";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../BaseIcon";
 import Ffile from "../../lib/vdir/ffile";
+import instance from "../../../main/helper/http";
 
 type PropTypes = {
   items: Item[];
   domains: string[];
   onFolderSelect: (name: string) => void;
-  onFolderContextMenu: () => void;
+  onFolderContextMenu: (item: Vdir) => void;
   onFileSelect: () => void;
-  onFileContextMenu: () => void;
+  onFileContextMenu: (item: Ffile) => void;
 };
 
 const BodyGrid = ({
@@ -27,12 +28,12 @@ const BodyGrid = ({
     <div className="main-grid">
       {items.length > 0 ? (
         items.map((item: Item) =>
-          Vdir.isDir(item) ? (
+          item instanceof Vdir ? (
             // vdir
             <div
               className="main-grid__cell"
               key={item.name}
-              onContextMenu={() => onFolderContextMenu()}
+              onContextMenu={() => onFolderContextMenu(item)}
               onDoubleClick={() => onFolderSelect(item.name)}
             >
               <Icon className="icon" />
@@ -43,7 +44,7 @@ const BodyGrid = ({
             <div
               className="main-grid__cell"
               key={item.name}
-              onContextMenu={onFileContextMenu}
+              onContextMenu={() => onFileContextMenu(item)}
               onDoubleClick={onFileSelect}
             >
               {(item as Ffile).type.startsWith("image/") &&

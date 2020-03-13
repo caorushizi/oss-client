@@ -1,14 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import Icon from "../BaseIcon";
 import Button from "../BaseButton";
 import { TransferStatus, TransferStore } from "../../../main/types";
 import { fileSizeFormatter } from "../../helper/utils";
+import { getTransfers } from "../../ipc";
 
 const Transmitting = () => {
-  const transfers: TransferStore[] = [];
+  const [transfers, setTransfers] = useState<TransferStore[]>([]);
+  useEffect(() => {
+    (async () => {
+      const t = await getTransfers();
+      setTransfers(t);
+    })();
+  }, []);
   return (
     <div className="transmitting-wrapper">
       <div className="toolbar">

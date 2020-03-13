@@ -11,7 +11,7 @@ type PropTypes = {
   ossList: AppStore[];
   onOssAddClick: () => void;
   onOssSelect: (id: string) => void;
-  onOssChange: () => void;
+  onOssChange: (id: string) => void;
 };
 
 const ServicesList = ({
@@ -46,7 +46,7 @@ const ServicesList = ({
               <FontAwesomeIcon
                 className="icon-button"
                 icon="random"
-                onClick={onOssChange}
+                onClick={() => onOssChange(app._id!)}
               />
             </li>
           ))

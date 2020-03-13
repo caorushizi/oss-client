@@ -42,4 +42,4 @@ export function fileContextMenu(item: Ffile, domain: string) {
   menu.popup();
 }
 
-export function vdirContextMenu(item: Vdir) {}
+export function folderContextMenu(item: Vdir) {}

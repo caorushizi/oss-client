@@ -4,13 +4,14 @@ import { Item } from "../../lib/vdir/types";
 import { Vdir } from "../../lib/vdir";
 import Icon from "../BaseIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
+import Ffile from "../../lib/vdir/ffile";
 
 type PropTypes = {
   items: Item[];
   onFolderSelect: (name: string) => void;
-  onFolderContextMenu: () => void;
+  onFolderContextMenu: (item: Vdir) => void;
   onFileSelect: () => void;
-  onFileContextMenu: () => void;
+  onFileContextMenu: (item: Ffile) => void;
 };
 
 const BodyTable = ({
@@ -34,12 +35,12 @@ const BodyTable = ({
           </thead>
           <tbody>
             {items.map((item: Item, index) =>
-              Vdir.isDir(item) ? (
+              item instanceof Vdir ? (
                 // 文件夹
                 <tr
                   key={item.name}
                   className="main-table__row"
-                  onContextMenu={onFolderContextMenu}
+                  onContextMenu={() => onFolderContextMenu(item)}
                   onDoubleClick={() => onFolderSelect(item.name)}
                 >
                   <td className="main-table__row_cell index">{index}</td>
@@ -59,7 +60,7 @@ const BodyTable = ({
                 <tr
                   key={item.name}
                   className="main-table__row"
-                  onContextMenu={onFileContextMenu}
+                  onContextMenu={() => onFileContextMenu(item)}
                   onDoubleClick={onFileSelect}
                 >
                   <td className="main-table__row_cell index">{index}</td>

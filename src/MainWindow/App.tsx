@@ -25,12 +25,6 @@ import { OssType } from "../main/types";
 
 library.add(fas);
 
-type OssConfig = {
-  ak: string;
-  sk: string;
-  type: OssType;
-};
-
 // todo: 渐变颜色的问题
 function App() {
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
@@ -51,6 +45,15 @@ function App() {
   };
   const onLoadedBucket = () => {
     setBucketLoading(false);
+  };
+  const onOssChange = async (id: string) => {
+    await initOss(id);
+    // 获取 oss 中 bucket 列表，并选中活动项
+    const buckets = await getBuckets();
+    console.log(buckets);
+    // todo: 保存 cur bucket
+    setBucketList(buckets);
+    if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
   };
 
   useEffect(() => {
@@ -158,7 +161,9 @@ function App() {
                   {Page.transferList === config.key && <Transmitting />}
                   {Page.transferDone === config.key && <TransferList />}
                   {Page.setting === config.key && <Setting />}
-                  {Page.apps === config.key && <Apps />}
+                  {Page.apps === config.key && (
+                    <Apps onOssChange={onOssChange} />
+                  )}
                 </section>
               );
             })}

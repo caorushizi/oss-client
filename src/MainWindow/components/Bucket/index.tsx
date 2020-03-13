@@ -13,6 +13,8 @@ import Vdir from "../../lib/vdir/vdir";
 import { switchBucket } from "../../ipc";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
+import Ffile from "../../lib/vdir/ffile";
+import { fileContextMenu } from "../../helper/contextMenu";
 
 type PropTypes = {
   bucket: string;
@@ -70,10 +72,14 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
       ipcRenderer.send("drop-files", vFolder.getPathPrefix(), filePaths);
     }
   };
+  const onFileContextMenu = (item: Ffile) => {
+    fileContextMenu(item, domains[0]);
+  };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);
     setItems(vFolder.listFiles());
   };
+  const onFolderContextMenu = (item: Vdir) => {};
 
   return (
     <div className="bucket-wrapper">
@@ -98,17 +104,17 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
               domains={[]}
               items={items}
               onFolderSelect={onFolderSelect}
-              onFolderContextMenu={() => {}}
+              onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
-              onFileContextMenu={() => {}}
+              onFileContextMenu={onFileContextMenu}
             />
           ) : (
             <BodyTable
               items={items}
               onFolderSelect={onFolderSelect}
-              onFolderContextMenu={() => {}}
+              onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
-              onFileContextMenu={() => {}}
+              onFileContextMenu={onFileContextMenu}
             />
           )}
         </div>

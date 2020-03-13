@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { TransferStatus, TransferStore } from "../../../main/types";
@@ -10,9 +10,16 @@ import {
 } from "../../helper/utils";
 import Button from "../BaseButton";
 import Icon from "../BaseIcon";
+import { getTransfers } from "../../ipc";
 
 const TransferList = () => {
-  const transfers: TransferStore[] = [];
+  const [transfers, setTransfers] = useState<TransferStore[]>([]);
+  useEffect(() => {
+    (async () => {
+      const t = await getTransfers();
+      setTransfers(t);
+    })();
+  }, []);
   return (
     <div className="transfer-list-wrapper">
       <div className="toolbar">

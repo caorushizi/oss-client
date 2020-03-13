@@ -8,7 +8,11 @@ import ServicesNewItem from "./ServicesNewItem";
 import ServicesUpdateItem from "./ServicesUpdateItem";
 import { OssType } from "../../../main/types";
 
-const Apps = () => {
+type PropTypes = {
+  onOssChange: (id: string) => void;
+};
+
+const Apps = ({ onOssChange }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
@@ -31,7 +35,6 @@ const Apps = () => {
     setApps([...apps, current]);
     setCurrentApp(current);
   };
-  const onOssChange = () => {};
   const onOssSelect = (id: string) => {
     const s = apps.find(i => i._id === id);
     setCurrentApp(s);

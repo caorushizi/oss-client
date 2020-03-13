@@ -4,8 +4,8 @@ import uuid from "uuid/v4";
 import { Ffile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
-import { OssType, TaskType, TransferStatus } from "../types";
-import transfers from "../store/transfers";
+import { TaskType, TransferStatus, TransferStore } from "../types";
+import { insertTransfer } from "../store/transfers";
 import events from "../helper/events";
 import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
@@ -20,11 +20,13 @@ export default async function bootstrap(app: App) {
   app.init();
 
   events.on("done", (id: string) => {
-    transfers.update({ id }, { $set: { status: TransferStatus.done } });
+    // todo：文件下载完成
+    // transfers.update({ id }, { $set: { status: TransferStatus.done } });
   });
 
   events.on("failed", (id: string) => {
-    transfers.update({ id }, { $set: { status: TransferStatus.failed } });
+    // todo: 文件下载失败
+    // transfers.update({ id }, { $set: { status: TransferStatus.failed } });
   });
 
   ipcMain.on("get-buckets-request", async event => {
@@ -63,12 +65,11 @@ export default async function bootstrap(app: App) {
       status: TransferStatus.default
     };
     // 存储下载信息
-    transfers.insert(newDoc, (err, document) => {
-      // 添加任务，自动执行
-      taskRunner.addTask<any>({
-        ...document,
-        result: oss.downloadFile(id, remotePath, downloadPath, callback)
-      });
+    const document = await insertTransfer(newDoc);
+    // 添加任务，自动执行
+    taskRunner.addTask<TransferStore>({
+      ...document,
+      result: oss.downloadFile(id, remotePath, downloadPath, callback)
     });
   });
 
@@ -91,23 +92,6 @@ export default async function bootstrap(app: App) {
     const { oss } = instance;
     const remotePath = item.webkitRelativePath;
     await oss.deleteFile(remotePath);
-  });
-
-  ipcMain.on("transfers", event => {
-    transfers.find({ status: TransferStatus.done }, (err, documents) => {
-      if (err) throw new Error("查询出错");
-      event.reply("transfers-reply", documents);
-    });
-  });
-
-  ipcMain.on("transmitting", event => {
-    transfers.find(
-      { $not: { status: TransferStatus.done } },
-      (err, documents) => {
-        if (err) throw new Error("查询出错");
-        event.reply("transmitting-reply", documents);
-      }
-    );
   });
 
   ipcMain.on(

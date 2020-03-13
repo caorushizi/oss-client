@@ -2,9 +2,9 @@ import uuid from "uuid/v4";
 import { CallbackFunc, IObjectStorageService } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { TaskType, TransferStatus } from "../types";
-import transfers from "../store/transfers";
+import { insertTransfer } from "../store/transfers";
 
-export function uploadFile(
+export async function uploadFile(
   adapter: IObjectStorageService,
   remoteDir: string,
   baseDir: string,
@@ -24,11 +24,10 @@ export function uploadFile(
     status: TransferStatus.default
   };
   // 存储下载信息
-  transfers.insert(newDoc, (err, document) => {
-    // 添加任务，自动执行
-    taskRunner.addTask<any>({
-      ...document,
-      result: adapter.uploadFile(id, remotePath, filepath, callback)
-    });
+  const document = await insertTransfer(newDoc);
+  // 添加任务，自动执行
+  taskRunner.addTask<any>({
+    ...document,
+    result: adapter.uploadFile(id, remotePath, filepath, callback)
   });
 }
