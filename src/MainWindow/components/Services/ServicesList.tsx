@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -7,15 +7,15 @@ import Button from "../BaseButton";
 import { AppStore } from "../../../main/store/apps";
 
 type PropTypes = {
-  activeOssAk?: string;
+  activeOss?: string;
   ossList: AppStore[];
   onOssAddClick: () => void;
-  onOssSelect: () => void;
+  onOssSelect: (id: string) => void;
   onOssChange: () => void;
 };
 
 const ServicesList = ({
-  activeOssAk,
+  activeOss,
   ossList,
   onOssAddClick,
   onOssSelect,
@@ -28,14 +28,16 @@ const ServicesList = ({
       </div>
       <ul className="app-list">
         {ossList.length > 0 ? (
-          ossList.map((app, index) => (
+          ossList.map(app => (
             <li
-              className={classNames("item", {
-                active: app.ak === activeOssAk
-              })}
-              key={`${app.name}${Date.now()}`}
+              className={classNames("item", { active: app._id === activeOss })}
+              key={app._id || Date.now()}
             >
-              <button type="button" className="button" onClick={onOssSelect}>
+              <button
+                type="button"
+                className="button"
+                onClick={() => onOssSelect(app._id!)}
+              >
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref="#icon-qiniuyun1" />
                 </svg>

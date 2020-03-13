@@ -1,44 +1,61 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import "./index.scss";
 import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import { AppStore } from "../../../main/store/apps";
+import Button from "../BaseButton";
+import set = Reflect.set;
+
+type FormData = {
+  name: string;
+  ak: string;
+  sk: string;
+  type: OssType;
+};
 
 type PropTypes = {
   activeOss: AppStore;
+  onBucketUpdate: () => void;
+  onBucketDelete: () => void;
 };
 
-const ServicesUpdateItem = ({ activeOss }: PropTypes) => {
+const ServicesUpdateItem = ({
+  activeOss,
+  onBucketUpdate,
+  onBucketDelete
+}: PropTypes) => {
+  const { name, ak, sk, type } = activeOss;
+  const [form, setForm] = useState<FormData>({ name, ak, sk, type });
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.persist();
     const { value } = event.target;
-    console.log(value);
+    setForm({ ...form, name: value });
   };
   const onTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     event.persist();
     const { value } = event.target;
-    console.log(value);
+    setForm({ ...form, type: Number(value) });
   };
   const onAkChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.persist();
     const { value } = event.target;
-    console.log(value);
+    setForm({ ...form, ak: value });
   };
   const onSkChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.persist();
     const { value } = event.target;
-    console.log(value);
+    setForm({ ...form, sk: value });
   };
   return (
     <div className="main-right">
-      <div className="name">{activeOss?.name || "未命名"}</div>
+      <div className="name">{form.name || "未命名"}</div>
       <div className="config-content">
         <div className="config-item">
           <span className="title">名称</span>
           <Input
             className="input-item"
             placeholder="请输入名称"
-            value={activeOss?.name}
+            value={form.name}
             onChange={onNameChange}
           />
         </div>
@@ -60,7 +77,7 @@ const ServicesUpdateItem = ({ activeOss }: PropTypes) => {
           <Input
             className="input-item"
             placeholder="请输入相应服务商 ak"
-            value={activeOss?.ak}
+            value={form.ak}
             onChange={onAkChange}
           />
         </div>
@@ -69,11 +86,14 @@ const ServicesUpdateItem = ({ activeOss }: PropTypes) => {
           <Input
             className="input-item"
             placeholder="请输入相应服务商 sk"
-            value={activeOss?.sk}
+            value={form.sk}
             onChange={onSkChange}
           />
         </div>
-        <div>更新</div>
+        <div>
+          <Button value="更新" onClick={onBucketUpdate} />
+          <Button value="删除" onClick={onBucketDelete} />
+        </div>
       </div>
     </div>
   );

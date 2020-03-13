@@ -4,14 +4,14 @@ import { appDir } from "../helper/dir";
 import { OssType } from "../types";
 
 export type AppStore = {
-  _id?: string;
   type: OssType;
   ak: string;
   sk: string;
   name: string;
+  _id?: string;
   bucket?: string;
-  uploadBucket: string;
-  uploadPrefix: string;
+  uploadBucket?: string;
+  uploadPrefix?: string;
 };
 
 const filename = path.join(appDir, "secrets");

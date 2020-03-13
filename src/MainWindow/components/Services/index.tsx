@@ -2,21 +2,53 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { AppStore } from "../../../main/store/apps";
-import { getAppsChannel } from "../../ipc";
+import { addApp, getAppsChannel } from "../../ipc";
 import ServicesList from "./ServicesList";
 import ServicesNewItem from "./ServicesNewItem";
 import ServicesUpdateItem from "./ServicesUpdateItem";
+import { OssType } from "../../../main/types";
 
 const Apps = () => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
+  const onBucketUpdate = () => {
+    console.log("更新");
+  };
+  const onBucketDelete = () => {
+    console.log("删除");
+  };
+  const onBucketAdd = async (
+    name: string,
+    ak: string,
+    sk: string,
+    type: number
+  ) => {
+    const app = await addApp(name, type, ak, sk);
+  };
+  const onOssAddClick = () => {
+    const current = { name: "新建", ak: "", sk: "", type: OssType.qiniu };
+    setApps([...apps, current]);
+    setCurrentApp(current);
+  };
+  const onOssChange = () => {};
+  const onOssSelect = (id: string) => {
+    const s = apps.find(i => i._id === id);
+    setCurrentApp(s);
+  };
+
   const OssForm = () => {
     if (currentApp && currentApp._id) {
-      return <ServicesUpdateItem activeOss={currentApp} />;
+      return (
+        <ServicesUpdateItem
+          activeOss={currentApp}
+          onBucketUpdate={onBucketUpdate}
+          onBucketDelete={onBucketDelete}
+        />
+      );
     }
     if (currentApp && !currentApp._id) {
-      return <ServicesNewItem />;
+      return <ServicesNewItem onBucketAdd={onBucketAdd} />;
     }
     return (
       <div className="no-result">
@@ -40,10 +72,10 @@ const Apps = () => {
       <section className="apps-main">
         <ServicesList
           ossList={apps}
-          activeOssAk={currentApp?.ak}
-          onOssAddClick={() => {}}
-          onOssChange={() => {}}
-          onOssSelect={() => {}}
+          activeOss={currentApp?._id}
+          onOssAddClick={onOssAddClick}
+          onOssChange={onOssChange}
+          onOssSelect={onOssSelect}
         />
         <OssForm />
       </section>

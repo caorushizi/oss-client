@@ -1,11 +1,13 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+
 import "./index.scss";
 import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import Button from "../BaseButton";
-import { addApp } from "../../ipc";
 
-type PropTypes = {};
+type PropTypes = {
+  onBucketAdd: (name: string, ak: string, sk: string, type: number) => void;
+};
 
 type AddOssConfigForm = {
   name: string;
@@ -14,7 +16,7 @@ type AddOssConfigForm = {
   type: OssType;
 };
 
-const ServicesNewItem = () => {
+const ServicesNewItem = ({ onBucketAdd }: PropTypes) => {
   const [form, setForm] = useState<AddOssConfigForm>({
     name: `默认名称${Date.now()}`,
     ak: "",
@@ -40,9 +42,6 @@ const ServicesNewItem = () => {
     event.persist();
     const { value } = event.target;
     setForm({ ...form, sk: value });
-  };
-  const onAddClick = async () => {
-    const app = await addApp(form.name, form.type, form.ak, form.sk);
   };
 
   return (
@@ -89,7 +88,10 @@ const ServicesNewItem = () => {
             onChange={onSkChange}
           />
         </div>
-        <Button value="添加" onClick={onAddClick} />
+        <Button
+          value="添加"
+          onClick={() => onBucketAdd(form.name, form.ak, form.sk, form.type)}
+        />
       </div>
     </div>
   );
