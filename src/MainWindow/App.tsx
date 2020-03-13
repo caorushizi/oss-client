@@ -33,7 +33,6 @@ type OssConfig = {
 
 // todo: 渐变颜色的问题
 function App() {
-  const [ossConfig, setOssConfig] = useState<OssConfig>();
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [activePage, setActivePage] = useState<Page>(Page.bucket);
