@@ -26,6 +26,10 @@ export async function getAppsChannel(): Promise<AppStore[]> {
   return apps;
 }
 
+export async function initOss(): Promise<void> {
+  await ipc.send("init-app");
+}
+
 export async function addApp(
   name: string,
   type: OssType,

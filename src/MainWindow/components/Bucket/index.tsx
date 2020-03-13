@@ -20,8 +20,8 @@ type PropTypes = {
 };
 
 const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
-  const [layout, setLayout] = useState<Layout>(Layout.grid);
   const [vFolder, setVFolder] = useState<Vdir>(new Vdir("root"));
+  const [layout, setLayout] = useState<Layout>(Layout.grid);
   const [domains, setDomains] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>([]);
 

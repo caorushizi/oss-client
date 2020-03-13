@@ -17,14 +17,23 @@ import Apps from "./components/Services";
 import {
   closeMainApp,
   getBuckets,
+  initOss,
   maximizeMainWindow,
   minimizeMainWindow
 } from "./ipc";
+import { OssType } from "../main/types";
 
 library.add(fas);
 
+type OssConfig = {
+  ak: string;
+  sk: string;
+  type: OssType;
+};
+
 // todo: 渐变颜色的问题
 function App() {
+  const [ossConfig, setOssConfig] = useState<OssConfig>();
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [activePage, setActivePage] = useState<Page>(Page.bucket);
@@ -49,8 +58,12 @@ function App() {
     setThemeColor(getThemeColor());
   }, [activePage]);
 
+  // 相当于初始化流程
   useEffect(() => {
     (async () => {
+      // 设置活动 oss 配置
+      await initOss();
+      // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
       // todo: 保存 cur bucket
       setBucketList(buckets);

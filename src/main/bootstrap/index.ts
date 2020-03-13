@@ -18,35 +18,6 @@ const taskRunner = new TaskRunner(5, true);
 // todo: transfers 本地文件 加密
 export default async function bootstrap(app: App) {
   app.init();
-  AppInstance.changeApp(
-    OssType.qiniu,
-    "2gjJDvbpa3O0M71t-ouzkb6BLFbJyveFotGnRzCR",
-    "4h2AsbaLq6VAD8lVB-EH-JZ1fNDYPbWs_T5pn2T8"
-  );
-  // try {
-  //   // 获取当前的app
-  //   await initConfig();
-  //   const currentAppId = configStore.get("currentApp");
-  //   if (!currentAppId) {
-  //     // 当前没有选中的 app
-  //     // 开始查询所有的apps
-  //     const apps = await getApps();
-  //     // 并将第一个 app 选中
-  //     if (apps.length > 0) {
-  //       const firstApp = apps[0];
-  //       configStore.set("currentApp", firstApp._id);
-  //       AppInstance.changeApp(firstApp.type, firstApp.ak, firstApp.sk);
-  //     }
-  //   } else {
-  //     const currentApp = await initApp(currentAppId);
-  //     AppInstance.changeApp(currentApp.type, currentApp.ak, currentApp.sk);
-  //   }
-  // } catch (e) {
-  //   console.error(e);
-  // }
-
-  const instance = AppInstance.getInstance();
-  const { oss } = instance;
 
   events.on("done", (id: string) => {
     transfers.update({ id }, { $set: { status: TransferStatus.done } });
@@ -57,17 +28,24 @@ export default async function bootstrap(app: App) {
   });
 
   ipcMain.on("get-buckets-request", async event => {
+    const instance = AppInstance.getInstance();
+    const { oss } = instance;
     const buckets = await oss.getBucketList();
     event.reply("get-buckets-response", buckets);
   });
 
   ipcMain.on("get-files-request", async (event, bucketName: string) => {
+    const instance = AppInstance.getInstance();
+    const { oss } = instance;
     oss.setBucket(bucketName);
     const files = await oss.getBucketFiles();
     event.reply("get-files-response", files);
   });
 
   ipcMain.on("req:file:download", async (event, item: Ffile) => {
+    const instance = AppInstance.getInstance();
+    const { oss } = instance;
+
     const remotePath = item.webkitRelativePath;
     const downloadPath = path.join(downloadDir, item.webkitRelativePath);
     const callback: CallbackFunc = (id, progress) => {
@@ -97,7 +75,9 @@ export default async function bootstrap(app: App) {
   ipcMain.on(
     "req:file:upload",
     (event, remoteDir: string, filepath: string) => {
-      console.log(123123123123123123);
+      const instance = AppInstance.getInstance();
+      const { oss } = instance;
+
       const baseDir = path.dirname(filepath);
       const callback: CallbackFunc = (id, progress) => {
         console.log(`${id} - progress ${progress}%`);
@@ -107,6 +87,8 @@ export default async function bootstrap(app: App) {
   );
 
   ipcMain.on("req:file:delete", async (event, item: Ffile) => {
+    const instance = AppInstance.getInstance();
+    const { oss } = instance;
     const remotePath = item.webkitRelativePath;
     await oss.deleteFile(remotePath);
   });
@@ -131,6 +113,8 @@ export default async function bootstrap(app: App) {
   ipcMain.on(
     "drop-files",
     async (event, remoteDir: string, fileList: string[]) => {
+      const instance = AppInstance.getInstance();
+      const { oss } = instance;
       const baseDir = path.dirname(fileList[0]);
       const list = fattenFileList(fileList);
       list.forEach(filepath => {
