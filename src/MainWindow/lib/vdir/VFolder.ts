@@ -1,8 +1,8 @@
-import Ffile from "./ffile";
+import VFile from "./VFile";
 import { Item, ItemType, Parent } from "./types";
 import { dirname, normalizePath } from "./utils";
 
-export default class Vdir {
+export default class VFolder {
   parent: Parent;
 
   name: string;
@@ -15,7 +15,7 @@ export default class Vdir {
 
   private children: Item[];
 
-  private cursor: Vdir;
+  private cursor: VFolder;
 
   private navigator: string[] = [];
 
@@ -36,14 +36,14 @@ export default class Vdir {
       ? this
       : vpath
           .split("/")
-          .reduce((prev: Vdir, cur: string) => prev.makeDir(cur), this);
+          .reduce((prev: VFolder, cur: string) => prev.makeDir(cur), this);
   }
 
-  private makeDir(name: string): Vdir {
-    const find = this.children.find(i => i.name === name && Vdir.isDir(i));
-    if (find) return find as Vdir;
+  private makeDir(name: string): VFolder {
+    const find = this.children.find(i => i.name === name && VFolder.isDir(i));
+    if (find) return find as VFolder;
 
-    const dir = new Vdir(name, this);
+    const dir = new VFolder(name, this);
     this.children.push(dir);
     return dir;
   }
@@ -53,18 +53,18 @@ export default class Vdir {
    * @param item 对于根目录的相对路径，第一个字符不是 .
    * @param r 是否递归创建， false 直接以 vpath 为 name 创建文件
    */
-  private touchFile(item: ItemType, r = true): Ffile {
+  private touchFile(item: ItemType, r = true): VFile {
     const vpath = normalizePath(item.webkitRelativePath);
     const dirPath = dirname(vpath);
 
-    let cursor: Vdir;
+    let cursor: VFolder;
     if (r && dirPath !== "") {
       // const base = basename(dirPath);
       cursor = this.mkdir(dirPath);
     } else {
       cursor = this;
     }
-    const file = new Ffile(item);
+    const file = new VFile(item);
     // 计算文件夹大小、修改时间
     cursor.size += file.size || 0;
     if (cursor.lastModified < file.lastModified) {
@@ -76,8 +76,8 @@ export default class Vdir {
     return file;
   }
 
-  public static from(itemList: ItemType[]): Vdir {
-    const dir = new Vdir("#");
+  public static from(itemList: ItemType[]): VFolder {
+    const dir = new VFolder("#");
     itemList.forEach(item => dir.touchFile(item));
     return dir;
   }
@@ -89,8 +89,8 @@ export default class Vdir {
   public changeDir(path: string) {
     this.cursor =
       (this.cursor.children.find(
-        item => item.name === path && Vdir.isDir(item)
-      ) as Vdir) || this.cursor;
+        item => item.name === path && VFolder.isDir(item)
+      ) as VFolder) || this.cursor;
     this.navigator.push(path);
   }
 
@@ -112,7 +112,7 @@ export default class Vdir {
   }
 
   static isDir(o: any) {
-    return o instanceof Vdir;
+    return o instanceof VFolder;
   }
 
   public getTotalItem(): number {

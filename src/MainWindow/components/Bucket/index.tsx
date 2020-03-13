@@ -9,11 +9,11 @@ import { Layout } from "../../types";
 import BodyGrid from "./BodyGrid";
 import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
-import Vdir from "../../lib/vdir/vdir";
+import VFolder from "../../lib/vdir/VFolder";
 import { switchBucket } from "../../ipc";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
-import Ffile from "../../lib/vdir/ffile";
+import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 
 type PropTypes = {
@@ -22,7 +22,7 @@ type PropTypes = {
 };
 
 const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
-  const [vFolder, setVFolder] = useState<Vdir>(new Vdir("root"));
+  const [vFolder, setVFolder] = useState<VFolder>(new VFolder("root"));
   const [layout, setLayout] = useState<Layout>(Layout.grid);
   const [domains, setDomains] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>([]);
@@ -31,7 +31,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     if (!bucket) return;
     switchBucket(bucket).then(bucketIpcRep => {
       const adaptedFiles = qiniuAdapter(bucketIpcRep.files);
-      const vf = Vdir.from(adaptedFiles);
+      const vf = VFolder.from(adaptedFiles);
       onLoadedBucket();
       setDomains(bucketIpcRep.domains);
       setVFolder(vf);
@@ -72,14 +72,14 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
       ipcRenderer.send("drop-files", vFolder.getPathPrefix(), filePaths);
     }
   };
-  const onFileContextMenu = (item: Ffile) => {
+  const onFileContextMenu = (item: VFile) => {
     fileContextMenu(item, domains[0]);
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);
     setItems(vFolder.listFiles());
   };
-  const onFolderContextMenu = (item: Vdir) => {};
+  const onFolderContextMenu = (item: VFolder) => {};
 
   return (
     <div className="bucket-wrapper">

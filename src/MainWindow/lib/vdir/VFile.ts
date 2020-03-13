@@ -1,6 +1,6 @@
 import { ItemType } from "./types";
 
-export default class Ffile {
+export default class VFile {
   name: string;
 
   webkitRelativePath: string;

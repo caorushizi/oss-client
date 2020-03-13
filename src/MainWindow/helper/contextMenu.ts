@@ -1,8 +1,8 @@
 import { ipcRenderer, remote, clipboard } from "electron";
-import { Ffile } from "../lib/vdir";
-import Vdir from "../lib/vdir/vdir";
+import { VFile } from "../lib/vdir";
+import VFolder from "../lib/vdir/VFolder";
 
-export function fileContextMenu(item: Ffile, domain: string) {
+export function fileContextMenu(item: VFile, domain: string) {
   const menu = remote.Menu.buildFromTemplate([
     {
       label: "全选",
@@ -42,4 +42,4 @@ export function fileContextMenu(item: Ffile, domain: string) {
   menu.popup();
 }
 
-export function folderContextMenu(item: Vdir) {}
+export function folderContextMenu(item: VFolder) {}

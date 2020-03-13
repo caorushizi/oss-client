@@ -1,17 +1,16 @@
 import React from "react";
 import "./index.scss";
 import { Item } from "../../lib/vdir/types";
-import { Vdir } from "../../lib/vdir";
+import { VFolder, VFile } from "../../lib/vdir";
 import Icon from "../BaseIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
-import Ffile from "../../lib/vdir/ffile";
 
 type PropTypes = {
   items: Item[];
   onFolderSelect: (name: string) => void;
-  onFolderContextMenu: (item: Vdir) => void;
+  onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
-  onFileContextMenu: (item: Ffile) => void;
+  onFileContextMenu: (item: VFile) => void;
 };
 
 const BodyTable = ({
@@ -35,7 +34,7 @@ const BodyTable = ({
           </thead>
           <tbody>
             {items.map((item: Item, index) =>
-              item instanceof Vdir ? (
+              item instanceof VFolder ? (
                 // 文件夹
                 <tr
                   key={item.name}

@@ -1,19 +1,19 @@
 import React from "react";
 
 import "./index.scss";
-import Vdir from "../../lib/vdir/vdir";
+import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../BaseIcon";
-import Ffile from "../../lib/vdir/ffile";
+import VFile from "../../lib/vdir/VFile";
 import instance from "../../../main/helper/http";
 
 type PropTypes = {
   items: Item[];
   domains: string[];
   onFolderSelect: (name: string) => void;
-  onFolderContextMenu: (item: Vdir) => void;
+  onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
-  onFileContextMenu: (item: Ffile) => void;
+  onFileContextMenu: (item: VFile) => void;
 };
 
 const BodyGrid = ({
@@ -28,7 +28,7 @@ const BodyGrid = ({
     <div className="main-grid">
       {items.length > 0 ? (
         items.map((item: Item) =>
-          item instanceof Vdir ? (
+          item instanceof VFolder ? (
             // vdir
             <div
               className="main-grid__cell"
@@ -47,12 +47,12 @@ const BodyGrid = ({
               onContextMenu={() => onFileContextMenu(item)}
               onDoubleClick={onFileSelect}
             >
-              {(item as Ffile).type.startsWith("image/") &&
+              {(item as VFile).type.startsWith("image/") &&
               domains.length > 0 ? (
                 <img
                   className="icon"
                   src={`http://${domains[0]}/${
-                    (item as Ffile).webkitRelativePath
+                    (item as VFile).webkitRelativePath
                   }`}
                   alt={item.name}
                 />

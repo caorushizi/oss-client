@@ -1,4 +1,4 @@
-import Ffile from "./ffile";
-import Vdir from "./vdir";
+import VFile from "./VFile";
+import VFolder from "./VFolder";
 
-export { Vdir, Ffile };
+export { VFolder, VFile };

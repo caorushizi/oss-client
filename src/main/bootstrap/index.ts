@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v4";
-import { Ffile } from "../../MainWindow/lib/vdir";
+import { VFile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { TaskType, TransferStatus, TransferStore } from "../types";
@@ -44,7 +44,7 @@ export default async function bootstrap(app: App) {
     event.reply("get-files-response", files);
   });
 
-  ipcMain.on("req:file:download", async (event, item: Ffile) => {
+  ipcMain.on("req:file:download", async (event, item: VFile) => {
     const instance = AppInstance.getInstance();
     const { oss } = instance;
 
@@ -87,7 +87,7 @@ export default async function bootstrap(app: App) {
     }
   );
 
-  ipcMain.on("req:file:delete", async (event, item: Ffile) => {
+  ipcMain.on("req:file:delete", async (event, item: VFile) => {
     const instance = AppInstance.getInstance();
     const { oss } = instance;
     const remotePath = item.webkitRelativePath;

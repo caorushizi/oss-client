@@ -1,5 +1,5 @@
-import Ffile from "./ffile";
-import Vdir from "./vdir";
+import VFile from "./VFile";
+import VFolder from "./VFolder";
 
 export type ItemType = {
   name: string;
@@ -11,6 +11,6 @@ export type ItemType = {
   lastModifiedDate: Date;
 };
 
-export type Item = Ffile | Vdir;
+export type Item = VFile | VFolder;
 
-export type Parent = Vdir | null;
+export type Parent = VFolder | null;
