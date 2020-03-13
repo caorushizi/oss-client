@@ -50,7 +50,6 @@ function App() {
     await initOss(id);
     // 获取 oss 中 bucket 列表，并选中活动项
     const buckets = await getBuckets();
-    console.log(buckets);
     // todo: 保存 cur bucket
     setBucketList(buckets);
     if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);

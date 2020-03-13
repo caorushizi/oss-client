@@ -5,7 +5,7 @@ import AppInstance from "../instance";
 import { getTransfers } from "../store/transfers";
 
 export class GetTransfersChannel implements IpcChannelInterface {
-  getName = (): string => "get-transfers";
+  getName = (): string => "get-transfer";
 
   async handle(event: IpcMainEvent, request: IpcRequest): Promise<void> {
     if (!request.responseChannel) {

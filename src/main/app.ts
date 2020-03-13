@@ -6,7 +6,8 @@ import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 import { AddAppChannel } from "./IPC/AddAppChannel";
 import { GetAppsChannel } from "./IPC/GetAppsChannel";
-import {InitAppChannel} from "./IPC/InitAppChannel";
+import { InitAppChannel } from "./IPC/InitAppChannel";
+import { GetTransfersChannel } from "./IPC/GetTransfersChannel";
 
 export default class App {
   mainWindow: MainWindow;
@@ -36,7 +37,8 @@ export default class App {
       new GetBucketsChannel(),
       new AddAppChannel(),
       new GetAppsChannel(),
-      new InitAppChannel()
+      new InitAppChannel(),
+      new GetTransfersChannel()
     ]);
 
     // 初始化 app
