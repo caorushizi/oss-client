@@ -1,16 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { useSelector } from "react-redux";
+
+import "./index.scss";
+import Icon from "../BaseIcon";
+import Button from "../BaseButton";
 import { TransferStatus, TransferStore } from "../../../main/types";
 import { fileSizeFormatter } from "../../helper/utils";
-import { RootState } from "../../store";
-import Button from "../BaseButton";
-import Icon from "../BaseIcon";
-import "./index.scss";
 
 const Transmitting = () => {
-  const selectTransfers = (state: RootState) => state.app.transfers;
-  const transfers = useSelector(selectTransfers);
+  const transfers: TransferStore[] = [];
   return (
     <div className="transmitting-wrapper">
       <div className="toolbar">

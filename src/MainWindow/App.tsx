@@ -7,12 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./App.scss";
 import TheSidebar from "./components/TheSidebar";
 import Transmitting from "./components/Transmitting";
-import { Direction, Page } from "./store/app/types";
+import { Direction, Page, Platform } from "./types";
 import Bucket from "./components/Bucket";
 import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
 import { getThemeColor, platform, ThemeColor } from "./helper/utils";
-import { Platform } from "./types";
+
 import Apps from "./components/Services";
 import {
   closeMainApp,

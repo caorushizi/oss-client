@@ -1,20 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { useSelector } from "react-redux";
+
+import "./index.scss";
 import { TransferStatus, TransferStore } from "../../../main/types";
 import {
   dateFormatter,
   fileSizeFormatter,
   taskTypeFormatter
 } from "../../helper/utils";
-import { RootState } from "../../store";
 import Button from "../BaseButton";
 import Icon from "../BaseIcon";
-import "./index.scss";
 
 const TransferList = () => {
-  const selectTransfers = (state: RootState) => state.app.transfers;
-  const transfers = useSelector(selectTransfers);
+  const transfers: TransferStore[] = [];
   return (
     <div className="transfer-list-wrapper">
       <div className="toolbar">

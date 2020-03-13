@@ -3,3 +3,22 @@ export enum Platform {
   macos = "darwin",
   linux = "linux"
 }
+
+export enum Direction {
+  up,
+  down
+}
+
+export enum Layout {
+  grid,
+  table
+}
+
+// fixme: 首字母
+export enum Page {
+  bucket = "0bucket",
+  transferList = "1transferList",
+  transferDone = "2transferDone",
+  setting = "3setting",
+  apps = "4apps"
+}

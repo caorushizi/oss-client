@@ -5,7 +5,7 @@ import { ipcRenderer, remote } from "electron";
 import "./index.scss";
 import HeaderToolbar from "./HeaderToolbar";
 import BodyTable from "./BodyTable";
-import { Layout } from "../../store/app/types";
+import { Layout } from "../../types";
 import BodyGrid from "./BodyGrid";
 import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";

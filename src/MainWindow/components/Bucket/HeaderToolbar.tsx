@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./index.scss";
-import { Layout } from "../../store/app/types";
+import { Layout } from "../../types";
 import Breadcrumb from "../BaseBreadcrumb";
 import Input from "../BaseInput";
 

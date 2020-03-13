@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { Page } from "../../store/app/types";
+import { Page } from "../../types";
 import Loading from "../BaseLoading";
 
 type PropTypes = {
