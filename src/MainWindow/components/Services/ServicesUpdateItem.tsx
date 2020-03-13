@@ -2,9 +2,10 @@ import React, { ChangeEvent } from "react";
 import "./index.scss";
 import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
+import { AppStore } from "../../../main/store/apps";
 
 type PropTypes = {
-  activeOss: any;
+  activeOss: AppStore;
 };
 
 const ServicesUpdateItem = ({ activeOss }: PropTypes) => {

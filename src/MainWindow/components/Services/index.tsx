@@ -11,6 +11,21 @@ const Apps = () => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
+  const OssForm = () => {
+    if (currentApp && currentApp._id) {
+      return <ServicesUpdateItem activeOss={currentApp} />;
+    }
+    if (currentApp && !currentApp._id) {
+      return <ServicesNewItem />;
+    }
+    return (
+      <div className="no-result">
+        <p>没有 Apps</p>
+        <p>暂时没有搜索到 apps</p>
+      </div>
+    );
+  };
+
   useEffect(() => {
     getAppsChannel().then(allApps => {
       setApps(allApps);
@@ -24,18 +39,13 @@ const Apps = () => {
     <div className="apps-wrapper">
       <section className="apps-main">
         <ServicesList
-          ossList={[]}
-          activeOssAk=""
+          ossList={apps}
+          activeOssAk={currentApp?.ak}
           onOssAddClick={() => {}}
           onOssChange={() => {}}
           onOssSelect={() => {}}
         />
-        <ServicesNewItem />
-        <ServicesUpdateItem activeOss={{}} />
-        <div className="no-result">
-          <p>没有 Apps</p>
-          <p>暂时没有搜索到 apps</p>
-        </div>
+        <OssForm />
       </section>
     </div>
   );

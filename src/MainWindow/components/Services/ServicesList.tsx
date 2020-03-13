@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./index.scss";
 import Button from "../BaseButton";
+import { AppStore } from "../../../main/store/apps";
 
 type PropTypes = {
-  activeOssAk: string;
-  ossList: any[];
+  activeOssAk?: string;
+  ossList: AppStore[];
   onOssAddClick: () => void;
   onOssSelect: () => void;
   onOssChange: () => void;
