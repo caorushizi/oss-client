@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { presets, spring, TransitionMotion } from "react-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import "./App.scss";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import uuid from "uuid/v4";
 import TheSidebar from "./components/TheSidebar";
 import Transmitting from "./components/Transmitting";
 import { Direction, Page, Platform } from "./types";
@@ -12,7 +12,6 @@ import Bucket from "./components/Bucket";
 import TransferList from "./components/TransferList";
 import Setting from "./components/Setting";
 import { getThemeColor, platform, ThemeColor } from "./helper/utils";
-
 import Apps from "./components/Services";
 import {
   closeMainApp,
@@ -21,7 +20,6 @@ import {
   maximizeMainWindow,
   minimizeMainWindow
 } from "./ipc";
-import { OssType } from "../main/types";
 
 library.add(fas);
 
@@ -70,16 +68,6 @@ function App() {
       setBucketList(buckets);
       if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
     })();
-
-    // ipcRenderer.on("transfers-reply", (event, documents) => {
-    //   dispatch(setTransfers(documents));
-    //   dispatch(switchPage(Page.transferDone));
-    // });
-    //
-    // ipcRenderer.on("transmitting-reply", (event, documents) => {
-    //   dispatch(setTransfers(documents));
-    //   dispatch(switchPage(Page.transferList));
-    // });
   }, []);
 
   const bgOffset = () => {
@@ -87,17 +75,6 @@ function App() {
     const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
     return { bgOffsetX, bgOffsetY };
   };
-
-  const willEnter = () => ({
-    transitionY: direction === Direction.down ? 100 : -100,
-    ...bgOffset()
-  });
-  const willLeave = () => ({
-    transitionY: spring(
-      direction === Direction.down ? -100 : 100,
-      presets.noWobble
-    )
-  });
 
   return (
     <div className="App" style={{ background: themeColor.appColor }}>
@@ -129,46 +106,63 @@ function App() {
         tabChange={tabChange}
         color={themeColor.asideColor}
       />
-      <TransitionMotion
-        willEnter={willEnter}
-        willLeave={willLeave}
-        styles={[
-          {
-            key: activePage,
-            style: { transitionY: spring(0), ...bgOffset() }
-          }
-        ]}
-      >
-        {val => (
-          <>
-            {val.map(config => {
-              return (
-                <section
-                  className="main-wrapper"
-                  key={config.key}
-                  style={{
-                    transform: `translateY(${config.style.transitionY}vh)`,
-                    backgroundPosition: `${config.style.bgOffsetX}px ${config.style.bgOffsetY}px`
-                  }}
-                >
-                  {Page.bucket === config.key && (
-                    <Bucket
-                      bucket={activeBucket}
-                      onLoadedBucket={onLoadedBucket}
-                    />
-                  )}
-                  {Page.transferList === config.key && <Transmitting />}
-                  {Page.transferDone === config.key && <TransferList />}
-                  {Page.setting === config.key && <Setting />}
-                  {Page.apps === config.key && (
-                    <Apps onOssChange={onOssChange} />
-                  )}
-                </section>
-              );
-            })}
-          </>
+      <TransitionGroup className="main-wrapper" mode="in-out">
+        {Page.bucket === activePage && (
+          <CSSTransition
+            key={uuid()}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="up"
+          >
+            <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
+          </CSSTransition>
         )}
-      </TransitionMotion>
+        {Page.transferList === activePage && (
+          <CSSTransition
+            key={uuid()}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="up"
+          >
+            <Transmitting />
+          </CSSTransition>
+        )}
+        {Page.transferDone === activePage && (
+          <CSSTransition
+            key={uuid()}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="up"
+          >
+            <TransferList />
+          </CSSTransition>
+        )}
+        {Page.setting === activePage && (
+          <CSSTransition
+            key={uuid()}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="up"
+          >
+            <Setting />
+          </CSSTransition>
+        )}
+        {Page.apps === activePage && (
+          <CSSTransition
+            key={uuid()}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="up"
+          >
+            <Apps onOssChange={onOssChange} />
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     </div>
   );
 }

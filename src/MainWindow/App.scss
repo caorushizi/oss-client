@@ -42,3 +42,29 @@
     background: url("./assets/images/global.png") no-repeat;
   }
 }
+
+.up-enter {
+  width: 100%;
+  position: absolute;
+  top: 100vh;
+}
+
+.up-enter-active {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  transition: top 0.3s ease-in;
+}
+
+.up-exit {
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.up-exit-active {
+  width: 100%;
+  position: absolute;
+  top: -100vh;
+  transition: top 0.3s ease-in;
+}
