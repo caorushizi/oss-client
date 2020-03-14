@@ -1,4 +1,5 @@
 .oss-breadcrumb {
+  padding: 0 10px;
   height: 26px;
   display: flex;
   flex-direction: row;
@@ -8,9 +9,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    font-size: 14px;
 
     .oss-breadcrumb-item {
       font-size: 14px;
+    }
+
+    .oss-breadcrumb-separator {
+      padding: 0 5px;
     }
   }
 }

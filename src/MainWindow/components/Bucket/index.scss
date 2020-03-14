@@ -18,15 +18,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
     color: #fff;
+
+    .toolbar-icon {
+    }
 
     .toolbar-left {
       display: flex;
+      align-items: center;
     }
 
     .toolbar-right {
       display: flex;
+      align-items: center;
+
+      .toolbar-right__search {
+        margin: 0 5px;
+      }
     }
   }
 
@@ -72,6 +80,7 @@
 
       .main-table {
         width: 100%;
+        border-spacing: 0;
 
         .main-table__row {
           color: #f2f6fc;
@@ -86,6 +95,7 @@
 
             &.index {
               width: 30px;
+              text-align: center;
             }
 
             &.title {

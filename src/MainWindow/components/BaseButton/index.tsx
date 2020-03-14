@@ -23,8 +23,10 @@ const Button = ({
       onClick={disabled ? f => f : onClick}
       className={classNames("oss-button", className, { disabled })}
     >
-      {icon && <FontAwesomeIcon className="icon" icon={icon} />}
-      <span>{value || ""}</span>
+      {icon && (
+        <FontAwesomeIcon icon={icon} className="oss-button__inner_icon" />
+      )}
+      <span className="oss-button__inner_text">{value || ""}</span>
     </button>
   );
 };

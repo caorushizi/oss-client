@@ -5,15 +5,15 @@
   border-radius: 5px;
   box-sizing: content-box;
   background-color: rgba(255, 255, 255, 0.15);
-  margin: 5px 10px;
+  margin: 5px;
   font-size: 12px;
   height: 26px;
-  line-height: 26px;
-  padding: 0 15px;
+  padding: 0 13px;
   backdrop-filter: blur(5px);
 
-  .icon {
-    padding-right: 5px;
+  .oss-button__inner_icon {
+  }
+  .oss-button__inner_text {
   }
 
   &.disabled {

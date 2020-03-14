@@ -5,6 +5,7 @@ import "./index.scss";
 import { Layout } from "../../types";
 import Breadcrumb from "../BaseBreadcrumb";
 import Input from "../BaseInput";
+import Button from "../BaseButton";
 
 type PropTypes = {
   backspace: () => void;
@@ -22,16 +23,19 @@ const HeaderToolbar = ({
   return (
     <div className="toolbar-wrapper">
       <div className="toolbar-left">
-        <FontAwesomeIcon icon="angle-left" onClick={backspace} />
-        <FontAwesomeIcon icon="undo-alt" />
+        <Button icon="arrow-left" onClick={backspace} />
+        <Button icon="undo-alt" />
         <Breadcrumb routes={["首页"].concat(navigators)} />
       </div>
       <div className="toolbar-right">
-        <Input icon="search" placeholder="搜索" />
-        <FontAwesomeIcon
+        <Input
+          className="toolbar-right__search"
+          icon="search"
+          placeholder="搜索"
+        />
+        <Button
           icon={layout === Layout.grid ? "bars" : "border-all"}
           onClick={changeLayout}
-          className="icon-button"
         />
       </div>
     </div>

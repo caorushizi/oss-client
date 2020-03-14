@@ -62,6 +62,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   };
   const backspace = () => {
     vFolder.back();
+    setItems(vFolder.listFiles());
   };
   const onFileDrop = (files: FileList | null) => {
     if (files) {

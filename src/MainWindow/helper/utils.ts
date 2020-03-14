@@ -11,7 +11,7 @@ export function fileSizeFormatter(value = 0): string {
 }
 
 export function dateFormatter(dateVal = 0) {
-  return moment(dateVal).format("YYYY-MM-DD HH:mm:ss");
+  return moment(dateVal).format("YYYY年MM月DD日 HH:mm:ss");
 }
 
 const styles: ThemeColor[] = [

@@ -26,7 +26,7 @@ const BodyTable = ({
         <table className="main-table">
           <thead>
             <tr className="main-table__row">
-              <th className="main-table__row_cell">#</th>
+              <th className="main-table__row_cell index">#</th>
               <th className="main-table__row_cell">文件名</th>
               <th className="main-table__row_cell">大小</th>
               <th className="main-table__row_cell">修改日期</th>
@@ -42,7 +42,7 @@ const BodyTable = ({
                   onContextMenu={() => onFolderContextMenu(item)}
                   onDoubleClick={() => onFolderSelect(item.name)}
                 >
-                  <td className="main-table__row_cell index">{index}</td>
+                  <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
                     <Icon className="icon" />
                     <span>{item.name}</span>
@@ -62,7 +62,7 @@ const BodyTable = ({
                   onContextMenu={() => onFileContextMenu(item)}
                   onDoubleClick={onFileSelect}
                 >
-                  <td className="main-table__row_cell index">{index}</td>
+                  <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
                     <Icon className="icon" filename={item.name} />
                     <span>{item.name}</span>
