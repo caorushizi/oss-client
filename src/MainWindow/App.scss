@@ -68,3 +68,29 @@
   top: -100vh;
   transition: top 0.3s ease-in;
 }
+
+.down-enter {
+  width: 100%;
+  position: absolute;
+  top: -100vh;
+}
+
+.down-enter-active {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  transition: top 0.3s ease-in;
+}
+
+.down-exit {
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.down-exit-active {
+  width: 100%;
+  position: absolute;
+  top: 100vh;
+  transition: top 0.3s ease-in;
+}

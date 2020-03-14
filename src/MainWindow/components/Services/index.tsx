@@ -16,12 +16,8 @@ const Apps = ({ onOssChange }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
-  const onBucketUpdate = () => {
-    console.log("更新");
-  };
-  const onBucketDelete = () => {
-    console.log("删除");
-  };
+  const onBucketUpdate = () => {};
+  const onBucketDelete = () => {};
   const onBucketAdd = async (
     name: string,
     ak: string,

@@ -4,7 +4,6 @@ import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../BaseButton";
-import set = Reflect.set;
 
 type FormData = {
   name: string;

@@ -4,7 +4,6 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./App.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import uuid from "uuid/v4";
 import TheSidebar from "./components/TheSidebar";
 import Transmitting from "./components/Transmitting";
 import { Direction, Page, Platform } from "./types";
@@ -52,6 +51,7 @@ function App() {
     setBucketList(buckets);
     if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
   };
+  const transitionClass = () => (direction === Direction.up ? "up" : "down");
 
   useEffect(() => {
     setThemeColor(getThemeColor());
@@ -109,18 +109,18 @@ function App() {
       <TransitionGroup className="main-wrapper" mode="in-out">
         {Page.bucket === activePage && (
           <CSSTransition
-            key={uuid()}
+            key={Page.bucket}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames="up"
+            classNames={transitionClass()}
           >
             <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
           </CSSTransition>
         )}
         {Page.transferList === activePage && (
           <CSSTransition
-            key={uuid()}
+            key={Page.transferList}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
@@ -131,33 +131,33 @@ function App() {
         )}
         {Page.transferDone === activePage && (
           <CSSTransition
-            key={uuid()}
+            key={Page.transferDone}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames="up"
+            classNames={transitionClass()}
           >
             <TransferList />
           </CSSTransition>
         )}
         {Page.setting === activePage && (
           <CSSTransition
-            key={uuid()}
+            key={Page.setting}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames="up"
+            classNames={transitionClass()}
           >
             <Setting />
           </CSSTransition>
         )}
         {Page.apps === activePage && (
           <CSSTransition
-            key={uuid()}
+            key={Page.apps}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames="up"
+            classNames={transitionClass()}
           >
             <Apps onOssChange={onOssChange} />
           </CSSTransition>

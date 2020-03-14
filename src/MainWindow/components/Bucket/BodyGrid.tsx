@@ -5,7 +5,6 @@ import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../BaseIcon";
 import VFile from "../../lib/vdir/VFile";
-import instance from "../../../main/helper/http";
 
 type PropTypes = {
   items: Item[];

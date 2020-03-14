@@ -16,9 +16,9 @@ export enum Layout {
 
 // fixme: 首字母
 export enum Page {
-  bucket = "0bucket",
-  transferList = "1transferList",
-  transferDone = "2transferDone",
-  setting = "3setting",
-  apps = "4apps"
+  bucket,
+  transferList,
+  transferDone,
+  setting,
+  apps
 }
