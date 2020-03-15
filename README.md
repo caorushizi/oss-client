@@ -53,3 +53,9 @@ npm start
 ### 悬浮窗（仅 Windows）
 
 - 右键显示最近传输列表（点击 item 复制链接）、清空最近记录、是否复制markdown链接
+
+## 技术栈
+- electron
+- electron-forge
+- typescript
+- react
