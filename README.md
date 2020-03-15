@@ -13,7 +13,7 @@ npm start
 ```
 ## 页面展示
 
-![页面展示]("http://github.com/caorushizi/oss-client/raw/master/images/home-page.png")
+![页面展示]("https://github.com/caorushizi/oss-client/blob/master/images/home-page.png")
 
 ## TODO list
 
