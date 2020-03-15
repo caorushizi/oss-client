@@ -30,7 +30,7 @@ function TheSidebar({
   };
 
   return (
-    <div className="aside-wrapper" style={{ background: color }}>
+    <div className="the-sidebar-wrapper" style={{ background: color }}>
       <section className="title-bar">
         <span>OSS Client</span>
       </section>
@@ -108,6 +108,3 @@ function TheSidebar({
 }
 
 export default TheSidebar;
-
-// TODO: 修改 传输列表和传输完成的组件名
-// TODO: 修改组件内部命名

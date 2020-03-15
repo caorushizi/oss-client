@@ -100,14 +100,12 @@ export default class VFolder {
       this.cursor = this.cursor.parent;
     }
   }
-  // TODO: 返回某一个文件夹
 
   public getNav() {
     return this.navigator;
   }
 
   public getPathPrefix(): string {
-    // todo ： 对 // \\ 处理
     return `${this.navigator.join("/")}/`;
   }
 

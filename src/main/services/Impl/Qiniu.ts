@@ -4,7 +4,6 @@ import qiniu from "qiniu";
 import http from "../../helper/http";
 import { CallbackFunc, IObjectStorageService } from "../types";
 
-// todo: http 与 axios
 export default class Qiniu implements IObjectStorageService {
   private bucket = "";
 
@@ -13,8 +12,6 @@ export default class Qiniu implements IObjectStorageService {
   private readonly config: qiniu.conf.Config;
 
   private bucketManager: qiniu.rs.BucketManager;
-
-  private domainList: string[] = [];
 
   constructor(accessKey: string, secretKey: string) {
     this.mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
@@ -89,7 +86,6 @@ export default class Qiniu implements IObjectStorageService {
     }).then(fileSize => {
       // 文件上传
       return new Promise((resolve, reject) => {
-        // todo: readableStream readStream
         const reader: any = fs.createReadStream(localPath);
 
         let length = 0;
@@ -142,10 +138,7 @@ export default class Qiniu implements IObjectStorageService {
     const url = `https://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return axios.get<string[]>(url, options).then(({ data }) => {
-      this.domainList = data;
-      return data;
-    });
+    return axios.get<string[]>(url, options).then(({ data }) => data);
   }
 
   public getBucketFiles(): Promise<any[]> {

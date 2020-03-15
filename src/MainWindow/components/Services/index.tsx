@@ -12,7 +12,7 @@ type PropTypes = {
   onOssChange: (id: string) => void;
 };
 
-const Apps = ({ onOssChange }: PropTypes) => {
+const Services = ({ onOssChange }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
 
@@ -24,7 +24,7 @@ const Apps = ({ onOssChange }: PropTypes) => {
     sk: string,
     type: number
   ) => {
-    const app = await addApp(name, type, ak, sk);
+    await addApp(name, type, ak, sk);
   };
   const onOssAddClick = () => {
     const current = { name: "新建", ak: "", sk: "", type: OssType.qiniu };
@@ -67,7 +67,7 @@ const Apps = ({ onOssChange }: PropTypes) => {
   }, []);
 
   return (
-    <div className="apps-wrapper">
+    <div className="services-wrapper">
       <section className="apps-main">
         <ServicesList
           ossList={apps}
@@ -82,4 +82,4 @@ const Apps = ({ onOssChange }: PropTypes) => {
   );
 };
 
-export default Apps;
+export default Services;

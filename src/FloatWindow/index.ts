@@ -20,7 +20,6 @@ function fileContextMenu() {
   menu.popup();
 }
 
-// todo： 背景图拖动
 if (realWindow) {
   realWindow.addEventListener("mousedown", (e: MouseEvent) => {
     switch (e.button) {

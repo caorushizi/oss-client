@@ -8,7 +8,6 @@ export default class FloatWindow {
     this.window = new BrowserWindow({
       transparent: true,
       frame: false,
-      // FIXME: 渲染进程不使用 node
       webPreferences: { nodeIntegration: true },
       height: 100,
       width: 100,
@@ -22,9 +21,7 @@ export default class FloatWindow {
 
     this.window.setPosition(size.width - winSize[0] - 100, 100);
 
-    this.window.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(() => {
-      console.log("float window loaded~");
-    });
+    this.window.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(() => {});
 
     this.window.on("closed", () => {
       this.window = null;

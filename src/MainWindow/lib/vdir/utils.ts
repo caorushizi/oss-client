@@ -15,5 +15,3 @@ export function basename(strPath: string): string {
   const index = strPath.lastIndexOf("/");
   return strPath.substr(index + 1);
 }
-
-// TODO：使用正则表达式

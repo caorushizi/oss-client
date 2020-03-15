@@ -17,7 +17,6 @@ export default class App {
   // private appTray: AppTray;
 
   constructor() {
-    // todo: require
     // eslint-disable-next-line global-require
     if (require("electron-squirrel-startup")) {
       app.quit();

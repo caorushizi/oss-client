@@ -42,7 +42,6 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   }, [bucket]);
 
   const fileUpload = () => {
-    // todo: 记录上次打开文件夹
     const userPath = remote.app.getPath("documents");
     remote.dialog
       .showOpenDialog({

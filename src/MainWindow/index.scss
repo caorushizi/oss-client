@@ -1,5 +1,22 @@
+@font-face {
+  font-family: "webfont";
+  font-display: swap;
+  src: url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.eot");
+  src: url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.eot?#iefix")
+      format("embedded-opentype"),
+    url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.woff2") format("woff2"),
+    url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.woff") format("woff"),
+    url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.ttf") format("truetype"),
+    url("http://at.alicdn.com/t/webfont_lwqbkk5e9g.svg#Alibaba-PuHuiTi-Regular")
+      format("svg");
+}
+
 * {
   user-select: none;
+  font-family: "webfont", serif !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -7,8 +24,6 @@ body {
   height: 100vh;
   overflow: hidden;
 }
-
-// todo: 字体
 
 /* 滚动条 */
 ::-webkit-scrollbar {

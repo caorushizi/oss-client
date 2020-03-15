@@ -14,7 +14,6 @@ export enum Layout {
   table
 }
 
-// fixme: 首字母
 export enum Page {
   bucket,
   transferList,

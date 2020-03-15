@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain } from "electron";
+import { BrowserWindow, app } from "electron";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -9,15 +9,12 @@ export default class MainWindow {
     this.window = new BrowserWindow({
       frame: false,
       height: 645,
-      // FIXME: 渲染进程不使用 node
       webPreferences: { nodeIntegration: true },
       width: 1090,
       titleBarStyle: "hiddenInset"
     });
 
-    this.window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {
-      console.log("main page loaded ~");
-    });
+    this.window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {});
 
     this.window.webContents.openDevTools();
 

@@ -15,17 +15,14 @@ import App from "../app";
 
 const taskRunner = new TaskRunner(5, true);
 
-// todo: transfers 本地文件 加密
 export default async function bootstrap(app: App) {
   app.init();
 
   events.on("done", (id: string) => {
-    // todo：文件下载完成
     // transfers.update({ id }, { $set: { status: TransferStatus.done } });
   });
 
   events.on("failed", (id: string) => {
-    // todo: 文件下载失败
     // transfers.update({ id }, { $set: { status: TransferStatus.failed } });
   });
 
@@ -53,9 +50,7 @@ export default async function bootstrap(app: App) {
     const callback: CallbackFunc = (id, progress) => {
       console.log(`${id} - progress ${progress}%`);
     };
-    // fixme: _id
     const id = uuid();
-    // todo：换成class
     const newDoc = {
       id,
       name: item.name,

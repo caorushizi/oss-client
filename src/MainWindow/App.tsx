@@ -5,13 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./App.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import TheSidebar from "./components/TheSidebar";
-import Transmitting from "./components/Transmitting";
+import TransferList from "./components/TransferList";
 import { Direction, Page, Platform } from "./types";
 import Bucket from "./components/Bucket";
-import TransferList from "./components/TransferList";
+import TransferDone from "./components/TransferDone";
 import Setting from "./components/Setting";
 import { getThemeColor, platform, ThemeColor } from "./helper/utils";
-import Apps from "./components/Services";
+import Services from "./components/Services";
 import {
   closeMainApp,
   getBuckets,
@@ -22,7 +22,6 @@ import {
 
 library.add(fas);
 
-// todo: 渐变颜色的问题
 function App() {
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -31,12 +30,11 @@ function App() {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const tabChange = async (page: Page, bucket?: string) => {
-    // todo: 动画方向
-    // if (page < activePage) {
-    //   setDirection(Direction.down);
-    // } else {
-    //   setDirection(Direction.up);
-    // }
+    if (page < activePage) {
+      setDirection(Direction.down);
+    } else {
+      setDirection(Direction.up);
+    }
     setActivePage(page);
     if (bucket) {
       setBucketLoading(true);
@@ -50,7 +48,6 @@ function App() {
     await initOss(id);
     // 获取 oss 中 bucket 列表，并选中活动项
     const buckets = await getBuckets();
-    // todo: 保存 cur bucket
     setBucketList(buckets);
     if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
   };
@@ -66,7 +63,6 @@ function App() {
       await initOss();
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
-      // todo: 保存 cur bucket
       setBucketList(buckets);
       if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
     })();
@@ -143,7 +139,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset() }}
             >
-              <Transmitting />
+              <TransferList />
             </section>
           </CSSTransition>
         )}
@@ -159,7 +155,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset() }}
             >
-              <TransferList />
+              <TransferDone />
             </section>
           </CSSTransition>
         )}
@@ -191,7 +187,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset() }}
             >
-              <Apps onOssChange={onOssChange} />
+              <Services onOssChange={onOssChange} />
             </section>
           </CSSTransition>
         )}
