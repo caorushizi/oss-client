@@ -26,6 +26,7 @@ export type TransferStore = {
   type: TaskType;
   status: TransferStatus;
 };
+
 export enum TransferStatus {
   default,
   done,

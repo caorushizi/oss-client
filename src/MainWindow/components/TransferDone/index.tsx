@@ -16,14 +16,17 @@ const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
   useEffect(() => {
     (async () => {
-      const t = await getTransfers();
-      setTransfers(t);
+      const transferList = await getTransfers();
+      const transferDone = transferList.filter(
+        i => i.status === TransferStatus.done
+      );
+      setTransfers(transferDone);
     })();
   }, []);
   return (
     <div className="transfer-done-wrapper">
       <div className="toolbar">
-        <span className="toolbar-left">正在下载 3 项/ 总共 18 项</span>
+        <span className="toolbar-left">{`总共 ${transfers.length} 项`}</span>
         <div className="toolbar-right">
           <Button value="清空记录" />
         </div>
@@ -31,32 +34,25 @@ const TransferDone = () => {
       <section className="transfer-table__wrapper">
         <table className="transfer-table">
           <tbody>
-            {transfers
-              .filter(
-                (item: TransferStore) => item.status === TransferStatus.done
-              )
-              .map((item: TransferStore) => (
-                <tr className="transfer-table__row" key={item.id + item.name}>
-                  <td className="transfer-table__row_item meta">
-                    <Icon className="icon" filename={item.name} />
-                    <div className="name-wrapper">
-                      <div className="name">{item.name}</div>
-                      <div className="size">{fileSizeFormatter(item.size)}</div>
-                    </div>
-                  </td>
-                  <td>{taskTypeFormatter(item.type)}</td>
-                  <td>{dateFormatter(item.date)}</td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon className="action-button" icon="folder" />
-                  </td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon
-                      className="action-button"
-                      icon="trash-alt"
-                    />
-                  </td>
-                </tr>
-              ))}
+            {transfers.map((item: TransferStore) => (
+              <tr className="transfer-table__row" key={item.id + item.name}>
+                <td className="transfer-table__row_item meta">
+                  <Icon className="icon" filename={item.name} />
+                  <div className="name-wrapper">
+                    <div className="name">{item.name}</div>
+                    <div className="size">{fileSizeFormatter(item.size)}</div>
+                  </div>
+                </td>
+                <td>{taskTypeFormatter(item.type)}</td>
+                <td>{dateFormatter(item.date)}</td>
+                <td className="transfer-table__row_item">
+                  <FontAwesomeIcon className="action-button" icon="folder" />
+                </td>
+                <td className="transfer-table__row_item">
+                  <FontAwesomeIcon className="action-button" icon="trash-alt" />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>
