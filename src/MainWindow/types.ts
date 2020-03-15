@@ -5,8 +5,8 @@ export enum Platform {
 }
 
 export enum Direction {
-  up,
-  down
+  up = "up",
+  down = "down"
 }
 
 export enum Layout {

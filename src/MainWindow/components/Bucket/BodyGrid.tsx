@@ -1,4 +1,5 @@
 import React from "react";
+import LazyLoad from "react-lazyload";
 
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
@@ -46,15 +47,14 @@ const BodyGrid = ({
               onContextMenu={() => onFileContextMenu(item)}
               onDoubleClick={onFileSelect}
             >
-              {(item as VFile).type.startsWith("image/") &&
-              domains.length > 0 ? (
-                <img
-                  className="icon"
-                  src={`http://${domains[0]}/${
-                    (item as VFile).webkitRelativePath
-                  }`}
-                  alt={item.name}
-                />
+              {item.type.startsWith("image/") && domains.length > 0 ? (
+                <LazyLoad>
+                  <img
+                    className="icon"
+                    src={`http://${domains[0]}/${item.webkitRelativePath}`}
+                    alt={item.name}
+                  />
+                </LazyLoad>
               ) : (
                 <Icon className="icon" filename={item.name} />
               )}

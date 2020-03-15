@@ -81,6 +81,7 @@
     "@types/node": "^12.12.6",
     "@types/rc-switch": "^1.9.0",
     "@types/react-dom": "^16.9.4",
+    "@types/react-lazyload": "^2.6.0",
     "@types/react-transition-group": "^4.2.4",
     "@types/shortid": "0.0.29",
     "@types/uuid": "^3.4.7",
@@ -132,6 +133,7 @@
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-file-drop": "^0.2.8",
+    "react-lazyload": "^2.6.5",
     "react-transition-group": "^4.3.0",
     "shortid": "^2.2.15",
     "uuid": "^3.4.0"

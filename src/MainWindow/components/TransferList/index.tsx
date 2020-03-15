@@ -25,8 +25,7 @@ const TransferList = () => {
       <div className="toolbar">
         <span className="toolbar-left">正在下载 3 项/ 总共 18 项</span>
         <div className="toolbar-right">
-          <Button value="全部暂停" />
-          <Button value="全部取消" />
+          <Button value="清空记录" />
         </div>
       </div>
       <section className="transfer-table__wrapper">

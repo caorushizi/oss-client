@@ -31,14 +31,17 @@ function App() {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const tabChange = async (page: Page, bucket?: string) => {
-    if (page < activePage) {
-      setDirection(Direction.down);
-    } else {
-      setDirection(Direction.up);
-    }
-    if (bucket) setBucketLoading(true);
+    // todo: 动画方向
+    // if (page < activePage) {
+    //   setDirection(Direction.down);
+    // } else {
+    //   setDirection(Direction.up);
+    // }
     setActivePage(page);
-    if (bucket) setActiveBucket(bucket);
+    if (bucket) {
+      setBucketLoading(true);
+      setActiveBucket(bucket);
+    }
   };
   const onLoadedBucket = () => {
     setBucketLoading(false);
@@ -51,7 +54,6 @@ function App() {
     setBucketList(buckets);
     if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
   };
-  const transitionClass = () => (direction === Direction.up ? "up" : "down");
 
   useEffect(() => {
     setThemeColor(getThemeColor());
@@ -73,11 +75,16 @@ function App() {
   const bgOffset = () => {
     const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
     const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
-    return { bgOffsetX, bgOffsetY };
+    return `${bgOffsetX}px, ${bgOffsetY}px`;
   };
 
   return (
-    <div className="App" style={{ background: themeColor.appColor }}>
+    <div
+      className="App"
+      style={{
+        background: themeColor.appColor
+      }}
+    >
       <div className="drag-area" />
       {platform === Platform.windows && (
         <div className="app-button">
@@ -106,16 +113,22 @@ function App() {
         tabChange={tabChange}
         color={themeColor.asideColor}
       />
-      <TransitionGroup className="main-wrapper" mode="in-out">
+      <TransitionGroup mode="in-out">
         {Page.bucket === activePage && (
           <CSSTransition
             key={Page.bucket}
+            timeout={10000}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames={transitionClass()}
+            classNames={direction}
           >
-            <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
+            <section
+              className="main-wrapper"
+              style={{ backgroundPosition: bgOffset() }}
+            >
+              <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
+            </section>
           </CSSTransition>
         )}
         {Page.transferList === activePage && (
@@ -124,9 +137,14 @@ function App() {
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames="up"
+            classNames={direction}
           >
-            <Transmitting />
+            <section
+              className="main-wrapper"
+              style={{ backgroundPosition: bgOffset() }}
+            >
+              <Transmitting />
+            </section>
           </CSSTransition>
         )}
         {Page.transferDone === activePage && (
@@ -135,9 +153,14 @@ function App() {
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames={transitionClass()}
+            classNames={direction}
           >
-            <TransferList />
+            <section
+              className="main-wrapper"
+              style={{ backgroundPosition: bgOffset() }}
+            >
+              <TransferList />
+            </section>
           </CSSTransition>
         )}
         {Page.setting === activePage && (
@@ -146,9 +169,14 @@ function App() {
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames={transitionClass()}
+            classNames={direction}
           >
-            <Setting />
+            <section
+              className="main-wrapper"
+              style={{ backgroundPosition: bgOffset() }}
+            >
+              <Setting />
+            </section>
           </CSSTransition>
         )}
         {Page.apps === activePage && (
@@ -157,9 +185,14 @@ function App() {
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
-            classNames={transitionClass()}
+            classNames={direction}
           >
-            <Apps onOssChange={onOssChange} />
+            <section
+              className="main-wrapper"
+              style={{ backgroundPosition: bgOffset() }}
+            >
+              <Apps onOssChange={onOssChange} />
+            </section>
           </CSSTransition>
         )}
       </TransitionGroup>
