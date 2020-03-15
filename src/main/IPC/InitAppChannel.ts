@@ -22,8 +22,9 @@ export class InitAppChannel implements IpcChannelInterface {
         // 开始查询所有的apps
         const apps = await getApps();
         // 并将第一个 app 选中
-        if (apps.length > 0)
+        if (apps.length > 0) {
           AppInstance.changeApp(apps[0].type, apps[0].ak, apps[0].sk);
+        }
       }
     } finally {
       event.sender.send(request.responseChannel, "success");

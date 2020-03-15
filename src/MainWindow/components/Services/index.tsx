@@ -7,6 +7,8 @@ import ServicesList from "./ServicesList";
 import ServicesNewItem from "./ServicesNewItem";
 import ServicesUpdateItem from "./ServicesUpdateItem";
 import { OssType } from "../../../main/types";
+import useKeyPress from "../../hooks/useKeyPress";
+import { KeyCode } from "../../types";
 
 type PropTypes = {
   onOssChange: (id: string) => void;
@@ -15,6 +17,11 @@ type PropTypes = {
 const Services = ({ onOssChange }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
+  const escapePress = useKeyPress(KeyCode.Escape);
+
+  useEffect(() => {
+    console.log("123");
+  }, [escapePress]);
 
   const onBucketUpdate = () => {};
   const onBucketDelete = () => {};
@@ -49,12 +56,7 @@ const Services = ({ onOssChange }: PropTypes) => {
     if (currentApp && !currentApp._id) {
       return <ServicesNewItem onBucketAdd={onBucketAdd} />;
     }
-    return (
-      <div className="no-result">
-        <p>没有 Apps</p>
-        <p>暂时没有搜索到 apps</p>
-      </div>
-    );
+    return <div />;
   };
 
   useEffect(() => {

@@ -21,3 +21,7 @@ export enum Page {
   setting,
   apps
 }
+
+export enum KeyCode {
+  Escape = "Escape"
+}

@@ -40,21 +40,25 @@ function TheSidebar({
           {bucketLoading && <Loading className="loading" />}
         </div>
         <ul className="list">
-          {bucketList.map((bucket: string) => (
-            <li
-              className={classNames("item", activeTag(Page.bucket, bucket))}
-              key={bucket}
-            >
-              <FontAwesomeIcon className="icon" icon="folder" />
-              <input
-                type="button"
-                className="link"
-                onClick={() => tabChange(Page.bucket, bucket)}
-                title={bucket}
-                value={bucket}
-              />
-            </li>
-          ))}
+          {bucketList.length ? (
+            bucketList.map((bucket: string) => (
+              <li
+                className={classNames("item", activeTag(Page.bucket, bucket))}
+                key={bucket}
+              >
+                <FontAwesomeIcon className="icon" icon="folder" />
+                <input
+                  type="button"
+                  className="link"
+                  onClick={() => tabChange(Page.bucket, bucket)}
+                  title={bucket}
+                  value={bucket}
+                />
+              </li>
+            ))
+          ) : (
+            <li className="item">暂无 bucket</li>
+          )}
         </ul>
       </section>
       <section className="container">
