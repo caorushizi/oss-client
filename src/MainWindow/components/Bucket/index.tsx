@@ -26,6 +26,8 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   const [layout, setLayout] = useState<Layout>(Layout.grid);
   const [domains, setDomains] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+  const [searchedItem, setSearchedItem] = useState<Item[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
 
   useEffect(() => {
     if (!bucket) return;
@@ -81,11 +83,17 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     setItems(vFolder.listFiles());
   };
   const onFolderContextMenu = (item: VFolder) => {};
+  const onSearchChange = (value: string) => {
+    setSearchValue(value);
+    const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
+    setSearchedItem(it);
+  };
 
   return (
     <div className="bucket-wrapper">
       <HeaderButtonGroup fileUpload={fileUpload} />
       <HeaderToolbar
+        onSearchChange={onSearchChange}
         backspace={backspace}
         layout={layout}
         changeLayout={() => {
@@ -102,8 +110,8 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
           <FileDrop onDrop={onFileDrop} />
           {Layout.grid === layout ? (
             <BodyGrid
-              domains={[]}
-              items={items}
+              domains={domains}
+              items={searchValue ? searchedItem : items}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
@@ -111,7 +119,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
             />
           ) : (
             <BodyTable
-              items={items}
+              items={searchValue ? searchedItem : items}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}

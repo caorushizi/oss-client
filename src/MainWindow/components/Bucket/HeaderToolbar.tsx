@@ -12,13 +12,15 @@ type PropTypes = {
   changeLayout: () => void;
   layout: Layout;
   navigators: string[];
+  onSearchChange: (value: string) => void;
 };
 
 const HeaderToolbar = ({
   backspace,
   layout,
   changeLayout,
-  navigators
+  navigators,
+  onSearchChange
 }: PropTypes) => {
   return (
     <div className="toolbar-wrapper">
@@ -32,6 +34,7 @@ const HeaderToolbar = ({
           className="toolbar-right__search"
           icon="search"
           placeholder="搜索"
+          onChange={event => onSearchChange(event.target.value)}
         />
         <Button
           icon={layout === Layout.grid ? "bars" : "border-all"}
