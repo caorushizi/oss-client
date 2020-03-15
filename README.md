@@ -7,7 +7,7 @@ npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electro
 ```
 ## 页面展示
 
-![页面展示]("./images/home-page.png")
+![页面展示]("http://soft.super-system.top/博客图片/截屏2020-03-15下午9.38.27.png")
 
 ## TODO list
 
