@@ -1,10 +1,13 @@
 # 云存储客户端
 
-安装时注意
+## 安装步骤
 
 ```shell script
 npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electron/" npm_config_electron_custom_dir="7.1.9" npm install
 ```
+## 页面展示
+
+![页面展示]("http://soft.super-system.top/博客图片/WechatIMG35.png")
 
 ## TODO list
 
