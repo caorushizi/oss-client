@@ -30,11 +30,7 @@ function App() {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const tabChange = async (page: Page, bucket?: string) => {
-    if (page < activePage) {
-      setDirection(Direction.down);
-    } else {
-      setDirection(Direction.up);
-    }
+    await setDirection(page < activePage ? Direction.down : Direction.up);
     setActivePage(page);
     if (bucket) {
       setBucketLoading(true);
