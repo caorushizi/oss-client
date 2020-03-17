@@ -31,13 +31,13 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
 
   useEffect(() => {
     if (!bucket) return;
-    switchBucket(bucket).then(bucketIpcRep => {
+    switchBucket(bucket).then(async bucketIpcRep => {
       const adaptedFiles = qiniuAdapter(bucketIpcRep.files);
       const vf = VFolder.from(adaptedFiles);
       onLoadedBucket();
-      setDomains(bucketIpcRep.domains);
       setVFolder(vf);
       setItems(vf.listFiles());
+      setDomains(bucketIpcRep.domains);
     });
   }, [bucket]);
 
