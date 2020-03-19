@@ -19,6 +19,7 @@ import {
   maximizeMainWindow,
   minimizeMainWindow
 } from "./ipc";
+import { AppStore } from "../main/store/apps";
 
 library.add(fas);
 
@@ -46,6 +47,11 @@ function App() {
     const buckets = await getBuckets();
     setBucketList(buckets);
     if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
+  };
+  const onOssActive = async (s: AppStore) => {
+    await initOss(s._id);
+    const buckets = await getBuckets();
+    setBucketList(buckets);
   };
 
   useEffect(() => {
@@ -188,7 +194,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset() }}
             >
-              <Services onOssChange={onOssChange} />
+              <Services onOssChange={onOssChange} onOssActive={onOssActive} />
             </section>
           </CSSTransition>
         )}

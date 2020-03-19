@@ -92,6 +92,7 @@ export default async function bootstrap(app: App) {
   ipcMain.on(
     "drop-files",
     async (event, remoteDir: string, fileList: string[]) => {
+      debugger;
       const instance = AppInstance.getInstance();
       const { oss } = instance;
       const baseDir = path.dirname(fileList[0]);

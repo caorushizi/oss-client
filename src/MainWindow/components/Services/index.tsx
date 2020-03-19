@@ -12,9 +12,10 @@ import { KeyCode } from "../../types";
 
 type PropTypes = {
   onOssChange: (id: string) => void;
+  onOssActive: (name: AppStore) => void;
 };
 
-const Services = ({ onOssChange }: PropTypes) => {
+const Services = ({ onOssChange, onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
   const escapePress = useKeyPress(KeyCode.Escape);
@@ -38,9 +39,12 @@ const Services = ({ onOssChange }: PropTypes) => {
     setApps([...apps, current]);
     setCurrentApp(current);
   };
-  const onOssSelect = (id: string) => {
+  const _onOssSelect = (id: string) => {
     const s = apps.find(i => i._id === id);
-    setCurrentApp(s);
+    if (s) {
+      onOssActive(s);
+      setCurrentApp(s);
+    }
   };
 
   const OssForm = () => {
@@ -76,7 +80,7 @@ const Services = ({ onOssChange }: PropTypes) => {
           activeOss={currentApp?._id}
           onOssAddClick={onOssAddClick}
           onOssChange={onOssChange}
-          onOssSelect={onOssSelect}
+          onOssSelect={_onOssSelect}
         />
         <OssForm />
       </section>
