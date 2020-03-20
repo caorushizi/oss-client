@@ -39,7 +39,7 @@ function TheSidebar({
           储存空间
           {bucketLoading && <Loading className="loading" />}
         </div>
-        <ul className="list">
+        <ul className="sidebar-list">
           {bucketList.length ? (
             bucketList.map((bucket: string) => (
               <li
@@ -57,13 +57,18 @@ function TheSidebar({
               </li>
             ))
           ) : (
-            <li className="item">暂无 bucket</li>
+            <li className="item">
+              <FontAwesomeIcon className="icon" icon="meh-blank" />
+              <button type="button" className="link disabled" disabled>
+                暂无储存桶
+              </button>
+            </li>
           )}
         </ul>
       </section>
       <section className="container">
         <div className="title">传输列表</div>
-        <ul className="list">
+        <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.transferList))}>
             <FontAwesomeIcon className="icon" icon="arrow-up" />
             <input
@@ -86,7 +91,7 @@ function TheSidebar({
       </section>
       <section className="container">
         <div className="title">设置</div>
-        <ul className="list">
+        <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.setting))}>
             <FontAwesomeIcon className="icon" icon="cog" />
             <input

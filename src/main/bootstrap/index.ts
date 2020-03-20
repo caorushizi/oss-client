@@ -92,7 +92,6 @@ export default async function bootstrap(app: App) {
   ipcMain.on(
     "drop-files",
     async (event, remoteDir: string, fileList: string[]) => {
-      debugger;
       if (Array.isArray(fileList) && fileList.length === 0) return;
       const instance = AppInstance.getInstance();
       const { oss } = instance;

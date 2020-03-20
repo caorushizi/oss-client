@@ -26,7 +26,7 @@
       }
     }
 
-    .list {
+    .sidebar-list {
       padding: 0;
       margin: 0;
 
@@ -51,6 +51,10 @@
           padding-left: 10px;
           cursor: pointer;
           color: $color-font;
+
+          &.disabled {
+            cursor: not-allowed;
+          }
 
           &:focus {
             outline: none;
