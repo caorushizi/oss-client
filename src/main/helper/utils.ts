@@ -1,5 +1,5 @@
-import { pathStatsSync } from "./fs";
 import klawSync from "klaw-sync";
+import { pathStatsSync } from "./fs";
 
 export function convertPath(path: string) {
   return path.replace(/\\/g, "/");

@@ -3,6 +3,7 @@ import * as fs from "fs";
 import qiniu from "qiniu";
 import http from "../../helper/http";
 import { CallbackFunc, IObjectStorageService } from "../types";
+import { ReadStream } from "fs";
 
 export default class Qiniu implements IObjectStorageService {
   private bucket = "";
@@ -86,7 +87,7 @@ export default class Qiniu implements IObjectStorageService {
     }).then(fileSize => {
       // 文件上传
       return new Promise((resolve, reject) => {
-        const reader: any = fs.createReadStream(localPath);
+        const reader: ReadStream = fs.createReadStream(localPath);
 
         let length = 0;
         reader.on("data", (thunk: any) => {

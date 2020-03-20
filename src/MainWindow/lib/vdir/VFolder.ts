@@ -106,7 +106,7 @@ export default class VFolder {
   }
 
   public getPathPrefix(): string {
-    return `${this.navigator.join("/")}/`;
+    return this.navigator.join("/");
   }
 
   static isDir(o: any) {

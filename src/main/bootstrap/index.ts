@@ -93,11 +93,12 @@ export default async function bootstrap(app: App) {
     "drop-files",
     async (event, remoteDir: string, fileList: string[]) => {
       debugger;
+      if (Array.isArray(fileList) && fileList.length === 0) return;
       const instance = AppInstance.getInstance();
       const { oss } = instance;
       const baseDir = path.dirname(fileList[0]);
-      const list = fattenFileList(fileList);
-      list.forEach(filepath => {
+      const filepathList = fattenFileList(fileList);
+      filepathList.forEach(filepath => {
         const callback: CallbackFunc = (id, progress) => {
           console.log(`${id} - progress ${progress}%`);
         };
