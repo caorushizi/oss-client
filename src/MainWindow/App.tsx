@@ -41,13 +41,6 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onOssChange = async (id: string) => {
-    await initOss(id);
-    // 获取 oss 中 bucket 列表，并选中活动项
-    const buckets = await getBuckets();
-    setBucketList(buckets);
-    if (buckets.length > 0) await tabChange(Page.bucket, buckets[0]);
-  };
   const onOssActive = async (s: AppStore) => {
     await initOss(s._id);
     const buckets = await getBuckets();
@@ -120,7 +113,6 @@ function App() {
         {Page.bucket === activePage && (
           <CSSTransition
             key={Page.bucket}
-            timeout={10000}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
@@ -194,7 +186,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset() }}
             >
-              <Services onOssChange={onOssChange} onOssActive={onOssActive} />
+              <Services onOssActive={onOssActive} />
             </section>
           </CSSTransition>
         )}

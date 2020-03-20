@@ -11,11 +11,10 @@ import useKeyPress from "../../hooks/useKeyPress";
 import { KeyCode } from "../../types";
 
 type PropTypes = {
-  onOssChange: (id: string) => void;
-  onOssActive: (name: AppStore) => void;
+  onOssActive: (item: AppStore) => void;
 };
 
-const Services = ({ onOssChange, onOssActive }: PropTypes) => {
+const Services = ({ onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
   const escapePress = useKeyPress(KeyCode.Escape);
@@ -79,7 +78,6 @@ const Services = ({ onOssChange, onOssActive }: PropTypes) => {
           ossList={apps}
           activeOss={currentApp?._id}
           onOssAddClick={onOssAddClick}
-          onOssChange={onOssChange}
           onOssSelect={_onOssSelect}
         />
         <OssForm />
