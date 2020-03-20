@@ -36,8 +36,8 @@ const TransferList = () => {
             {transfers.map((item: TransferStore) => (
               <tr className="transfer-table__row" key={item.id + item.name}>
                 <td className="transfer-table__row_item meta">
-                  <Icon filename={item.name} />
-                  <div>
+                  <Icon className="icon" filename={item.name} />
+                  <div className="name-wrapper">
                     <div className="name">{item.name}</div>
                     <div className="size">{fileSizeFormatter(item.size)}</div>
                   </div>

@@ -20,9 +20,11 @@
     .toolbar-right {
     }
   }
+
   .transfer-table__wrapper {
     flex: 1;
     overflow: auto;
+
     .transfer-table {
       width: 100%;
       margin: 0;
@@ -30,14 +32,38 @@
 
       .transfer-table__row {
         border-top: 1px solid $color-border;
+        padding: 5px 10px;
 
         .transfer-table__row_item {
-          padding: 10px 0;
         }
 
         .meta {
           display: flex;
           flex-direction: row;
+
+          .icon {
+            height: 40px;
+            width: 40px;
+            padding: 5px;
+          }
+
+          .name-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .name {
+              font-size: 14px;
+              color: #fff;
+              line-height: 20px;
+            }
+
+            .size {
+              font-size: 12px;
+              color: #999;
+              line-height: 17px;
+            }
+          }
         }
 
         &:last-child {
