@@ -67,6 +67,10 @@ const Setting = () => {
           <p className="title">悬浮窗设置</p>
           <div className="settings">
             <div className="setting-item">
+              <div className="setting-item-title">是否显示悬浮窗 ：</div>
+              <Switch />
+            </div>
+            <div className="setting-item">
               <div className="setting-item-title">悬浮窗样式 ：</div>
               <div>
                 <Radio value="圆形" name="test1" checked />

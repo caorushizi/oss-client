@@ -62,7 +62,7 @@ export default class App {
   }
 
   onWindowAllClosed = () => {
-    if (process.platform !== "darwin") {
+    if (process.platform !== Platform.macos) {
       app.quit();
     }
   };

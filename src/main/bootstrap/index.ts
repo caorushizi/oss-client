@@ -12,19 +12,17 @@ import { uploadFile } from "./handler";
 import AppInstance from "../instance";
 import { downloadDir } from "../helper/dir";
 import App from "../app";
+import { initConfig } from "./config";
 
 const taskRunner = new TaskRunner(5, true);
 
 export default async function bootstrap(app: App) {
   app.init();
+  await initConfig();
 
-  events.on("done", (id: string) => {
-    // transfers.update({ id }, { $set: { status: TransferStatus.done } });
-  });
+  events.on("done", (id: string) => {});
 
-  events.on("failed", (id: string) => {
-    // transfers.update({ id }, { $set: { status: TransferStatus.failed } });
-  });
+  events.on("failed", (id: string) => {});
 
   ipcMain.on("get-buckets-request", async event => {
     const instance = AppInstance.getInstance();
