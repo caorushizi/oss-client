@@ -35,6 +35,7 @@ const ServicesList = ({
               <button
                 type="button"
                 className="button"
+                disabled={!app._id}
                 onClick={() => onOssSelect(app._id!)}
               >
                 <svg className="icon" aria-hidden="true">

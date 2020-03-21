@@ -65,3 +65,12 @@ export function addApp(name: string, type: OssType, ak: string, sk: string) {
     });
   });
 }
+
+export function updateApp(app: AppStore) {
+  return new Promise((resolve, reject) => {
+    appStore.update({ _id: app._id }, app, {}, (err, count) => {
+      if (err) reject(err);
+      resolve();
+    });
+  });
+}

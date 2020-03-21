@@ -42,6 +42,12 @@ export function addApp(
   });
 }
 
+export function updateApp(app: AppStore) {
+  return ipc.send<void>("update-app", {
+    params: app
+  });
+}
+
 export function closeMainApp() {
   ipc.emit("close-main-window");
 }

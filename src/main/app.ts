@@ -8,6 +8,7 @@ import { AddAppChannel } from "./IPC/AddAppChannel";
 import { GetAppsChannel } from "./IPC/GetAppsChannel";
 import { InitAppChannel } from "./IPC/InitAppChannel";
 import { GetTransfersChannel } from "./IPC/GetTransfersChannel";
+import { UpdateAppChannel } from "./IPC/UpdateAppChannel";
 
 export default class App {
   mainWindow: MainWindow;
@@ -37,7 +38,8 @@ export default class App {
       new AddAppChannel(),
       new GetAppsChannel(),
       new InitAppChannel(),
-      new GetTransfersChannel()
+      new GetTransfersChannel(),
+      new UpdateAppChannel()
     ]);
 
     // 初始化 app

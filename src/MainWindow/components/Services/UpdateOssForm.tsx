@@ -11,7 +11,7 @@ import { getBuckets } from "../../helper/ipc";
 
 type PropTypes = {
   activeOss: AppStore;
-  onBucketUpdate: () => void;
+  onBucketUpdate: (store: AppStore) => void;
   onBucketDelete: () => void;
 };
 
@@ -43,11 +43,8 @@ const UpdateOssForm = ({
       })}
       initialValues={activeOss}
       onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          // onBucketAdd(form.name, form.ak, form.sk, form.type);
-          setSubmitting(false);
-        }, 400);
+        onBucketUpdate(values);
+        setSubmitting(false);
       }}
     >
       {({
@@ -145,7 +142,7 @@ const UpdateOssForm = ({
             {errors.uploadPrefix && touched.uploadPrefix && errors.uploadPrefix}
           </div>
           <div>
-            <Button type="submit" value="更新" onClick={onBucketUpdate} />
+            <Button type="submit" value="更新" disabled={isSubmitting} />
             <Button value="删除" onClick={onBucketDelete} />
           </div>
         </form>

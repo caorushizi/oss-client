@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { AppStore } from "../../../main/store/apps";
-import { addApp, getAppsChannel } from "../../helper/ipc";
+import { addApp, getAppsChannel, updateApp } from "../../helper/ipc";
 import ServicesList from "./ServicesList";
 import AddOssForm from "./AddOssForm";
 import UpdateOssForm from "./UpdateOssForm";
@@ -32,7 +32,10 @@ const Services = ({ onOssActive }: PropTypes) => {
   const [hasNew, setHasNew] = useState<boolean>(false);
   const escapePress = useKeyPress(KeyCode.Escape);
 
-  const onBucketUpdate = () => {};
+  const onBucketUpdate = async (store: AppStore) => {
+    await updateApp(store);
+    console.log("修改成功~");
+  };
   const onBucketDelete = () => {};
   const onBucketAdd = (name: string, ak: string, sk: string, type: number) => {
     addApp(name, type, ak, sk)
@@ -96,7 +99,7 @@ const Services = ({ onOssActive }: PropTypes) => {
         />
         {currentApp && (
           <div className="main-right_form_container">
-            <div className="main-right_form_title">未命名</div>
+            <div className="main-right_form_title">修改配置</div>
             {currentApp._id ? (
               <UpdateOssForm
                 key={currentApp._id}
