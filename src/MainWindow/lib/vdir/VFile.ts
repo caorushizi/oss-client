@@ -1,5 +1,3 @@
-import { ItemType } from "./types";
-
 export default class VFile {
   name: string;
 
@@ -23,7 +21,7 @@ export default class VFile {
     size,
     lastModified,
     lastModifiedDate
-  }: ItemType) {
+  }: BucketItem) {
     this.name = name;
     this.type = type;
     this.size = size;

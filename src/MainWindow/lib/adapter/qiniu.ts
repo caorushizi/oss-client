@@ -1,7 +1,4 @@
-import { ItemType } from "../vdir/types";
-import { Adapter } from "./index";
-
-export const qiniuAdapter: Adapter = (items: any[]): ItemType[] => {
+export const qiniuAdapter: BucketAdapter = (items: any[]): BucketItem[] => {
   return items.map(item => {
     const lastModified = Math.ceil(item.putTime / 1e4);
     const name = item.key.split("/").pop();

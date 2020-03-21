@@ -1,9 +1,10 @@
 import React from "react";
 import "./index.scss";
 import { Item } from "../../lib/vdir/types";
-import { VFolder, VFile } from "../../lib/vdir";
 import Icon from "../FileIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
+import VFolder from "../../lib/vdir/VFolder";
+import VFile from "../../lib/vdir/VFile";
 
 type PropTypes = {
   items: Item[];

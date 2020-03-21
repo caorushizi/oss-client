@@ -1,5 +1,5 @@
 import VFile from "./VFile";
-import { Item, ItemType, Parent } from "./types";
+import { Item, Parent } from "./types";
 import { dirname, normalizePath } from "./utils";
 
 export default class VFolder {
@@ -53,7 +53,7 @@ export default class VFolder {
    * @param item 对于根目录的相对路径，第一个字符不是 .
    * @param r 是否递归创建， false 直接以 vpath 为 name 创建文件
    */
-  private touchFile(item: ItemType, r = true): VFile {
+  private touchFile(item: BucketItem, r = true): VFile {
     const vpath = normalizePath(item.webkitRelativePath);
     const dirPath = dirname(vpath);
 
@@ -76,7 +76,7 @@ export default class VFolder {
     return file;
   }
 
-  public static from(itemList: ItemType[]): VFolder {
+  public static from(itemList: BucketItem[]): VFolder {
     const dir = new VFolder("#");
     itemList.forEach(item => dir.touchFile(item));
     return dir;

@@ -1,7 +1,6 @@
 import { ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v4";
-import { VFile } from "../../MainWindow/lib/vdir";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { TaskType, TransferStatus, TransferStore } from "../types";
@@ -13,6 +12,7 @@ import AppInstance from "../instance";
 import { downloadDir } from "../helper/dir";
 import App from "../app";
 import { initConfig } from "./config";
+import VFile from "../../MainWindow/lib/vdir/VFile";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -39,7 +39,7 @@ export default async function bootstrap(app: App) {
     event.reply("get-files-response", files);
   });
 
-  ipcMain.on("req:file:download", async (event, item: VFile) => {
+  ipcMain.on("req:file:download", async (event, item: BucketItem) => {
     const instance = AppInstance.getInstance();
     const { oss } = instance;
 

@@ -9,7 +9,7 @@ export class TaskRunner {
   private done: Task<any>[] = [];
 
   constructor(private limit = 5, public debug = false) {
-    if (limit < 1) throw new Error("limit must be interger greater then 1");
+    if (limit < 1) throw new Error("最少开启一个任务！");
   }
 
   public addTask<T>(task: Task<T>) {
