@@ -2,7 +2,7 @@ import React from "react";
 import "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { Page } from "../../types";
+import { Page } from "../../helper/enums";
 import Loading from "../BaseLoading";
 
 type PropTypes = {

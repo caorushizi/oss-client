@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./App.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+
+import "./App.scss";
 import TheSidebar from "./components/TheSidebar";
 import TransferList from "./components/TransferList";
-import { Direction, Page, Platform } from "./types";
+import { Direction, Page, Platform } from "./helper/enums";
 import Bucket from "./components/Bucket";
 import TransferDone from "./components/TransferDone";
 import Setting from "./components/Setting";
 import {
   getBgOffset,
   getThemeColor,
-  platform,
+  getPlatform,
   ThemeColor
 } from "./helper/utils";
 import Services from "./components/Services";
@@ -23,10 +22,8 @@ import {
   initOss,
   maximizeMainWindow,
   minimizeMainWindow
-} from "./ipc";
+} from "./helper/ipc";
 import { AppStore } from "../main/store/apps";
-
-library.add(fas);
 
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -84,7 +81,7 @@ function App() {
       }}
     >
       <div className="drag-area" />
-      {platform === Platform.windows && (
+      {getPlatform() === Platform.windows && (
         <div className="app-button">
           <FontAwesomeIcon
             className="icon"
@@ -124,7 +121,10 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset }}
             >
-              <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
+              <Bucket
+                bucketName={activeBucket}
+                onLoadedBucket={onLoadedBucket}
+              />
             </section>
           </CSSTransition>
         )}

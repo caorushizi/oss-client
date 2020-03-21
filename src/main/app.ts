@@ -1,7 +1,7 @@
 import { app, ipcMain } from "electron";
 import { FloatWindow, MainWindow } from "./windows";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
-import { Platform } from "../MainWindow/types";
+import { Platform } from "../MainWindow/helper/enums";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
 import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
 import { AddAppChannel } from "./IPC/AddAppChannel";

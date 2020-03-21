@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./index.scss";
-import { Layout } from "../../types";
+import { Layout } from "../../helper/enums";
 import Breadcrumb from "../BaseBreadcrumb";
 import Input from "../BaseInput";
 import Button from "../BaseButton";

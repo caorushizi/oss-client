@@ -4,7 +4,7 @@ import LazyLoad from "react-lazyload";
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
-import Icon from "../BaseIcon";
+import Icon from "../FileIcon";
 import VFile from "../../lib/vdir/VFile";
 
 type PropTypes = {

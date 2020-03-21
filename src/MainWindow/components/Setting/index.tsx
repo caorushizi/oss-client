@@ -5,8 +5,8 @@ import "rc-switch/assets/index.css";
 import "./index.scss";
 import Input from "../BaseInput";
 import Radio from "../BaseRadio";
-import { Platform } from "../../types";
-import { platform } from "../../helper/utils";
+import { Platform } from "../../helper/enums";
+import { getPlatform } from "../../helper/utils";
 
 const Setting = () => {
   return (
@@ -62,7 +62,7 @@ const Setting = () => {
           </div>
         </div>
       </section>
-      {platform === Platform.windows && (
+      {getPlatform() === Platform.windows && (
         <section className="section">
           <p className="title">悬浮窗设置</p>
           <div className="settings">

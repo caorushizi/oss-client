@@ -2,7 +2,7 @@ import React from "react";
 import "./index.scss";
 import { Item } from "../../lib/vdir/types";
 import { VFolder, VFile } from "../../lib/vdir";
-import Icon from "../BaseIcon";
+import Icon from "../FileIcon";
 import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
 
 type PropTypes = {

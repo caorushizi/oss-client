@@ -1,4 +1,6 @@
 import moment from "moment";
+import mime from "mime";
+
 import { TaskType } from "../../main/types";
 
 export function fileSizeFormatter(value = 0): string {
@@ -41,6 +43,19 @@ const styles: ThemeColor[] = [
   }
 ];
 
+const mapType: Record<string, string> = {
+  "text/css": "icon-css",
+  "application/javascript": "icon-js",
+  "application/pdf": "icon-pdf",
+  "text/plain": "icon-documents",
+  "image/gif": "icon-gif",
+  "image/png": "icon-png",
+  "image/jpeg": "icon-jpg",
+  "application/octet-stream": "icon-exe",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "icon-doc"
+};
+
 export interface ThemeColor {
   appColor: string;
   asideColor: string;
@@ -58,4 +73,16 @@ export const getBgOffset: () => string = () => {
 export const taskTypeFormatter = (type: TaskType) =>
   type === TaskType.download ? "下载" : "上传";
 
-export const { platform } = process;
+export const getPlatform = () => process.platform;
+
+export function getIconName(filename?: string): string {
+  let iconName: string;
+  if (filename) {
+    const mimeType = mime.getType(filename);
+    if (mimeType) iconName = mapType[mimeType];
+    else iconName = "icon-documents";
+  } else {
+    iconName = "icon-wenjian";
+  }
+  return iconName;
+}

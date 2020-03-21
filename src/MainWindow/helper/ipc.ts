@@ -1,6 +1,6 @@
-import IpcService from "./lib/service/IpcService";
-import { OssType, TransferStore } from "../main/types";
-import { AppStore } from "../main/store/apps";
+import IpcService from "../lib/service/IpcService";
+import { OssType, TransferStore } from "../../main/types";
+import { AppStore } from "../../main/store/apps";
 
 const ipc = new IpcService();
 

@@ -9,8 +9,8 @@ import {
   taskTypeFormatter
 } from "../../helper/utils";
 import Button from "../BaseButton";
-import Icon from "../BaseIcon";
-import { getTransfers } from "../../ipc";
+import Icon from "../FileIcon";
+import { getTransfers } from "../../helper/ipc";
 
 const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
