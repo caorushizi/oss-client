@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./index.scss";
 import Button from "../BaseButton";
@@ -11,18 +10,20 @@ type PropTypes = {
   ossList: AppStore[];
   onOssAddClick: () => void;
   onOssSelect: (id: string) => void;
+  hasNew: boolean;
 };
 
 const ServicesList = ({
   activeOss,
   ossList,
   onOssAddClick,
-  onOssSelect
+  onOssSelect,
+  hasNew = false
 }: PropTypes) => {
   return (
     <div className="main-left">
       <div className="header">
-        <Button value="添加" onClick={onOssAddClick} />
+        <Button value="添加" disabled={hasNew} onClick={onOssAddClick} />
       </div>
       <ul className="app-list">
         {ossList.length > 0 ? (

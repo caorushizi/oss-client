@@ -4,22 +4,27 @@ import React from "react";
 import classNames from "classnames";
 import "./index.scss";
 
-const Button = ({
-  value,
-  className,
-  onClick,
-  icon,
-  disabled = false
-}: {
+type PropTypes = {
   value?: string;
   className?: any;
   onClick?: () => void;
   disabled?: boolean;
   icon?: IconProp;
-}) => {
+  type?: "button" | "submit";
+};
+
+const Button = ({
+  value,
+  className,
+  onClick,
+  icon,
+  disabled = false,
+  type = "button"
+}: PropTypes) => {
   return (
+    // eslint-disable-next-line react/button-has-type
     <button
-      type="button"
+      type={type}
       onClick={disabled ? f => f : onClick}
       className={classNames("oss-button", className, { disabled })}
     >

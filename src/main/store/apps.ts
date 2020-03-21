@@ -9,9 +9,9 @@ export type AppStore = {
   sk: string;
   name: string;
   _id?: string;
-  bucket?: string;
-  uploadBucket?: string;
-  uploadPrefix?: string;
+  bucket: string;
+  uploadBucket: string;
+  uploadPrefix: string;
 };
 
 const filename = path.join(appDir, "secrets");
@@ -45,7 +45,15 @@ export function getApps(): Promise<AppStore[]> {
 
 export function addApp(name: string, type: OssType, ak: string, sk: string) {
   return new Promise((resolve, reject) => {
-    const app: AppStore = { name, ak, sk, type };
+    const app: AppStore = {
+      name,
+      ak,
+      sk,
+      type,
+      bucket: "",
+      uploadPrefix: "",
+      uploadBucket: ""
+    };
     appStore.findOne({ ak }, (err, document) => {
       if (err) reject(err);
       if (!document)

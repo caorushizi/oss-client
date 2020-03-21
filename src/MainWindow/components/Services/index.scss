@@ -73,35 +73,35 @@
       }
     }
 
-    .main-right {
+    .main-right_form_container {
       flex: 1;
 
-      .name {
+      .main-right_form_title {
         color: #fff;
         font-size: 25px;
       }
 
-      .config-content {
+      .oss-form {
         padding: 50px 0 0 15px;
         margin: 0;
 
-        .config-item {
+        .oss-form_item {
           height: 50px;
           display: flex;
           flex-direction: row;
           align-items: center;
 
-          .title {
+          .oss-form_item__title {
             width: 80px;
             color: #fff;
           }
 
-          .input-item {
+          .oss-form_item__inner-input {
             height: 35px;
             width: 60%;
           }
 
-          .select-item {
+          .oss-form_item__inner-select {
             width: 60%;
             background: rgba(0, 0, 0, 0.15);
             border: none;
