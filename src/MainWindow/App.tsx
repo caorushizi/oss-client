@@ -10,7 +10,12 @@ import { Direction, Page, Platform } from "./types";
 import Bucket from "./components/Bucket";
 import TransferDone from "./components/TransferDone";
 import Setting from "./components/Setting";
-import { getThemeColor, platform, ThemeColor } from "./helper/utils";
+import {
+  getBgOffset,
+  getThemeColor,
+  platform,
+  ThemeColor
+} from "./helper/utils";
 import Services from "./components/Services";
 import {
   closeMainApp,
@@ -24,8 +29,9 @@ import { AppStore } from "../main/store/apps";
 library.add(fas);
 
 function App() {
-  const [bucketLoading, setBucketLoading] = useState<boolean>(false);
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
+  const [bgOffset, setBgOffset] = useState<string>(getBgOffset());
+  const [bucketLoading, setBucketLoading] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<Page>(Page.bucket);
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
@@ -34,6 +40,7 @@ function App() {
     await setDirection(page < activePage ? Direction.down : Direction.up);
     setActivePage(page);
     if (bucket) {
+      if (bucket === activeBucket) return;
       setBucketLoading(true);
       setActiveBucket(bucket);
     }
@@ -49,6 +56,7 @@ function App() {
 
   useEffect(() => {
     setThemeColor(getThemeColor());
+    setBgOffset(getBgOffset());
   }, [activePage]);
 
   // 相当于初始化流程
@@ -67,12 +75,6 @@ function App() {
       }
     })();
   }, []);
-
-  const bgOffset = () => {
-    const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
-    const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
-    return `${bgOffsetX}px, ${bgOffsetY}px`;
-  };
 
   return (
     <div
@@ -120,7 +122,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset() }}
+              style={{ backgroundPosition: bgOffset }}
             >
               <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
             </section>
@@ -136,7 +138,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset() }}
+              style={{ backgroundPosition: bgOffset }}
             >
               <TransferList />
             </section>
@@ -152,7 +154,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset() }}
+              style={{ backgroundPosition: bgOffset }}
             >
               <TransferDone />
             </section>
@@ -168,7 +170,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset() }}
+              style={{ backgroundPosition: bgOffset }}
             >
               <Setting />
             </section>
@@ -184,7 +186,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset() }}
+              style={{ backgroundPosition: bgOffset }}
             >
               <Services onOssActive={onOssActive} />
             </section>

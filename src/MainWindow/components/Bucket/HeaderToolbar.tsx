@@ -1,5 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./index.scss";
 import { Layout } from "../../types";
@@ -9,24 +8,26 @@ import Button from "../BaseButton";
 
 type PropTypes = {
   backspace: () => void;
-  changeLayout: () => void;
+  onChangeLayout: () => void;
   layout: Layout;
   navigators: string[];
   onSearchChange: (value: string) => void;
+  onRefreshBucket: () => void;
 };
 
 const HeaderToolbar = ({
   backspace,
   layout,
-  changeLayout,
+  onChangeLayout,
   navigators,
-  onSearchChange
+  onSearchChange,
+  onRefreshBucket
 }: PropTypes) => {
   return (
     <div className="toolbar-wrapper">
       <div className="toolbar-left">
         <Button icon="arrow-left" onClick={backspace} />
-        <Button icon="undo-alt" />
+        <Button icon="undo-alt" onClick={onRefreshBucket} />
         <Breadcrumb routes={["首页"].concat(navigators)} />
       </div>
       <div className="toolbar-right">
@@ -38,7 +39,7 @@ const HeaderToolbar = ({
         />
         <Button
           icon={layout === Layout.grid ? "bars" : "border-all"}
-          onClick={changeLayout}
+          onClick={onChangeLayout}
         />
       </div>
     </div>

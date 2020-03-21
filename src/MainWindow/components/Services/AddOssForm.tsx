@@ -66,7 +66,8 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
             <span className="oss-form_item__title">类型</span>
             <select
               className="oss-form_item__inner-select"
-              name="bucket"
+              name="type"
+              value={values.type}
               id="bucket"
               onChange={handleChange}
             >
@@ -79,7 +80,7 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
             <span className="oss-form_item__title">ak</span>
             <Input
               type="password"
-              name="password"
+              name="ak"
               className="oss-form_item__inner-input"
               onChange={handleChange}
               onBlur={handleBlur}
@@ -92,14 +93,14 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
             <span className="oss-form_item__title">sk</span>
             <Input
               type="password"
-              name="password"
+              name="sk"
               className="oss-form_item__inner-input"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.ak}
+              value={values.sk}
               placeholder="请输入相应服务商 sk"
             />
-            {errors.ak && touched.ak && errors.ak}
+            {errors.sk && touched.sk && errors.sk}
           </div>
           <Button type="submit" disabled={isSubmitting} value="添加" />
         </form>

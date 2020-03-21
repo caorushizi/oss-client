@@ -49,6 +49,12 @@ export interface ThemeColor {
 export const getThemeColor: () => ThemeColor = () =>
   styles[Math.floor(Math.random() * styles.length)];
 
+export const getBgOffset: () => string = () => {
+  const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
+  const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
+  return `${bgOffsetX}px, ${bgOffsetY}px`;
+};
+
 export const taskTypeFormatter = (type: TaskType) =>
   type === TaskType.download ? "下载" : "上传";
 

@@ -10,7 +10,7 @@ import BodyGrid from "./BodyGrid";
 import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
-import { switchBucket } from "../../ipc";
+import { BucketObj, switchBucket } from "../../ipc";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
@@ -29,16 +29,18 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   const [searchedItem, setSearchedItem] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
+  const displayBucketFiles = (bucketObj: BucketObj) => {
+    const adaptedFiles = qiniuAdapter(bucketObj.files);
+    const vf = VFolder.from(adaptedFiles);
+    onLoadedBucket();
+    setVFolder(vf);
+    setItems(vf.listFiles());
+    setDomains(bucketObj.domains);
+  };
+
   useEffect(() => {
     if (!bucket) return;
-    switchBucket(bucket).then(async bucketIpcRep => {
-      const adaptedFiles = qiniuAdapter(bucketIpcRep.files);
-      const vf = VFolder.from(adaptedFiles);
-      onLoadedBucket();
-      setVFolder(vf);
-      setItems(vf.listFiles());
-      setDomains(bucketIpcRep.domains);
-    });
+    switchBucket(bucket).then(bucketObj => displayBucketFiles(bucketObj));
   }, [bucket]);
 
   const fileUpload = () => {
@@ -87,21 +89,22 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
     setSearchedItem(it);
   };
+  const onChangeLayout = () => {
+    setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
+  };
+  const onRefreshBucket = () => {
+    switchBucket(bucket).then(bucketObj => displayBucketFiles(bucketObj));
+  };
 
   return (
     <div className="bucket-wrapper">
       <HeaderButtonGroup fileUpload={fileUpload} />
       <HeaderToolbar
+        onRefreshBucket={onRefreshBucket}
         onSearchChange={onSearchChange}
         backspace={backspace}
         layout={layout}
-        changeLayout={() => {
-          if (layout === Layout.grid) {
-            setLayout(Layout.table);
-          } else {
-            setLayout(Layout.grid);
-          }
-        }}
+        onChangeLayout={onChangeLayout}
         navigators={vFolder.getNav()}
       />
       {bucket ? (
