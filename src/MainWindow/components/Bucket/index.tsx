@@ -17,15 +17,19 @@ import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 
 type PropTypes = {
-  bucket: string;
+  bucketName: string;
   onLoadedBucket: () => void;
 };
 
-const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
+interface IBucket {
+  domains: string[];
+  items: Item[];
+}
+
+const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const [vFolder, setVFolder] = useState<VFolder>(new VFolder("root"));
   const [layout, setLayout] = useState<Layout>(Layout.grid);
-  const [domains, setDomains] = useState<string[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const [bucket, setBucket] = useState<IBucket>({ domains: [], items: [] });
   const [searchedItem, setSearchedItem] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -34,14 +38,13 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     const vf = VFolder.from(adaptedFiles);
     onLoadedBucket();
     setVFolder(vf);
-    setItems(vf.listFiles());
-    setDomains(bucketObj.domains);
+    setBucket({ items: vf.listFiles(), domains: bucketObj.domains });
   };
 
   useEffect(() => {
-    if (!bucket) return;
-    switchBucket(bucket).then(bucketObj => displayBucketFiles(bucketObj));
-  }, [bucket]);
+    if (!bucketName) return;
+    switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
+  }, [bucketName]);
 
   const fileUpload = () => {
     const userPath = remote.app.getPath("documents");
@@ -65,7 +68,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
   };
   const backspace = () => {
     vFolder.back();
-    setItems(vFolder.listFiles());
+    setBucket({ ...bucket, items: vFolder.listFiles() });
   };
   const onFileDrop = (files: FileList | null) => {
     if (files) {
@@ -77,11 +80,11 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     }
   };
   const onFileContextMenu = (item: VFile) => {
-    fileContextMenu(item, domains[0]);
+    fileContextMenu(item, bucket.domains[0]);
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);
-    setItems(vFolder.listFiles());
+    setBucket({ ...bucket, items: vFolder.listFiles() });
   };
   const onFolderContextMenu = (item: VFolder) => {};
   const onSearchChange = (value: string) => {
@@ -93,7 +96,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
     setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
   };
   const onRefreshBucket = () => {
-    switchBucket(bucket).then(bucketObj => displayBucketFiles(bucketObj));
+    switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   };
 
   return (
@@ -107,13 +110,13 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
         onChangeLayout={onChangeLayout}
         navigators={vFolder.getNav()}
       />
-      {bucket ? (
+      {bucketName ? (
         <div className="content-wrapper">
           <FileDrop onDrop={onFileDrop} />
           {Layout.grid === layout ? (
             <BodyGrid
-              domains={domains}
-              items={searchValue ? searchedItem : items}
+              domains={bucket.domains}
+              items={searchValue ? searchedItem : bucket.items}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
@@ -121,7 +124,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
             />
           ) : (
             <BodyTable
-              items={searchValue ? searchedItem : items}
+              items={searchValue ? searchedItem : bucket.items}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
@@ -140,7 +143,7 @@ const Bucket = ({ bucket, onLoadedBucket }: PropTypes) => {
       <Footer
         totalItem={vFolder.getTotalItem()}
         selectedItem={0}
-        domains={domains}
+        domains={bucket.domains}
       />
     </div>
   );

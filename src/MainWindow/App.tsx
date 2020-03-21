@@ -124,7 +124,7 @@ function App() {
               className="main-wrapper"
               style={{ backgroundPosition: bgOffset }}
             >
-              <Bucket bucket={activeBucket} onLoadedBucket={onLoadedBucket} />
+              <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
             </section>
           </CSSTransition>
         )}
