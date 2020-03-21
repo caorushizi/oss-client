@@ -29,22 +29,22 @@ type PropTypes = {
 const Services = ({ onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<(AppStore | NewAppStore)[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
-  const escapePress = useKeyPress(KeyCode.Escape);
   const [hasNew, setHasNew] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log("123");
-  }, [escapePress]);
+  const escapePress = useKeyPress(KeyCode.Escape);
 
   const onBucketUpdate = () => {};
   const onBucketDelete = () => {};
-  const onBucketAdd = async (
-    name: string,
-    ak: string,
-    sk: string,
-    type: number
-  ) => {
-    await addApp(name, type, ak, sk);
+  const onBucketAdd = (name: string, ak: string, sk: string, type: number) => {
+    addApp(name, type, ak, sk)
+      .then(() => {
+        return getAppsChannel();
+      })
+      .then(allApps => {
+        setApps(allApps);
+        setCurrentApp(allApps[0]);
+        onOssActive(allApps[0]);
+        setHasNew(false);
+      });
   };
   const onOssAddClick = () => {
     if (apps.filter(i => (i as NewAppStore).isNew).length > 0) return;
@@ -63,21 +63,26 @@ const Services = ({ onOssActive }: PropTypes) => {
     setHasNew(true);
   };
   const _onOssSelect = (id: string) => {
-    const s = apps.find(i => i._id === id);
-    if (s) {
-      onOssActive(s);
-      setCurrentApp(s);
+    const ossList = apps.filter(i => i._id);
+    setApps(ossList);
+    setHasNew(false);
+    const selected = ossList.find(i => i._id === id);
+    if (selected) {
+      onOssActive(selected);
+      setCurrentApp(selected);
     }
   };
 
   useEffect(() => {
     getAppsChannel().then(allApps => {
       setApps(allApps);
-      if (!currentApp) {
-        setCurrentApp(allApps[0]);
-      }
+      setCurrentApp(allApps[0]);
     });
   }, []);
+
+  useEffect(() => {
+    console.log("123");
+  }, [escapePress]);
 
   return (
     <div className="services-wrapper">
@@ -94,6 +99,7 @@ const Services = ({ onOssActive }: PropTypes) => {
             <div className="main-right_form_title">未命名</div>
             {currentApp._id ? (
               <UpdateOssForm
+                key={currentApp._id}
                 activeOss={currentApp}
                 onBucketUpdate={onBucketUpdate}
                 onBucketDelete={onBucketDelete}

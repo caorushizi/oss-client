@@ -101,13 +101,13 @@ function TheSidebar({
               onClick={() => tabChange(Page.setting)}
             />
           </li>
-          <li className={classNames("item", activeTag(Page.apps))}>
+          <li className={classNames("item", activeTag(Page.services))}>
             <FontAwesomeIcon className="icon" icon="rocket" />
             <input
               type="button"
               value="apps"
               className="link"
-              onClick={() => tabChange(Page.apps)}
+              onClick={() => tabChange(Page.services)}
             />
           </li>
         </ul>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Formik } from "formik";
+import * as Yup from "yup";
 
 import "./index.scss";
 import Input from "../BaseInput";
@@ -19,23 +20,21 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
         sk: "",
         type: OssType.qiniu
       }}
-      validate={values => {
-        const errors: any = {};
-        if (!values.name) {
-          errors.name = "Required";
-        } else if (
-          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.name)
-        ) {
-          errors.name = "Invalid email address";
-        }
-        return errors;
-      }}
+      validationSchema={Yup.object({
+        name: Yup.string()
+          .trim()
+          .required("名称不能为空"),
+        ak: Yup.string()
+          .trim()
+          .required("sk 不能为空"),
+        sk: Yup.string()
+          .trim()
+          .required("sk 不能为空"),
+        type: Yup.number().min(-1, "类型必须选择")
+      })}
       onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          // onBucketAdd(form.name, form.ak, form.sk, form.type);
-          setSubmitting(false);
-        }, 400);
+        onBucketAdd(values.name, values.ak, values.sk, values.type);
+        setSubmitting(false);
       }}
     >
       {({
@@ -52,7 +51,7 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
           <div className="oss-form_item">
             <span className="oss-form_item__title">名称</span>
             <Input
-              type="email"
+              type="text"
               name="name"
               className="oss-form_item__inner-input"
               placeholder="请输入名称"
@@ -79,7 +78,7 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
           <div className="oss-form_item">
             <span className="oss-form_item__title">ak</span>
             <Input
-              type="password"
+              type="text"
               name="ak"
               className="oss-form_item__inner-input"
               onChange={handleChange}

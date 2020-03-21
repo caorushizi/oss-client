@@ -35,11 +35,11 @@ function App() {
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const tabChange = async (page: Page, bucket?: string) => {
     await setDirection(page < activePage ? Direction.down : Direction.up);
-    setActivePage(page);
+    await setActivePage(page);
     if (bucket) {
       if (bucket === activeBucket) return;
-      setBucketLoading(true);
-      setActiveBucket(bucket);
+      await setActiveBucket(bucket);
+      await setBucketLoading(true);
     }
   };
   const onLoadedBucket = () => {
@@ -68,7 +68,7 @@ function App() {
       if (buckets.length > 0) {
         await tabChange(Page.bucket, buckets[0]);
       } else {
-        setActivePage(Page.apps);
+        setActivePage(Page.services);
       }
     })();
   }, []);
@@ -176,9 +176,9 @@ function App() {
             </section>
           </CSSTransition>
         )}
-        {Page.apps === activePage && (
+        {Page.services === activePage && (
           <CSSTransition
-            key={Page.apps}
+            key={Page.services}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}

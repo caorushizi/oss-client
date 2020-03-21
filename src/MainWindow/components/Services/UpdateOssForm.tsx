@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./index.scss";
 import * as Yup from "yup";
 
@@ -7,6 +7,7 @@ import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../BaseButton";
+import { getBuckets } from "../../helper/ipc";
 
 type PropTypes = {
   activeOss: AppStore;
@@ -14,17 +15,18 @@ type PropTypes = {
   onBucketDelete: () => void;
 };
 
-const ossTypeOptions = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
 const UpdateOssForm = ({
   activeOss,
   onBucketUpdate,
   onBucketDelete
 }: PropTypes) => {
+  const [buckets, setBuckets] = useState<string[]>([]);
+  useEffect(() => {
+    getBuckets().then(bucketList => {
+      setBuckets(bucketList);
+    });
+  }, []);
+
   return (
     <Formik
       validationSchema={Yup.object({
@@ -62,7 +64,7 @@ const UpdateOssForm = ({
           <div className="oss-form_item">
             <span className="oss-form_item__title">名称</span>
             <Input
-              type="email"
+              type="text"
               name="name"
               className="oss-form_item__inner-input"
               placeholder="请输入名称"
@@ -89,7 +91,7 @@ const UpdateOssForm = ({
           <div className="oss-form_item">
             <span className="oss-form_item__title">ak</span>
             <Input
-              type="password"
+              type="text"
               name="ak"
               className="oss-form_item__inner-input"
               onChange={handleChange}
@@ -113,32 +115,34 @@ const UpdateOssForm = ({
             {errors.sk && touched.sk && errors.sk}
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">bucket</span>
+            <span className="oss-form_item__title">默认上传 bucket</span>
             <select
               className="oss-form_item__inner-select"
               name="type"
-              value={values.type}
+              value={values.uploadBucket}
               id="bucket"
               onChange={handleChange}
             >
-              <option value={OssType.qiniu}>七牛云</option>
-              <option value={OssType.ali}>阿里云</option>
-              <option value={OssType.tencent}>腾讯云</option>
+              {buckets.length > 0 &&
+                buckets.map(i => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">类型</span>
-            <select
-              className="oss-form_item__inner-select"
-              name="type"
-              id="bucket"
-              value={values.type}
+            <span className="oss-form_item__title">上传前缀</span>
+            <Input
+              type="text"
+              name="sk"
+              className="oss-form_item__inner-input"
               onChange={handleChange}
-            >
-              <option value={OssType.qiniu}>七牛云</option>
-              <option value={OssType.ali}>阿里云</option>
-              <option value={OssType.tencent}>腾讯云</option>
-            </select>
+              onBlur={handleBlur}
+              value={values.uploadPrefix}
+              placeholder="请输入相应服务商 sk"
+            />
+            {errors.uploadPrefix && touched.uploadPrefix && errors.uploadPrefix}
           </div>
           <div>
             <Button type="submit" value="更新" onClick={onBucketUpdate} />

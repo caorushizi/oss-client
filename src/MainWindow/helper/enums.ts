@@ -19,7 +19,7 @@ export enum Page {
   transferList,
   transferDone,
   setting,
-  apps
+  services
 }
 
 export enum KeyCode {
