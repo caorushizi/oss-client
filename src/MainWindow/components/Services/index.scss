@@ -82,7 +82,7 @@
       }
 
       .oss-form {
-        padding: 50px 0 0 15px;
+        padding: 50px 15px;
         margin: 0;
 
         .oss-form_item {
@@ -92,17 +92,17 @@
           align-items: center;
 
           .oss-form_item__title {
-            width: 80px;
+            width: 100px;
             color: #fff;
           }
 
           .oss-form_item__inner-input {
+            flex: 1;
             height: 35px;
-            width: 60%;
           }
 
           .oss-form_item__inner-select {
-            width: 60%;
+            flex: 1;
             background: rgba(0, 0, 0, 0.15);
             border: none;
             height: 35px;
@@ -112,6 +112,15 @@
             -webkit-appearance: none;
             padding: 0 15px;
           }
+
+          .oss-form_item__errors {
+            width: 100px;
+            color: red;
+          }
+        }
+
+        .oss-form_action {
+          padding-top: 30px;
         }
       }
     }

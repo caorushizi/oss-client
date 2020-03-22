@@ -8,7 +8,7 @@ import { OssType } from "../../../main/types";
 import Button from "../BaseButton";
 
 type PropTypes = {
-  onBucketAdd: (name: string, ak: string, sk: string, type: number) => void;
+  onBucketAdd: (name: string, ak: string, sk: string, type: OssType) => void;
 };
 
 const AddOssForm = ({ onBucketAdd }: PropTypes) => {
@@ -30,7 +30,9 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
         sk: Yup.string()
           .trim()
           .required("sk 不能为空"),
-        type: Yup.number().min(-1, "类型必须选择")
+        type: Yup.string()
+          .trim()
+          .required("类型必填")
       })}
       onSubmit={(values, { setSubmitting }) => {
         onBucketAdd(values.name, values.ak, values.sk, values.type);
@@ -59,7 +61,9 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.name && touched.name && errors.name}
+            <span className="oss-form_item__errors">
+              {errors.name && touched.name && errors.name}
+            </span>
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">类型</span>
@@ -74,9 +78,12 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
               <option value={OssType.ali}>阿里云</option>
               <option value={OssType.tencent}>腾讯云</option>
             </select>
+            <span className="oss-form_item__errors">
+              {errors.type && touched.type && errors.type}
+            </span>
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">ak</span>
+            <span className="oss-form_item__title">AK</span>
             <Input
               type="text"
               name="ak"
@@ -86,10 +93,12 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
               value={values.ak}
               placeholder="请输入相应服务商 ak"
             />
-            {errors.ak && touched.ak && errors.ak}
+            <span className="oss-form_item__errors">
+              {errors.ak && touched.ak && errors.ak}
+            </span>
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">sk</span>
+            <span className="oss-form_item__title">SK</span>
             <Input
               type="password"
               name="sk"
@@ -99,9 +108,13 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
               value={values.sk}
               placeholder="请输入相应服务商 sk"
             />
-            {errors.sk && touched.sk && errors.sk}
+            <span className="oss-form_item__errors">
+              {errors.sk && touched.sk && errors.sk}
+            </span>
           </div>
-          <Button type="submit" disabled={isSubmitting} value="添加" />
+          <div className="oss-form_action">
+            <Button type="submit" disabled={isSubmitting} value="添加" />
+          </div>
         </form>
       )}
     </Formik>

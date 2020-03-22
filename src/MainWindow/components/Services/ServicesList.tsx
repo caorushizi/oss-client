@@ -4,6 +4,7 @@ import classNames from "classnames";
 import "./index.scss";
 import Button from "../BaseButton";
 import { AppStore } from "../../../main/store/apps";
+import { OssType } from "../../../main/types";
 
 type PropTypes = {
   activeOss?: string;
@@ -20,6 +21,18 @@ const ServicesList = ({
   onOssSelect,
   hasNew = false
 }: PropTypes) => {
+  const renderIcon = (type: OssType) => {
+    switch (type) {
+      case OssType.ali:
+        return <use xlinkHref="#icon-aliyun-logo" />;
+      case OssType.qiniu:
+        return <use xlinkHref="#icon-qiniuyun1" />;
+      case OssType.tencent:
+        return <use xlinkHref="#icon-tengxunyun" />;
+      default:
+        return <use xlinkHref="#icon-grid" />;
+    }
+  };
   return (
     <div className="main-left">
       <div className="header">
@@ -39,7 +52,7 @@ const ServicesList = ({
                 onClick={() => onOssSelect(app._id!)}
               >
                 <svg className="icon" aria-hidden="true">
-                  <use xlinkHref="#icon-qiniuyun1" />
+                  {renderIcon(app.type)}
                 </svg>
                 <span>{app.name}</span>
               </button>

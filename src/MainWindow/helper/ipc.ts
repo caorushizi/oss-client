@@ -48,6 +48,12 @@ export function updateApp(app: AppStore) {
   });
 }
 
+export function deleteApp(app: AppStore) {
+  return ipc.send<void>("delete-app", {
+    params: app
+  });
+}
+
 export function closeMainApp() {
   ipc.emit("close-main-window");
 }

@@ -66,9 +66,18 @@ export function addApp(name: string, type: OssType, ak: string, sk: string) {
   });
 }
 
-export function updateApp(app: AppStore) {
+export function updateApp(app: AppStore): Promise<void> {
   return new Promise((resolve, reject) => {
     appStore.update({ _id: app._id }, app, {}, (err, count) => {
+      if (err) reject(err);
+      resolve();
+    });
+  });
+}
+
+export function deleteApp(app: AppStore): Promise<void> {
+  return new Promise((resolve, reject) => {
+    appStore.remove({ _id: app._id }, {}, (err, n) => {
       if (err) reject(err);
       resolve();
     });

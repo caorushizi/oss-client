@@ -12,7 +12,7 @@ import { getBuckets } from "../../helper/ipc";
 type PropTypes = {
   activeOss: AppStore;
   onBucketUpdate: (store: AppStore) => void;
-  onBucketDelete: () => void;
+  onBucketDelete: (store: AppStore) => void;
 };
 
 const UpdateOssForm = ({
@@ -32,14 +32,20 @@ const UpdateOssForm = ({
       validationSchema={Yup.object({
         name: Yup.string()
           .trim()
-          .required("Name can not be empty"),
+          .required("名称必填"),
         ak: Yup.string()
           .trim()
-          .required("You must choose a gender"),
+          .required("ak 必填"),
         sk: Yup.string()
           .trim()
-          .required("You must choose a gender"),
-        type: Yup.number().min(-1, "Addresses must have 1 address at least")
+          .required("sk 必填"),
+        type: Yup.number().min(-1, "type 必选"),
+        uploadBucket: Yup.string()
+          .trim()
+          .required("默认上传 bucket 必选"),
+        uploadPrefix: Yup.string()
+          .trim()
+          .notRequired()
       })}
       initialValues={activeOss}
       onSubmit={(values, { setSubmitting }) => {
@@ -69,7 +75,9 @@ const UpdateOssForm = ({
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.name && touched.name && errors.name}
+            <span className="oss-form_item__errors">
+              {errors.name && touched.name && errors.name}
+            </span>
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">类型</span>
@@ -84,9 +92,12 @@ const UpdateOssForm = ({
               <option value={OssType.ali}>阿里云</option>
               <option value={OssType.tencent}>腾讯云</option>
             </select>
+            <span className="oss-form_item__errors">
+              {errors.type && touched.type && errors.type}
+            </span>
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">ak</span>
+            <span className="oss-form_item__title">AK</span>
             <Input
               type="text"
               name="ak"
@@ -96,10 +107,12 @@ const UpdateOssForm = ({
               value={values.ak}
               placeholder="请输入相应服务商 ak"
             />
-            {errors.ak && touched.ak && errors.ak}
+            <span className="oss-form_item__errors">
+              {errors.ak && touched.ak && errors.ak}
+            </span>
           </div>
           <div className="oss-form_item">
-            <span className="oss-form_item__title">sk</span>
+            <span className="oss-form_item__title">SK</span>
             <Input
               type="password"
               name="sk"
@@ -109,13 +122,15 @@ const UpdateOssForm = ({
               value={values.sk}
               placeholder="请输入相应服务商 sk"
             />
-            {errors.sk && touched.sk && errors.sk}
+            <span className="oss-form_item__errors">
+              {errors.sk && touched.sk && errors.sk}
+            </span>
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">默认上传 bucket</span>
             <select
               className="oss-form_item__inner-select"
-              name="type"
+              name="uploadBucket"
               value={values.uploadBucket}
               id="bucket"
               onChange={handleChange}
@@ -127,23 +142,32 @@ const UpdateOssForm = ({
                   </option>
                 ))}
             </select>
+            <span className="oss-form_item__errors">
+              {errors.uploadBucket &&
+                touched.uploadBucket &&
+                errors.uploadBucket}
+            </span>
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">上传前缀</span>
             <Input
               type="text"
-              name="sk"
+              name="uploadPrefix"
               className="oss-form_item__inner-input"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.uploadPrefix}
-              placeholder="请输入相应服务商 sk"
+              placeholder="默认上传前缀"
             />
-            {errors.uploadPrefix && touched.uploadPrefix && errors.uploadPrefix}
+            <span className="oss-form_item__errors">
+              {errors.uploadPrefix &&
+                touched.uploadPrefix &&
+                errors.uploadPrefix}
+            </span>
           </div>
-          <div>
+          <div className="oss-form_action">
             <Button type="submit" value="更新" disabled={isSubmitting} />
-            <Button value="删除" onClick={onBucketDelete} />
+            <Button value="删除" onClick={() => onBucketDelete(values)} />
           </div>
         </form>
       )}

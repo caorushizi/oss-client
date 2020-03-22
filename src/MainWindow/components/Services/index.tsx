@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { AppStore } from "../../../main/store/apps";
-import { addApp, getAppsChannel, updateApp } from "../../helper/ipc";
+import { addApp, getAppsChannel, updateApp, deleteApp } from "../../helper/ipc";
 import ServicesList from "./ServicesList";
 import AddOssForm from "./AddOssForm";
 import UpdateOssForm from "./UpdateOssForm";
@@ -32,13 +32,22 @@ const Services = ({ onOssActive }: PropTypes) => {
   const [hasNew, setHasNew] = useState<boolean>(false);
   const escapePress = useKeyPress(KeyCode.Escape);
 
-  const onBucketUpdate = async (store: AppStore) => {
-    await updateApp(store);
-    console.log("修改成功~");
+  const onBucketUpdate = (store: AppStore) => {
+    updateApp(store)
+      .then(() => {
+        return getAppsChannel();
+      })
+      .then(allApps => {
+        setApps(allApps);
+        const currentStore = allApps.find(i => i._id === store._id);
+        if (currentStore) {
+          onOssActive(currentStore);
+          setCurrentApp(currentStore);
+        }
+      });
   };
-  const onBucketDelete = () => {};
-  const onBucketAdd = (name: string, ak: string, sk: string, type: number) => {
-    addApp(name, type, ak, sk)
+  const onBucketDelete = (store: AppStore) => {
+    deleteApp(store)
       .then(() => {
         return getAppsChannel();
       })
@@ -46,6 +55,23 @@ const Services = ({ onOssActive }: PropTypes) => {
         setApps(allApps);
         setCurrentApp(allApps[0]);
         onOssActive(allApps[0]);
+      });
+  };
+  const onBucketAdd = (name: string, ak: string, sk: string, type: OssType) => {
+    addApp(name, type, ak, sk)
+      .then(() => {
+        return getAppsChannel();
+      })
+      .then(allApps => {
+        setApps(allApps);
+        const addedApp = allApps.find(i => i.sk === sk);
+        if (addedApp) {
+          setCurrentApp(addedApp);
+          onOssActive(addedApp);
+        } else {
+          setCurrentApp(allApps[0]);
+          onOssActive(allApps[0]);
+        }
         setHasNew(false);
       });
   };
@@ -71,8 +97,8 @@ const Services = ({ onOssActive }: PropTypes) => {
     setHasNew(false);
     const selected = ossList.find(i => i._id === id);
     if (selected) {
-      onOssActive(selected);
       setCurrentApp(selected);
+      onOssActive(selected);
     }
   };
 
@@ -84,7 +110,13 @@ const Services = ({ onOssActive }: PropTypes) => {
   }, []);
 
   useEffect(() => {
-    console.log("123");
+    const ossList = apps.filter(i => i._id);
+    if (ossList.length > 0) {
+      setApps(ossList);
+      setHasNew(false);
+      setCurrentApp(ossList[0]);
+      onOssActive(ossList[0]);
+    }
   }, [escapePress]);
 
   return (

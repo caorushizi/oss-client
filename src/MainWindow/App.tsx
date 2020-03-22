@@ -45,8 +45,8 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onOssActive = async (s: AppStore) => {
-    await initOss(s._id);
+  const onOssActive = async (store: AppStore) => {
+    await initOss(store?._id);
     const buckets = await getBuckets();
     setBucketList(buckets);
   };
@@ -63,7 +63,6 @@ function App() {
       await initOss();
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
-      console.log(buckets);
       setBucketList(buckets);
       if (buckets.length > 0) {
         await tabChange(Page.bucket, buckets[0]);
