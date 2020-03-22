@@ -7,7 +7,7 @@ import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import { AppStore } from "../../../main/store/apps";
 import Button from "../BaseButton";
-import { getBuckets } from "../../helper/ipc";
+import { getBuckets, switchBucket } from "../../helper/ipc";
 
 type PropTypes = {
   activeOss: AppStore;
@@ -21,7 +21,13 @@ const UpdateOssForm = ({
   onBucketDelete
 }: PropTypes) => {
   const [buckets, setBuckets] = useState<string[]>([]);
+  const [domains, setDomains] = useState<string[]>([]);
   useEffect(() => {
+    if (activeOss.defaultDomain) {
+      switchBucket(activeOss.defaultDomain).then(obj => {
+        setDomains(obj.domains);
+      });
+    }
     getBuckets().then(bucketList => {
       setBuckets(bucketList);
     });
@@ -39,11 +45,14 @@ const UpdateOssForm = ({
         sk: Yup.string()
           .trim()
           .required("sk 必填"),
-        type: Yup.number().min(-1, "type 必选"),
+        type: Yup.string().required("type必填"),
         uploadBucket: Yup.string()
           .trim()
           .required("默认上传 bucket 必选"),
         uploadPrefix: Yup.string()
+          .trim()
+          .notRequired(),
+        defaultDomain: Yup.string()
           .trim()
           .notRequired()
       })}
@@ -133,7 +142,12 @@ const UpdateOssForm = ({
               name="uploadBucket"
               value={values.uploadBucket}
               id="bucket"
-              onChange={handleChange}
+              onChange={e => {
+                handleChange(e);
+                switchBucket(e.target.value).then(obj => {
+                  setDomains(obj.domains);
+                });
+              }}
             >
               {buckets.length > 0 &&
                 buckets.map(i => (
@@ -163,6 +177,28 @@ const UpdateOssForm = ({
               {errors.uploadPrefix &&
                 touched.uploadPrefix &&
                 errors.uploadPrefix}
+            </span>
+          </div>
+          <div className="oss-form_item">
+            <span className="oss-form_item__title">默认域名</span>
+            <select
+              className="oss-form_item__inner-select"
+              name="defaultDomain"
+              value={values.defaultDomain}
+              id="bucket"
+              onChange={handleChange}
+            >
+              {domains.length > 0 &&
+                domains.map(i => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+            </select>
+            <span className="oss-form_item__errors">
+              {errors.defaultDomain &&
+                touched.defaultDomain &&
+                errors.defaultDomain}
             </span>
           </div>
           <div className="oss-form_action">

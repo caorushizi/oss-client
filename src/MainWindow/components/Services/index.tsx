@@ -19,6 +19,7 @@ type NewAppStore = {
   bucket: string;
   uploadBucket: string;
   uploadPrefix: string;
+  defaultDomain: string;
   isNew: boolean;
 };
 
@@ -33,6 +34,7 @@ const Services = ({ onOssActive }: PropTypes) => {
   const escapePress = useKeyPress(KeyCode.Escape);
 
   const onBucketUpdate = (store: AppStore) => {
+    console.log("新的App：", store);
     updateApp(store)
       .then(() => {
         return getAppsChannel();
@@ -44,6 +46,8 @@ const Services = ({ onOssActive }: PropTypes) => {
           onOssActive(currentStore);
           setCurrentApp(currentStore);
         }
+        // eslint-disable-next-line no-alert
+        alert("修改成功！");
       });
   };
   const onBucketDelete = (store: AppStore) => {
@@ -85,6 +89,7 @@ const Services = ({ onOssActive }: PropTypes) => {
       bucket: "",
       uploadPrefix: "",
       uploadBucket: "",
+      defaultDomain: "",
       isNew: true
     };
     setApps([...apps, current]);

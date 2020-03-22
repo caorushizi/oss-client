@@ -12,6 +12,7 @@ export type AppStore = {
   bucket: string;
   uploadBucket: string;
   uploadPrefix: string;
+  defaultDomain: string;
 };
 
 const filename = path.join(appDir, "secrets");
@@ -52,7 +53,8 @@ export function addApp(name: string, type: OssType, ak: string, sk: string) {
       type,
       bucket: "",
       uploadPrefix: "",
-      uploadBucket: ""
+      uploadBucket: "",
+      defaultDomain: ""
     };
     appStore.findOne({ ak }, (err, document) => {
       if (err) reject(err);

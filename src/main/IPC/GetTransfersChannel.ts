@@ -1,7 +1,6 @@
 import { IpcMainEvent } from "electron";
 import { IpcChannelInterface } from "./IpcChannelInterface";
 import { IpcRequest } from "./IpcRequest";
-import AppInstance from "../instance";
 import { getTransfers } from "../store/transfers";
 
 export class GetTransfersChannel implements IpcChannelInterface {
