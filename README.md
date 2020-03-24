@@ -13,7 +13,7 @@ npm start
 ```
 ## 页面展示
 
-![页面展示](http://soft.super-system.top/%E5%8D%9A%E5%AE%A2%E5%9B%BE%E7%89%87/%E6%88%AA%E5%B1%8F2020-03-15%E4%B8%8B%E5%8D%889.38.27.png)
+![页面展示](http://github.com/caorushizi/oss-client/raw/master/images/home-page.png)
 
 ## TODO List
 
