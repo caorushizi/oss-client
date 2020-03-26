@@ -10,6 +10,7 @@ import { InitAppChannel } from "./IPC/InitAppChannel";
 import { GetTransfersChannel } from "./IPC/GetTransfersChannel";
 import { UpdateAppChannel } from "./IPC/UpdateAppChannel";
 import { DeleteAppChannel } from "./IPC/DeleteAppChannel";
+import { ClearTransferDoneListChannel } from "./IPC/ClearTransferDoneListChannel";
 
 export default class App {
   mainWindow: MainWindow;
@@ -41,7 +42,8 @@ export default class App {
       new InitAppChannel(),
       new GetTransfersChannel(),
       new UpdateAppChannel(),
-      new DeleteAppChannel()
+      new DeleteAppChannel(),
+      new ClearTransferDoneListChannel()
     ]);
 
     // 初始化 app

@@ -1,5 +1,6 @@
 .services-wrapper {
   height: 100%;
+  width: 100%;
 
   .apps-main {
     height: 100%;
@@ -74,6 +75,8 @@
     }
 
     .main-right_form_container {
+      background: blue;
+      margin: 10px;
       flex: 1;
 
       .main-right_form_title {

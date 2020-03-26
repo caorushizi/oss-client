@@ -4,7 +4,11 @@ import uuid from "uuid/v4";
 import { CallbackFunc } from "../services/types";
 import { TaskRunner } from "../helper/tasks";
 import { TaskType, TransferStatus, TransferStore } from "../types";
-import { insertTransfer } from "../store/transfers";
+import {
+  insertTransfer,
+  transferDone,
+  transferFailed
+} from "../store/transfers";
 import events from "../helper/events";
 import { fattenFileList } from "../helper/utils";
 import { uploadFile } from "./handler";
@@ -20,9 +24,25 @@ export default async function bootstrap(app: App) {
   app.init();
   await initConfig();
 
-  events.on("done", (id: string) => {});
+  events.on("done", (id: string) => {
+    transferDone(id)
+      .then(() => {
+        console.log("传输成功");
+      })
+      .catch(err => {
+        console.log("传输失败：", err);
+      });
+  });
 
-  events.on("failed", (id: string) => {});
+  events.on("failed", (id: string) => {
+    transferFailed(id)
+      .then(() => {
+        console.log("传输失败");
+      })
+      .catch(err => {
+        console.log("传输失败：", err);
+      });
+  });
 
   ipcMain.on("get-buckets-request", async event => {
     const instance = AppInstance.getInstance();

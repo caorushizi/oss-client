@@ -54,7 +54,7 @@
   width: 100%;
   position: absolute;
   top: 0;
-  transition: top 0.3s ease-in;
+  transition: top 0.3s ease-in-out;
 }
 
 .up-exit {
@@ -67,7 +67,7 @@
   width: 100%;
   position: absolute;
   top: -100vh;
-  transition: top 0.3s ease-in;
+  transition: top 0.3s ease-in-out;
 }
 
 .down-enter {
@@ -80,7 +80,7 @@
   width: 100%;
   position: absolute;
   top: 0;
-  transition: top 0.3s ease-in;
+  transition: top 0.3s ease-in-out;
 }
 
 .down-exit {
@@ -93,5 +93,5 @@
   width: 100%;
   position: absolute;
   top: 100vh;
-  transition: top 0.3s ease-in;
+  transition: top 0.3s ease-in-out;
 }

@@ -123,6 +123,7 @@ const Services = ({ onOssActive }: PropTypes) => {
       onOssActive(ossList[0]);
     }
   }, [escapePress]);
+  // fixme: 在上下切换的时候宽度增加
 
   return (
     <div className="services-wrapper">

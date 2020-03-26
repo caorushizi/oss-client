@@ -10,25 +10,34 @@ import {
 } from "../../helper/utils";
 import Button from "../BaseButton";
 import Icon from "../FileIcon";
-import { getTransfers } from "../../helper/ipc";
+import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
 
 const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
-  useEffect(() => {
-    (async () => {
-      const transferList = await getTransfers();
+
+  const initTransferList = () => {
+    getTransfers().then(transferList => {
       const transferDone = transferList.filter(
         i => i.status === TransferStatus.done
       );
       setTransfers(transferDone);
-    })();
+    });
+  };
+  const onClearTransferDoneList = () => {
+    clearTransferDoneList().then(() => {
+      initTransferList();
+    });
+  };
+
+  useEffect(() => {
+    initTransferList();
   }, []);
   return (
     <div className="transfer-done-wrapper">
       <div className="toolbar">
         <span className="toolbar-left">{`总共 ${transfers.length} 项`}</span>
         <div className="toolbar-right">
-          <Button value="清空记录" />
+          <Button value="清空记录" onClick={onClearTransferDoneList} />
         </div>
       </div>
       <section className="transfer-table__wrapper">

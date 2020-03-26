@@ -14,7 +14,9 @@ export function uploadFile(
   callback: CallbackFunc
 ) {
   const relativePath = path.relative(baseDir, filepath);
-  const remotePath = path.join(remoteDir, relativePath);
+  let remotePath = path.join(remoteDir, relativePath);
+  remotePath = remotePath.replace(/\\/, "/");
+
   const id = uuid();
   const newDoc = {
     id,

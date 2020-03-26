@@ -54,6 +54,10 @@ export function deleteApp(app: AppStore) {
   });
 }
 
+export function clearTransferDoneList() {
+  return ipc.send<void>("clear-transfer-done-list");
+}
+
 export function closeMainApp() {
   ipc.emit("close-main-window");
 }

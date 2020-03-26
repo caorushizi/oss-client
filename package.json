@@ -1,6 +1,6 @@
 {
   "name": "oss-client",
-  "productName": "oss-client",
+  "productName": "云存储客户端",
   "version": "0.0.1",
   "description": "OSS 云存储客户端",
   "main": ".webpack/main",
