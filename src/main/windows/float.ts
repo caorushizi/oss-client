@@ -21,6 +21,9 @@ export default class FloatWindow {
 
     this.window.setPosition(size.width - winSize[0] - 100, 100);
 
+    if (process.env.NODE_ENV === "development")
+      this.window.webContents.openDevTools();
+
     this.window.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(() => {});
 
     this.window.on("closed", () => {

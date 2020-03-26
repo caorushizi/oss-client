@@ -16,7 +16,8 @@ export default class MainWindow {
 
     this.window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {});
 
-    this.window.webContents.openDevTools();
+    if (process.env.NODE_ENV === "development")
+      this.window.webContents.openDevTools();
 
     this.window.on("closed", () => {
       this.window = null;

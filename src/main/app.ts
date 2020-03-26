@@ -26,9 +26,9 @@ export default class App {
     }
 
     this.mainWindow = new MainWindow();
-    if (process.platform === Platform.windows) {
-      this.floatWindow = new FloatWindow();
-    }
+    // if (process.platform === Platform.windows) {
+    //   this.floatWindow = new FloatWindow();
+    // }
     // this.appTray = new AppTray();
   }
 
