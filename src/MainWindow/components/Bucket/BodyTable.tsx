@@ -8,6 +8,8 @@ import VFile from "../../lib/vdir/VFile";
 
 type PropTypes = {
   items: Item[];
+  selectedItems: Item[];
+  onSelectItem: () => void;
   onFolderSelect: (name: string) => void;
   onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
@@ -16,6 +18,8 @@ type PropTypes = {
 
 const BodyTable = ({
   items,
+  selectedItems,
+  onSelectItem,
   onFolderSelect,
   onFolderContextMenu,
   onFileSelect,

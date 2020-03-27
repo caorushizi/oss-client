@@ -133,8 +133,10 @@
         padding: 5px;
         display: flex;
         flex-direction: column;
+        border: 2px transparent solid;
 
         &:hover {
+          border: 2px rgba(0, 0, 0, 0.3) solid;
           background: rgba(0, 0, 0, 0.3);
           border-radius: 6px;
         }
@@ -198,4 +200,16 @@
       }
     }
   }
+}
+
+.selection {
+  background: rgba(46, 115, 252, 0.11);
+  border-radius: 0.1em;
+  border: 2px solid rgba(98, 155, 255, 0.81);
+}
+
+.selected {
+  border: 2px rgba(0, 0, 0, 0.3) solid;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
 }

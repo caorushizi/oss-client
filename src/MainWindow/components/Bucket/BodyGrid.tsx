@@ -1,5 +1,6 @@
 import React from "react";
 import LazyLoad from "react-lazyload";
+import Selection from "@simonwep/selection-js";
 
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
@@ -10,15 +11,45 @@ import VFile from "../../lib/vdir/VFile";
 type PropTypes = {
   items: Item[];
   domains: string[];
+  selectedItems: Item[];
+  onSelectItem: () => void;
   onFolderSelect: (name: string) => void;
   onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
   onFileContextMenu: (item: VFile) => void;
 };
 
+const selection = Selection.create({
+  class: "selection",
+  selectables: [".main-grid > .main-grid__cell"],
+  boundaries: [".main-grid"]
+});
+selection.on("start", ({ inst, selected, oe }) => {
+  if (!oe.ctrlKey && !oe.metaKey) {
+    selected.forEach(el => {
+      el.classList.remove("selected");
+      inst.removeFromSelection(el);
+    });
+    inst.clearSelection();
+  }
+});
+selection.on("move", ({ changed: { removed, added } }) => {
+  added.forEach(el => {
+    el.classList.add("selected");
+  });
+  removed.forEach(el => {
+    el.classList.remove("selected");
+  });
+});
+selection.on("stop", ({ inst }) => {
+  inst.keepSelection();
+});
+
 const BodyGrid = ({
   items,
   domains,
+  selectedItems,
+  onSelectItem,
   onFolderSelect,
   onFolderContextMenu,
   onFileSelect,

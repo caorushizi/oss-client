@@ -32,6 +32,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const [bucket, setBucket] = useState<IBucket>({ domains: [], items: [] });
   const [searchedItem, setSearchedItem] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [selected, setSelected] = useState<Item[]>([]);
 
   const displayBucketFiles = (bucketObj: BucketObj) => {
     const adaptedFiles = qiniuAdapter(bucketObj.files);
@@ -116,6 +117,8 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
           {Layout.grid === layout ? (
             <BodyGrid
               domains={bucket.domains}
+              selectedItems={selected}
+              onSelectItem={() => {}}
               items={searchValue ? searchedItem : bucket.items}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
@@ -125,6 +128,8 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
           ) : (
             <BodyTable
               items={searchValue ? searchedItem : bucket.items}
+              selectedItems={selected}
+              onSelectItem={() => {}}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
