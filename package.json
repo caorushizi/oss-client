@@ -17,54 +17,7 @@
   },
   "license": "MIT",
   "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "oss_client"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/MainWindow/index.html",
-                  "js": "./src/MainWindow/index.tsx",
-                  "name": "main_window"
-                },
-                {
-                  "html": "./src/FloatWindow/index.html",
-                  "js": "./src/FloatWindow/index.ts",
-                  "name": "float_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "devDependencies": {
     "@electron-forge/cli": "6.0.0-beta.50",
@@ -94,7 +47,7 @@
     "cross-env": "^6.0.3",
     "css-loader": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "7.1.9",
+    "electron": "8.2.0",
     "electron-debug": "^3.0.1",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",

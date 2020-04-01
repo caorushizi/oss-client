@@ -1,5 +1,4 @@
 import { app, ipcMain } from "electron";
-import { FloatWindow, MainWindow } from "./windows";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/helper/enums";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
@@ -11,13 +10,16 @@ import { GetTransfersChannel } from "./IPC/GetTransfersChannel";
 import { UpdateAppChannel } from "./IPC/UpdateAppChannel";
 import { DeleteAppChannel } from "./IPC/DeleteAppChannel";
 import { ClearTransferDoneListChannel } from "./IPC/ClearTransferDoneListChannel";
+import AppTray from "./tray";
+import MainWindow from "./windows/main";
+import FloatWindow from "./windows/float";
 
 export default class App {
   mainWindow: MainWindow;
 
   floatWindow?: FloatWindow;
 
-  // private appTray: AppTray;
+  private appTray: AppTray;
 
   constructor() {
     // eslint-disable-next-line global-require
@@ -26,10 +28,10 @@ export default class App {
     }
 
     this.mainWindow = new MainWindow();
-    // if (process.platform === Platform.windows) {
-    //   this.floatWindow = new FloatWindow();
-    // }
-    // this.appTray = new AppTray();
+    if (process.platform === Platform.windows) {
+      this.floatWindow = new FloatWindow();
+    }
+    this.appTray = new AppTray();
   }
 
   init() {
@@ -64,7 +66,7 @@ export default class App {
   appReady() {
     this.mainWindow.createWindow();
     if (this.floatWindow) this.floatWindow.createWindow();
-    // this.appTray.init();
+    this.appTray.init();
   }
 
   onWindowAllClosed = () => {

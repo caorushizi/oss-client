@@ -32,7 +32,6 @@ export default class MainWindow {
 
   close() {
     if (this.window) this.window.close();
-    app.quit();
   }
 
   minimize() {
