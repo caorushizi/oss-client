@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LazyLoad from "react-lazyload";
 import Selection from "@simonwep/selection-js";
 
@@ -7,6 +7,8 @@ import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../FileIcon";
 import VFile from "../../lib/vdir/VFile";
+import useKeyPress from "../../hooks/useKeyPress";
+import { KeyCode } from "../../helper/enums";
 
 type PropTypes = {
   items: Item[];
@@ -55,6 +57,13 @@ const BodyGrid = ({
   onFileSelect,
   onFileContextMenu
 }: PropTypes) => {
+  const keypress = useKeyPress(KeyCode.Escape);
+  useEffect(() => {
+    if (keypress) {
+      selection.clearSelection();
+    }
+  }, [keypress]);
+
   return (
     <div className="main-grid">
       {items.length > 0 ? (
