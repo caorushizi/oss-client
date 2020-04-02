@@ -5,7 +5,7 @@
   "description": "OSS 云存储客户端",
   "main": ".webpack/main",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron-forge start --inspect-electron",
+    "start": "chcp 65001 && cross-env NODE_ENV=development electron-forge start --inspect-electron",
     "package": "cross-env NODE_ENV=production electron-forge package",
     "make": "cross-env NODE_ENV=production electron-forge make",
     "publish": "cross-env NODE_ENV=production electron-forge publish"

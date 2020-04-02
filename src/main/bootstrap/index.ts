@@ -124,7 +124,19 @@ export default async function bootstrap(app: App) {
     }
   );
 
-  ipcMain.on("close-main-window", () => app.mainWindow.close());
-  ipcMain.on("minimize-main-window", () => app.mainWindow.minimize());
-  ipcMain.on("maximize-main-window", () => app.mainWindow.maximize());
+  ipcMain.on("close-main-window", () => {
+    if (app.mainWindow) app.mainWindow.close();
+  });
+  ipcMain.on("minimize-main-window", () => {
+    if (app.mainWindow) app.mainWindow.minimize();
+  });
+  ipcMain.on("maximize-main-window", () => {
+    if (app.mainWindow) {
+      if (app.mainWindow.isMaximized()) {
+        app.mainWindow.unmaximize();
+      } else {
+        app.mainWindow.maximize();
+      }
+    }
+  });
 }
