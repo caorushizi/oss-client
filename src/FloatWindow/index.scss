@@ -1,6 +1,34 @@
-.wrapper {
-  height: 64px;
-  width: 64px;
-  border-radius: 32px;
-  background: red;
+#root {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("./bg.png");
+  background-position-x: 0.8px;
+  background-position-y: 0.6px;
+  overflow: hidden;
+
+  .wrapper {
+    height: 64px;
+    width: 64px;
+    border-radius: 32px;
+    background-color: #484b58;
+    z-index: -1;
+  }
+}
+
+.file-drop {
+  .file-drop-target {
+    &.file-drop-dragging-over-frame {
+      position: absolute;
+      top: 11px;
+      left: 11px;
+      height: 64px;
+      width: 64px;
+      border-radius: 32px;
+      background-color: rgba(0, 0, 0, 0.5);
+      filter: blur(5px);
+    }
+  }
 }

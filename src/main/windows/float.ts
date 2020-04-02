@@ -9,8 +9,8 @@ export default class FloatWindow {
       transparent: true,
       frame: false,
       webPreferences: { nodeIntegration: true },
-      height: 100,
-      width: 100,
+      height: 85,
+      width: 85,
       alwaysOnTop: true,
       resizable: false,
       type: "toolbar"

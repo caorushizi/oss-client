@@ -3,23 +3,25 @@ import {
   Menu,
   Tray,
   MenuItem,
-  MenuItemConstructorOptions
+  MenuItemConstructorOptions,
+  nativeImage,
+  NativeImage
 } from "electron";
-import * as path from "path";
+import TrayIcon from "./tray-icon.png";
 import { getPlatform } from "../MainWindow/helper/utils";
 import { Platform } from "../MainWindow/helper/enums";
 
 export default class AppTray {
-  private readonly iconPath: string;
+  private readonly icon: NativeImage;
 
   private tray: Tray | null = null;
 
   constructor() {
-    this.iconPath = "./static/tray-icon.png";
+    this.icon = nativeImage.createFromDataURL(TrayIcon);
   }
 
   init() {
-    this.tray = new Tray(this.iconPath);
+    this.tray = new Tray(this.icon);
     /**
      * 现只考虑 windows 平台和 mac 平台
      * 在 windows 上
@@ -56,7 +58,10 @@ export default class AppTray {
       }
     });
     const contextMenu = Menu.buildFromTemplate(menuTemplate);
-    this.tray.setToolTip("This is my application.");
+    this.tray.setToolTip("云存储客户端");
+    this.tray.on("click", () => {
+      console.log(123123);
+    });
     this.tray.setContextMenu(contextMenu);
   }
 }
