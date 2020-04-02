@@ -1,12 +1,10 @@
-const path = require("path");
-
 module.exports = {
   packagerConfig: {},
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
       config: {
-        name: "test"
+        name: "setup"
       }
     },
     {
