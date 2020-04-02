@@ -79,12 +79,25 @@ export default class App {
       const icon = nativeImage.createFromDataURL(TrayIcon);
       this.appTray = new Tray(icon);
 
-      const menuTemplate: MenuItemConstructorOptions[] | MenuItem[] = [
-        { label: "显示主窗口" },
-        { label: "设置" }
+      let menuTemplate: MenuItemConstructorOptions[] | MenuItem[] = [
+        {
+          label: "显示悬浮窗",
+          type: "checkbox",
+          checked: true,
+          click: item => {
+            if (this.floatWindow) {
+              if (item.checked) {
+                this.floatWindow.show();
+              } else {
+                this.floatWindow.hide();
+              }
+            }
+          }
+        },
+        { label: "设置", click: f => f }
       ];
-      if (getPlatform() !== Platform.windows) {
-        menuTemplate.concat([
+      if (getPlatform() === Platform.macos) {
+        menuTemplate = menuTemplate.concat([
           { type: "separator" },
           { label: "最近记录" },
           { type: "separator" },
@@ -92,12 +105,15 @@ export default class App {
           { label: "使用 markdown 格式" }
         ]);
       }
-      menuTemplate.push({
-        label: "关闭程序",
-        click() {
-          app.quit();
+      menuTemplate = menuTemplate.concat([
+        { type: "separator" },
+        {
+          label: "关闭程序",
+          click() {
+            app.quit();
+          }
         }
-      });
+      ]);
       const contextMenu = Menu.buildFromTemplate(menuTemplate);
       this.appTray.setToolTip("云存储客户端");
       this.appTray.setContextMenu(contextMenu);
