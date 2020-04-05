@@ -40,6 +40,35 @@
           height: 24px;
         }
 
+        .setting-radio {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          .input {
+            -webkit-appearance: none;
+            border-radius: 50%;
+            width: 17px;
+            height: 17px;
+            border: 2px solid #999;
+            transition: 0.2s all linear;
+            outline: none;
+            margin-right: 5px;
+          }
+
+          .input:checked {
+            border: 5px solid white;
+          }
+
+          .inner {
+            padding-left: 10px;
+            margin-right: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
         .setting-switch {
           &.rc-switch {
             border: 1px transparent solid;

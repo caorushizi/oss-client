@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
-  remote,
-  MenuItemConstructorOptions,
+  ipcRenderer,
   IpcRendererEvent,
-  ipcRenderer
+  MenuItemConstructorOptions,
+  remote
 } from "electron";
 import reactDom from "react-dom";
 import "normalize.css/normalize.css";
@@ -11,12 +11,13 @@ import "./index.scss";
 import FileDrop from "react-file-drop";
 import classNames from "classnames";
 import { getRecentTransferList } from "../MainWindow/helper/ipc";
+import { FlowWindowStyle, Theme } from "../main/types";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);
-  const switchShape = (isCircle = true) => {
+  const onSwitchShape = (_: IpcRendererEvent, t: FlowWindowStyle) => {
     const currentWindow = remote.getCurrentWindow();
-    if (isCircle) {
+    if (t === FlowWindowStyle.circle) {
       setCircle(true);
       currentWindow.setContentSize(85, 85);
     } else {
@@ -24,7 +25,6 @@ const App = () => {
       currentWindow.setContentSize(110, 50);
     }
   };
-  const onSwitchShape = (_: IpcRendererEvent, c: boolean) => switchShape(c);
 
   useEffect(() => {
     ipcRenderer.on("switch-shape", onSwitchShape);

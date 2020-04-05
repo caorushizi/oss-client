@@ -139,4 +139,9 @@ export default async function bootstrap(app: App) {
       }
     }
   });
+  ipcMain.on("change-theme", (e, { params }) => {
+    if (app.floatWindow) {
+      app.floatWindow.webContents.send("switch-shape", params);
+    }
+  });
 }

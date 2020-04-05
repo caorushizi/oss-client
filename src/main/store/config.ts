@@ -1,16 +1,7 @@
 import * as path from "path";
 import Store from "electron-store";
 import { appDir, downloadDir } from "../helper/dir";
-
-export enum Theme {
-  simple,
-  colorful
-}
-
-export enum FlowWindowStyle {
-  circle,
-  oval
-}
+import { FlowWindowStyle, Theme } from "../types";
 
 export const configStore = new Store<ConfigStore>({
   name: "config",

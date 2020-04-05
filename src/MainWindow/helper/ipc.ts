@@ -1,5 +1,10 @@
 import IpcService from "../lib/service/IpcService";
-import { OssType, TransferStore } from "../../main/types";
+import {
+  FlowWindowStyle,
+  OssType,
+  Theme,
+  TransferStore
+} from "../../main/types";
 import { AppStore } from "../../main/store/apps";
 
 const ipc = new IpcService();
@@ -68,6 +73,10 @@ export function minimizeMainWindow() {
 
 export function maximizeMainWindow() {
   ipc.emit("maximize-main-window");
+}
+
+export function changeFloatWindowShape(shape: FlowWindowStyle) {
+  ipc.emit("change-theme", { params: shape });
 }
 
 export function getRecentTransferList() {

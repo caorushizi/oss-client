@@ -32,3 +32,13 @@ export enum TransferStatus {
   done,
   failed
 }
+
+export enum FlowWindowStyle {
+  circle,
+  oval
+}
+
+export enum Theme {
+  simple,
+  colorful
+}

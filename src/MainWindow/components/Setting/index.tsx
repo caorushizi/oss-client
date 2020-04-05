@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import Switch from "rc-switch";
-import "rc-switch/assets/index.css";
 import { remote } from "electron";
+import { Radio, RadioGroup } from "react-radio-group";
 
 import "./index.scss";
 import Input from "../BaseInput";
-import Radio from "../BaseRadio";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import Button from "../BaseButton";
+import { FlowWindowStyle, Theme } from "../../../main/types";
+import { changeFloatWindowShape } from "../../helper/ipc";
 
 const Setting = () => {
   const [downloadPath, setDownloadPath] = useState<string>("");
+  const [theme, setTheme] = useState<Theme>(Theme.colorful);
+  const [float, setFloat] = useState<FlowWindowStyle>(FlowWindowStyle.oval);
+
   const onDownloadSelect = () => {
     remote.dialog
       .showOpenDialog({
@@ -66,8 +70,19 @@ const Setting = () => {
           </div>
           <div className="setting-item">
             <div className="setting-item-title">主题：</div>
-            <Radio value="简洁模式" name="Theme" checked />
-            <Radio value="炫彩模式" name="Theme" />
+            <RadioGroup
+              className="setting-radio"
+              name="Theme"
+              selectedValue={theme}
+              onChange={value => {
+                setTheme(value);
+              }}
+            >
+              <Radio className="input" value={Theme.simple} />
+              <span className="inner">简洁模式</span>
+              <Radio className="input" value={Theme.colorful} />
+              <span className="inner">炫彩模式</span>
+            </RadioGroup>
           </div>
         </div>
       </section>
@@ -94,8 +109,20 @@ const Setting = () => {
             </div>
             <div className="setting-item">
               <div className="setting-item-title">悬浮窗样式 ：</div>
-              <Radio value="圆形" name="FloatWindow" checked />
-              <Radio value="椭圆形" name="FloatWindow" />
+              <RadioGroup
+                className="setting-radio"
+                name="FloatWindow"
+                selectedValue={float}
+                onChange={value => {
+                  setFloat(value);
+                  changeFloatWindowShape(value);
+                }}
+              >
+                <Radio className="input" value={FlowWindowStyle.circle} />
+                <span className="inner">圆形</span>
+                <Radio className="input" value={FlowWindowStyle.oval} />
+                <span className="inner">椭圆形</span>
+              </RadioGroup>
             </div>
           </div>
         </section>
