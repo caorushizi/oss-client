@@ -65,13 +65,15 @@ const Setting = () => {
             </div>
             <Switch />
           </div>
-          <div className="setting-item">
-            <div className="setting-item-title">主题：</div>
-            <div>
-              <Radio value="简洁模式" name="test" checked />
-              <Radio value="炫彩模式" name="test" />
-            </div>
-          </div>
+
+          {/* <div className="setting-item"> */}
+          {/*  <div className="setting-item-title">主题：</div> */}
+          {/*  <div> */}
+          {/*    <Radio value="简洁模式" name="test" checked /> */}
+          {/*    <Radio value="炫彩模式" name="test" /> */}
+          {/*  </div> */}
+          {/* </div> */}
+
           <div className="setting-item">
             <div className="setting-item-title">默认下载位置：</div>
             <Input
@@ -118,7 +120,7 @@ const Setting = () => {
               <div className="setting-item-title">悬浮窗样式 ：</div>
               <div>
                 <Radio value="圆形" name="test1" checked />
-                <Radio value="椭圆形" name="test1" checked />
+                <Radio value="椭圆形" name="test1" />
               </div>
             </div>
           </div>

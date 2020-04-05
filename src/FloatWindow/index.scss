@@ -12,9 +12,13 @@
     background-repeat: no-repeat;
 
     &::after {
-      content: "";
+      content: "拖拽上传";
       display: block;
       height: 64px;
+      font-size: 12px;
+      line-height: 64px;
+      text-align: center;
+      color: #fff;
       width: 64px;
       border-radius: 32px;
       background: #484b58;
@@ -43,7 +47,11 @@
     background-repeat: no-repeat;
 
     &::after {
-      content: "";
+      font-size: 12px;
+      content: "拖拽上传";
+      line-height: 30px;
+      text-align: center;
+      color: #fff;
       display: block;
       height: 30px;
       width: 85px;

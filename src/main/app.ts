@@ -178,8 +178,8 @@ export default class App {
           transparent: true,
           frame: false,
           webPreferences: { nodeIntegration: true },
-          height: 85,
-          width: 85,
+          height: 50,
+          width: 110,
           alwaysOnTop: true,
           resizable: false,
           type: "toolbar"
