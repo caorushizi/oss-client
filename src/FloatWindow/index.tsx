@@ -1,9 +1,10 @@
 import React from "react";
-import { remote } from "electron";
+import { remote, MenuItemConstructorOptions } from "electron";
 import reactDom from "react-dom";
 import "normalize.css/normalize.css";
 import "./index.scss";
 import FileDrop from "react-file-drop";
+import { getRecentTransferList } from "../MainWindow/helper/ipc";
 
 const App = () => {
   return (
@@ -35,22 +36,26 @@ const onMouseMove = (e: MouseEvent) => {
 const onMouseUp = () => {
   state.dragging = false;
 };
-const onContextMenu = () => {
-  const menu = remote.Menu.buildFromTemplate([
-    {
-      label: "最近传输列表",
-      click: f => f
-    },
-    {
-      type: "separator"
-    },
+const onContextMenu = async () => {
+  const recentList = await getRecentTransferList();
+  const recentMenu: MenuItemConstructorOptions[] =
+    recentList.length > 0
+      ? recentList.splice(0, 5).map(i => ({
+          label: i.name,
+          click: () => {}
+        }))
+      : [{ label: "暂无最近记录" }];
+  const contextMenuTemplate: MenuItemConstructorOptions[] = [
+    ...recentMenu,
+    { type: "separator" },
     { label: "清除最近记录" },
     {
       label: "markdown 格式",
       type: "checkbox",
       checked: true
     }
-  ]);
+  ];
+  const menu = remote.Menu.buildFromTemplate(contextMenuTemplate);
   menu.popup();
 };
 

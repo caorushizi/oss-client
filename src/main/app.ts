@@ -25,6 +25,7 @@ import { getPlatform } from "../MainWindow/helper/utils";
 import TrayIcon from "./tray-icon.png";
 import { getRecentUploadList } from "./store/transfers";
 import { configStore } from "./store/config";
+import { GetUploadTransfersChannel } from "./IPC/GetUploadTransfersChannel";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -73,6 +74,7 @@ export default class App {
       new GetTransfersChannel(),
       new UpdateAppChannel(),
       new DeleteAppChannel(),
+      new GetUploadTransfersChannel(),
       new ClearTransferDoneListChannel()
     ]);
 
@@ -82,7 +84,7 @@ export default class App {
       const icon = nativeImage.createFromDataURL(TrayIcon);
       this.appTray = new Tray(icon);
 
-      let menuTemplate: MenuItemConstructorOptions[] | MenuItem[] = [
+      let menuTemplate: MenuItemConstructorOptions[] = [
         {
           label: "显示悬浮窗",
           visible: getPlatform() === Platform.windows,

@@ -69,3 +69,7 @@ export function minimizeMainWindow() {
 export function maximizeMainWindow() {
   ipc.emit("maximize-main-window");
 }
+
+export function getRecentTransferList() {
+  return ipc.send<TransferStore[]>("get-recent-transfer-list");
+}
