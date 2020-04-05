@@ -1,14 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import Switch from "rc-switch";
 import "rc-switch/assets/index.css";
+import { remote } from "electron";
 
 import "./index.scss";
 import Input from "../BaseInput";
 import Radio from "../BaseRadio";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
+import Button from "../BaseButton";
 
 const Setting = () => {
+  const [downloadPath, setDownloadPath] = useState<string>("");
+  const onCacheSelect = () => {
+    remote.dialog
+      .showOpenDialog({
+        properties: [
+          "openDirectory",
+          "createDirectory",
+          "showHiddenFiles",
+          "promptToCreate"
+        ]
+      })
+      .then(({ canceled, filePaths }) => {
+        if (!canceled && filePaths.length > 0) {
+          const selectedPath = filePaths[0];
+        }
+      });
+  };
+  const onDownloadSelect = () => {
+    remote.dialog
+      .showOpenDialog({
+        properties: [
+          "openDirectory",
+          "createDirectory",
+          "showHiddenFiles",
+          "promptToCreate"
+        ]
+      })
+      .then(({ canceled, filePaths }) => {
+        if (!canceled && filePaths.length > 0) {
+          const selectedPath = filePaths[0];
+          setDownloadPath(selectedPath);
+        }
+      });
+  };
+
   return (
     <div className="setting-wrapper">
       <section className="section">
@@ -37,16 +74,23 @@ const Setting = () => {
           </div>
           <div className="setting-item">
             <div className="setting-item-title">默认下载位置：</div>
-            <Input />
+            <Input
+              disabled
+              placeholder="请选择默认下载位置"
+              value={downloadPath}
+            />
+            <Button value="选择下载位置" onClick={onDownloadSelect} />
           </div>
-          <div className="setting-item">
-            <div className="setting-item-title">缓存位置：</div>
-            <Input />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">关闭页面直接退出程序：</div>
-            <Switch />
-          </div>
+          {/* <div className="setting-item"> */}
+          {/*  <div className="setting-item-title">缓存位置：</div> */}
+          {/*  <Input disabled /> */}
+          {/*  <Button value="下载缓存位置" onClick={onCacheSelect} /> */}
+          {/* </div> */}
+
+          {/* <div className="setting-item"> */}
+          {/*  <div className="setting-item-title">关闭页面直接退出程序：</div> */}
+          {/*  <Switch /> */}
+          {/* </div> */}
         </div>
       </section>
       <section className="section">

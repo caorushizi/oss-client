@@ -98,8 +98,6 @@ const UpdateOssForm = ({
               onChange={handleChange}
             >
               <option value={OssType.qiniu}>七牛云</option>
-              <option value={OssType.ali}>阿里云</option>
-              <option value={OssType.tencent}>腾讯云</option>
             </select>
             <span className="oss-form_item__errors">
               {errors.type && touched.type && errors.type}

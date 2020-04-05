@@ -7,7 +7,8 @@ import {
   MenuItemConstructorOptions,
   MenuItem,
   Menu,
-  Tray
+  Tray,
+  clipboard
 } from "electron";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/helper/enums";
@@ -22,6 +23,8 @@ import { DeleteAppChannel } from "./IPC/DeleteAppChannel";
 import { ClearTransferDoneListChannel } from "./IPC/ClearTransferDoneListChannel";
 import { getPlatform } from "../MainWindow/helper/utils";
 import TrayIcon from "./tray-icon.png";
+import { getRecentUploadList } from "./store/transfers";
+import { configStore } from "./store/config";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -74,7 +77,7 @@ export default class App {
     ]);
 
     // 初始化 app
-    app.on("ready", () => {
+    app.on("ready", async () => {
       // 初始化 托盘图标
       const icon = nativeImage.createFromDataURL(TrayIcon);
       this.appTray = new Tray(icon);
@@ -82,6 +85,7 @@ export default class App {
       let menuTemplate: MenuItemConstructorOptions[] | MenuItem[] = [
         {
           label: "显示悬浮窗",
+          visible: getPlatform() === Platform.windows,
           type: "checkbox",
           checked: true,
           click: item => {
@@ -97,12 +101,34 @@ export default class App {
         { label: "设置", click: f => f }
       ];
       if (getPlatform() === Platform.macos) {
+        const recentListStore = await getRecentUploadList();
+        const recentList: MenuItemConstructorOptions[] =
+          recentListStore.length > 0
+            ? recentListStore.splice(0, 5).map(i => ({
+                label: i.name,
+                click: () => {
+                  if (configStore.get("markdown")) {
+                    clipboard.write({
+                      text: `![${i.name}](图片链接 "http://${i.name}")`
+                    });
+                  } else {
+                    clipboard.write({ text: i.name });
+                  }
+                }
+              }))
+            : [
+                {
+                  label: "暂无最近使用",
+                  enabled: false
+                }
+              ];
+
         menuTemplate = menuTemplate.concat([
           { type: "separator" },
-          { label: "最近记录" },
+          ...recentList,
           { type: "separator" },
           { label: "清空最近记录" },
-          { label: "使用 markdown 格式" }
+          { label: "使用 markdown 格式", type: "checkbox", checked: true }
         ]);
       }
       menuTemplate = menuTemplate.concat([

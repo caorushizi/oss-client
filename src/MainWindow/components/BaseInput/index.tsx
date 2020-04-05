@@ -15,6 +15,7 @@ type PropTypes = {
   onBlur?: FocusEventHandler<HTMLInputElement>;
   type?: string;
   name?: string;
+  disabled?: boolean;
 };
 
 const Input = ({
@@ -26,7 +27,8 @@ const Input = ({
   value,
   onBlur,
   type = "input",
-  name
+  name,
+  disabled = false
 }: PropTypes) => {
   return (
     <div className={classNames("oss-input--wrapper", className)}>
@@ -40,6 +42,7 @@ const Input = ({
         onChange={onChange}
         value={value}
         onBlur={onBlur}
+        disabled={disabled}
       />
     </div>
   );

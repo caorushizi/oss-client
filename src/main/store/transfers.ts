@@ -1,6 +1,6 @@
 import DataStore from "nedb";
 import * as path from "path";
-import { TransferStatus, TransferStore } from "../types";
+import { TaskType, TransferStatus, TransferStore } from "../types";
 import { appDir } from "../helper/dir";
 
 const filename = path.join(appDir, "transfers");
@@ -63,6 +63,18 @@ export function clearTransferDoneList() {
       (err, n) => {
         if (err) reject(err);
         resolve();
+      }
+    );
+  });
+}
+
+export function getRecentUploadList(): Promise<TransferStore[]> {
+  return new Promise((resolve, reject) => {
+    transferStore.find(
+      { type: TaskType.upload },
+      (err, documents: TransferStore[]) => {
+        if (err) reject(err);
+        resolve(documents);
       }
     );
   });

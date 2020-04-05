@@ -35,7 +35,19 @@ export function fileContextMenu(item: VFile, domain: string) {
     {
       label: "删除",
       click: () => {
-        ipcRenderer.send("req:file:delete", item);
+        remote.dialog
+          .showMessageBox({
+            type: "question",
+            message: "是否要删除这个文件",
+            buttons: ["取消", "确定"],
+            defaultId: 1,
+            cancelId: 0
+          })
+          .then(({ response }) => {
+            if (response === 1) {
+              ipcRenderer.send("req:file:delete", item);
+            }
+          });
       }
     }
   ]);
