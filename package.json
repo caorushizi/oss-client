@@ -90,7 +90,6 @@
     "nedb": "^1.8.0",
     "normalize.css": "^8.0.1",
     "qiniu": "^7.3.0",
-    "rc-select": "^10.1.8",
     "rc-switch": "^1.9.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
