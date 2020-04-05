@@ -31,30 +31,37 @@ const TransferList = () => {
         </div>
       </div>
       <section className="transfer-table__wrapper">
-        <table className="transfer-table">
-          <tbody>
-            {transfers.map((item: TransferStore) => (
-              <tr className="transfer-table__row" key={item.id + item.name}>
-                <td className="transfer-table__row_item meta">
-                  <Icon className="icon" filename={item.name} />
-                  <div className="name-wrapper">
-                    <div className="name">{item.name}</div>
-                    <div className="size">{fileSizeFormatter(item.size)}</div>
-                  </div>
-                </td>
-                <td className="transfer-table__row_item">
-                  <FontAwesomeIcon className="icon" icon="pause" />
-                </td>
-                <td className="transfer-table__row_item">
-                  <FontAwesomeIcon className="icon" icon="trash-alt" />
-                </td>
-                <td className="transfer-table__row_item">
-                  <FontAwesomeIcon className="icon" icon="folder" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {transfers.length > 0 ? (
+          <table className="transfer-table">
+            <tbody>
+              {transfers.map((item: TransferStore) => (
+                <tr className="transfer-table__row" key={item.id + item.name}>
+                  <td className="transfer-table__row_item meta">
+                    <Icon className="icon" filename={item.name} />
+                    <div className="name-wrapper">
+                      <div className="name">{item.name}</div>
+                      <div className="size">{fileSizeFormatter(item.size)}</div>
+                    </div>
+                  </td>
+                  <td className="transfer-table__row_item">
+                    <FontAwesomeIcon className="icon" icon="pause" />
+                  </td>
+                  <td className="transfer-table__row_item">
+                    <FontAwesomeIcon className="icon" icon="trash-alt" />
+                  </td>
+                  <td className="transfer-table__row_item">
+                    <FontAwesomeIcon className="icon" icon="folder" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="no-files">
+            <div className="title">没有文件</div>
+            <div className="sub-title">暂时没有传输中的文件</div>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -44,7 +44,7 @@ const onContextMenu = async () => {
           label: i.name,
           click: () => {}
         }))
-      : [{ label: "暂无最近记录" }];
+      : [{ label: "暂无最近记录", enabled: false }];
   const contextMenuTemplate: MenuItemConstructorOptions[] = [
     ...recentMenu,
     { type: "separator" },

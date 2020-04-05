@@ -41,29 +41,39 @@ const TransferDone = () => {
         </div>
       </div>
       <section className="transfer-table__wrapper">
-        <table className="transfer-table">
-          <tbody>
-            {transfers.map((item: TransferStore) => (
-              <tr className="transfer-table__row" key={item.id + item.name}>
-                <td className="transfer-table__row_item meta">
-                  <Icon className="icon" filename={item.name} />
-                  <div className="name-wrapper">
-                    <div className="name">{item.name}</div>
-                    <div className="size">{fileSizeFormatter(item.size)}</div>
-                  </div>
-                </td>
-                <td>{taskTypeFormatter(item.type)}</td>
-                <td>{dateFormatter(item.date)}</td>
-                <td className="transfer-table__row_item">
-                  <FontAwesomeIcon className="action-button" icon="folder" />
-                </td>
-                <td className="transfer-table__row_item">
-                  <FontAwesomeIcon className="action-button" icon="trash-alt" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {transfers.length > 0 ? (
+          <table className="transfer-table">
+            <tbody>
+              {transfers.map((item: TransferStore) => (
+                <tr className="transfer-table__row" key={item.id + item.name}>
+                  <td className="transfer-table__row_item meta">
+                    <Icon className="icon" filename={item.name} />
+                    <div className="name-wrapper">
+                      <div className="name">{item.name}</div>
+                      <div className="size">{fileSizeFormatter(item.size)}</div>
+                    </div>
+                  </td>
+                  <td>{taskTypeFormatter(item.type)}</td>
+                  <td>{dateFormatter(item.date)}</td>
+                  <td className="transfer-table__row_item">
+                    <FontAwesomeIcon className="action-button" icon="folder" />
+                  </td>
+                  <td className="transfer-table__row_item">
+                    <FontAwesomeIcon
+                      className="action-button"
+                      icon="trash-alt"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="no-files">
+            <div className="title">没有文件</div>
+            <div className="sub-title">暂无传输完成的文件</div>
+          </div>
+        )}
       </section>
     </div>
   );
