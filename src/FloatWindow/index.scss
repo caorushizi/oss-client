@@ -1,20 +1,41 @@
-#root {
+.wrapper {
   height: 100vh;
   width: 100vw;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-image: url("./bg.png");
-  background-position-x: 0.8px;
-  background-position-y: 0.6px;
-  overflow: hidden;
+  align-items: center;
 
-  .wrapper {
-    height: 64px;
-    width: 64px;
-    border-radius: 32px;
-    background-color: #484b58;
-    z-index: -1;
+  &.circle {
+    background-image: url("./circle-bg.png");
+    background-position-x: 0.8px;
+    background-position-y: 0.6px;
+    background-repeat: no-repeat;
+
+    &::after {
+      content: "";
+      display: block;
+      height: 64px;
+      width: 64px;
+      border-radius: 32px;
+      background: #484b58;
+      z-index: -1;
+    }
+  }
+
+  &.oval {
+    background-image: url("./oval-bg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+
+    &::after {
+      content: "";
+      display: block;
+      height: 32px;
+      width: 85px;
+      border-radius: 32px;
+      background: #484b58;
+      z-index: -1;
+    }
   }
 }
 

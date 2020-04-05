@@ -4,11 +4,20 @@ import reactDom from "react-dom";
 import "normalize.css/normalize.css";
 import "./index.scss";
 import FileDrop from "react-file-drop";
+import classNames from "classnames";
 import { getRecentTransferList } from "../MainWindow/helper/ipc";
+
+const isCircle = false;
+const currentWindow = remote.getCurrentWindow();
+if (isCircle) {
+  currentWindow.setContentSize(85, 85);
+} else {
+  currentWindow.setContentSize(105, 50);
+}
 
 const App = () => {
   return (
-    <div className="wrapper">
+    <div className={classNames("wrapper", isCircle ? "circle" : "oval")}>
       <FileDrop />
     </div>
   );

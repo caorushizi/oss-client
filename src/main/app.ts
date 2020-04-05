@@ -100,7 +100,15 @@ export default class App {
             }
           }
         },
-        { label: "设置", click: f => f }
+        {
+          label: "设置",
+          click: () => {
+            if (this.mainWindow) {
+              this.mainWindow.show();
+              this.mainWindow.webContents.send("to-setting");
+            }
+          }
+        }
       ];
       if (getPlatform() === Platform.macos) {
         const recentListStore = await getRecentUploadList();
@@ -149,8 +157,10 @@ export default class App {
       this.mainWindow = new BrowserWindow({
         frame: false,
         height: 645,
-        webPreferences: { nodeIntegration: true },
         width: 1090,
+        minHeight: 350,
+        minWidth: 750,
+        webPreferences: { nodeIntegration: true },
         titleBarStyle: "hiddenInset"
       });
       this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {});

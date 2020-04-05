@@ -125,7 +125,7 @@ export default async function bootstrap(app: App) {
   );
 
   ipcMain.on("close-main-window", () => {
-    if (app.mainWindow) app.mainWindow.close();
+    if (app.mainWindow) app.mainWindow.hide();
   });
   ipcMain.on("minimize-main-window", () => {
     if (app.mainWindow) app.mainWindow.minimize();

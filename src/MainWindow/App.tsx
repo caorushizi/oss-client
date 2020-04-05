@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { ipcRenderer } from "electron";
 
 import "./App.scss";
 import TheSidebar from "./components/TheSidebar";
@@ -50,6 +51,10 @@ function App() {
     const buckets = await getBuckets();
     setBucketList(buckets);
   };
+  const toSetting = () => {
+    console.log("开始");
+    setActivePage(Page.setting);
+  };
 
   useEffect(() => {
     setThemeColor(getThemeColor());
@@ -70,6 +75,8 @@ function App() {
         setActivePage(Page.services);
       }
     })();
+
+    ipcRenderer.on("to-setting", toSetting);
   }, []);
 
   return (
