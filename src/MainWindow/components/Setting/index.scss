@@ -18,14 +18,40 @@
     .settings {
       .setting-item {
         font-size: 14px;
+        line-height: 20px;
         color: #fff;
-        padding-bottom: 20px;
+        padding-bottom: 16px;
         display: flex;
         flex-direction: row;
         align-items: center;
 
         .setting-item-title {
           width: 270px;
+        }
+
+        .setting-button {
+          border-radius: 10px;
+          height: 24px;
+          margin: 0;
+        }
+
+        .setting-input {
+          border-radius: 10px;
+          height: 24px;
+        }
+
+        .setting-switch {
+          &.rc-switch {
+            border: 1px transparent solid;
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(3px);
+          }
+
+          &.rc-switch-checked {
+            border: 1px transparent solid;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(3px);
+          }
         }
       }
     }

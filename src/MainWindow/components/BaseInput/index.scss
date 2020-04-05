@@ -2,19 +2,18 @@
 
 .oss-input--wrapper {
   height: 26px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.15);
-  padding: 0 15px;
+  padding: 0 9px;
   backdrop-filter: blur(5px);
   display: flex;
   flex-direction: row;
   align-items: center;
 
   .oss-input {
-    color: #fff;
+    color: rgba(255, 255, 255, 0.75);
     background: transparent;
     border: none;
-    height: 26px;
     font-size: 14px;
     flex: 1;
 

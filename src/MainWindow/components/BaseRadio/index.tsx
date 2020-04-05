@@ -24,6 +24,7 @@ const Radio = ({ className, value, name, checked }: PropType) => {
     <label htmlFor={id} className={classNames("oss-radio", className)}>
       <input
         type="radio"
+        className="input"
         id={id}
         name={name}
         value={value}
@@ -32,7 +33,7 @@ const Radio = ({ className, value, name, checked }: PropType) => {
           setCurChecked(!checked);
         }}
       />
-      {value}
+      <span className="inner">{value}</span>
     </label>
   );
 };
