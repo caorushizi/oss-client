@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { remote, MenuItemConstructorOptions } from "electron";
 import reactDom from "react-dom";
 import "normalize.css/normalize.css";
@@ -7,7 +7,7 @@ import FileDrop from "react-file-drop";
 import classNames from "classnames";
 import { getRecentTransferList } from "../MainWindow/helper/ipc";
 
-const isCircle = false;
+const isCircle = true;
 const currentWindow = remote.getCurrentWindow();
 if (isCircle) {
   currentWindow.setContentSize(85, 85);

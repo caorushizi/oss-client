@@ -20,6 +20,21 @@
       background: #484b58;
       z-index: -1;
     }
+
+    .file-drop {
+      .file-drop-target {
+        &.file-drop-dragging-over-frame {
+          position: absolute;
+          top: 11px;
+          left: 11px;
+          height: 64px;
+          width: 64px;
+          border-radius: 32px;
+          background-color: rgba(0, 0, 0, 0.5);
+          filter: blur(5px);
+        }
+      }
+    }
   }
 
   &.oval {
@@ -30,26 +45,25 @@
     &::after {
       content: "";
       display: block;
-      height: 32px;
+      height: 30px;
       width: 85px;
-      border-radius: 32px;
+      border-radius: 15px;
       background: #484b58;
       z-index: -1;
     }
   }
-}
 
-.file-drop {
-  .file-drop-target {
-    &.file-drop-dragging-over-frame {
-      position: absolute;
-      top: 11px;
-      left: 11px;
-      height: 64px;
-      width: 64px;
-      border-radius: 32px;
-      background-color: rgba(0, 0, 0, 0.5);
-      filter: blur(5px);
+  .file-drop {
+    .file-drop-target {
+      &.file-drop-dragging-over-frame {
+        position: absolute;
+        top: 11px;
+        height: 30px;
+        width: 85px;
+        border-radius: 15px;
+        background-color: rgba(0, 0, 0, 0.5);
+        filter: blur(5px);
+      }
     }
   }
 }
