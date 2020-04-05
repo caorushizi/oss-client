@@ -66,8 +66,8 @@ const Setting = () => {
           </div>
           <div className="setting-item">
             <div className="setting-item-title">主题：</div>
-            <Radio value="简洁模式" name="test" checked />
-            <Radio value="炫彩模式" name="test" />
+            <Radio value="简洁模式" name="Theme" checked />
+            <Radio value="炫彩模式" name="Theme" />
           </div>
         </div>
       </section>
@@ -94,8 +94,8 @@ const Setting = () => {
             </div>
             <div className="setting-item">
               <div className="setting-item-title">悬浮窗样式 ：</div>
-              <Radio value="圆形" name="test1" checked />
-              <Radio value="椭圆形" name="test1" />
+              <Radio value="圆形" name="FloatWindow" checked />
+              <Radio value="椭圆形" name="FloatWindow" />
             </div>
           </div>
         </section>
