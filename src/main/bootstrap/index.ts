@@ -17,6 +17,7 @@ import { downloadDir } from "../helper/dir";
 import App from "../app";
 import { initConfig } from "./config";
 import VFile from "../../MainWindow/lib/vdir/VFile";
+import { configStore } from "../store/config";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -143,5 +144,22 @@ export default async function bootstrap(app: App) {
     if (app.floatWindow) {
       app.floatWindow.webContents.send("switch-shape", params);
     }
+  });
+
+  ipcMain.on("change-use-https", (e, { params }) => {
+    configStore.set("useHttps", params);
+  });
+
+  ipcMain.on("change-direct-delete", (e, { params }) => {
+    configStore.set("deleteShowDialog", params);
+  });
+
+  ipcMain.on("change-upload-override", (e, { params }) => {
+    configStore.set("uploadOverwrite", params);
+  });
+
+  ipcMain.on("change-download-dir", (e, { params }) => {
+    debugger;
+    configStore.set("downloadDir", params);
   });
 }

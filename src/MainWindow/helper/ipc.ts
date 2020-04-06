@@ -1,8 +1,8 @@
 import IpcService from "../lib/service/IpcService";
 import {
+  ConfigStore,
   FlowWindowStyle,
   OssType,
-  Theme,
   TransferStore
 } from "../../main/types";
 import { AppStore } from "../../main/store/apps";
@@ -79,6 +79,26 @@ export function changeFloatWindowShape(shape: FlowWindowStyle) {
   ipc.emit("change-theme", { params: shape });
 }
 
+export function changeUseHttps(useHttps: boolean) {
+  ipc.emit("change-use-https", { params: useHttps });
+}
+
+export function changeDirectDelete(directDelete: boolean) {
+  ipc.emit("change-direct-delete", { params: directDelete });
+}
+
+export function changeUploadOverride(uploadOverride: boolean) {
+  ipc.emit("change-upload-override", { params: uploadOverride });
+}
+
+export function changeDownloadDir(downloadDir: string) {
+  ipc.emit("change-download-dir", { params: downloadDir });
+}
+
 export function getRecentTransferList() {
   return ipc.send<TransferStore[]>("get-recent-transfer-list");
+}
+
+export function getConfig() {
+  return ipc.send<ConfigStore>("get-config");
 }

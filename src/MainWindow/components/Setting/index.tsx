@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Switch from "rc-switch";
 import { remote } from "electron";
 import { Radio, RadioGroup } from "react-radio-group";
@@ -8,31 +8,27 @@ import Input from "../BaseInput";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import Button from "../BaseButton";
-import { FlowWindowStyle, Theme } from "../../../main/types";
-import { changeFloatWindowShape } from "../../helper/ipc";
+import {
+  ConfigStore,
+  FlowWindowStyle,
+  initialConfig,
+  Theme
+} from "../../../main/types";
+import {
+  changeDirectDelete,
+  changeDownloadDir,
+  changeFloatWindowShape,
+  changeUploadOverride,
+  changeUseHttps,
+  getConfig
+} from "../../helper/ipc";
 
 const Setting = () => {
-  const [downloadPath, setDownloadPath] = useState<string>("");
-  const [theme, setTheme] = useState<Theme>(Theme.colorful);
-  const [float, setFloat] = useState<FlowWindowStyle>(FlowWindowStyle.oval);
+  const [config, setConfig] = useState<ConfigStore>(initialConfig);
 
-  const onDownloadSelect = () => {
-    remote.dialog
-      .showOpenDialog({
-        properties: [
-          "openDirectory",
-          "createDirectory",
-          "showHiddenFiles",
-          "promptToCreate"
-        ]
-      })
-      .then(({ canceled, filePaths }) => {
-        if (!canceled && filePaths.length > 0) {
-          const selectedPath = filePaths[0];
-          setDownloadPath(selectedPath);
-        }
-      });
-  };
+  useEffect(() => {
+    getConfig().then(r => setConfig(r));
+  }, []);
 
   return (
     <div className="setting-wrapper">
@@ -41,31 +37,69 @@ const Setting = () => {
         <div className="settings">
           <div className="setting-item">
             <div className="setting-item-title">使用 https ：</div>
-            <Switch className="setting-switch" />
+            <Switch
+              className="setting-switch"
+              checked={config.useHttps}
+              onChange={(useHttps: boolean) => {
+                changeUseHttps(useHttps);
+                setConfig({ ...config, useHttps });
+              }}
+            />
           </div>
           <div className="setting-item">
             <div className="setting-item-title">直接删除不显示提示框：</div>
-            <Switch className="setting-switch" />
+            <Switch
+              className="setting-switch"
+              checked={config.deleteShowDialog}
+              onChange={(directDelete: boolean) => {
+                changeDirectDelete(directDelete);
+                setConfig({ ...config, deleteShowDialog: directDelete });
+              }}
+            />
           </div>
           <div className="setting-item">
             <div className="setting-item-title">
               如果文件已经存在是否覆盖文件：
             </div>
-            <Switch className="setting-switch" />
+            <Switch
+              className="setting-switch"
+              checked={config.uploadOverwrite}
+              onChange={(uploadOverride: boolean) => {
+                changeUploadOverride(uploadOverride);
+                setConfig({ ...config, uploadOverwrite: uploadOverride });
+              }}
+            />
           </div>
           <div className="setting-item">
             <div className="setting-item-title">
               <Button
                 className="setting-button"
                 value="选择下载位置"
-                onClick={onDownloadSelect}
+                onClick={() => {
+                  remote.dialog
+                    .showOpenDialog({
+                      properties: [
+                        "openDirectory",
+                        "createDirectory",
+                        "showHiddenFiles",
+                        "promptToCreate"
+                      ]
+                    })
+                    .then(({ canceled, filePaths }) => {
+                      if (!canceled && filePaths.length > 0) {
+                        const selectedPath = filePaths[0];
+                        changeDownloadDir(selectedPath);
+                        setConfig({ ...config, downloadDir: selectedPath });
+                      }
+                    });
+                }}
               />
             </div>
             <Input
               className="setting-input"
               disabled
               placeholder="请选择默认下载位置"
-              value={downloadPath}
+              value={config.downloadDir}
             />
           </div>
           <div className="setting-item">
@@ -73,9 +107,9 @@ const Setting = () => {
             <RadioGroup
               className="setting-radio"
               name="Theme"
-              selectedValue={theme}
-              onChange={value => {
-                setTheme(value);
+              selectedValue={config.theme}
+              onChange={(theme: Theme) => {
+                setConfig({ ...config, theme });
               }}
             >
               <Radio className="input" value={Theme.simple} />
@@ -91,11 +125,23 @@ const Setting = () => {
         <div className="settings">
           <div className="setting-item">
             <div className="setting-item-title">传输完成后是否提示 ：</div>
-            <Switch className="setting-switch" />
+            <Switch
+              className="setting-switch"
+              checked={config.transferDoneTip}
+              onChange={(transferDoneTip: boolean) => {
+                setConfig({ ...config, transferDoneTip });
+              }}
+            />
           </div>
           <div className="setting-item">
             <div className="setting-item-title">复制url或者markdown格式：</div>
-            <Switch className="setting-switch" />
+            <Switch
+              className="setting-switch"
+              checked={config.markdown}
+              onChange={(markdown: boolean) => {
+                setConfig({ ...config, markdown });
+              }}
+            />
           </div>
         </div>
       </section>
@@ -105,17 +151,23 @@ const Setting = () => {
           <div className="settings">
             <div className="setting-item">
               <div className="setting-item-title">是否显示悬浮窗 ：</div>
-              <Switch className="setting-switch" />
+              <Switch
+                className="setting-switch"
+                checked={config.showFloatWindow}
+                onChange={(showWindow: boolean) => {
+                  setConfig({ ...config, showFloatWindow: showWindow });
+                }}
+              />
             </div>
             <div className="setting-item">
               <div className="setting-item-title">悬浮窗样式 ：</div>
               <RadioGroup
                 className="setting-radio"
                 name="FloatWindow"
-                selectedValue={float}
-                onChange={value => {
-                  setFloat(value);
-                  changeFloatWindowShape(value);
+                selectedValue={config.floatWindowStyle}
+                onChange={(style: FlowWindowStyle) => {
+                  changeFloatWindowShape(style);
+                  setConfig({ ...config, floatWindowStyle: style });
                 }}
               >
                 <Radio className="input" value={FlowWindowStyle.circle} />

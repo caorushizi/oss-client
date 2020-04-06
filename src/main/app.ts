@@ -26,6 +26,7 @@ import TrayIcon from "./tray-icon.png";
 import { getRecentUploadList } from "./store/transfers";
 import { configStore } from "./store/config";
 import { GetUploadTransfersChannel } from "./IPC/GetUploadTransfersChannel";
+import { GetConfigChannel } from "./IPC/GetConfigChannel";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -75,7 +76,8 @@ export default class App {
       new UpdateAppChannel(),
       new DeleteAppChannel(),
       new GetUploadTransfersChannel(),
-      new ClearTransferDoneListChannel()
+      new ClearTransferDoneListChannel(),
+      new GetConfigChannel()
     ]);
 
     // 初始化 app
