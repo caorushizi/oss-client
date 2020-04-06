@@ -2,6 +2,7 @@ import moment from "moment";
 import mime from "mime";
 
 import { TaskType } from "../../main/types";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 export function fileSizeFormatter(value = 0): string {
   if (!value) return "0 Bytes";
@@ -79,10 +80,14 @@ export function getIconName(filename?: string): string {
   let iconName: string;
   if (filename) {
     const mimeType = mime.getType(filename);
-    if (mimeType) iconName = mapType[mimeType];
-    else iconName = "icon-documents";
+    if (mimeType) {
+      iconName = mapType[mimeType];
+    } else {
+      iconName = "icon-documents";
+    }
   } else {
     iconName = "icon-wenjian";
   }
+  if (!iconName) iconName = "icon-documents";
   return iconName;
 }
