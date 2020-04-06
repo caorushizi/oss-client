@@ -1,5 +1,5 @@
 import Store from "electron-store";
-import { appDir, downloadDir } from "../helper/dir";
+import { appDir, cacheDir, downloadDir } from "../helper/dir";
 import { ConfigStore, initialConfig } from "../types";
 
 export const configStore = new Store<ConfigStore>({
@@ -7,5 +7,5 @@ export const configStore = new Store<ConfigStore>({
   cwd: appDir,
   fileExtension: "json",
   // encryptionKey: "test",
-  defaults: { ...initialConfig, downloadDir }
+  defaults: { ...initialConfig, downloadDir, cacheDir }
 });

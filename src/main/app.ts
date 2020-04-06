@@ -5,7 +5,6 @@ import {
   screen,
   nativeImage,
   MenuItemConstructorOptions,
-  MenuItem,
   Menu,
   Tray,
   clipboard

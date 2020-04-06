@@ -82,6 +82,7 @@
     "@simonwep/selection-js": "^1.6.0",
     "axios": "^0.19.1",
     "classnames": "^2.2.6",
+    "electron-log": "^4.1.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^5.1.0",
     "formik": "^2.1.4",

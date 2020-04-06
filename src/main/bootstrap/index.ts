@@ -18,6 +18,7 @@ import App from "../app";
 import { initConfig } from "./config";
 import VFile from "../../MainWindow/lib/vdir/VFile";
 import { configStore } from "../store/config";
+import { errorLog, infoLog } from "../logger";
 
 const taskRunner = new TaskRunner(5, true);
 
@@ -28,20 +29,20 @@ export default async function bootstrap(app: App) {
   events.on("done", (id: string) => {
     transferDone(id)
       .then(() => {
-        console.log("传输成功");
+        infoLog("传输已成功");
       })
       .catch(err => {
-        console.log("传输失败：", err);
+        errorLog("传输失败：", err);
       });
   });
 
   events.on("failed", (id: string) => {
     transferFailed(id)
       .then(() => {
-        console.log("传输失败");
+        infoLog("传输已成功");
       })
       .catch(err => {
-        console.log("传输失败：", err);
+        errorLog("传输失败：", err);
       });
   });
 
@@ -159,7 +160,6 @@ export default async function bootstrap(app: App) {
   });
 
   ipcMain.on("change-download-dir", (e, { params }) => {
-    debugger;
     configStore.set("downloadDir", params);
   });
 }

@@ -1,5 +1,11 @@
 import bootstrap from "./bootstrap";
 import App from "./app";
+import { errorLog, infoLog } from "./logger";
 
-const app = new App();
-bootstrap(app).then(r => r);
+infoLog("============= 开始程序 ===========");
+bootstrap(new App())
+  .then(r => r)
+  .catch(error => {
+    errorLog(error);
+  });
+infoLog("============= 结束程序 ===========");

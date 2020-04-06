@@ -2,7 +2,6 @@ import moment from "moment";
 import mime from "mime";
 
 import { TaskType } from "../../main/types";
-import { icon } from "@fortawesome/fontawesome-svg-core";
 
 export function fileSizeFormatter(value = 0): string {
   if (!value) return "0 Bytes";
