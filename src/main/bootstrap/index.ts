@@ -26,24 +26,28 @@ export default async function bootstrap(app: App) {
   app.init();
   await initConfig();
 
-  events.on("done", (id: string) => {
-    transferDone(id)
-      .then(() => {
-        infoLog("传输已成功");
-      })
-      .catch(err => {
-        errorLog("传输失败：", err);
-      });
+  events.on("done", async (id: string) => {
+    try {
+      await transferDone(id);
+      infoLog("传输已成功");
+    } catch (e) {
+      errorLog("传输失败：", e);
+    }
   });
 
-  events.on("failed", (id: string) => {
-    transferFailed(id)
-      .then(() => {
-        infoLog("传输已成功");
-      })
-      .catch(err => {
-        errorLog("传输失败：", err);
-      });
+  events.on("failed", async (id: string) => {
+    try {
+      await transferFailed(id);
+      infoLog("传输已成功");
+    } catch (e) {
+      errorLog("传输失败：", e);
+    }
+  });
+
+  events.on("finish", () => {
+    if (app.mainWindow && configStore.get("transferDoneTip")) {
+      app.mainWindow.webContents.send("play-finish");
+    }
   });
 
   ipcMain.on("get-buckets-request", async event => {
@@ -66,7 +70,8 @@ export default async function bootstrap(app: App) {
     const { oss } = instance;
 
     const remotePath = item.webkitRelativePath;
-    const downloadPath = path.join(downloadDir, item.webkitRelativePath);
+    const customDownloadDir = configStore.get("downloadDir");
+    const downloadPath = path.join(customDownloadDir, item.webkitRelativePath);
     const callback: CallbackFunc = (id, progress) => {
       console.log(`${id} - progress ${progress}%`);
     };
@@ -102,10 +107,10 @@ export default async function bootstrap(app: App) {
     }
   );
 
-  ipcMain.on("req:file:delete", async (event, item: VFile) => {
+  ipcMain.on("delete-file", async (event, { params }: { params: VFile }) => {
     const instance = AppInstance.getInstance();
     const { oss } = instance;
-    const remotePath = item.webkitRelativePath;
+    const remotePath = params.webkitRelativePath;
     await oss.deleteFile(remotePath);
   });
 
@@ -157,6 +162,14 @@ export default async function bootstrap(app: App) {
 
   ipcMain.on("change-upload-override", (e, { params }) => {
     configStore.set("uploadOverwrite", params);
+  });
+
+  ipcMain.on("change-markdown", (e, { params }) => {
+    configStore.set("markdown", params);
+  });
+
+  ipcMain.on("change-transfer-done-tip", (e, { params }) => {
+    configStore.set("transferDoneTip", params);
   });
 
   ipcMain.on("change-download-dir", (e, { params }) => {

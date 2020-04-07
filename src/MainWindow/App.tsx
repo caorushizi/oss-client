@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { ipcRenderer } from "electron";
+import audioSrc from "./assets/tip.mp3";
 
 import "./App.scss";
 import TheSidebar from "./components/TheSidebar";
@@ -34,6 +35,7 @@ function App() {
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
+  const audio = useRef<HTMLAudioElement>(null);
   const tabChange = async (page: Page, bucket?: string) => {
     await setDirection(page < activePage ? Direction.down : Direction.up);
     await setActivePage(page);
@@ -52,8 +54,15 @@ function App() {
     setBucketList(buckets);
   };
   const toSetting = () => {
-    console.log("开始");
     setActivePage(Page.setting);
+  };
+  const playAudio = async () => {
+    console.log("开始播放：");
+    console.log(audio);
+    if (audio.current) {
+      console.log("可以播放：");
+      await audio.current.play();
+    }
   };
 
   useEffect(() => {
@@ -77,6 +86,12 @@ function App() {
     })();
 
     ipcRenderer.on("to-setting", toSetting);
+    ipcRenderer.on("play-finish", playAudio);
+
+    return () => {
+      ipcRenderer.removeListener("to-setting", toSetting);
+      ipcRenderer.removeListener("play-finish", playAudio);
+    };
   }, []);
 
   return (
@@ -86,6 +101,10 @@ function App() {
         background: themeColor.appColor
       }}
     >
+      <audio ref={audio} style={{ display: "none" }}>
+        <source src={audioSrc} />
+        <track kind="captions" />
+      </audio>
       <div className="drag-area" />
       {getPlatform() === Platform.windows && (
         <div className="app-button">

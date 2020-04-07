@@ -30,11 +30,17 @@ export class TaskRunner {
         events.emit("failed", task.id);
         throw error;
       })
-      .finally(() => {
+      .then(() => {
+        // 处理当前正在活动的任务
         const doneId = this.active.findIndex(i => i.id === task.id);
         const doneTask = this.active.splice(doneId, 1);
+        // 处理完成的任务
         this.done.push(...doneTask);
         this.runTask();
+        // 下载完成
+        if (this.queue.length === 0 && this.active.length === 0) {
+          events.emit("finish");
+        }
       });
   }
 

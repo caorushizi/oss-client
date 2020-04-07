@@ -17,7 +17,9 @@ import {
 import {
   changeDirectDelete,
   changeDownloadDir,
+  changeDownloadTip,
   changeFloatWindowShape,
+  changeMarkdown,
   changeUploadOverride,
   changeUseHttps,
   getConfig
@@ -129,6 +131,7 @@ const Setting = () => {
               className="setting-switch"
               checked={config.transferDoneTip}
               onChange={(transferDoneTip: boolean) => {
+                changeDownloadTip(transferDoneTip);
                 setConfig({ ...config, transferDoneTip });
               }}
             />
@@ -139,6 +142,7 @@ const Setting = () => {
               className="setting-switch"
               checked={config.markdown}
               onChange={(markdown: boolean) => {
+                changeMarkdown(markdown);
                 setConfig({ ...config, markdown });
               }}
             />

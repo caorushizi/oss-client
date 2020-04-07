@@ -6,6 +6,10 @@ const rules = [
     loaders: ["url-loader"]
   },
   {
+    test: /\.mp3$/,
+    loaders: ["file-loader"]
+  },
+  {
     test: /\.node$/,
     use: "node-loader"
   },

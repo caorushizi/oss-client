@@ -139,7 +139,15 @@ export default class App {
           ...recentList,
           { type: "separator" },
           { label: "清空最近记录" },
-          { label: "使用 markdown 格式", type: "checkbox", checked: true }
+          {
+            label: "使用 markdown 格式",
+            type: "checkbox",
+            checked: configStore.get("markdown"),
+            click: () => {
+              const markdown = configStore.get("markdown");
+              configStore.set("markdown", !markdown);
+            }
+          }
         ]);
       }
       menuTemplate = menuTemplate.concat([

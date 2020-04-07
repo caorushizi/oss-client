@@ -6,6 +6,7 @@ import {
   TransferStore
 } from "../../main/types";
 import { AppStore } from "../../main/store/apps";
+import VFile from "../lib/vdir/VFile";
 
 const ipc = new IpcService();
 
@@ -95,10 +96,22 @@ export function changeDownloadDir(downloadDir: string) {
   ipc.emit("change-download-dir", { params: downloadDir });
 }
 
+export function changeMarkdown(isMarkdown: boolean) {
+  ipc.emit("change-markdown", { params: isMarkdown });
+}
+
+export function changeDownloadTip(transferDoneTip: boolean) {
+  ipc.emit("change-transfer-done-tip", { params: transferDoneTip });
+}
+
 export function getRecentTransferList() {
   return ipc.send<TransferStore[]>("get-recent-transfer-list");
 }
 
 export function getConfig() {
   return ipc.send<ConfigStore>("get-config");
+}
+
+export function deleteFile(vFile: VFile) {
+  ipc.emit("delete-file", { params: vFile });
 }

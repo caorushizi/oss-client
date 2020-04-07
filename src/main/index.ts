@@ -8,4 +8,3 @@ bootstrap(new App())
   .catch(error => {
     errorLog(error);
   });
-infoLog("============= 结束程序 ===========");

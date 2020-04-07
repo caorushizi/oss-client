@@ -71,7 +71,7 @@ export function clearTransferDoneList() {
 export function getRecentUploadList(): Promise<TransferStore[]> {
   return new Promise((resolve, reject) => {
     transferStore.find(
-      { type: TaskType.upload },
+      { type: TaskType.upload, status: TransferStatus.done },
       (err, documents: TransferStore[]) => {
         if (err) reject(err);
         resolve(documents);
