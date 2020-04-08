@@ -104,22 +104,22 @@ const Setting = () => {
               value={config.downloadDir}
             />
           </div>
-          <div className="setting-item">
-            <div className="setting-item-title">主题：</div>
-            <RadioGroup
-              className="setting-radio"
-              name="Theme"
-              selectedValue={config.theme}
-              onChange={(theme: Theme) => {
-                setConfig({ ...config, theme });
-              }}
-            >
-              <Radio className="input" value={Theme.simple} />
-              <span className="inner">简洁模式</span>
-              <Radio className="input" value={Theme.colorful} />
-              <span className="inner">炫彩模式</span>
-            </RadioGroup>
-          </div>
+          {/* <div className="setting-item"> */}
+          {/*  <div className="setting-item-title">主题：</div> */}
+          {/*  <RadioGroup */}
+          {/*    className="setting-radio" */}
+          {/*    name="Theme" */}
+          {/*    selectedValue={config.theme} */}
+          {/*    onChange={(theme: Theme) => { */}
+          {/*      setConfig({ ...config, theme }); */}
+          {/*    }} */}
+          {/*  > */}
+          {/*    <Radio className="input" value={Theme.simple} /> */}
+          {/*    <span className="inner">简洁模式</span> */}
+          {/*    <Radio className="input" value={Theme.colorful} /> */}
+          {/*    <span className="inner">炫彩模式</span> */}
+          {/*  </RadioGroup> */}
+          {/* </div> */}
         </div>
       </section>
       <section className="section">
