@@ -22,13 +22,8 @@ const TransferList = () => {
   return (
     <div className="transfer-list-wrapper">
       <div className="toolbar">
-        <span className="toolbar-left">
-          {`正在下载 ${123} 项 / 总共 ${transfers.length} 项`}
-        </span>
-        <div className="toolbar-right">
-          <Button value="全部暂停" />
-          <Button value="全部取消" />
-        </div>
+        <span className="toolbar-left">{`总共 ${transfers.length} 项`}</span>
+        <div className="toolbar-right" />
       </div>
       <section className="transfer-table__wrapper">
         {transfers.length > 0 ? (
@@ -42,15 +37,6 @@ const TransferList = () => {
                       <div className="name">{item.name}</div>
                       <div className="size">{fileSizeFormatter(item.size)}</div>
                     </div>
-                  </td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon className="icon" icon="pause" />
-                  </td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon className="icon" icon="trash-alt" />
-                  </td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon className="icon" icon="folder" />
                   </td>
                 </tr>
               ))}

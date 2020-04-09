@@ -55,15 +55,6 @@ const TransferDone = () => {
                   </td>
                   <td>{taskTypeFormatter(item.type)}</td>
                   <td>{dateFormatter(item.date)}</td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon className="action-button" icon="folder" />
-                  </td>
-                  <td className="transfer-table__row_item">
-                    <FontAwesomeIcon
-                      className="action-button"
-                      icon="trash-alt"
-                    />
-                  </td>
                 </tr>
               ))}
             </tbody>
