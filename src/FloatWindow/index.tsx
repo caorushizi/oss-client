@@ -25,6 +25,15 @@ const App = () => {
       currentWindow.setContentSize(110, 50);
     }
   };
+  const onFileDrop = (files: FileList | null) => {
+    if (files) {
+      const filePaths: string[] = [];
+      for (let i = 0; i < files.length; i += 1) {
+        filePaths.push(files[i].path);
+      }
+      ipcRenderer.send("drop-files", "拖拽上传", filePaths);
+    }
+  };
 
   useEffect(() => {
     ipcRenderer.on("switch-shape", onSwitchShape);
@@ -35,7 +44,7 @@ const App = () => {
 
   return (
     <div className={classNames("wrapper", circle ? "circle" : "oval")}>
-      <FileDrop />
+      <FileDrop onDrop={onFileDrop} />
     </div>
   );
 };

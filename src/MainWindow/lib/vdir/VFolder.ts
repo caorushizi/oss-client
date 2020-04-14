@@ -54,7 +54,7 @@ export default class VFolder {
    * @param r 是否递归创建， false 直接以 vpath 为 name 创建文件
    */
   private touchFile(item: BucketItem, r = true): VFile {
-    const vpath = normalizePath(item.webkitRelativePath);
+    const vpath = item.webkitRelativePath;
     const dirPath = dirname(vpath);
 
     let cursor: VFolder;
