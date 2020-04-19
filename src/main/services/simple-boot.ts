@@ -2,23 +2,22 @@ import { inject, injectable } from "inversify";
 import { ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v4";
-import { IApp, IBootstrap, ITaskRunner } from "./interface";
-import SERVICE_IDENTIFIER from "./identifiers";
-import { initConfig } from "./bootstrap/config";
-import events from "./helper/events";
+import { IApp, IBootstrap, ITaskRunner } from "../interface";
+import SERVICE_IDENTIFIER from "../identifiers";
+import events from "../helper/events";
 import {
   insertTransfer,
   transferDone,
   transferFailed
-} from "./store/transfers";
-import { errorLog, infoLog } from "./logger";
-import { configStore } from "./store/config";
-import AppInstance from "./instance";
-import { CallbackFunc, IObjectStorageService } from "./services/types";
-import { TaskType, TransferStatus, TransferStore } from "./types";
-import VFile from "../MainWindow/lib/vdir/VFile";
-import { fattenFileList } from "./helper/utils";
-import TaskRunner from "./helper/tasks";
+} from "../store/transfers";
+import { errorLog, infoLog } from "../logger";
+import { configStore } from "../store/config";
+import AppInstance from "../instance";
+import { CallbackFunc, IObjectStorageService } from "../oss/types";
+import { TaskType, TransferStatus, TransferStore } from "../types";
+import VFile from "../../MainWindow/lib/vdir/VFile";
+import { fattenFileList } from "../helper/utils";
+import { checkDirExist, mkdir } from "../helper/fs";
 
 @injectable()
 export default class SimpleBoot implements IBootstrap {
@@ -28,9 +27,18 @@ export default class SimpleBoot implements IBootstrap {
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.ELECTRON_APP) public app: IApp;
 
+  initConfig = async (): Promise<void> => {
+    // 检查下载目录
+    const downloadIsDir = await checkDirExist(configStore.get("downloadDir"));
+    if (!downloadIsDir) await mkdir(configStore.get("downloadDir"));
+    // 检查缓存目录
+    const cacheIsDir = await checkDirExist(configStore.get("cacheDir"));
+    if (!cacheIsDir) await mkdir(configStore.get("cacheDir"));
+  };
+
   start(): void {
     this.app.init();
-    initConfig().then();
+    this.initConfig().then();
 
     events.on("done", async (id: string) => {
       try {

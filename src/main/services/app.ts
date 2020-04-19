@@ -10,24 +10,24 @@ import {
   clipboard
 } from "electron";
 import { injectable } from "inversify";
-import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
-import { Platform } from "../MainWindow/helper/enums";
-import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
-import { GetBucketsChannel } from "./IPC/GetBucketsChannel";
-import { AddAppChannel } from "./IPC/AddAppChannel";
-import { GetAppsChannel } from "./IPC/GetAppsChannel";
-import { InitAppChannel } from "./IPC/InitAppChannel";
-import { GetTransfersChannel } from "./IPC/GetTransfersChannel";
-import { UpdateAppChannel } from "./IPC/UpdateAppChannel";
-import { DeleteAppChannel } from "./IPC/DeleteAppChannel";
-import { ClearTransferDoneListChannel } from "./IPC/ClearTransferDoneListChannel";
-import { getPlatform } from "../MainWindow/helper/utils";
-import TrayIcon from "./tray-icon.png";
-import { getRecentUploadList } from "./store/transfers";
-import { configStore } from "./store/config";
-import { GetUploadTransfersChannel } from "./IPC/GetUploadTransfersChannel";
-import { GetConfigChannel } from "./IPC/GetConfigChannel";
-import { IApp } from "./interface";
+import { IpcChannelInterface } from "../IPC/IpcChannelInterface";
+import { Platform } from "../../MainWindow/helper/enums";
+import { SwitchBucketChannel } from "../IPC/SwitchBucketChannel";
+import { GetBucketsChannel } from "../IPC/GetBucketsChannel";
+import { AddAppChannel } from "../IPC/AddAppChannel";
+import { GetAppsChannel } from "../IPC/GetAppsChannel";
+import { InitAppChannel } from "../IPC/InitAppChannel";
+import { GetTransfersChannel } from "../IPC/GetTransfersChannel";
+import { UpdateAppChannel } from "../IPC/UpdateAppChannel";
+import { DeleteAppChannel } from "../IPC/DeleteAppChannel";
+import { ClearTransferDoneListChannel } from "../IPC/ClearTransferDoneListChannel";
+import { getPlatform } from "../../MainWindow/helper/utils";
+import TrayIcon from "../tray-icon.png";
+import { getRecentUploadList } from "../store/transfers";
+import { configStore } from "../store/config";
+import { GetUploadTransfersChannel } from "../IPC/GetUploadTransfersChannel";
+import { GetConfigChannel } from "../IPC/GetConfigChannel";
+import { IApp } from "../interface";
 
 /**
  * 现只考虑 windows 平台和 mac 平台

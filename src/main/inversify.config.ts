@@ -1,9 +1,7 @@
 import { Container } from "inversify";
 import SERVICE_IDENTIFIER from "./identifiers";
 import { IApp, IBootstrap, ITaskRunner } from "./interface";
-import SimpleBoot from "./simple-boot";
-import App from "./app";
-import TaskRunner from "./helper/tasks";
+import { App, SimpleBoot, TaskRunner } from "./services";
 
 const container = new Container();
 

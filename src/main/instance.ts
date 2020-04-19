@@ -1,5 +1,5 @@
-import { IObjectStorageService } from "./services/types";
-import services from "./services";
+import { IObjectStorageService } from "./oss/types";
+import services from "./oss";
 import { OssType } from "./types";
 
 export default class AppInstance {

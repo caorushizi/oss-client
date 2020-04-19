@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { errorLog, infoLog } from "./logger";
+import { infoLog } from "./logger";
 import { container } from "./inversify.config";
 import { IBootstrap } from "./interface";
 import SERVICE_IDENTIFIER from "./identifiers";

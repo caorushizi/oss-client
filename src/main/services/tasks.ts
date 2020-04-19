@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { Task } from "../types";
-import events from "./events";
+import events from "../helper/events";
 import { ITaskRunner } from "../interface";
 
 @injectable()
