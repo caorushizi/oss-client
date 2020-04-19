@@ -11,7 +11,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "typeRoots": ["node_modules/@types"],
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["reflect-metadata"]
   },
   "include": ["src"]
 }

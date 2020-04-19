@@ -1,16 +1,19 @@
+import { injectable } from "inversify";
 import { Task } from "../types";
 import events from "./events";
+import { ITaskRunner } from "../interface";
 
-export class TaskRunner {
+@injectable()
+export default class TaskRunner implements ITaskRunner {
   private queue: Task<any>[] = [];
 
   private active: Task<any>[] = [];
 
   private done: Task<any>[] = [];
 
-  constructor(private limit = 5, public debug = false) {
-    if (limit < 1) throw new Error("最少开启一个任务！");
-  }
+  private limit = 5;
+
+  private debug = false;
 
   public addTask<T>(task: Task<T>) {
     this.queue.push(task);

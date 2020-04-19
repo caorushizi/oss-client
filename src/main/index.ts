@@ -1,11 +1,10 @@
-import bootstrap from "./bootstrap";
-import App from "./app";
+import "reflect-metadata";
 import { errorLog, infoLog } from "./logger";
+import { container } from "./inversify.config";
+import { IBootstrap } from "./interface";
+import SERVICE_IDENTIFIER from "./identifiers";
 
 infoLog("============== 开始程序 ============");
 
-bootstrap(new App())
-  .then(r => r)
-  .catch(error => {
-    errorLog(error);
-  });
+const boot = container.get<IBootstrap>(SERVICE_IDENTIFIER.BOOTSTRAP);
+boot.start();

@@ -9,6 +9,7 @@ import {
   Tray,
   clipboard
 } from "electron";
+import { injectable } from "inversify";
 import { IpcChannelInterface } from "./IPC/IpcChannelInterface";
 import { Platform } from "../MainWindow/helper/enums";
 import { SwitchBucketChannel } from "./IPC/SwitchBucketChannel";
@@ -26,6 +27,7 @@ import { getRecentUploadList } from "./store/transfers";
 import { configStore } from "./store/config";
 import { GetUploadTransfersChannel } from "./IPC/GetUploadTransfersChannel";
 import { GetConfigChannel } from "./IPC/GetConfigChannel";
+import { IApp } from "./interface";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -49,7 +51,8 @@ import { GetConfigChannel } from "./IPC/GetConfigChannel";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
 
-export default class App {
+@injectable()
+export default class App implements IApp {
   mainWindow: BrowserWindow | null = null;
 
   floatWindow: BrowserWindow | null = null;

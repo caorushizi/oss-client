@@ -1,9 +1,8 @@
 import { IpcMainEvent } from "electron";
 import { IpcChannelInterface } from "./IpcChannelInterface";
 import { IpcRequest } from "./IpcRequest";
-import { getApps } from "../store/apps";
+import { getAppById, getApps } from "../store/apps";
 import AppInstance from "../instance";
-import { initApp } from "../bootstrap/apps";
 
 export class InitAppChannel implements IpcChannelInterface {
   getName = (): string => "init-app";
@@ -16,7 +15,7 @@ export class InitAppChannel implements IpcChannelInterface {
     try {
       const { id } = request.params;
       if (id) {
-        const currentApp = await initApp(id);
+        const currentApp = await getAppById(id);
         AppInstance.changeApp(currentApp.type, currentApp.ak, currentApp.sk);
       } else {
         // 开始查询所有的apps
