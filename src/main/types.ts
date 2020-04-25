@@ -27,6 +27,18 @@ export type TransferStore = {
   status: TransferStatus;
 };
 
+export type AppStore = {
+  type: OssType;
+  ak: string;
+  sk: string;
+  name: string;
+  _id?: string;
+  bucket: string;
+  uploadBucket: string;
+  uploadPrefix: string;
+  defaultDomain: string;
+};
+
 export enum TransferStatus {
   default,
   done,

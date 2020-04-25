@@ -1,5 +1,17 @@
-import App from "./app";
-import SimpleBoot from "./simple-boot";
-import TaskRunner from "./tasks";
+import ElectronAppService from "./ElectronAppService";
+import SimpleBootService from "./SimpleBootService";
+import TaskRunnerService from "./TaskRunnerService";
+import IpcChannelsService from "./IpcChannelsService";
+import AppStoreService from "./AppStoreService";
+import LoggerService from "./LoggerService";
+import TransferStoreService from "./TransferStoreService";
 
-export { App, SimpleBoot, TaskRunner };
+export {
+  ElectronAppService,
+  SimpleBootService,
+  TaskRunnerService,
+  IpcChannelsService,
+  AppStoreService,
+  LoggerService,
+  TransferStoreService
+};

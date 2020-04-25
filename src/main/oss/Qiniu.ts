@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import * as fs from "fs";
 import qiniu from "qiniu";
-import http from "../../helper/http";
-import { CallbackFunc, IObjectStorageService } from "../types";
 import { ReadStream } from "fs";
+import http from "../helper/http";
+import { IOSS } from "../interface";
 
-export default class Qiniu implements IObjectStorageService {
+export default class Qiniu implements IOSS {
   private bucket = "";
 
   private readonly mac: qiniu.auth.digest.Mac;
@@ -26,7 +26,7 @@ export default class Qiniu implements IObjectStorageService {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: CallbackFunc
+    cb: (id: string, progress: string) => void
   ): Promise<any> {
     // 获取 domains
     const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
@@ -65,7 +65,7 @@ export default class Qiniu implements IObjectStorageService {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: CallbackFunc
+    cb: (id: string, progress: string) => void
   ): Promise<any> {
     // generate uploadToken
     const putPolicy = new qiniu.rs.PutPolicy({

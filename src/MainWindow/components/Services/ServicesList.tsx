@@ -3,8 +3,7 @@ import classNames from "classnames";
 
 import "./index.scss";
 import Button from "../BaseButton";
-import { AppStore } from "../../../main/store/apps";
-import { OssType } from "../../../main/types";
+import { AppStore, OssType } from "../../../main/types";
 
 type PropTypes = {
   activeOss?: string;

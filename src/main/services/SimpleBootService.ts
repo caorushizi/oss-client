@@ -1,31 +1,43 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable, named } from "inversify";
 import { ipcMain } from "electron";
 import path from "path";
 import uuid from "uuid/v4";
-import { IApp, IBootstrap, ITaskRunner } from "../interface";
-import SERVICE_IDENTIFIER from "../identifiers";
-import events from "../helper/events";
 import {
-  insertTransfer,
-  transferDone,
-  transferFailed
-} from "../store/transfers";
-import { errorLog, infoLog } from "../logger";
-import { configStore } from "../store/config";
-import AppInstance from "../instance";
-import { CallbackFunc, IObjectStorageService } from "../oss/types";
+  IApp,
+  IBootstrap,
+  ILogger,
+  IStore,
+  ITaskRunner,
+  IOSS,
+  IOssService
+} from "../interface";
+import SERVICE_IDENTIFIER from "../constants/identifiers";
+import events from "../helper/events";
+import { configStore } from "../helper/config";
 import { TaskType, TransferStatus, TransferStore } from "../types";
 import VFile from "../../MainWindow/lib/vdir/VFile";
 import { fattenFileList } from "../helper/utils";
 import { checkDirExist, mkdir } from "../helper/fs";
+import TAG from "../constants/tags";
 
 @injectable()
-export default class SimpleBoot implements IBootstrap {
+export default class SimpleBootService implements IBootstrap {
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.TASK_RUNNER) public taskRunner: ITaskRunner;
 
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.ELECTRON_APP) public app: IApp;
+
+  @inject(SERVICE_IDENTIFIER.STORE)
+  @named(TAG.TRANSFER_STORE)
+  // @ts-ignore
+  private transfers: IStore<TransferStore>;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.LOGGER) private logger: ILogger;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.OSS) private oss: IOssService;
 
   initConfig = async (): Promise<void> => {
     // 检查下载目录
@@ -42,19 +54,27 @@ export default class SimpleBoot implements IBootstrap {
 
     events.on("done", async (id: string) => {
       try {
-        await transferDone(id);
-        infoLog("传输已成功");
+        // 传输成功
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.done } },
+          {}
+        );
       } catch (e) {
-        errorLog("传输失败：", e);
+        this.logger.error(e);
       }
     });
 
     events.on("failed", async (id: string) => {
       try {
-        await transferFailed(id);
-        infoLog("传输已成功");
+        // 传输失败
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.failed } },
+          {}
+        );
       } catch (e) {
-        errorLog("传输失败：", e);
+        this.logger.error("传输失败：", e);
       }
     });
 
@@ -65,31 +85,27 @@ export default class SimpleBoot implements IBootstrap {
     });
 
     ipcMain.on("get-buckets-request", async event => {
-      const instance = AppInstance.getInstance();
-      const { oss } = instance;
-      const buckets = await oss.getBucketList();
+      const instance = this.oss.getService();
+      const buckets = await instance.getBucketList();
       event.reply("get-buckets-response", buckets);
     });
 
     ipcMain.on("get-files-request", async (event, bucketName: string) => {
-      const instance = AppInstance.getInstance();
-      const { oss } = instance;
-      oss.setBucket(bucketName);
-      const files = await oss.getBucketFiles();
+      const instance = this.oss.getService();
+      instance.setBucket(bucketName);
+      const files = await instance.getBucketFiles();
       event.reply("get-files-response", files);
     });
 
     ipcMain.on("req:file:download", async (event, item: BucketItem) => {
-      const instance = AppInstance.getInstance();
-      const { oss } = instance;
-
+      const instance = this.oss.getService();
       const remotePath = item.webkitRelativePath;
       const customDownloadDir = configStore.get("downloadDir");
       const downloadPath = path.join(
         customDownloadDir,
         item.webkitRelativePath
       );
-      const callback: CallbackFunc = (id, progress) => {
+      const callback = (id: string, progress: string) => {
         console.log(`${id} - progress ${progress}%`);
       };
       const id = uuid();
@@ -102,48 +118,44 @@ export default class SimpleBoot implements IBootstrap {
         status: TransferStatus.default
       };
       // 存储下载信息
-      const document = await insertTransfer(newDoc);
+      const document = await this.transfers.insert(newDoc);
       // 添加任务，自动执行
       this.taskRunner.addTask<TransferStore>({
         ...document,
-        result: oss.downloadFile(id, remotePath, downloadPath, callback)
+        result: instance.downloadFile(id, remotePath, downloadPath, callback)
       });
     });
 
     ipcMain.on(
       "req:file:upload",
       (event, remoteDir: string, filepath: string) => {
-        const instance = AppInstance.getInstance();
-        const { oss } = instance;
-
+        const instance = this.oss.getService();
         const baseDir = path.dirname(filepath);
-        const callback: CallbackFunc = (id, progress) => {
+        const callback = (id: string, progress: string) => {
           console.log(`${id} - progress ${progress}%`);
         };
-        this.uploadFile(oss, remoteDir, baseDir, filepath, callback);
+        this.uploadFile(instance, remoteDir, baseDir, filepath, callback);
       }
     );
 
     ipcMain.on("delete-file", async (event, { params }: { params: VFile }) => {
-      const instance = AppInstance.getInstance();
-      const { oss } = instance;
+      const instance = this.oss.getService();
       const remotePath = params.webkitRelativePath;
-      await oss.deleteFile(remotePath);
+      await instance.deleteFile(remotePath);
     });
 
     ipcMain.on(
       "drop-files",
       async (event, remoteDir: string, fileList: string[]) => {
         if (Array.isArray(fileList) && fileList.length === 0) return;
-        const instance = AppInstance.getInstance();
-        const { oss } = instance;
+        const instance = this.oss.getService();
         const baseDir = path.dirname(fileList[0]);
         const filepathList = fattenFileList(fileList);
         filepathList.forEach(filepath => {
-          const callback: CallbackFunc = (id, progress) => {
+          const callback = (id: string, progress: string) => {
             console.log(`${id} - progress ${progress}%`);
           };
-          this.uploadFile(oss, remoteDir, baseDir, filepath, callback);
+          this.uploadFile(instance, remoteDir, baseDir, filepath, callback);
         });
       }
     );
@@ -199,11 +211,11 @@ export default class SimpleBoot implements IBootstrap {
   }
 
   uploadFile(
-    adapter: IObjectStorageService,
+    adapter: IOSS,
     remoteDir: string,
     baseDir: string,
     filepath: string,
-    callback: CallbackFunc
+    callback: (id: string, process: string) => void
   ) {
     const relativePath = path.relative(baseDir, filepath);
     let remotePath = path.join(remoteDir, relativePath);
@@ -219,12 +231,14 @@ export default class SimpleBoot implements IBootstrap {
       status: TransferStatus.default
     };
     // 存储下载信息
-    const document = insertTransfer(newDoc).then((transfers: TransferStore) => {
-      // 添加任务，自动执行
-      this.taskRunner.addTask<any>({
-        ...transfers,
-        result: adapter.uploadFile(id, remotePath, filepath, callback)
+    const document = this.transfers
+      .insert(newDoc)
+      .then((transfers: TransferStore) => {
+        // 添加任务，自动执行
+        this.taskRunner.addTask<any>({
+          ...transfers,
+          result: adapter.uploadFile(id, remotePath, filepath, callback)
+        });
       });
-    });
   }
 }

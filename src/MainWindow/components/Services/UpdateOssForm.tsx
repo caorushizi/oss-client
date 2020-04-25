@@ -4,8 +4,7 @@ import * as Yup from "yup";
 
 import { Formik } from "formik";
 import Input from "../BaseInput";
-import { OssType } from "../../../main/types";
-import { AppStore } from "../../../main/store/apps";
+import { OssType, AppStore } from "../../../main/types";
 import Button from "../BaseButton";
 import { getBuckets, switchBucket } from "../../helper/ipc";
 

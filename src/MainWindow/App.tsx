@@ -25,7 +25,7 @@ import {
   maximizeMainWindow,
   minimizeMainWindow
 } from "./helper/ipc";
-import { AppStore } from "../main/store/apps";
+import { AppStore } from "../main/types";
 
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());

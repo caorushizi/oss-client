@@ -9,25 +9,16 @@ import {
   Tray,
   clipboard
 } from "electron";
-import { injectable } from "inversify";
-import { IpcChannelInterface } from "../IPC/IpcChannelInterface";
+import { inject, injectable, named } from "inversify";
 import { Platform } from "../../MainWindow/helper/enums";
-import { SwitchBucketChannel } from "../IPC/SwitchBucketChannel";
-import { GetBucketsChannel } from "../IPC/GetBucketsChannel";
-import { AddAppChannel } from "../IPC/AddAppChannel";
-import { GetAppsChannel } from "../IPC/GetAppsChannel";
-import { InitAppChannel } from "../IPC/InitAppChannel";
-import { GetTransfersChannel } from "../IPC/GetTransfersChannel";
-import { UpdateAppChannel } from "../IPC/UpdateAppChannel";
-import { DeleteAppChannel } from "../IPC/DeleteAppChannel";
-import { ClearTransferDoneListChannel } from "../IPC/ClearTransferDoneListChannel";
 import { getPlatform } from "../../MainWindow/helper/utils";
 import TrayIcon from "../tray-icon.png";
-import { getRecentUploadList } from "../store/transfers";
-import { configStore } from "../store/config";
-import { GetUploadTransfersChannel } from "../IPC/GetUploadTransfersChannel";
-import { GetConfigChannel } from "../IPC/GetConfigChannel";
-import { IApp } from "../interface";
+import { configStore } from "../helper/config";
+import { IApp, IStore } from "../interface";
+import SERVICE_IDENTIFIER from "../constants/identifiers";
+import TAG from "../constants/tags";
+import { TransferStore } from "../types";
+import IpcChannelsService from "./IpcChannelsService";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -52,12 +43,20 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
 
 @injectable()
-export default class App implements IApp {
+export default class ElectronAppService implements IApp {
   mainWindow: BrowserWindow | null = null;
 
   floatWindow: BrowserWindow | null = null;
 
   appTray: Tray | null = null;
+
+  @inject(SERVICE_IDENTIFIER.STORE)
+  @named(TAG.TRANSFER_STORE)
+  // @ts-ignore
+  private transfers: IStore<TransferStore>;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IpcChannelsService;
 
   constructor() {
     // eslint-disable-next-line global-require
@@ -66,21 +65,22 @@ export default class App implements IApp {
     }
   }
 
+  private registerIpc = (eventName: string, handler: (data: any) => any) => {
+    ipcMain.on(eventName, async (event, request: { id: string; data: any }) => {
+      const { id, data } = request;
+      const response = { code: 200, data: {} };
+      try {
+        response.data = await handler(data);
+      } catch (err) {
+        response.code = err.code || 500;
+        response.data = err.message || "Main process error.";
+      }
+      event.sender.send(`${eventName}_res_${id}`, response);
+    });
+  };
+
   init() {
-    // 初始化 ipc 通道
-    this.registerIpcChannels([
-      new SwitchBucketChannel(),
-      new GetBucketsChannel(),
-      new AddAppChannel(),
-      new GetAppsChannel(),
-      new InitAppChannel(),
-      new GetTransfersChannel(),
-      new UpdateAppChannel(),
-      new DeleteAppChannel(),
-      new GetUploadTransfersChannel(),
-      new ClearTransferDoneListChannel(),
-      new GetConfigChannel()
-    ]);
+    this.registerIpc("update-app", this.appChannels.updateApp);
 
     // 初始化 app
     app.on("ready", async () => {
@@ -115,7 +115,7 @@ export default class App implements IApp {
         }
       ];
       if (getPlatform() === Platform.macos) {
-        const recentListStore = await getRecentUploadList();
+        const recentListStore = await this.transfers.find({});
         const recentList: MenuItemConstructorOptions[] =
           recentListStore.length > 0
             ? recentListStore.splice(0, 5).map(i => ({
@@ -230,12 +230,4 @@ export default class App implements IApp {
       }
     });
   }
-
-  private registerIpcChannels = (ipcChannels: IpcChannelInterface[]) => {
-    ipcChannels.forEach(channel =>
-      ipcMain.on(channel.getName(), (event, request) =>
-        channel.handle(event, request)
-      )
-    );
-  };
 }

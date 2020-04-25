@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
-import { AppStore } from "../../../main/store/apps";
 import { addApp, getAppsChannel, updateApp, deleteApp } from "../../helper/ipc";
 import ServicesList from "./ServicesList";
 import AddOssForm from "./AddOssForm";
 import UpdateOssForm from "./UpdateOssForm";
-import { OssType } from "../../../main/types";
+import { AppStore, OssType } from "../../../main/types";
 import useKeyPress from "../../hooks/useKeyPress";
 import { KeyCode } from "../../helper/enums";
 

@@ -4,7 +4,7 @@ import events from "../helper/events";
 import { ITaskRunner } from "../interface";
 
 @injectable()
-export default class TaskRunner implements ITaskRunner {
+export default class TaskRunnerService implements ITaskRunner {
   private queue: Task<any>[] = [];
 
   private active: Task<any>[] = [];

@@ -1,6 +1,6 @@
 const TAG = {
-  CHINESE: "CHINESE",
-  JAPANESE: "JAPANESE"
+  TRANSFER_STORE: "TRANSFER_STORE",
+  APP_STORE: "APP_STORE"
 };
 
 export default TAG;

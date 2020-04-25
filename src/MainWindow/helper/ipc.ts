@@ -1,14 +1,35 @@
-import IpcService from "../lib/service/IpcService";
+import uuidV1 from "uuid/v1";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
   ConfigStore,
   FlowWindowStyle,
   OssType,
-  TransferStore
+  TransferStore,
+  AppStore
 } from "../../main/types";
-import { AppStore } from "../../main/store/apps";
 import VFile from "../lib/vdir/VFile";
 
-const ipc = new IpcService();
+function send<T>(eventName: string, options = {}) {
+  const data = options;
+  const id = uuidV1();
+  const responseEvent = `${eventName}_res_${id}`;
+
+  return new Promise<T>((resolve, reject) => {
+    // 这里使用 once 监听，响应到达后就销毁
+    ipcRenderer.once(
+      responseEvent,
+      (event: IpcRendererEvent, response: { code: number; data: any }) => {
+        if (response.code === 200) {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      }
+    );
+    // 监听建立之后再发送事件，稳一点
+    ipcRenderer.send(eventName, { id, data });
+  });
+}
 
 export type BucketObj = {
   domains: [];
@@ -16,25 +37,25 @@ export type BucketObj = {
 };
 
 export function switchBucket(bucketName: string): Promise<BucketObj> {
-  return ipc.send<BucketObj>("switch-bucket", {
+  return send<BucketObj>("switch-bucket", {
     params: bucketName
   });
 }
 
 export function getBuckets(): Promise<string[]> {
-  return ipc.send<string[]>("get-buckets");
+  return send<string[]>("get-buckets");
 }
 
 export function getAppsChannel(): Promise<AppStore[]> {
-  return ipc.send<AppStore[]>("get-apps");
+  return send<AppStore[]>("get-apps");
 }
 
 export function initOss(id?: string): Promise<void> {
-  return ipc.send("init-app", { params: { id } });
+  return send("init-app", { params: { id } });
 }
 
 export function getTransfers(): Promise<TransferStore[]> {
-  return ipc.send("get-transfer");
+  return send("get-transfer");
 }
 
 export function addApp(
@@ -43,75 +64,75 @@ export function addApp(
   ak: string,
   sk: string
 ): Promise<AppStore> {
-  return ipc.send<AppStore>("add-app", {
+  return send<AppStore>("add-app", {
     params: { name, type, ak, sk }
   });
 }
 
 export function updateApp(app: AppStore) {
-  return ipc.send<void>("update-app", {
+  return send<void>("update-app", {
     params: app
   });
 }
 
 export function deleteApp(app: AppStore) {
-  return ipc.send<void>("delete-app", {
+  return send<void>("delete-app", {
     params: app
   });
 }
 
 export function clearTransferDoneList() {
-  return ipc.send<void>("clear-transfer-done-list");
+  return send<void>("clear-transfer-done-list");
 }
 
 export function closeMainApp() {
-  ipc.emit("close-main-window");
+  ipcRenderer.send("close-main-window");
 }
 
 export function minimizeMainWindow() {
-  ipc.emit("minimize-main-window");
+  ipcRenderer.send("minimize-main-window");
 }
 
 export function maximizeMainWindow() {
-  ipc.emit("maximize-main-window");
+  ipcRenderer.send("maximize-main-window");
 }
 
 export function changeFloatWindowShape(shape: FlowWindowStyle) {
-  ipc.emit("change-theme", { params: shape });
+  ipcRenderer.send("change-theme", { params: shape });
 }
 
 export function changeUseHttps(useHttps: boolean) {
-  ipc.emit("change-use-https", { params: useHttps });
+  ipcRenderer.send("change-use-https", { params: useHttps });
 }
 
 export function changeDirectDelete(directDelete: boolean) {
-  ipc.emit("change-direct-delete", { params: directDelete });
+  ipcRenderer.send("change-direct-delete", { params: directDelete });
 }
 
 export function changeUploadOverride(uploadOverride: boolean) {
-  ipc.emit("change-upload-override", { params: uploadOverride });
+  ipcRenderer.send("change-upload-override", { params: uploadOverride });
 }
 
 export function changeDownloadDir(downloadDir: string) {
-  ipc.emit("change-download-dir", { params: downloadDir });
+  ipcRenderer.send("change-download-dir", { params: downloadDir });
 }
 
 export function changeMarkdown(isMarkdown: boolean) {
-  ipc.emit("change-markdown", { params: isMarkdown });
+  ipcRenderer.send("change-markdown", { params: isMarkdown });
 }
 
 export function changeDownloadTip(transferDoneTip: boolean) {
-  ipc.emit("change-transfer-done-tip", { params: transferDoneTip });
+  ipcRenderer.send("change-transfer-done-tip", { params: transferDoneTip });
 }
 
 export function getRecentTransferList() {
-  return ipc.send<TransferStore[]>("get-recent-transfer-list");
-}
-
-export function getConfig() {
-  return ipc.send<ConfigStore>("get-config");
+  return send<TransferStore[]>("get-recent-transfer-list");
 }
 
 export function deleteFile(vFile: VFile) {
-  ipc.emit("delete-file", { params: vFile });
+  ipcRenderer.send("delete-file", { params: vFile });
+}
+
+export function getConfig() {
+  return send<ConfigStore>("get-config");
 }
