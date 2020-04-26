@@ -14,7 +14,7 @@ import { Platform } from "../../MainWindow/helper/enums";
 import { getPlatform } from "../../MainWindow/helper/utils";
 import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
-import { IApp, IStore } from "../interface";
+import { IApp, IIpcService, ILogger, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
 import { TransferStore } from "../types";
@@ -56,7 +56,10 @@ export default class ElectronAppService implements IApp {
   private transfers: IStore<TransferStore>;
 
   // @ts-ignore
-  @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IpcChannelsService;
+  @inject(SERVICE_IDENTIFIER.LOGGER) private logger: ILogger;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IIpcService;
 
   constructor() {
     // eslint-disable-next-line global-require
@@ -83,20 +86,28 @@ export default class ElectronAppService implements IApp {
   };
 
   init() {
+    this.logger.info("初始化全部 ipc 通道~");
     // 注册全部 ipc 通道
-    this.registerIpc("update-app", this.appChannels.updateApp);
-    this.registerIpc("delete-app", this.appChannels.deleteApp);
-    this.registerIpc("get-apps", this.appChannels.getApps);
-    this.registerIpc("init-app", this.appChannels.initApp);
-    this.registerIpc("add-app", this.appChannels.addApp);
-    this.registerIpc(
-      "clear-transfer-done-list",
-      this.appChannels.removeTransfers
+    this.registerIpc("update-app", params =>
+      this.appChannels.updateApp(params)
     );
-    this.registerIpc("get-transfer", this.appChannels.getTransfers);
-    this.registerIpc("get-buckets", this.appChannels.getBuckets);
-    this.registerIpc("get-config", this.appChannels.getConfig);
-    this.registerIpc("switch-bucket", this.appChannels.switchBucket);
+    this.registerIpc("delete-app", params =>
+      this.appChannels.deleteApp(params)
+    );
+    this.registerIpc("get-apps", () => this.appChannels.getApps());
+    this.registerIpc("init-app", params => this.appChannels.initApp(params));
+    this.registerIpc("add-app", params => this.appChannels.addApp(params));
+    this.registerIpc("clear-transfer-done-list", params =>
+      this.appChannels.removeTransfers(params)
+    );
+    this.registerIpc("get-transfer", params =>
+      this.appChannels.getTransfers(params)
+    );
+    this.registerIpc("get-buckets", params => this.appChannels.getBuckets());
+    this.registerIpc("get-config", params => this.appChannels.getConfig());
+    this.registerIpc("switch-bucket", params =>
+      this.appChannels.switchBucket(params)
+    );
 
     // 初始化 app
     app.on("ready", async () => {

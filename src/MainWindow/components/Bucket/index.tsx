@@ -44,6 +44,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
 
   useEffect(() => {
     if (!bucketName) return;
+    console.log("3123123123", bucketName);
     switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   }, [bucketName]);
 

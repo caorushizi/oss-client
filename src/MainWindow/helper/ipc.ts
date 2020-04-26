@@ -38,9 +38,7 @@ export type BucketObj = {
 };
 
 export function switchBucket(bucketName: string): Promise<BucketObj> {
-  return send<BucketObj>("switch-bucket", {
-    params: bucketName
-  });
+  return send<BucketObj>("switch-bucket", { bucketName });
 }
 
 export function getBuckets(): Promise<string[]> {

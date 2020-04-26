@@ -1,5 +1,5 @@
 import { BrowserWindow, Tray } from "electron";
-import { OssType, Task } from "./types";
+import { AppStore, OssType, Task, TransferStatus } from "./types";
 
 export interface IBootstrap {
   start(): void;
@@ -53,4 +53,17 @@ export interface IOSS {
 export interface IOssService {
   getService(): IOSS;
   switchApp(type: OssType, ak: string, sk: string): void;
+}
+
+export interface IIpcService {
+  updateApp(app: AppStore): Promise<void>;
+  deleteApp(app: AppStore): Promise<any>;
+  getApps(): Promise<any>;
+  initApp(id: string): Promise<any>;
+  addApp(params: any): Promise<any>;
+  removeTransfers(status: TransferStatus): Promise<any>;
+  getTransfers(status: TransferStatus): Promise<any>;
+  getBuckets(): Promise<any>;
+  getConfig(): Promise<any>;
+  switchBucket(bucketName: string): Promise<any>;
 }
