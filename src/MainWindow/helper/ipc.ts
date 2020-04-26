@@ -5,7 +5,8 @@ import {
   FlowWindowStyle,
   OssType,
   TransferStore,
-  AppStore
+  AppStore,
+  TransferStatus
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
@@ -51,7 +52,7 @@ export function getAppsChannel(): Promise<AppStore[]> {
 }
 
 export function initOss(id?: string): Promise<void> {
-  return send("init-app", { params: { id } });
+  return send("init-app", id);
 }
 
 export function getTransfers(): Promise<TransferStore[]> {
@@ -64,25 +65,19 @@ export function addApp(
   ak: string,
   sk: string
 ): Promise<AppStore> {
-  return send<AppStore>("add-app", {
-    params: { name, type, ak, sk }
-  });
+  return send<AppStore>("add-app", { name, type, ak, sk });
 }
 
 export function updateApp(app: AppStore) {
-  return send<void>("update-app", {
-    params: app
-  });
+  return send<void>("update-app", app);
 }
 
 export function deleteApp(app: AppStore) {
-  return send<void>("delete-app", {
-    params: app
-  });
+  return send<void>("delete-app", app);
 }
 
 export function clearTransferDoneList() {
-  return send<void>("clear-transfer-done-list");
+  return send<void>("clear-transfer-done-list", TransferStatus.done);
 }
 
 export function closeMainApp() {

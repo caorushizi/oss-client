@@ -65,7 +65,10 @@ export default class ElectronAppService implements IApp {
     }
   }
 
-  private registerIpc = (eventName: string, handler: (data: any) => any) => {
+  private registerIpc = (
+    eventName: string,
+    handler: (data: any) => Promise<any>
+  ) => {
     ipcMain.on(eventName, async (event, request: { id: string; data: any }) => {
       const { id, data } = request;
       const response = { code: 200, data: {} };
@@ -80,7 +83,20 @@ export default class ElectronAppService implements IApp {
   };
 
   init() {
+    // 注册全部 ipc 通道
     this.registerIpc("update-app", this.appChannels.updateApp);
+    this.registerIpc("delete-app", this.appChannels.deleteApp);
+    this.registerIpc("get-apps", this.appChannels.getApps);
+    this.registerIpc("init-app", this.appChannels.initApp);
+    this.registerIpc("add-app", this.appChannels.addApp);
+    this.registerIpc(
+      "clear-transfer-done-list",
+      this.appChannels.removeTransfers
+    );
+    this.registerIpc("get-transfer", this.appChannels.getTransfers);
+    this.registerIpc("get-buckets", this.appChannels.getBuckets);
+    this.registerIpc("get-config", this.appChannels.getConfig);
+    this.registerIpc("switch-bucket", this.appChannels.switchBucket);
 
     // 初始化 app
     app.on("ready", async () => {

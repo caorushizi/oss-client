@@ -1,9 +1,9 @@
-import { IpcMainEvent } from "electron";
 import { inject, injectable, named } from "inversify";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { IOssService, IStore } from "../interface";
-import { AppStore, TransferStore } from "../types";
+import { AppStore, TransferStatus, TransferStore } from "../types";
 import TAG from "../constants/tags";
+import { configStore } from "../helper/config";
 
 @injectable()
 export default class IpcChannelsService {
@@ -20,21 +20,20 @@ export default class IpcChannelsService {
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.OSS) oss: IOssService;
 
-  async updateApp(event: IpcMainEvent, ...args: any[]) {
-    const [app] = args;
-    return this.appStore.update({}, {}, {});
+  async updateApp(app: AppStore): Promise<void> {
+    return this.appStore.update({ _id: app._id }, app, {});
   }
 
-  async deleteApp(event: IpcMainEvent, ...args: any[]) {
-    const [app] = args;
-    return this.appStore.remove({}, {});
+  async deleteApp(app: AppStore) {
+    return this.appStore.remove({ _id: app._id }, {});
   }
 
-  async getApps(event: IpcMainEvent, ...args: any[]) {
+  async getApps() {
+    console.log("获取所有 Apps");
     return this.appStore.find({});
   }
 
-  async initApp(event: IpcMainEvent, id: string) {
+  async initApp(id: string) {
     const query: any = {};
     if (id) query.id = id;
     const findApps = await this.appStore.find(query);
@@ -44,38 +43,30 @@ export default class IpcChannelsService {
     }
   }
 
-  // async addApp() {
-  //   const { name, ak, sk, type } = request.params;
-  //   const app = await this.appStore.insert({});
-  // }
+  async addApp(params: any) {
+    return this.appStore.insert({ ...params });
+  }
 
-  // async removeTransfers() {
-  //   await this.transferStore.remove({}, {});
-  // }
+  async removeTransfers(status: TransferStatus) {
+    return this.transferStore.remove({ status }, { multi: true });
+  }
 
-  // async getBuckets() {
-  //   const instance = AppInstance.getInstance();
-  //   const { oss } = instance;
-  //   const buckets = await oss.getBucketList();
-  // }
+  async getBuckets() {
+    const instance = this.oss.getService();
+    return instance.getBucketList();
+  }
 
-  // async getConfig() {
-  //   const config = configStore.store;
-  // }
+  getConfig = async () => configStore.store;
 
-  // async getTransfers() {
-  //   const transfers = await this.transferStore.find({});
-  // }
+  async getTransfers(status: TransferStatus) {
+    return this.transferStore.find({ status });
+  }
 
-  // async getUpdateFiles() {
-  //   const recentStoreList = await this.transferStore.find({});
-  // }
-
-  // async switchBucket() {
-  //   const instance = AppInstance.getInstance();
-  //   const { oss } = instance;
-  //   oss.setBucket(request.params);
-  //   const files = await oss.getBucketFiles();
-  //   const domains = await oss.getBucketDomainList();
-  // }
+  async switchBucket(bucketName: string) {
+    const instance = this.oss.getService();
+    instance.setBucket(bucketName);
+    const files = await instance.getBucketFiles();
+    const domains = await instance.getBucketDomainList();
+    return { files, domains };
+  }
 }

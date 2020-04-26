@@ -1,9 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import Icon from "../FileIcon";
-import Button from "../BaseButton";
 import { TransferStatus, TransferStore } from "../../../main/types";
 import { fileSizeFormatter } from "../../helper/utils";
 import { getTransfers } from "../../helper/ipc";

@@ -57,10 +57,7 @@ function App() {
     setActivePage(Page.setting);
   };
   const playAudio = async () => {
-    console.log("开始播放：");
-    console.log(audio);
     if (audio.current) {
-      console.log("可以播放：");
       await audio.current.play();
     }
   };
