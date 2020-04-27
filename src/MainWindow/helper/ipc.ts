@@ -50,7 +50,7 @@ export function getAppsChannel(): Promise<AppStore[]> {
 }
 
 export function initOss(id?: string): Promise<void> {
-  return send("init-app", id);
+  return send("init-app", { id });
 }
 
 export function getTransfers(): Promise<TransferStore[]> {

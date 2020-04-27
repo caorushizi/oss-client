@@ -49,8 +49,11 @@ function App() {
     setBucketLoading(false);
   };
   const onOssActive = async (store: AppStore) => {
-    await initOss(store?._id);
+    console.log("store: ", store._id);
+    const test = await initOss(store?._id);
+    console.log("初始化 App", test);
     const buckets = await getBuckets();
+    console.log(123123123123, buckets);
     setBucketList(buckets);
   };
   const toSetting = () => {

@@ -38,13 +38,12 @@ export default class IpcChannelsService implements IIpcService {
   async initApp(params: any) {
     const query: any = {};
     if (params.id) query._id = params.id;
-    this.logger.info(query);
     const findApps = await this.appStore.find(query);
-    this.logger.info(findApps);
     if (findApps.length > 0) {
       const app = findApps[0];
       this.oss.switchApp(app.type, app.ak, app.sk);
     }
+    return true;
   }
 
   async addApp(params: any) {
