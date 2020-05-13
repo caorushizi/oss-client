@@ -14,7 +14,7 @@ import { Platform } from "../../MainWindow/helper/enums";
 import { getPlatform } from "../../MainWindow/helper/utils";
 import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
-import { IApp, IIpcService, ILogger, IStore } from "../interface";
+import { IApp, ILogger, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
 import { TransferStore } from "../types";
@@ -59,7 +59,7 @@ export default class ElectronAppService implements IApp {
   @inject(SERVICE_IDENTIFIER.LOGGER) private logger: ILogger;
 
   // @ts-ignore
-  @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IIpcService;
+  @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IpcChannelsService;
 
   constructor() {
     // eslint-disable-next-line global-require

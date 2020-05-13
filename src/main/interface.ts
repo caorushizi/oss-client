@@ -54,16 +54,3 @@ export interface IOssService {
   getService(): IOSS;
   switchApp(type: OssType, ak: string, sk: string): void;
 }
-
-export interface IIpcService {
-  updateApp(app: AppStore): Promise<void>;
-  deleteApp(app: AppStore): Promise<any>;
-  getApps(): Promise<any>;
-  initApp(id: string): Promise<any>;
-  addApp(params: any): Promise<any>;
-  removeTransfers(status: TransferStatus): Promise<any>;
-  getTransfers(status: TransferStatus): Promise<any>;
-  getBuckets(): Promise<any>;
-  getConfig(): Promise<any>;
-  switchBucket(bucketName: string): Promise<any>;
-}

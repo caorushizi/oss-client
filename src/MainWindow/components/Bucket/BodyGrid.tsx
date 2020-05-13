@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
 import Selection from "@simonwep/selection-js";
 
@@ -21,32 +21,6 @@ type PropTypes = {
   onFileContextMenu: (item: VFile) => void;
 };
 
-const selection = Selection.create({
-  class: "selection",
-  selectables: [".main-grid > .main-grid__cell"],
-  boundaries: [".main-grid"]
-});
-selection.on("start", ({ inst, selected, oe }) => {
-  if (!oe.ctrlKey && !oe.metaKey) {
-    selected.forEach(el => {
-      el.classList.remove("selected");
-      inst.removeFromSelection(el);
-    });
-    inst.clearSelection();
-  }
-});
-selection.on("move", ({ changed: { removed, added } }) => {
-  added.forEach(el => {
-    el.classList.add("selected");
-  });
-  removed.forEach(el => {
-    el.classList.remove("selected");
-  });
-});
-selection.on("stop", ({ inst }) => {
-  inst.keepSelection();
-});
-
 const BodyGrid = ({
   items,
   domains,
@@ -57,12 +31,43 @@ const BodyGrid = ({
   onFileSelect,
   onFileContextMenu
 }: PropTypes) => {
+  const selection = Selection.create({
+    class: "selection",
+    selectables: [".main-grid > .main-grid__cell"],
+    boundaries: [".main-grid"]
+  });
   const keypress = useKeyPress(KeyCode.Escape);
+  const [selectedFile, setSelectedFile] = useState<string[]>([]);
   useEffect(() => {
     if (keypress) {
       selection.clearSelection();
     }
   }, [keypress]);
+
+  selection.on("start", ({ inst, selected, oe }) => {
+    if (!oe.ctrlKey && !oe.metaKey) {
+      selected.forEach(el => {
+        el.classList.remove("selected");
+        inst.removeFromSelection(el);
+      });
+      inst.clearSelection();
+    }
+  });
+
+  selection.on("move", ({ changed: { removed, added } }) => {
+    // 添加向选中区域添加元素
+    added.forEach(el => {
+      el.classList.add("selected");
+    });
+    // 从选中区域移除元素
+    removed.forEach(el => {
+      el.classList.remove("selected");
+    });
+  });
+
+  selection.on("stop", ({ inst }) => {
+    inst.keepSelection();
+  });
 
   return (
     <div className="main-grid">
@@ -75,6 +80,7 @@ const BodyGrid = ({
               key={item.name}
               onContextMenu={() => onFolderContextMenu(item)}
               onDoubleClick={() => onFolderSelect(item.name)}
+              id={item.shortId}
             >
               <Icon className="icon" />
               <span>{item.name}</span>
@@ -86,6 +92,7 @@ const BodyGrid = ({
               key={item.name}
               onContextMenu={() => onFileContextMenu(item)}
               onDoubleClick={onFileSelect}
+              id={item.shortId}
             >
               {item.type.startsWith("image/") && domains.length > 0 ? (
                 <LazyLoad>

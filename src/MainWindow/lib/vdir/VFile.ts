@@ -1,3 +1,5 @@
+import shortId from "shortid";
+
 export default class VFile {
   name: string;
 
@@ -12,6 +14,8 @@ export default class VFile {
   lastModified = 0;
 
   lastModifiedDate = new Date();
+
+  shortId = shortId();
 
   constructor({
     name,

@@ -3,7 +3,6 @@ import SERVICE_IDENTIFIER from "./constants/identifiers";
 import {
   IApp,
   IBootstrap,
-  IIpcService,
   ILogger,
   IOssService,
   IStore,
@@ -52,7 +51,7 @@ container
   .to(TaskRunnerService)
   .inSingletonScope();
 container
-  .bind<IIpcService>(SERVICE_IDENTIFIER.CHANNELS)
+  .bind<IpcChannelsService>(SERVICE_IDENTIFIER.CHANNELS)
   .to(IpcChannelsService)
   .inSingletonScope();
 container

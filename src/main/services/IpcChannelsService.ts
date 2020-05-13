@@ -1,12 +1,12 @@
 import { inject, injectable, named } from "inversify";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import { IIpcService, ILogger, IOssService, IStore } from "../interface";
+import { ILogger, IOssService, IStore } from "../interface";
 import { AppStore, TransferStatus, TransferStore } from "../types";
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 
 @injectable()
-export default class IpcChannelsService implements IIpcService {
+export default class IpcChannelsService {
   @inject(SERVICE_IDENTIFIER.STORE)
   @named(TAG.APP_STORE)
   // @ts-ignore

@@ -1,3 +1,4 @@
+import shortId from "shortid";
 import VFile from "./VFile";
 import { Item, Parent } from "./types";
 import { dirname, normalizePath } from "./utils";
@@ -12,6 +13,8 @@ export default class VFolder {
   lastModified = 0;
 
   lastModifiedDate = new Date(0);
+
+  shortId = shortId();
 
   private children: Item[];
 
