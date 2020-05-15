@@ -115,7 +115,10 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
 
   return (
     <div className="bucket-wrapper">
-      <HeaderButtonGroup fileUpload={fileUpload} />
+      <HeaderButtonGroup
+        selectedItems={selectedFileIdList}
+        fileUpload={fileUpload}
+      />
       <HeaderToolbar
         onRefreshBucket={onRefreshBucket}
         onSearchChange={onSearchChange}
