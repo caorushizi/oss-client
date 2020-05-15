@@ -107,10 +107,11 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const onRemoveItem = (fileId: string) => {
     setSelectedFileIdList(f => {
       const index = f.findIndex(i => i === fileId);
-      console.log(index);
-      return f.slice(0).splice(index - 1);
+      f.splice(index, 1);
+      return f.slice(0);
     });
   };
+  const onClearItem = () => setSelectedFileIdList([]);
 
   return (
     <div className="bucket-wrapper">
@@ -133,6 +134,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
               selectedItems={selectedFileIdList}
               onSelectItem={onSelectItem}
               onRemoveItem={onRemoveItem}
+              onClearItem={onClearItem}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}

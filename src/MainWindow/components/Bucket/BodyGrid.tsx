@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
 
@@ -16,6 +16,7 @@ type PropTypes = {
   selectedItems: string[];
   onSelectItem: (itemId: string) => void;
   onRemoveItem: (itemId: string) => void;
+  onClearItem: () => void;
   onFolderSelect: (name: string) => void;
   onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
@@ -33,6 +34,7 @@ const BodyGrid = ({
   selectedItems,
   onSelectItem,
   onRemoveItem,
+  onClearItem,
   onFolderSelect,
   onFolderContextMenu,
   onFileSelect,
@@ -42,9 +44,11 @@ const BodyGrid = ({
   const selectionStart = ({ inst, selected, oe }: SelectionEvent) => {
     if (!oe.ctrlKey && !oe.metaKey) {
       selected.forEach(el => {
+        onRemoveItem(el.id);
         el.classList.remove("selected");
         inst.removeFromSelection(el);
       });
+      onClearItem();
       inst.clearSelection();
     }
   };
@@ -63,10 +67,12 @@ const BodyGrid = ({
     });
   };
   const selectionStop = ({ inst }: SelectionEvent) => inst.keepSelection();
+  const clearArea = () => {
+    onClearItem();
+    selection.getSelection().forEach(el => el.classList.remove("selected"));
+  };
   useEffect(() => {
-    if (keypress) {
-      selection.clearSelection();
-    }
+    if (keypress) clearArea();
   }, [keypress]);
 
   useEffect(() => {
