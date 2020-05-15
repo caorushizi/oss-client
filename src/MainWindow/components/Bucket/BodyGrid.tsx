@@ -20,6 +20,11 @@ type PropTypes = {
   onFileSelect: () => void;
   onFileContextMenu: (item: VFile) => void;
 };
+const selection = Selection.create({
+  class: "selection",
+  selectables: [".main-grid > .main-grid__cell"],
+  boundaries: [".main-grid"]
+});
 
 const BodyGrid = ({
   items,
@@ -31,11 +36,6 @@ const BodyGrid = ({
   onFileSelect,
   onFileContextMenu
 }: PropTypes) => {
-  const selection = Selection.create({
-    class: "selection",
-    selectables: [".main-grid > .main-grid__cell"],
-    boundaries: [".main-grid"]
-  });
   const keypress = useKeyPress(KeyCode.Escape);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
   useEffect(() => {
@@ -44,30 +44,36 @@ const BodyGrid = ({
     }
   }, [keypress]);
 
-  selection.on("start", ({ inst, selected, oe }) => {
-    if (!oe.ctrlKey && !oe.metaKey) {
-      selected.forEach(el => {
-        el.classList.remove("selected");
-        inst.removeFromSelection(el);
+  useEffect(() => {
+    selection.on("start", ({ inst, selected, oe }) => {
+      if (!oe.ctrlKey && !oe.metaKey) {
+        selected.forEach(el => {
+          el.classList.remove("selected");
+          inst.removeFromSelection(el);
+        });
+        inst.clearSelection();
+      }
+    });
+
+    selection.on("move", ({ changed: { removed, added } }) => {
+      // 添加向选中区域添加元素
+      added.forEach(el => {
+        setSelectedFile(f => {
+          console.log("内部：", f);
+          return [...f, "123"];
+        });
+        el.classList.add("selected");
       });
-      inst.clearSelection();
-    }
-  });
-
-  selection.on("move", ({ changed: { removed, added } }) => {
-    // 添加向选中区域添加元素
-    added.forEach(el => {
-      el.classList.add("selected");
+      // 从选中区域移除元素
+      removed.forEach(el => {
+        el.classList.remove("selected");
+      });
     });
-    // 从选中区域移除元素
-    removed.forEach(el => {
-      el.classList.remove("selected");
-    });
-  });
 
-  selection.on("stop", ({ inst }) => {
-    inst.keepSelection();
-  });
+    selection.on("stop", ({ inst }) => {
+      inst.keepSelection();
+    });
+  }, []);
 
   return (
     <div className="main-grid">
