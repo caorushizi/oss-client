@@ -16,6 +16,8 @@ import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 
+import set = Reflect.set;
+
 type PropTypes = {
   bucketName: string;
   onLoadedBucket: () => void;
@@ -32,7 +34,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const [bucket, setBucket] = useState<IBucket>({ domains: [], items: [] });
   const [searchedItem, setSearchedItem] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selected, setSelected] = useState<Item[]>([]);
+  const [selectedFileIdList, setSelectedFileIdList] = useState<string[]>([]);
 
   const displayBucketFiles = (bucketObj: BucketObj) => {
     const adaptedFiles = qiniuAdapter(bucketObj.files);
@@ -44,7 +46,6 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
 
   useEffect(() => {
     if (!bucketName) return;
-    console.log("3123123123", bucketName);
     switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   }, [bucketName]);
 
@@ -100,6 +101,16 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const onRefreshBucket = () => {
     switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   };
+  const onSelectItem = (fileId: string) => {
+    setSelectedFileIdList(f => f.concat(fileId));
+  };
+  const onRemoveItem = (fileId: string) => {
+    setSelectedFileIdList(f => {
+      const index = f.findIndex(i => i === fileId);
+      console.log(index);
+      return f.slice(0).splice(index - 1);
+    });
+  };
 
   return (
     <div className="bucket-wrapper">
@@ -117,10 +128,11 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
           <FileDrop onDrop={onFileDrop} />
           {Layout.grid === layout ? (
             <BodyGrid
-              domains={bucket.domains}
-              selectedItems={selected}
-              onSelectItem={() => {}}
               items={searchValue ? searchedItem : bucket.items}
+              domains={bucket.domains}
+              selectedItems={selectedFileIdList}
+              onSelectItem={onSelectItem}
+              onRemoveItem={onRemoveItem}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
@@ -129,8 +141,9 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
           ) : (
             <BodyTable
               items={searchValue ? searchedItem : bucket.items}
-              selectedItems={selected}
-              onSelectItem={() => {}}
+              selectedItems={selectedFileIdList}
+              onSelectItem={onSelectItem}
+              onRemoveItem={onRemoveItem}
               onFolderSelect={onFolderSelect}
               onFolderContextMenu={onFolderContextMenu}
               onFileSelect={() => {}}
@@ -148,7 +161,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       )}
       <Footer
         totalItem={vFolder.getTotalItem()}
-        selectedItem={0}
+        selectedItem={selectedFileIdList.length}
         domains={bucket.domains}
       />
     </div>

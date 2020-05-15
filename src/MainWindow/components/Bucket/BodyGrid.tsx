@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
-import Selection from "@simonwep/selection-js";
+import Selection, { SelectionEvent } from "@simonwep/selection-js";
 
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
@@ -13,8 +13,9 @@ import { KeyCode } from "../../helper/enums";
 type PropTypes = {
   items: Item[];
   domains: string[];
-  selectedItems: Item[];
-  onSelectItem: () => void;
+  selectedItems: string[];
+  onSelectItem: (itemId: string) => void;
+  onRemoveItem: (itemId: string) => void;
   onFolderSelect: (name: string) => void;
   onFolderContextMenu: (item: VFolder) => void;
   onFileSelect: () => void;
@@ -31,13 +32,37 @@ const BodyGrid = ({
   domains,
   selectedItems,
   onSelectItem,
+  onRemoveItem,
   onFolderSelect,
   onFolderContextMenu,
   onFileSelect,
   onFileContextMenu
 }: PropTypes) => {
   const keypress = useKeyPress(KeyCode.Escape);
-  const [selectedFile, setSelectedFile] = useState<string[]>([]);
+  const selectionStart = ({ inst, selected, oe }: SelectionEvent) => {
+    if (!oe.ctrlKey && !oe.metaKey) {
+      selected.forEach(el => {
+        el.classList.remove("selected");
+        inst.removeFromSelection(el);
+      });
+      inst.clearSelection();
+    }
+  };
+  const selectionMove = ({ changed: { removed, added } }: SelectionEvent) => {
+    // 添加向选中区域添加元素
+    added.forEach(el => {
+      const fileId = el.id;
+      onSelectItem(fileId);
+      el.classList.add("selected");
+    });
+    // 从选中区域移除元素
+    removed.forEach(el => {
+      const fileId = el.id;
+      onRemoveItem(fileId);
+      el.classList.remove("selected");
+    });
+  };
+  const selectionStop = ({ inst }: SelectionEvent) => inst.keepSelection();
   useEffect(() => {
     if (keypress) {
       selection.clearSelection();
@@ -45,34 +70,9 @@ const BodyGrid = ({
   }, [keypress]);
 
   useEffect(() => {
-    selection.on("start", ({ inst, selected, oe }) => {
-      if (!oe.ctrlKey && !oe.metaKey) {
-        selected.forEach(el => {
-          el.classList.remove("selected");
-          inst.removeFromSelection(el);
-        });
-        inst.clearSelection();
-      }
-    });
-
-    selection.on("move", ({ changed: { removed, added } }) => {
-      // 添加向选中区域添加元素
-      added.forEach(el => {
-        setSelectedFile(f => {
-          console.log("内部：", f);
-          return [...f, "123"];
-        });
-        el.classList.add("selected");
-      });
-      // 从选中区域移除元素
-      removed.forEach(el => {
-        el.classList.remove("selected");
-      });
-    });
-
-    selection.on("stop", ({ inst }) => {
-      inst.keepSelection();
-    });
+    selection.on("start", selectionStart);
+    selection.on("move", selectionMove);
+    selection.on("stop", selectionStop);
   }, []);
 
   return (
