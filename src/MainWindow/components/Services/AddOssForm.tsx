@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import "./index.scss";
+import Select, { Option } from "rc-select";
 import Input from "../BaseInput";
 import { OssType } from "../../../main/types";
 import Button from "../BaseButton";
@@ -67,15 +68,14 @@ const AddOssForm = ({ onBucketAdd }: PropTypes) => {
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">类型</span>
-            <select
-              className="oss-form_item__inner-select"
-              name="type"
+            <Select
+              // name="defaultDomain"
               value={values.type}
               id="bucket"
               onChange={handleChange}
             >
-              <option value={OssType.qiniu}>七牛云</option>
-            </select>
+              <Option value={OssType.qiniu}>七牛云</Option>
+            </Select>
             <span className="oss-form_item__errors">
               {errors.type && touched.type && errors.type}
             </span>
