@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
@@ -15,18 +14,13 @@ import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
 const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
 
-  const initTransferList = () => {
-    getTransfers().then(transferList => {
-      const transferDone = transferList.filter(
-        i => i.status === TransferStatus.done
-      );
-      setTransfers(transferDone);
-    });
+  const initTransferList = async () => {
+    const transferList = await getTransfers({ status: TransferStatus.done });
+    setTransfers(transferList);
   };
-  const onClearTransferDoneList = () => {
-    clearTransferDoneList().then(() => {
-      initTransferList();
-    });
+  const onClearTransferDoneList = async () => {
+    await clearTransferDoneList();
+    await initTransferList();
   };
 
   useEffect(() => {

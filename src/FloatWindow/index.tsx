@@ -10,8 +10,13 @@ import "normalize.css/normalize.css";
 import "./index.scss";
 import FileDrop from "react-file-drop";
 import classNames from "classnames";
-import { getRecentTransferList } from "../MainWindow/helper/ipc";
-import { FlowWindowStyle, Theme } from "../main/types";
+import { getTransfers } from "../MainWindow/helper/ipc";
+import {
+  FlowWindowStyle,
+  TaskType,
+  Theme,
+  TransferStatus
+} from "../main/types";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);
@@ -72,7 +77,11 @@ const onMouseUp = () => {
   state.dragging = false;
 };
 const onContextMenu = async () => {
-  const recentList = await getRecentTransferList();
+  const recentList = await getTransfers({
+    type: TaskType.upload,
+    status: TransferStatus.done
+  });
+  console.log(recentList);
   const recentMenu: MenuItemConstructorOptions[] =
     recentList.length > 0
       ? recentList.splice(0, 5).map(i => ({

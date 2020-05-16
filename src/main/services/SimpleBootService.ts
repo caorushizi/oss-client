@@ -112,7 +112,7 @@ export default class SimpleBootService implements IBootstrap {
       const newDoc = {
         id,
         name: item.name,
-        date: new Date().getTime(),
+        date: Date.now(),
         type: TaskType.download,
         size: item.size,
         status: TransferStatus.default

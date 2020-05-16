@@ -10,11 +10,10 @@ const TransferList = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
   useEffect(() => {
     (async () => {
-      const transferList = await getTransfers();
-      const transferDone = transferList.filter(
-        i => i.status !== TransferStatus.done
-      );
-      setTransfers(transferDone);
+      const transferList = await getTransfers({
+        status: TransferStatus.default
+      });
+      setTransfers(transferList);
     })();
   }, []);
   return (

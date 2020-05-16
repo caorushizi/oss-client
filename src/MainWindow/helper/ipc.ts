@@ -53,8 +53,8 @@ export function initOss(id?: string): Promise<void> {
   return send("init-app", { id });
 }
 
-export function getTransfers(): Promise<TransferStore[]> {
-  return send("get-transfer");
+export function getTransfers(query: any): Promise<TransferStore[]> {
+  return send("get-transfer", query);
 }
 
 export function addApp(
@@ -116,10 +116,6 @@ export function changeMarkdown(isMarkdown: boolean) {
 
 export function changeDownloadTip(transferDoneTip: boolean) {
   ipcRenderer.send("change-transfer-done-tip", { params: transferDoneTip });
-}
-
-export function getRecentTransferList() {
-  return send<TransferStore[]>("get-recent-transfer-list");
 }
 
 export function deleteFile(vFile: VFile) {

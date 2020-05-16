@@ -50,17 +50,15 @@ function App() {
     setBucketLoading(false);
   };
   const onOssActive = async (store: AppStore) => {
-    console.log("store: ", store._id);
     const test = await initOss(store?._id);
-    console.log("初始化 App", test);
     const buckets = await getBuckets();
-    console.log(123123123123, buckets);
     setBucketList(buckets);
   };
   const toSetting = () => {
     setActivePage(Page.setting);
   };
   const playAudio = async () => {
+    console.log("播放下载完成");
     if (audio.current) {
       await audio.current.play();
     }

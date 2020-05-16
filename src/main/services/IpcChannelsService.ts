@@ -61,8 +61,8 @@ export default class IpcChannelsService {
 
   getConfig = async () => configStore.store;
 
-  async getTransfers(status: TransferStatus) {
-    return this.transferStore.find({ status });
+  async getTransfers(query: any) {
+    return this.transferStore.find(query);
   }
 
   async switchBucket(params: any) {

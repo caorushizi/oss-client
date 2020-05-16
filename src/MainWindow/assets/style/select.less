@@ -17,6 +17,9 @@
   border-radius: 15px;
   color: #fff;
   backdrop-filter: blur(5px);
+  overflow: hidden; //超出的文本隐藏
+  text-overflow: ellipsis; //溢出用省略号显示
+  white-space: nowrap; //溢出不换行
 
   &-disabled {
     &,
@@ -175,12 +178,11 @@
 
   // ============== Dropdown ===============
   &-dropdown {
-    padding: 15px 0;
+    padding: 10px 0;
     position: absolute;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
     backdrop-filter: blur(5px);
-    //min-width: 155px !important;
 
     &-hidden {
       display: none;
@@ -194,6 +196,9 @@
     line-height: 26px;
     color: #fff;
     padding-left: 26px;
+    overflow: hidden; //超出的文本隐藏
+    text-overflow: ellipsis; //溢出用省略号显示
+    white-space: nowrap; //溢出不换行
 
     // >>> Group
     &-group {

@@ -1,5 +1,12 @@
+/* 字体 */
+@font-face {
+  font-family: "myfont";
+  src: url("./assets/fonts/font.woff") format("woff");
+}
+
 * {
   user-select: none;
+  font-family: myfont !important;
 }
 
 body {
