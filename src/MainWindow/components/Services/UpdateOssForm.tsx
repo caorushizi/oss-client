@@ -3,7 +3,7 @@ import "./index.scss";
 import * as Yup from "yup";
 import Select, { Option } from "rc-select";
 
-import { Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import Input from "../BaseInput";
 import { OssType, AppStore } from "../../../main/types";
 import Button from "../BaseButton";
@@ -58,149 +58,117 @@ const UpdateOssForm = ({
       })}
       initialValues={activeOss}
       onSubmit={(values, { setSubmitting }) => {
-        onBucketUpdate(values);
+        alert(JSON.stringify(values, null, 2));
+        // onBucketUpdate(values);
         setSubmitting(false);
       }}
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting
-        /* and other goodies */
-      }) => (
-        <form onSubmit={handleSubmit} className="oss-form">
+      {({ isSubmitting }) => (
+        <Form className="oss-form">
           <div className="oss-form_item">
             <span className="oss-form_item__title">名称</span>
-            <Input
-              type="text"
+            <Field
+              component={Input}
               name="name"
               className="oss-form_item__inner-input"
               placeholder="请输入名称"
-              value={values.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
             />
-            <span className="oss-form_item__errors">
-              {errors.name && touched.name && errors.name}
-            </span>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="name"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">类型</span>
-            <Select
-              // name="type"
-              value={values.type}
-              id="bucket"
-              onChange={handleChange}
-            >
+            <Field component={Select} name="type">
               <Option value={OssType.qiniu}>七牛云</Option>
-            </Select>
-            <span className="oss-form_item__errors">
-              {errors.type && touched.type && errors.type}
-            </span>
+            </Field>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="type"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">AK</span>
-            <Input
-              type="text"
+            <Field
+              component={Input}
               name="ak"
               className="oss-form_item__inner-input"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.ak}
               placeholder="请输入相应服务商 ak"
             />
-            <span className="oss-form_item__errors">
-              {errors.ak && touched.ak && errors.ak}
-            </span>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="ak"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">SK</span>
-            <Input
-              type="password"
+            <Field
+              component={Input}
               name="sk"
               className="oss-form_item__inner-input"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.sk}
               placeholder="请输入相应服务商 sk"
             />
-            <span className="oss-form_item__errors">
-              {errors.sk && touched.sk && errors.sk}
-            </span>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="sk"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">默认上传 bucket</span>
-            <Select
-              // name="uploadBucket"
-              value={values.uploadBucket}
-              id="bucket"
-              onChange={val => {
-                // handleChange(e);
-                switchBucket(val).then(obj => {
-                  setDomains(obj.domains);
-                });
-              }}
-            >
+            <Field component={Select} name="uploadBucket">
               {buckets.length > 0 &&
                 buckets.map(i => (
                   <Option key={i} value={i}>
                     {i}
                   </Option>
                 ))}
-            </Select>
-            <span className="oss-form_item__errors">
-              {errors.uploadBucket &&
-                touched.uploadBucket &&
-                errors.uploadBucket}
-            </span>
+            </Field>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="uploadBucket"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">上传前缀</span>
-            <Input
-              type="text"
+            <Field
+              component={Input}
               name="uploadPrefix"
               className="oss-form_item__inner-input"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.uploadPrefix}
               placeholder="默认上传前缀"
             />
-            <span className="oss-form_item__errors">
-              {errors.uploadPrefix &&
-                touched.uploadPrefix &&
-                errors.uploadPrefix}
-            </span>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="uploadPrefix"
+              component="div"
+            />
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">默认域名</span>
-            <Select
-              // name="defaultDomain"
-              value={values.defaultDomain}
-              id="bucket"
-              onChange={handleChange}
-            >
+            <Field component={Select} name="defaultDomain">
               {domains.length > 0 &&
                 domains.map(i => (
                   <Option key={i} value={i}>
                     {i}
                   </Option>
                 ))}
-            </Select>
-            <span className="oss-form_item__errors">
-              {errors.defaultDomain &&
-                touched.defaultDomain &&
-                errors.defaultDomain}
-            </span>
+            </Field>
+            <ErrorMessage
+              className="oss-form_item__errors"
+              name="type"
+              component="div"
+            />
           </div>
           <div className="oss-form_action">
             <Button type="submit" value="更新" disabled={isSubmitting} />
-            <Button value="删除" onClick={() => onBucketDelete(values)} />
+            <Button value="删除" onClick={() => {}} />
           </div>
-        </form>
+        </Form>
       )}
     </Formik>
   );
