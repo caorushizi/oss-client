@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { addApp, getAppsChannel, updateApp, deleteApp } from "../../helper/ipc";
 import ServicesList from "./ServicesList";
-import AddOssForm from "./AddOssForm";
-import UpdateOssForm from "./UpdateOssForm";
+import FormAdd from "./FormAdd";
+import FormUpdate from "./FormUpdate";
 import { AppStore, OssType } from "../../../main/types";
 import useKeyPress from "../../hooks/useKeyPress";
 import { KeyCode } from "../../helper/enums";
@@ -32,51 +32,43 @@ const Services = ({ onOssActive }: PropTypes) => {
   const [hasNew, setHasNew] = useState<boolean>(false);
   const escapePress = useKeyPress(KeyCode.Escape);
 
-  const onBucketUpdate = (store: AppStore) => {
+  const onBucketUpdate = async (store: AppStore) => {
     console.log("新的App：", store);
-    updateApp(store)
-      .then(() => {
-        return getAppsChannel();
-      })
-      .then(allApps => {
-        setApps(allApps);
-        const currentStore = allApps.find(i => i._id === store._id);
-        if (currentStore) {
-          onOssActive(currentStore);
-          setCurrentApp(currentStore);
-        }
-        // eslint-disable-next-line no-alert
-        alert("修改成功！");
-      });
+    await updateApp(store);
+    const allApps = await getAppsChannel();
+    setApps(allApps);
+    const currentStore = allApps.find(i => i._id === store._id);
+    if (currentStore) {
+      onOssActive(currentStore);
+      setCurrentApp(currentStore);
+    }
+    alert("修改成功！");
   };
-  const onBucketDelete = (store: AppStore) => {
-    deleteApp(store)
-      .then(() => {
-        return getAppsChannel();
-      })
-      .then(allApps => {
-        setApps(allApps);
-        setCurrentApp(allApps[0]);
-        onOssActive(allApps[0]);
-      });
+  const onBucketDelete = async (store: AppStore) => {
+    await deleteApp(store);
+    const allApps = await getAppsChannel();
+    setApps(allApps);
+    setCurrentApp(allApps[0]);
+    onOssActive(allApps[0]);
   };
-  const onBucketAdd = (name: string, ak: string, sk: string, type: OssType) => {
-    addApp(name, type, ak, sk)
-      .then(() => {
-        return getAppsChannel();
-      })
-      .then(allApps => {
-        setApps(allApps);
-        const addedApp = allApps.find(i => i.sk === sk);
-        if (addedApp) {
-          setCurrentApp(addedApp);
-          onOssActive(addedApp);
-        } else {
-          setCurrentApp(allApps[0]);
-          onOssActive(allApps[0]);
-        }
-        setHasNew(false);
-      });
+  const onBucketAdd = async (
+    name: string,
+    ak: string,
+    sk: string,
+    type: OssType
+  ) => {
+    await addApp(name, type, ak, sk);
+    const allApps = await getAppsChannel();
+    setApps(allApps);
+    const addedApp = allApps.find(i => i.sk === sk);
+    if (addedApp) {
+      setCurrentApp(addedApp);
+      onOssActive(addedApp);
+    } else {
+      setCurrentApp(allApps[0]);
+      onOssActive(allApps[0]);
+    }
+    setHasNew(false);
   };
   const onOssAddClick = () => {
     if (apps.filter(i => (i as NewAppStore).isNew).length > 0) return;
@@ -107,10 +99,12 @@ const Services = ({ onOssActive }: PropTypes) => {
   };
 
   useEffect(() => {
-    getAppsChannel().then(allApps => {
+    const initState = async () => {
+      const allApps = await getAppsChannel();
       setApps(allApps);
       setCurrentApp(allApps[0]);
-    });
+    };
+    initState().then(r => r);
   }, []);
 
   useEffect(() => {
@@ -138,14 +132,14 @@ const Services = ({ onOssActive }: PropTypes) => {
           <div className="main-right_form_container">
             <div className="main-right_form_title">修改配置</div>
             {currentApp._id ? (
-              <UpdateOssForm
+              <FormUpdate
                 key={currentApp._id}
                 activeOss={currentApp}
                 onBucketUpdate={onBucketUpdate}
                 onBucketDelete={onBucketDelete}
               />
             ) : (
-              <AddOssForm onBucketAdd={onBucketAdd} />
+              <FormAdd onBucketAdd={onBucketAdd} />
             )}
           </div>
         )}

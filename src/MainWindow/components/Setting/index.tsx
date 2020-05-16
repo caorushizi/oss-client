@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Switch from "rc-switch";
 import { remote } from "electron";
-import { Radio, RadioGroup } from "react-radio-group";
+import { Switch, Radio } from "antd";
 
 import "./index.scss";
-import Input from "../BaseInput";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
-import Button from "../BaseButton";
 import {
   ConfigStore,
   FlowWindowStyle,
-  initialConfig,
-  Theme
+  initialConfig
 } from "../../../main/types";
+import Button from "../BaseButton";
+import Input from "../BaseInput";
+
 import {
   changeDirectDelete,
   changeDownloadDir,
@@ -29,7 +28,11 @@ const Setting = () => {
   const [config, setConfig] = useState<ConfigStore>(initialConfig);
 
   useEffect(() => {
-    getConfig().then(r => setConfig(r));
+    const initState = async () => {
+      const c = await getConfig();
+      setConfig(c);
+    };
+    initState().then(r => r);
   }, []);
 
   return (
@@ -149,11 +152,11 @@ const Setting = () => {
             </div>
             <div className="setting-item">
               <div className="setting-item-title">悬浮窗样式 ：</div>
-              <RadioGroup
+              <Radio.Group
                 className="setting-radio"
                 name="FloatWindow"
-                selectedValue={config.floatWindowStyle}
-                onChange={(style: FlowWindowStyle) => {
+                onChange={e => {
+                  const style: FlowWindowStyle = Number(e.target.value);
                   changeFloatWindowShape(style);
                   setConfig({ ...config, floatWindowStyle: style });
                 }}
@@ -162,7 +165,7 @@ const Setting = () => {
                 <span className="inner">圆形</span>
                 <Radio className="input" value={FlowWindowStyle.oval} />
                 <span className="inner">椭圆形</span>
-              </RadioGroup>
+              </Radio.Group>
             </div>
           </div>
         </section>

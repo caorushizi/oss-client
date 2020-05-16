@@ -77,14 +77,11 @@
     "@types/mime": "^2.0.1",
     "@types/nedb": "^1.8.9",
     "@types/node": "^12.12.39",
-    "@types/rc-switch": "^1.9.0",
     "@types/react-dom": "^16.9.8",
     "@types/react-lazyload": "^2.6.0",
-    "@types/react-radio-group": "^3.0.2",
     "@types/react-transition-group": "^4.2.4",
     "@types/shortid": "0.0.29",
     "@types/uuid": "^3.4.9",
-    "@types/yup": "^0.26.37",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "chalk": "^3.0.0",
@@ -120,6 +117,7 @@
     "url-loader": "^3.0.0"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
@@ -130,7 +128,6 @@
     "electron-log": "^4.1.2",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^5.1.0",
-    "formik": "^2.1.4",
     "inversify": "^5.0.1",
     "klaw-sync": "^6.0.0",
     "mime": "^2.4.5",
@@ -138,17 +135,13 @@
     "nedb": "^1.8.0",
     "normalize.css": "^8.0.1",
     "qiniu": "^7.3.1",
-    "rc-select": "^10.3.2",
-    "rc-switch": "^1.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-file-drop": "^0.2.8",
     "react-lazyload": "^2.6.7",
-    "react-radio-group": "^3.0.3",
     "react-transition-group": "^4.4.1",
     "reflect-metadata": "^0.1.13",
     "shortid": "^2.2.15",
-    "uuid": "^3.4.0",
-    "yup": "^0.28.5"
+    "uuid": "^3.4.0"
   }
 }
