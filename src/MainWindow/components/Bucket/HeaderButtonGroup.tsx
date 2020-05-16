@@ -1,8 +1,18 @@
 import React from "react";
 import Button from "../BaseButton";
 
-type PropTypes = { fileUpload: () => void; selectedItems: string[] };
-const HeaderButtonGroup = ({ fileUpload, selectedItems }: PropTypes) => {
+type PropTypes = {
+  fileUpload: () => void;
+  selectedItems: string[];
+  onDownload: () => void;
+  onDelete: () => void;
+};
+const HeaderButtonGroup = ({
+  fileUpload,
+  selectedItems,
+  onDownload,
+  onDelete
+}: PropTypes) => {
   return (
     <section className="buttons-wrapper">
       <Button value="上传文件" icon="arrow-up" onClick={fileUpload} />
@@ -10,15 +20,15 @@ const HeaderButtonGroup = ({ fileUpload, selectedItems }: PropTypes) => {
         value="下载"
         icon="arrow-down"
         disabled={selectedItems.length === 0}
-        onClick={() => {}}
+        onClick={onDownload}
       />
       <Button
         value="删除"
         disabled={selectedItems.length === 0}
-        onClick={() => {}}
+        onClick={onDelete}
       />
-      <Button value="新建文件夹" onClick={() => {}} />
-      <Button value="离线下载" onClick={() => {}} />
+      {/* <Button value="新建文件夹" onClick={() => {}} /> */}
+      {/* <Button value="离线下载" onClick={() => {}} /> */}
     </section>
   );
 };

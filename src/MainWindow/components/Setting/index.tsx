@@ -49,7 +49,7 @@ const Setting = () => {
             />
           </div>
           <div className="setting-item">
-            <div className="setting-item-title">直接删除不显示提示框：</div>
+            <div className="setting-item-title">删除时显示提示框：</div>
             <Switch
               className="setting-switch"
               checked={config.deleteShowDialog}

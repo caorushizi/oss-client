@@ -26,6 +26,7 @@ import {
   minimizeMainWindow
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
+import "./assets/style/select.less";
 
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());

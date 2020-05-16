@@ -16,8 +16,6 @@ import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 
-import set = Reflect.set;
-
 type PropTypes = {
   bucketName: string;
   onLoadedBucket: () => void;
@@ -36,6 +34,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedFileIdList, setSelectedFileIdList] = useState<string[]>([]);
 
+  const onClearItem = () => setSelectedFileIdList([]);
   const displayBucketFiles = (bucketObj: BucketObj) => {
     const adaptedFiles = qiniuAdapter(bucketObj.files);
     const vf = VFolder.from(adaptedFiles);
@@ -70,6 +69,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       .catch(() => {});
   };
   const backspace = () => {
+    onClearItem();
     vFolder.back();
     setBucket({ ...bucket, items: vFolder.listFiles() });
   };
@@ -91,14 +91,17 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   };
   const onFolderContextMenu = (item: VFolder) => {};
   const onSearchChange = (value: string) => {
+    onClearItem();
     setSearchValue(value);
     const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
     setSearchedItem(it);
   };
   const onChangeLayout = () => {
+    onClearItem();
     setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
   };
   const onRefreshBucket = () => {
+    onClearItem();
     switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   };
   const onSelectItem = (fileId: string) => {
@@ -111,13 +114,21 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       return f.slice(0);
     });
   };
-  const onClearItem = () => setSelectedFileIdList([]);
+  const onBatchDownload = () => {
+    selectedFileIdList.forEach(fileId => {
+      const item = vFolder.getItem(fileId);
+      ipcRenderer.send("req:file:download", item);
+    });
+  };
+  const obBatchDelete = () => {};
 
   return (
     <div className="bucket-wrapper">
       <HeaderButtonGroup
         selectedItems={selectedFileIdList}
         fileUpload={fileUpload}
+        onDownload={onBatchDownload}
+        onDelete={obBatchDelete}
       />
       <HeaderToolbar
         onRefreshBucket={onRefreshBucket}

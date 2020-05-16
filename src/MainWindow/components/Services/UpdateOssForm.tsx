@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 import * as Yup from "yup";
+import Select, { Option } from "rc-select";
 
 import { Formik } from "formik";
 import Input from "../BaseInput";
@@ -89,15 +90,14 @@ const UpdateOssForm = ({
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">类型</span>
-            <select
-              className="oss-form_item__inner-select"
-              name="type"
+            <Select
+              // name="type"
               value={values.type}
               id="bucket"
               onChange={handleChange}
             >
-              <option value={OssType.qiniu}>七牛云</option>
-            </select>
+              <Option value={OssType.qiniu}>七牛云</Option>
+            </Select>
             <span className="oss-form_item__errors">
               {errors.type && touched.type && errors.type}
             </span>
@@ -134,25 +134,24 @@ const UpdateOssForm = ({
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">默认上传 bucket</span>
-            <select
-              className="oss-form_item__inner-select"
-              name="uploadBucket"
+            <Select
+              // name="uploadBucket"
               value={values.uploadBucket}
               id="bucket"
-              onChange={e => {
-                handleChange(e);
-                switchBucket(e.target.value).then(obj => {
+              onChange={val => {
+                // handleChange(e);
+                switchBucket(val).then(obj => {
                   setDomains(obj.domains);
                 });
               }}
             >
               {buckets.length > 0 &&
                 buckets.map(i => (
-                  <option key={i} value={i}>
+                  <Option key={i} value={i}>
                     {i}
-                  </option>
+                  </Option>
                 ))}
-            </select>
+            </Select>
             <span className="oss-form_item__errors">
               {errors.uploadBucket &&
                 touched.uploadBucket &&
@@ -178,20 +177,19 @@ const UpdateOssForm = ({
           </div>
           <div className="oss-form_item">
             <span className="oss-form_item__title">默认域名</span>
-            <select
-              className="oss-form_item__inner-select"
-              name="defaultDomain"
+            <Select
+              // name="defaultDomain"
               value={values.defaultDomain}
               id="bucket"
               onChange={handleChange}
             >
               {domains.length > 0 &&
                 domains.map(i => (
-                  <option key={i} value={i}>
+                  <Option key={i} value={i}>
                     {i}
-                  </option>
+                  </Option>
                 ))}
-            </select>
+            </Select>
             <span className="oss-form_item__errors">
               {errors.defaultDomain &&
                 touched.defaultDomain &&
