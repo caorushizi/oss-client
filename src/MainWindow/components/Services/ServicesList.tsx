@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 
 import "./index.scss";
-import Button from "../BaseButton";
+import { Button } from "antd";
 import { AppStore, OssType } from "../../../main/types";
 
 type PropTypes = {

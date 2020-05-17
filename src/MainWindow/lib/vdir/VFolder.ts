@@ -1,7 +1,7 @@
 import shortId from "shortid";
 import VFile from "./VFile";
 import { Item, Parent } from "./types";
-import { dirname, normalizePath } from "./utils";
+import { dirname } from "./utils";
 
 export default class VFolder {
   parent: Parent;

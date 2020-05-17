@@ -36,7 +36,7 @@ const FormUpdate = ({
       initialValues={activeOss}
       labelAlign="left"
       labelCol={{ span: 4 }}
-      wrapperCol={{ span: 8 }}
+      wrapperCol={{ span: 12 }}
       name="basic"
       className="custom-form"
       onFinish={values => {

@@ -1,9 +1,19 @@
 import React from "react";
 import "./index.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import {
+  FolderFilled,
+  ArrowUpOutlined,
+  CheckCircleFilled,
+  SettingFilled,
+  AppstoreFilled,
+  MinusCircleOutlined,
+  LoadingOutlined
+} from "@ant-design/icons";
+import { Spin } from "antd";
 import { Page } from "../../helper/enums";
-import Loading from "../BaseLoading";
+
+const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 
 type PropTypes = {
   bucketList: string[];
@@ -37,7 +47,7 @@ function TheSidebar({
       <section className="container">
         <div className="title">
           储存空间
-          {bucketLoading && <Loading className="loading" />}
+          {bucketLoading && <Spin indicator={antIcon} />}
         </div>
         <ul className="sidebar-list">
           {bucketList.length ? (
@@ -46,7 +56,7 @@ function TheSidebar({
                 className={classNames("item", activeTag(Page.bucket, bucket))}
                 key={bucket}
               >
-                <FontAwesomeIcon className="icon" icon="folder" />
+                <FolderFilled className="icon" />
                 <input
                   type="button"
                   className="link"
@@ -58,7 +68,7 @@ function TheSidebar({
             ))
           ) : (
             <li className="item">
-              <FontAwesomeIcon className="icon" icon="meh-blank" />
+              <MinusCircleOutlined className="icon" />
               <button type="button" className="link disabled" disabled>
                 暂无储存桶
               </button>
@@ -70,7 +80,7 @@ function TheSidebar({
         <div className="title">传输列表</div>
         <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.transferList))}>
-            <FontAwesomeIcon className="icon" icon="arrow-up" />
+            <ArrowUpOutlined className="icon" />
             <input
               type="button"
               value="传输列表"
@@ -79,7 +89,7 @@ function TheSidebar({
             />
           </li>
           <li className={classNames("item", activeTag(Page.transferDone))}>
-            <FontAwesomeIcon className="icon" icon="check-circle" />
+            <CheckCircleFilled className="icon" />
             <input
               type="button"
               value="传输完成"
@@ -93,7 +103,7 @@ function TheSidebar({
         <div className="title">设置</div>
         <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.setting))}>
-            <FontAwesomeIcon className="icon" icon="cog" />
+            <SettingFilled className="icon" />
             <input
               type="button"
               value="设置"
@@ -102,7 +112,7 @@ function TheSidebar({
             />
           </li>
           <li className={classNames("item", activeTag(Page.services))}>
-            <FontAwesomeIcon className="icon" icon="rocket" />
+            <AppstoreFilled className="icon" />
             <input
               type="button"
               value="apps"

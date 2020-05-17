@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Button } from "antd";
 
 import "./index.scss";
 import { TransferStatus, TransferStore } from "../../../main/types";
@@ -7,7 +8,6 @@ import {
   fileSizeFormatter,
   taskTypeFormatter
 } from "../../helper/utils";
-import Button from "../BaseButton";
 import Icon from "../FileIcon";
 import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
 
@@ -31,7 +31,7 @@ const TransferDone = () => {
       <div className="toolbar">
         <span className="toolbar-left">{`总共 ${transfers.length} 项`}</span>
         <div className="toolbar-right">
-          <Button value="清空记录" onClick={onClearTransferDoneList} />
+          <Button onClick={onClearTransferDoneList}>清空记录</Button>
         </div>
       </div>
       <section className="transfer-table__wrapper">

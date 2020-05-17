@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { remote } from "electron";
-import { Switch, Radio } from "antd";
+import { Switch, Radio, Button, Input } from "antd";
 
 import "./index.scss";
 import { Platform } from "../../helper/enums";
@@ -10,8 +10,6 @@ import {
   FlowWindowStyle,
   initialConfig
 } from "../../../main/types";
-import Button from "../BaseButton";
-import Input from "../BaseInput";
 
 import {
   changeDirectDelete,
@@ -79,7 +77,6 @@ const Setting = () => {
             <div className="setting-item-title">
               <Button
                 className="setting-button"
-                value="选择下载位置"
                 onClick={() => {
                   remote.dialog
                     .showOpenDialog({
@@ -98,7 +95,9 @@ const Setting = () => {
                       }
                     });
                 }}
-              />
+              >
+                选择下载位置
+              </Button>
             </div>
             <Input
               className="setting-input"

@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { ipcRenderer } from "electron";
+import {
+  PlusCircleFilled,
+  MinusCircleFilled,
+  CloseCircleFilled
+} from "@ant-design/icons";
 import audioSrc from "./assets/tip.mp3";
 
 import "./App.scss";
@@ -26,7 +30,6 @@ import {
   minimizeMainWindow
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
-import "./assets/style/select.less";
 
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -107,21 +110,9 @@ function App() {
       <div className="drag-area" />
       {getPlatform() === Platform.windows && (
         <div className="app-button">
-          <FontAwesomeIcon
-            className="icon"
-            icon="minus-circle"
-            onClick={minimizeMainWindow}
-          />
-          <FontAwesomeIcon
-            className="icon"
-            icon="plus-circle"
-            onClick={maximizeMainWindow}
-          />
-          <FontAwesomeIcon
-            className="icon"
-            icon="times-circle"
-            onClick={closeMainApp}
-          />
+          <MinusCircleFilled className="icon" onClick={minimizeMainWindow} />
+          <PlusCircleFilled className="icon" onClick={maximizeMainWindow} />
+          <CloseCircleFilled className="icon" onClick={closeMainApp} />
         </div>
       )}
       <TheSidebar

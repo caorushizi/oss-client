@@ -10,14 +10,15 @@ const IconFont = createFromIconfontCN({
 
 type PropType = { className?: string; filename?: string };
 
-const Icon = ({ className, filename }: PropType) => {
+const FileIcon = ({ className, filename }: PropType) => {
   return (
     <IconFont
-      style={{ height: 30, width: 30 }}
       className={className}
       type={getIconName(filename)}
+      width="80em"
+      height="80em"
     />
   );
 };
 
-export default Icon;
+export default FileIcon;
