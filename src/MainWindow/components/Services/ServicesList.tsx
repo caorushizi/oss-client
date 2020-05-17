@@ -35,7 +35,9 @@ const ServicesList = ({
   return (
     <div className="main-left">
       <div className="header">
-        <Button value="添加" disabled={hasNew} onClick={onOssAddClick} />
+        <Button size="small" disabled={hasNew} onClick={onOssAddClick}>
+          添加
+        </Button>
       </div>
       <ul className="app-list">
         {ossList.length > 0 ? (

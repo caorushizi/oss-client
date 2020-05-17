@@ -39,7 +39,7 @@ const FormAdd = ({ onBucketAdd }: PropTypes) => {
         name="type"
         rules={[{ required: true, message: "请选择存储厂商" }]}
       >
-        <Select style={{ width: 120 }}>
+        <Select size="small" style={{ width: 200 }}>
           <Select.Option value={OssType.qiniu}>七牛云</Select.Option>
         </Select>
       </Form.Item>
@@ -59,8 +59,8 @@ const FormAdd = ({ onBucketAdd }: PropTypes) => {
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
-        <Button type="primary" htmlType="submit">
-          Submit
+        <Button size="small" type="primary" htmlType="submit">
+          确定
         </Button>
       </Form.Item>
     </Form>

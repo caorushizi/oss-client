@@ -41,7 +41,7 @@ const Setting = () => {
           <div className="setting-item">
             <div className="setting-item-title">使用 https ：</div>
             <Switch
-              className="setting-switch"
+              size="small"
               checked={config.useHttps}
               onChange={(useHttps: boolean) => {
                 changeUseHttps(useHttps);
@@ -52,7 +52,7 @@ const Setting = () => {
           <div className="setting-item">
             <div className="setting-item-title">删除时显示提示框：</div>
             <Switch
-              className="setting-switch"
+              size="small"
               checked={config.deleteShowDialog}
               onChange={(directDelete: boolean) => {
                 changeDirectDelete(directDelete);
@@ -65,7 +65,7 @@ const Setting = () => {
               如果文件已经存在是否覆盖文件：
             </div>
             <Switch
-              className="setting-switch"
+              size="small"
               checked={config.uploadOverwrite}
               onChange={(uploadOverride: boolean) => {
                 changeUploadOverride(uploadOverride);
@@ -76,7 +76,7 @@ const Setting = () => {
           <div className="setting-item">
             <div className="setting-item-title">
               <Button
-                className="setting-button"
+                size="small"
                 onClick={() => {
                   remote.dialog
                     .showOpenDialog({
@@ -100,7 +100,8 @@ const Setting = () => {
               </Button>
             </div>
             <Input
-              className="setting-input"
+              width={200}
+              size="small"
               disabled
               placeholder="请选择默认下载位置"
               value={config.downloadDir}
@@ -114,7 +115,7 @@ const Setting = () => {
           <div className="setting-item">
             <div className="setting-item-title">传输完成后是否提示 ：</div>
             <Switch
-              className="setting-switch"
+              size="small"
               checked={config.transferDoneTip}
               onChange={(transferDoneTip: boolean) => {
                 changeDownloadTip(transferDoneTip);
@@ -125,7 +126,7 @@ const Setting = () => {
           <div className="setting-item">
             <div className="setting-item-title">复制url或者markdown格式：</div>
             <Switch
-              className="setting-switch"
+              size="small"
               checked={config.markdown}
               onChange={(markdown: boolean) => {
                 changeMarkdown(markdown);
@@ -142,7 +143,7 @@ const Setting = () => {
             <div className="setting-item">
               <div className="setting-item-title">是否显示悬浮窗 ：</div>
               <Switch
-                className="setting-switch"
+                size="small"
                 checked={config.showFloatWindow}
                 onChange={(showWindow: boolean) => {
                   setConfig({ ...config, showFloatWindow: showWindow });

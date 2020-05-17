@@ -51,7 +51,7 @@ const BodyTable = ({
                 >
                   <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
-                    <Icon className="icon" />
+                    <Icon />
                     <span>{item.name}</span>
                   </td>
                   <td className="main-table__row_cell size">
@@ -71,7 +71,7 @@ const BodyTable = ({
                 >
                   <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
-                    <Icon className="icon" filename={item.name} />
+                    <Icon filename={item.name} />
                     <span>{item.name}</span>
                   </td>
                   <td className="main-table__row_cell size">

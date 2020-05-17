@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import LazyLoad from "react-lazyload";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
 
@@ -94,7 +94,7 @@ const BodyGrid = ({
               onDoubleClick={() => onFolderSelect(item.name)}
               id={item.shortId}
             >
-              <Icon className="icon" />
+              <Icon style={{ fontSize: 50 }} />
               <span>{item.name}</span>
             </div>
           ) : (
@@ -109,13 +109,13 @@ const BodyGrid = ({
               {item.type.startsWith("image/") && domains.length > 0 ? (
                 <LazyLoad>
                   <img
-                    className="icon"
+                    className="preview-image"
                     src={`http://${domains[0]}/${item.webkitRelativePath}`}
                     alt={item.name}
                   />
                 </LazyLoad>
               ) : (
-                <Icon className="icon" filename={item.name} />
+                <Icon filename={item.name} style={{ fontSize: 45 }} />
               )}
               <span>{item.name}</span>
             </div>

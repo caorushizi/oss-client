@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Space } from "antd";
 
 import { OssType, AppStore } from "../../../main/types";
 import { getBuckets, switchBucket } from "../../helper/ipc";
@@ -57,7 +57,7 @@ const FormUpdate = ({
         name="type"
         rules={[{ required: true, message: "请选择存储厂商" }]}
       >
-        <Select style={{ width: 120 }}>
+        <Select size="small" style={{ width: 200 }}>
           <Select.Option value={OssType.qiniu}>七牛云</Select.Option>
         </Select>
       </Form.Item>
@@ -81,7 +81,8 @@ const FormUpdate = ({
         rules={[{ required: true, message: "请选择默认储存桶" }]}
       >
         <Select
-          style={{ width: 120 }}
+          size="small"
+          style={{ width: 200 }}
           onChange={async (val: string) => {
             const { domains: selectedDomains } = await switchBucket(val);
             setDomains(selectedDomains);
@@ -109,7 +110,7 @@ const FormUpdate = ({
         name="defaultDomain"
         rules={[{ required: true, message: "请输入 SK" }]}
       >
-        <Select style={{ width: 120 }}>
+        <Select size="small" style={{ width: 200 }}>
           {domains.length > 0 &&
             domains.map(i => (
               <Select.Option key={i} value={i}>
@@ -120,10 +121,12 @@ const FormUpdate = ({
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
-        <Button type="primary" htmlType="submit">
-          修改
-        </Button>
-        <Button onClick={() => onBucketDelete(activeOss)}>删除</Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            修改
+          </Button>
+          <Button onClick={() => onBucketDelete(activeOss)}>删除</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

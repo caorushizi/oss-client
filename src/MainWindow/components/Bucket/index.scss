@@ -7,10 +7,11 @@
 
   .buttons-wrapper {
     border-bottom: 1px solid $color-border;
+    padding: 8px 12px;
   }
 
   .toolbar-wrapper {
-    height: 40px;
+    padding: 8px 12px;
     box-sizing: border-box;
     border-bottom: 1px solid $color-border;
     display: flex;
@@ -132,8 +133,10 @@
         margin: 5px;
         padding: 5px;
         display: flex;
+        overflow: hidden;
         flex-direction: column;
         border: 1px transparent solid;
+        align-items: center;
 
         &:hover {
           border: 1px rgba(0, 0, 0, 0.2) solid;
@@ -141,17 +144,21 @@
           border-radius: 3px;
         }
 
-        .icon {
+        .preview-image {
           height: 50px;
           width: 50px;
+          object-fit: cover;
+          overflow: hidden;
         }
 
         span {
+          display: inline-block;
           font-size: 12px;
           line-height: 17px;
+          width: 100%;
           color: #fff;
           text-align: center;
-          padding-top: 10px;
+          padding-top: 3px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;

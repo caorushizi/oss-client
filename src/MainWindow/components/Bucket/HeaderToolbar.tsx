@@ -1,7 +1,15 @@
 import React from "react";
 
 import "./index.scss";
-import { Button, Input, Breadcrumb } from "antd";
+import { Button, Input, Breadcrumb, Space } from "antd";
+import {
+  SearchOutlined,
+  NumberOutlined,
+  MenuOutlined,
+  ArrowLeftOutlined,
+  RedoOutlined
+} from "@ant-design/icons";
+
 import { Layout } from "../../helper/enums";
 
 type PropTypes = {
@@ -23,26 +31,30 @@ const HeaderToolbar = ({
 }: PropTypes) => {
   return (
     <div className="toolbar-wrapper">
-      <div className="toolbar-left">
-        <Button onClick={backspace}>返回</Button>
-        <Button onClick={onRefreshBucket}>刷新</Button>
+      <Space size="middle" className="toolbar-left">
+        <Button size="small" onClick={backspace}>
+          <ArrowLeftOutlined />
+        </Button>
+        <Button size="small" onClick={onRefreshBucket}>
+          <RedoOutlined />
+        </Button>
         <Breadcrumb>
           {["首页"].concat(navigators).map(item => (
             <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
           ))}
         </Breadcrumb>
-      </div>
-      <div className="toolbar-right">
+      </Space>
+      <Space size="middle" className="toolbar-right">
         <Input
-          className="toolbar-right__search"
-          // icon="search"
+          size="small"
+          prefix={<SearchOutlined />}
           placeholder="搜索"
           onChange={event => onSearchChange(event.target.value)}
         />
-        <Button onClick={onChangeLayout}>
-          {layout === Layout.grid ? "表格" : "栅格"}
+        <Button size="small" onClick={onChangeLayout}>
+          {layout === Layout.grid ? <MenuOutlined /> : <NumberOutlined />}
         </Button>
-      </div>
+      </Space>
     </div>
   );
 };

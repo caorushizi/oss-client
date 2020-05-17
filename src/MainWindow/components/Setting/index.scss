@@ -23,7 +23,6 @@
         padding-bottom: 16px;
         display: flex;
         flex-direction: row;
-        align-items: center;
 
         .setting-item-title {
           width: 270px;
@@ -33,54 +32,6 @@
           border-radius: 10px;
           height: 24px;
           margin: 0;
-        }
-
-        .setting-input {
-          border-radius: 10px;
-          height: 24px;
-        }
-
-        .setting-radio {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          .input {
-            -webkit-appearance: none;
-            border-radius: 50%;
-            width: 17px;
-            height: 17px;
-            border: 2px solid #999;
-            transition: 0.2s all linear;
-            outline: none;
-            margin-right: 5px;
-          }
-
-          .input:checked {
-            border: 5px solid white;
-          }
-
-          .inner {
-            padding-left: 10px;
-            margin-right: 30px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-        }
-
-        .setting-switch {
-          &.rc-switch {
-            border: 1px transparent solid;
-            background: rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(3px);
-          }
-
-          &.rc-switch-checked {
-            border: 1px transparent solid;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(3px);
-          }
         }
       }
     }

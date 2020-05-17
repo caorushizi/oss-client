@@ -31,7 +31,9 @@ const TransferDone = () => {
       <div className="toolbar">
         <span className="toolbar-left">{`总共 ${transfers.length} 项`}</span>
         <div className="toolbar-right">
-          <Button onClick={onClearTransferDoneList}>清空记录</Button>
+          <Button size="small" onClick={onClearTransferDoneList}>
+            清空记录
+          </Button>
         </div>
       </div>
       <section className="transfer-table__wrapper">
@@ -41,7 +43,11 @@ const TransferDone = () => {
               {transfers.map((item: TransferStore) => (
                 <tr className="transfer-table__row" key={item.id + item.name}>
                   <td className="transfer-table__row_item meta">
-                    <Icon className="icon" filename={item.name} />
+                    <Icon
+                      className="icon"
+                      filename={item.name}
+                      style={{ fontSize: 30 }}
+                    />
                     <div className="name-wrapper">
                       <div className="name">{item.name}</div>
                       <div className="size">{fileSizeFormatter(item.size)}</div>

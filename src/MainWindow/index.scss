@@ -22,3 +22,100 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
 }
+
+.ant-btn {
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  backdrop-filter: blur(5px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  &[disabled] {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.15);
+    }
+  }
+}
+
+.ant-input-affix-wrapper {
+  padding: 0 10px;
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(5px);
+
+  .ant-input {
+    background: transparent;
+    color: rgba(255, 255, 255, 1);
+    backdrop-filter: none;
+  }
+}
+
+.ant-input {
+  padding: 0 10px;
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(5px);
+
+  &[disabled] {
+    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    color: rgba(255, 255, 255, 1);
+    backdrop-filter: blur(5px);
+  }
+}
+
+.ant-select {
+  .ant-select-selector {
+    border-radius: 5px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    color: #fff;
+    backdrop-filter: blur(5px);
+  }
+}
+
+.ant-select-dropdown {
+  border-radius: 5px !important;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 10px 3px;
+  backdrop-filter: blur(5px);
+
+  .ant-select-item-option {
+    &:hover {
+      background: transparent;
+    }
+
+    &-selected {
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+    }
+  }
+}
+
+.ant-breadcrumb {
+  .ant-breadcrumb-link {
+    color: #fff;
+  }
+}
