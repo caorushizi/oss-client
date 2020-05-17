@@ -1,8 +1,12 @@
 import React from "react";
 import "./index.scss";
 import { Item } from "../../lib/vdir/types";
-import Icon from "../FileIcon";
-import { dateFormatter, fileSizeFormatter } from "../../helper/utils";
+import Icon from "../IconFont";
+import {
+  dateFormatter,
+  fileSizeFormatter,
+  getIconName
+} from "../../helper/utils";
 import VFolder from "../../lib/vdir/VFolder";
 import VFile from "../../lib/vdir/VFile";
 
@@ -51,7 +55,11 @@ const BodyTable = ({
                 >
                   <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
-                    <Icon />
+                    <Icon
+                      type={getIconName()}
+                      className="icon"
+                      style={{ fontSize: 30 }}
+                    />
                     <span>{item.name}</span>
                   </td>
                   <td className="main-table__row_cell size">
@@ -71,7 +79,11 @@ const BodyTable = ({
                 >
                   <td className="main-table__row_cell index">{index + 1}</td>
                   <td className="main-table__row_cell title">
-                    <Icon filename={item.name} />
+                    <Icon
+                      type={getIconName(item.name)}
+                      className="icon"
+                      style={{ fontSize: 30 }}
+                    />
                     <span>{item.name}</span>
                   </td>
                   <td className="main-table__row_cell size">

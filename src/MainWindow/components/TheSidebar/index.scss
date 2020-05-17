@@ -14,10 +14,25 @@
     margin-bottom: 30px;
 
     .title {
-      line-height: 20px;
-      font-size: 14px;
+      height: 20px;
       margin-bottom: 10px;
       padding-left: 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .text {
+        line-height: 20px;
+        font-size: 14px;
+      }
+
+      .loading {
+        margin-left: 10px;
+        height: 20px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+      }
     }
 
     .sidebar-list {

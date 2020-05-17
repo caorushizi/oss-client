@@ -46,8 +46,12 @@ function TheSidebar({
       </section>
       <section className="container">
         <div className="title">
-          储存空间
-          {bucketLoading && <Spin indicator={antIcon} />}
+          <div className="text">储存空间</div>
+          <Spin
+            className="loading"
+            indicator={antIcon}
+            spinning={bucketLoading}
+          />
         </div>
         <ul className="sidebar-list">
           {bucketList.length ? (
@@ -77,7 +81,9 @@ function TheSidebar({
         </ul>
       </section>
       <section className="container">
-        <div className="title">传输列表</div>
+        <div className="title">
+          <div className="text">传输列表</div>
+        </div>
         <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.transferList))}>
             <ArrowUpOutlined className="icon" />
@@ -100,7 +106,9 @@ function TheSidebar({
         </ul>
       </section>
       <section className="container">
-        <div className="title">设置</div>
+        <div className="title">
+          <div className="text">设置</div>
+        </div>
         <ul className="sidebar-list">
           <li className={classNames("item", activeTag(Page.setting))}>
             <SettingFilled className="icon" />

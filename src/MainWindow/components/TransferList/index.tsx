@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
-import Icon from "../FileIcon";
+import Icon from "../IconFont";
 import { TransferStatus, TransferStore } from "../../../main/types";
-import { fileSizeFormatter } from "../../helper/utils";
+import { fileSizeFormatter, getIconName } from "../../helper/utils";
 import { getTransfers } from "../../helper/ipc";
 
 const TransferList = () => {
@@ -31,7 +31,7 @@ const TransferList = () => {
                   <td className="transfer-table__row_item meta">
                     <Icon
                       className="icon"
-                      filename={item.name}
+                      type={getIconName(item.name)}
                       style={{ fontSize: 30 }}
                     />
                     <div className="name-wrapper">

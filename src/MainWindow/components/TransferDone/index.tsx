@@ -6,9 +6,10 @@ import { TransferStatus, TransferStore } from "../../../main/types";
 import {
   dateFormatter,
   fileSizeFormatter,
+  getIconName,
   taskTypeFormatter
 } from "../../helper/utils";
-import Icon from "../FileIcon";
+import Icon from "../IconFont";
 import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
 
 const TransferDone = () => {
@@ -45,7 +46,7 @@ const TransferDone = () => {
                   <td className="transfer-table__row_item meta">
                     <Icon
                       className="icon"
-                      filename={item.name}
+                      type={getIconName(item.name)}
                       style={{ fontSize: 30 }}
                     />
                     <div className="name-wrapper">

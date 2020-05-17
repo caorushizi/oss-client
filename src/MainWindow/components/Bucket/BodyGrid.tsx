@@ -5,10 +5,11 @@ import Selection, { SelectionEvent } from "@simonwep/selection-js";
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
-import Icon from "../FileIcon";
+import IconFont from "../IconFont";
 import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
 import { KeyCode } from "../../helper/enums";
+import { getIconName } from "../../helper/utils";
 
 type PropTypes = {
   items: Item[];
@@ -94,7 +95,7 @@ const BodyGrid = ({
               onDoubleClick={() => onFolderSelect(item.name)}
               id={item.shortId}
             >
-              <Icon style={{ fontSize: 50 }} />
+              <IconFont type={getIconName()} style={{ fontSize: 50 }} />
               <span>{item.name}</span>
             </div>
           ) : (
@@ -115,7 +116,7 @@ const BodyGrid = ({
                   />
                 </LazyLoad>
               ) : (
-                <Icon filename={item.name} style={{ fontSize: 45 }} />
+                <IconFont type={getIconName(item.name)} style={{ fontSize: 45 }} />
               )}
               <span>{item.name}</span>
             </div>
