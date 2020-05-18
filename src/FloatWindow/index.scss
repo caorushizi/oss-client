@@ -1,13 +1,3 @@
-@font-face {
-  font-family: "myfont";
-  src: url("../MainWindow/assets/fonts/font.woff") format("woff");
-}
-
-* {
-  user-select: none;
-  font-family: myfont !important;
-}
-
 .wrapper {
   height: 100vh;
   width: 100vw;
