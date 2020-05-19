@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { remote } from "electron";
-import { Switch, Radio, Button, Input } from "antd";
+import { Switch, Radio, Button, Input, Form } from "antd";
 
 import "./index.scss";
 import { Platform } from "../../helper/enums";
@@ -24,6 +24,24 @@ import {
 
 const Setting = () => {
   const [config, setConfig] = useState<ConfigStore>(initialConfig);
+  const onSelectDownloadPath = () => {
+    remote.dialog
+      .showOpenDialog({
+        properties: [
+          "openDirectory",
+          "createDirectory",
+          "showHiddenFiles",
+          "promptToCreate"
+        ]
+      })
+      .then(({ canceled, filePaths }) => {
+        if (!canceled && filePaths.length > 0) {
+          const selectedPath = filePaths[0];
+          changeDownloadDir(selectedPath);
+          setConfig({ ...config, downloadDir: selectedPath });
+        }
+      });
+  };
 
   useEffect(() => {
     const initState = async () => {
@@ -37,9 +55,12 @@ const Setting = () => {
     <div className="setting-wrapper">
       <section className="section">
         <div className="title">全局设置</div>
-        <div className="settings">
-          <div className="setting-item">
-            <div className="setting-item-title">使用 https ：</div>
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          labelAlign="left"
+        >
+          <Form.Item label="使用 https ">
             <Switch
               size="small"
               checked={config.useHttps}
@@ -48,9 +69,8 @@ const Setting = () => {
                 setConfig({ ...config, useHttps });
               }}
             />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">删除时显示提示框：</div>
+          </Form.Item>
+          <Form.Item label="删除时显示提示框">
             <Switch
               size="small"
               checked={config.deleteShowDialog}
@@ -59,11 +79,8 @@ const Setting = () => {
                 setConfig({ ...config, deleteShowDialog: directDelete });
               }}
             />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">
-              如果文件已经存在是否覆盖文件：
-            </div>
+          </Form.Item>
+          <Form.Item label="如果文件已经存在是否覆盖文件">
             <Switch
               size="small"
               checked={config.uploadOverwrite}
@@ -72,33 +89,14 @@ const Setting = () => {
                 setConfig({ ...config, uploadOverwrite: uploadOverride });
               }}
             />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">
-              <Button
-                size="small"
-                onClick={() => {
-                  remote.dialog
-                    .showOpenDialog({
-                      properties: [
-                        "openDirectory",
-                        "createDirectory",
-                        "showHiddenFiles",
-                        "promptToCreate"
-                      ]
-                    })
-                    .then(({ canceled, filePaths }) => {
-                      if (!canceled && filePaths.length > 0) {
-                        const selectedPath = filePaths[0];
-                        changeDownloadDir(selectedPath);
-                        setConfig({ ...config, downloadDir: selectedPath });
-                      }
-                    });
-                }}
-              >
+          </Form.Item>
+          <Form.Item
+            label={
+              <Button size="small" onClick={onSelectDownloadPath}>
                 选择下载位置
               </Button>
-            </div>
+            }
+          >
             <Input
               width={200}
               size="small"
@@ -106,14 +104,18 @@ const Setting = () => {
               placeholder="请选择默认下载位置"
               value={config.downloadDir}
             />
-          </div>
-        </div>
+          </Form.Item>
+        </Form>
       </section>
       <section className="section">
         <p className="title">托盘设置</p>
-        <div className="settings">
-          <div className="setting-item">
-            <div className="setting-item-title">传输完成后是否提示 ：</div>
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          labelAlign="left"
+          size="small"
+        >
+          <Form.Item label="传输完成后是否提示">
             <Switch
               size="small"
               checked={config.transferDoneTip}
@@ -122,9 +124,8 @@ const Setting = () => {
                 setConfig({ ...config, transferDoneTip });
               }}
             />
-          </div>
-          <div className="setting-item">
-            <div className="setting-item-title">复制url或者markdown格式：</div>
+          </Form.Item>
+          <Form.Item label="复制url或者markdown格式">
             <Switch
               size="small"
               checked={config.markdown}
@@ -133,15 +134,19 @@ const Setting = () => {
                 setConfig({ ...config, markdown });
               }}
             />
-          </div>
-        </div>
+          </Form.Item>
+        </Form>
       </section>
       {getPlatform() === Platform.windows && (
         <section className="section">
           <p className="title">悬浮窗设置</p>
-          <div className="settings">
-            <div className="setting-item">
-              <div className="setting-item-title">是否显示悬浮窗 ：</div>
+          <Form
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            labelAlign="left"
+            size="small"
+          >
+            <Form.Item label="是否显示悬浮窗">
               <Switch
                 size="small"
                 checked={config.showFloatWindow}
@@ -149,9 +154,8 @@ const Setting = () => {
                   setConfig({ ...config, showFloatWindow: showWindow });
                 }}
               />
-            </div>
-            <div className="setting-item">
-              <div className="setting-item-title">悬浮窗样式 ：</div>
+            </Form.Item>
+            <Form.Item label="悬浮窗样式">
               <Radio.Group
                 className="setting-radio"
                 name="FloatWindow"
@@ -166,8 +170,8 @@ const Setting = () => {
                 <Radio className="input" value={FlowWindowStyle.oval} />
                 <span className="inner">椭圆形</span>
               </Radio.Group>
-            </div>
-          </div>
+            </Form.Item>
+          </Form>
         </section>
       )}
     </div>
