@@ -59,10 +59,10 @@
             .icon {
               height: 30px;
               width: 30px;
-              padding-right: 15px;
             }
 
-            .icon-button {
+            span {
+              text-indent: 10px;
             }
           }
 
@@ -81,59 +81,7 @@
       .main-right_form_title {
         color: #fff;
         font-size: 25px;
-      }
-
-      .oss-form {
-        padding: 50px 15px;
-        margin: 0;
-
-        .oss-form_item {
-          height: 50px;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-
-          .oss-form_item__title {
-            width: 100px;
-            color: #fff;
-          }
-
-          .oss-form_item__inner-input {
-            flex: 1;
-            height: 35px;
-          }
-
-          .oss-form_item__inner-select {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.15);
-            border: none;
-            height: 35px;
-            backdrop-filter: blur(5px);
-            outline: none;
-            color: #fff;
-            border-radius: 10px;
-          }
-
-          .oss-form_item__errors {
-            width: 100px;
-            color: red;
-          }
-        }
-
-        .oss-form_action {
-          padding-top: 30px;
-        }
-      }
-
-      .custom-form {
-        .ant-form-item {
-          .ant-form-item-babel {
-            label {
-              background: #000;
-              color: #fff !important;
-            }
-          }
-        }
+        margin-bottom: 30px;
       }
     }
   }

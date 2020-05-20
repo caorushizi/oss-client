@@ -32,6 +32,22 @@ body {
   font-size: 12px;
   backdrop-filter: blur(5px);
 
+  &:active {
+    padding: 0 14px;
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    backdrop-filter: blur(5px);
+  }
+
+  &:focus {
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    backdrop-filter: blur(5px);
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.25);
@@ -117,5 +133,15 @@ body {
 .ant-breadcrumb {
   .ant-breadcrumb-link {
     color: #fff;
+  }
+}
+
+.ant-form {
+  .ant-form-item {
+    .ant-form-item-label {
+      label {
+        color: #fff;
+      }
+    }
   }
 }

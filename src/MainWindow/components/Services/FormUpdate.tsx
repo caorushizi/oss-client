@@ -122,10 +122,12 @@ const FormUpdate = ({
 
       <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
         <Space>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" size="small">
             修改
           </Button>
-          <Button onClick={() => onBucketDelete(activeOss)}>删除</Button>
+          <Button onClick={() => onBucketDelete(activeOss)} size="small">
+            删除
+          </Button>
         </Space>
       </Form.Item>
     </Form>

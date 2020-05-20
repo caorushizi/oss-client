@@ -91,6 +91,7 @@ const Setting = () => {
             />
           </Form.Item>
           <Form.Item
+            colon={false}
             label={
               <Button size="small" onClick={onSelectDownloadPath}>
                 选择下载位置
