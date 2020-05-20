@@ -25,15 +25,15 @@ jobs:
     runs-on: macOS-latest
     steps:
     - name: 将代码检出
-      uses: actions/checkout@v2
-      - name: 安装 node 13.11
-        uses: actions/setup-node@v2-beta
+    uses: actions/checkout@v2
+    - name: 安装 node 13.11
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '13.11'
+    - name: 安装依赖并且开始打包
+      run: npm install && npm run make
+    - name: 添加 artifact
+        uses: actions/upload-artifact@v2
         with:
-          node-version: '13.11'
-      - name: 安装依赖并且开始打包
-        run: npm install && npm run make
-      - name: 添加 artifact
-          uses: actions/upload-artifact@v2
-          with:
-            name: test
-            path: out/make
+          name: test
+          path: out/make
