@@ -25,7 +25,7 @@ jobs:
     runs-on: macOS-latest
     steps:
     - name: 将代码检出
-    uses: actions/checkout@v2
+      uses: actions/checkout@v2
     - name: 安装 node 13.11
       uses: actions/setup-node@v2-beta
       with:
