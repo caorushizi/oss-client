@@ -17,10 +17,10 @@ jobs:
     - name: 安装依赖并且开始打包
       run: npm install && npm run make
     - name: 添加 artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: test
-          path: out/make
+      uses: actions/upload-artifact@v2
+      with:
+        name: test
+        path: out/make
   build-mac:
     runs-on: macOS-latest
     steps:
@@ -33,7 +33,7 @@ jobs:
     - name: 安装依赖并且开始打包
       run: npm install && npm run make
     - name: 添加 artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: test
-          path: out/make
+      uses: actions/upload-artifact@v2
+      with:
+        name: test
+        path: out/make
