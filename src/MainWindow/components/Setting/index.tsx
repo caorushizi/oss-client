@@ -42,6 +42,11 @@ const Setting = () => {
         }
       });
   };
+  const labelButton = () => (
+    <Button size="small" onClick={onSelectDownloadPath}>
+      选择下载位置
+    </Button>
+  );
 
   useEffect(() => {
     const initState = async () => {
@@ -90,14 +95,7 @@ const Setting = () => {
               }}
             />
           </Form.Item>
-          <Form.Item
-            colon={false}
-            label={
-              <Button size="small" onClick={onSelectDownloadPath}>
-                选择下载位置
-              </Button>
-            }
-          >
+          <Form.Item colon={false} label={labelButton}>
             <Input
               width={200}
               size="small"

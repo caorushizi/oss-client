@@ -81,11 +81,13 @@ const onContextMenu = async () => {
     type: TaskType.upload,
     status: TransferStatus.done
   });
-  console.log(recentList);
   const recentMenu: MenuItemConstructorOptions[] =
     recentList.length > 0
       ? recentList.splice(0, 5).map(i => ({
-          label: i.name,
+          label: i.name.replace(
+            /^(.{5}).*(.{6})$/,
+            (_, $1, $2) => `${$1}……${$2}`
+          ),
           click: () => {}
         }))
       : [{ label: "暂无最近记录", enabled: false }];

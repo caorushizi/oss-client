@@ -85,6 +85,7 @@
     "@types/uuid": "^3.4.9",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
+    "babel-eslint": "^10.1.0",
     "chalk": "^3.0.0",
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^6.0.3",

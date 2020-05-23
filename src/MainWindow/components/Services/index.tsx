@@ -33,7 +33,6 @@ const Services = ({ onOssActive }: PropTypes) => {
   const escapePress = useKeyPress(KeyCode.Escape);
 
   const onBucketUpdate = async (store: AppStore) => {
-    console.log("新的App：", store);
     await updateApp(store);
     const allApps = await getAppsChannel();
     setApps(allApps);
@@ -42,7 +41,6 @@ const Services = ({ onOssActive }: PropTypes) => {
       onOssActive(currentStore);
       setCurrentApp(currentStore);
     }
-    alert("修改成功！");
   };
   const onBucketDelete = async (store: AppStore) => {
     await deleteApp(store);
