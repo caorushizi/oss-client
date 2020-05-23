@@ -19,7 +19,7 @@ jobs:
       - name: 添加 artifact
         uses: actions/upload-artifact@v2
         with:
-          name: oss-client-win-release.zip
+          name: oss-client-win-release
           path: out/make/squirrel.windows/x64/
   build-mac:
     runs-on: macOS-latest
@@ -35,5 +35,5 @@ jobs:
       - name: 添加 artifact
         uses: actions/upload-artifact@v2
         with:
-          name: oss-client-mac-release.exe
+          name: oss-client-mac-release
           path: out/make/zip/darwin/x64/
