@@ -116,7 +116,10 @@ const BodyGrid = ({
                   />
                 </LazyLoad>
               ) : (
-                <IconFont type={getIconName(item.name)} style={{ fontSize: 45 }} />
+                <IconFont
+                  type={getIconName(item.name)}
+                  style={{ fontSize: 45 }}
+                />
               )}
               <span>{item.name}</span>
             </div>

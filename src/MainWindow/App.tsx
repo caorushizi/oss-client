@@ -61,7 +61,6 @@ function App() {
     setActivePage(Page.setting);
   };
   const playAudio = async () => {
-    console.log("播放下载完成");
     if (audio.current) {
       await audio.current.play();
     }
