@@ -212,7 +212,7 @@ export default class ElectronAppService implements IApp {
         if (this.mainWindow) this.mainWindow = null;
       });
       // 初始化悬浮窗
-      if (getPlatform() !== Platform.windows) {
+      if (getPlatform() === Platform.windows) {
         this.floatWindow = new BrowserWindow({
           transparent: true,
           frame: false,
