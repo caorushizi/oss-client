@@ -95,7 +95,7 @@ const Setting = () => {
               }}
             />
           </Form.Item>
-          <Form.Item colon={false} label={labelButton}>
+          <Form.Item colon={false} label={labelButton()}>
             <Input
               width={200}
               size="small"
