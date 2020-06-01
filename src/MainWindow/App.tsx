@@ -31,6 +31,8 @@ import {
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
 
+const mainWrapperWidth = document.body.clientWidth - 225;
+
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [bgOffset, setBgOffset] = useState<string>(getBgOffset());
@@ -133,7 +135,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
+              style={{ backgroundPosition: bgOffset, width: mainWrapperWidth }}
             >
               <Bucket
                 bucketName={activeBucket}
@@ -152,7 +154,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
+              style={{ backgroundPosition: bgOffset, width: mainWrapperWidth }}
             >
               <TransferList />
             </section>
@@ -168,7 +170,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
+              style={{ backgroundPosition: bgOffset, width: mainWrapperWidth }}
             >
               <TransferDone />
             </section>
@@ -184,7 +186,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
+              style={{ backgroundPosition: bgOffset, width: mainWrapperWidth }}
             >
               <Setting />
             </section>
@@ -200,7 +202,7 @@ function App() {
           >
             <section
               className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
+              style={{ backgroundPosition: bgOffset, width: mainWrapperWidth }}
             >
               <Services onOssActive={onOssActive} />
             </section>

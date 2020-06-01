@@ -57,7 +57,7 @@ const FormUpdate = ({
         name="type"
         rules={[{ required: true, message: "请选择存储厂商" }]}
       >
-        <Select size="small" style={{ width: 200 }}>
+        <Select size="small">
           <Select.Option value={OssType.qiniu}>七牛云</Select.Option>
         </Select>
       </Form.Item>
@@ -82,7 +82,6 @@ const FormUpdate = ({
       >
         <Select
           size="small"
-          style={{ width: 200 }}
           onChange={async (val: string) => {
             const { domains: selectedDomains } = await switchBucket(val);
             setDomains(selectedDomains);
@@ -110,7 +109,7 @@ const FormUpdate = ({
         name="defaultDomain"
         rules={[{ required: true, message: "请输入 SK" }]}
       >
-        <Select size="small" style={{ width: 200 }}>
+        <Select size="small">
           {domains.length > 0 &&
             domains.map(i => (
               <Select.Option key={i} value={i}>

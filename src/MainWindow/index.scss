@@ -91,6 +91,26 @@ body {
   color: rgba(255, 255, 255, 1);
   backdrop-filter: blur(5px);
 
+  &-password {
+    &:hover {
+      border-color: #fff;
+    }
+
+    &:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  &:hover {
+    border-color: #fff;
+  }
+
+  &:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+
   &[disabled] {
     padding: 0 10px;
     background: rgba(0, 0, 0, 0.15);
@@ -108,30 +128,45 @@ body {
     border-color: rgba(0, 0, 0, 0.2) !important;
     color: #fff;
     backdrop-filter: blur(5px);
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2) !important;
+    }
   }
 }
 
 .ant-select-dropdown {
   border-radius: 5px !important;
   background: rgba(255, 255, 255, 0.3);
-  padding: 10px 3px;
+  padding: 7px 0;
   backdrop-filter: blur(5px);
 
   .ant-select-item-option {
+    border-radius: 10px;
+    margin: 3px;
+    color: #fff;
+
     &:hover {
       background: transparent;
     }
 
     &-selected {
-      border-radius: 5px;
       background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(5px);
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
     }
   }
 }
 
 .ant-breadcrumb {
   .ant-breadcrumb-link {
+    color: #fff;
+  }
+
+  .ant-breadcrumb-separator {
     color: #fff;
   }
 }
@@ -142,6 +177,22 @@ body {
       label {
         color: #fff;
       }
+    }
+  }
+}
+
+.ant-switch {
+  backdrop-filter: blur(5px);
+
+  &.ant-switch-checked {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.ant-radio-group {
+  .ant-radio-wrapper {
+    span {
+      color: #fff;
     }
   }
 }

@@ -34,6 +34,7 @@
   }
 
   .main-wrapper {
+    overflow: hidden;
     height: 100vh;
     box-sizing: border-box;
     padding-top: 40px;
@@ -84,4 +85,48 @@
   @include main-wrapper-mixin;
   top: 100vh;
   transition: top 0.3s ease-in-out;
+}
+
+.left-enter {
+  @include main-wrapper-mixin;
+  left: -100vw;
+}
+
+.left-enter-active {
+  @include main-wrapper-mixin;
+  left: 0;
+  transition: left 0.3s ease-in-out;
+}
+
+.left-exit {
+  @include main-wrapper-mixin;
+  left: 0;
+}
+
+.left-exit-active {
+  @include main-wrapper-mixin;
+  left: -100vw;
+  transition: left 0.3s ease-in-out;
+}
+
+.right-enter {
+  @include main-wrapper-mixin;
+  left: 100vw;
+}
+
+.right-enter-active {
+  @include main-wrapper-mixin;
+  left: 0;
+  transition: left 0.3s ease-in-out;
+}
+
+.right-exit {
+  @include main-wrapper-mixin;
+  left: 0;
+}
+
+.right-exit-active {
+  @include main-wrapper-mixin;
+  left: 100vw;
+  transition: left 0.3s ease-in-out;
 }
