@@ -146,6 +146,7 @@ const Services = ({ onOssActive }: PropTypes) => {
         {page === ServicesPage.list && (
           <CSSTransition
             key="service-list"
+            style={{ background: "red" }}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}
@@ -209,6 +210,7 @@ const Services = ({ onOssActive }: PropTypes) => {
         {page === ServicesPage.add && (
           <CSSTransition
             key="service-add"
+            style={{ background: "green" }}
             addEndListener={(node, done) => {
               node.addEventListener("transitionend", done, false);
             }}

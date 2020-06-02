@@ -82,6 +82,7 @@ const FormUpdate = ({
       >
         <Select
           size="small"
+          notFoundContent="当前没有 buckets！"
           onChange={async (val: string) => {
             const { domains: selectedDomains } = await switchBucket(val);
             setDomains(selectedDomains);
@@ -109,7 +110,7 @@ const FormUpdate = ({
         name="defaultDomain"
         rules={[{ required: true, message: "请输入 SK" }]}
       >
-        <Select size="small">
+        <Select size="small" notFoundContent="当前 bucket 没有绑定域名">
           {domains.length > 0 &&
             domains.map(i => (
               <Select.Option key={i} value={i}>
