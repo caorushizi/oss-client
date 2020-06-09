@@ -34,7 +34,7 @@
   }
 
   .main-wrapper {
-    //overflow: hidden;
+    overflow: hidden;
     height: 100vh;
     box-sizing: border-box;
     padding-top: 40px;
@@ -53,7 +53,7 @@
   @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top 0.3s, opacity 0.3s ease-in-out;
+  transition: top 0.16s, opacity 0.16s ease-in-out;
 }
 
 .up-exit {
@@ -66,7 +66,7 @@
   @include main-wrapper-mixin;
   top: -100vh;
   opacity: 0;
-  transition: top 0.3s, opacity 0.3s ease-in-out;
+  transition: top 0.16s, opacity 0.16s ease-in-out;
 }
 
 .down-enter {
@@ -79,7 +79,7 @@
   @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top 0.3s, opacity 0.3s ease-in-out;
+  transition: top 0.16s, opacity 0.16s ease-in-out;
 }
 
 .down-exit {
@@ -92,57 +92,5 @@
   @include main-wrapper-mixin;
   top: 100vh;
   opacity: 0;
-  transition: top 0.3s, opacity 0.3s ease-in-out;
-}
-
-.left-enter {
-  @include main-wrapper-mixin;
-  opacity: 0;
-  left: -100vw;
-}
-
-.left-enter-active {
-  @include main-wrapper-mixin;
-  left: 0;
-  opacity: 1;
-  transition: left 0.3s, opacity 0.3s ease-in-out;
-}
-
-.left-exit {
-  @include main-wrapper-mixin;
-  opacity: 1;
-  left: 0;
-}
-
-.left-exit-active {
-  @include main-wrapper-mixin;
-  left: -100vw;
-  opacity: 0;
-  transition: left 0.3s, opacity 0.3s ease-in-out;
-}
-
-.right-enter {
-  @include main-wrapper-mixin;
-  opacity: 0;
-  left: 100vw;
-}
-
-.right-enter-active {
-  @include main-wrapper-mixin;
-  left: 0;
-  opacity: 1;
-  transition: left 0.3s, opacity 0.3s ease-in-out;
-}
-
-.right-exit {
-  @include main-wrapper-mixin;
-  opacity: 1;
-  left: 0;
-}
-
-.right-exit-active {
-  @include main-wrapper-mixin;
-  left: 100vw;
-  opacity: 0;
-  transition: left 0.3s, opacity 0.3s ease-in-out;
+  transition: top 0.16s, opacity 0.16s ease-in-out;
 }

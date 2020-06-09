@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button } from "antd";
 import classNames from "classnames";
 import { addApp, deleteApp, getAppsChannel, updateApp } from "../../helper/ipc";
@@ -32,6 +32,9 @@ enum ServicesPage {
   list,
   add
 }
+
+const mainWrapperWidth = document.body.clientWidth - 225;
+const mainWrapperHeight = document.body.clientHeight - 40;
 
 const Services = ({ onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<(AppStore | NewAppStore)[]>([]);
@@ -140,98 +143,102 @@ const Services = ({ onOssActive }: PropTypes) => {
     }
   };
 
-  return (
-    <div className="services-wrapper">
-      <TransitionGroup>
-        {page === ServicesPage.list && (
-          <CSSTransition
-            key="service-list"
-            style={{ background: "red" }}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <section className="apps-main">
-              <div className="main-left">
-                <div className="header">
-                  <Button
-                    size="small"
-                    disabled={hasNew}
-                    onClick={onOssAddClick}
-                  >
-                    添加
-                  </Button>
-                </div>
-                <ul className="app-list">
-                  {apps.length > 0 ? (
-                    apps.map(app => (
-                      <li
-                        className={classNames("item", {
-                          active: app._id === currentApp?._id
-                        })}
-                        key={app._id || Date.now()}
-                      >
-                        <button
-                          type="button"
-                          className="button"
-                          disabled={!app._id}
-                          onClick={() => onOssSelect(app._id!)}
-                        >
-                          <svg className="icon" aria-hidden="true">
-                            {renderIcon(app.type)}
-                          </svg>
-                          <span>{app.name}</span>
-                        </button>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="no-result">
-                      <p>没有 Apps</p>
-                      <p>暂时没有搜索到 apps</p>
-                    </li>
-                  )}
-                </ul>
+  const renderSwitch = (param: ServicesPage) => {
+    switch (param) {
+      case ServicesPage.list:
+        return (
+          <section className="apps-main-wrapper">
+            <div className="main-left">
+              <div className="header">
+                <Button size="small" disabled={hasNew} onClick={onOssAddClick}>
+                  添加
+                </Button>
               </div>
-              {currentApp && (
-                <div className="main-right_form_container">
-                  <div className="main-right_form_title">修改配置</div>
-                  <FormUpdate
-                    key={currentApp._id}
-                    activeOss={currentApp}
-                    onBucketUpdate={onBucketUpdate}
-                    onBucketDelete={onBucketDelete}
-                  />
-                </div>
-              )}
-            </section>
-          </CSSTransition>
-        )}
-        {page === ServicesPage.add && (
-          <CSSTransition
-            key="service-add"
-            style={{ background: "green" }}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <div>
-              <Button
-                size="small"
-                onClick={() => {
-                  setPage(ServicesPage.list);
-                  setDirection(Direction.left);
-                }}
-              >
-                返回
-              </Button>
-              <FormAdd onBucketAdd={onBucketAdd} />
+              <ul className="app-list">
+                {apps.length > 0 ? (
+                  apps.map(app => (
+                    <li
+                      className={classNames("item", {
+                        active: app._id === currentApp?._id
+                      })}
+                      key={app._id || Date.now()}
+                    >
+                      <button
+                        type="button"
+                        className="button"
+                        disabled={!app._id}
+                        onClick={() => onOssSelect(app._id!)}
+                      >
+                        <svg className="icon" aria-hidden="true">
+                          {renderIcon(app.type)}
+                        </svg>
+                        <span>{app.name}</span>
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="no-result">
+                    <p>没有 Apps</p>
+                    <p>暂时没有搜索到 apps</p>
+                  </li>
+                )}
+              </ul>
             </div>
-          </CSSTransition>
-        )}
-      </TransitionGroup>
-    </div>
+            {currentApp && (
+              <div className="main-right_form_container">
+                <div className="main-right_form_title">修改配置</div>
+                <FormUpdate
+                  key={currentApp._id}
+                  activeOss={currentApp}
+                  onBucketUpdate={onBucketUpdate}
+                  onBucketDelete={onBucketDelete}
+                />
+              </div>
+            )}
+          </section>
+        );
+      case ServicesPage.add:
+        return (
+          <section>
+            <Button
+              size="small"
+              onClick={() => {
+                setPage(ServicesPage.list);
+                setDirection(Direction.left);
+              }}
+            >
+              返回
+            </Button>
+            <FormAdd onBucketAdd={onBucketAdd} />
+          </section>
+        );
+      default:
+        return <div>123</div>;
+    }
+  };
+
+  return (
+    <SwitchTransition>
+      <CSSTransition
+        key={page}
+        addEndListener={(node, done) => {
+          node.addEventListener("transitionend", done, false);
+        }}
+        classNames={direction}
+      >
+        <section
+          className="services-wrapper"
+          style={{
+            width: mainWrapperWidth,
+            maxWidth: mainWrapperWidth,
+            height: mainWrapperHeight,
+            maxHeight: mainWrapperHeight
+          }}
+        >
+          {renderSwitch(page)}
+        </section>
+      </CSSTransition>
+    </SwitchTransition>
   );
 };
 

@@ -1,8 +1,7 @@
-.services-wrapper {
-  height: 100%;
-  width: 100%;
+@import "../../variable";
 
-  .apps-main {
+.services-wrapper {
+  .apps-main-wrapper {
     height: 100%;
     display: flex;
     flex-direction: row;
@@ -86,3 +85,56 @@
     }
   }
 }
+
+.left-enter {
+  @include main-wrapper-mixin;
+  opacity: 0;
+  left: -100vw;
+}
+
+.left-enter-active {
+  @include main-wrapper-mixin;
+  left: 0;
+  opacity: 1;
+  transition: left 0.3s, opacity 0.3s ease-in-out;
+}
+
+.left-exit {
+  @include main-wrapper-mixin;
+  opacity: 1;
+  left: 0;
+}
+
+.left-exit-active {
+  @include main-wrapper-mixin;
+  left: -100vw;
+  opacity: 0;
+  transition: left 0.3s, opacity .3s ease-in-out;
+}
+
+.right-enter {
+  @include main-wrapper-mixin;
+  opacity: 0;
+  left: 100vw;
+}
+
+.right-enter-active {
+  @include main-wrapper-mixin;
+  left: 0;
+  opacity: 1;
+  transition: left .3s, opacity .3s ease-in-out;
+}
+
+.right-exit {
+  @include main-wrapper-mixin;
+  opacity: 1;
+  left: 0;
+}
+
+.right-exit-active {
+  @include main-wrapper-mixin;
+  left: 100vw;
+  opacity: 0;
+  transition: left .3s, opacity .3s ease-in-out;
+}
+
