@@ -199,7 +199,7 @@ const Services = ({ onOssActive }: PropTypes) => {
         );
       case ServicesPage.add:
         return (
-          <section>
+          <section className="apps-main-wrapper">
             <Button
               size="small"
               onClick={() => {

@@ -1,11 +1,10 @@
-@import "../../variable";
-
 .services-wrapper {
   .apps-main-wrapper {
     height: 100%;
     display: flex;
     flex-direction: row;
     overflow: auto;
+    padding: 10px;
 
     .main-left {
       padding: 0 5px;
@@ -87,54 +86,55 @@
 }
 
 .left-enter {
-  @include main-wrapper-mixin;
+  // test
+  position: absolute;
+  left: calc(225px - 100%);
   opacity: 0;
-  left: -100vw;
 }
 
 .left-enter-active {
-  @include main-wrapper-mixin;
-  left: 0;
+  position: absolute;
   opacity: 1;
+  left: 0;
   transition: left 0.3s, opacity 0.3s ease-in-out;
 }
 
 .left-exit {
-  @include main-wrapper-mixin;
-  opacity: 1;
+  position: absolute;
   left: 0;
+  opacity: 1;
 }
 
 .left-exit-active {
-  @include main-wrapper-mixin;
-  left: -100vw;
+  position: absolute;
   opacity: 0;
+  left: calc(225px - 100%);
   transition: left 0.3s, opacity .3s ease-in-out;
 }
 
 .right-enter {
-  @include main-wrapper-mixin;
+  position: absolute;
+  left: calc(100% - 225px);
   opacity: 0;
-  left: 100vw;
 }
 
 .right-enter-active {
-  @include main-wrapper-mixin;
-  left: 0;
+  position: absolute;
   opacity: 1;
+  left: 0;
   transition: left .3s, opacity .3s ease-in-out;
 }
 
 .right-exit {
-  @include main-wrapper-mixin;
-  opacity: 1;
+  position: absolute;
   left: 0;
+  opacity: 1;
 }
 
 .right-exit-active {
-  @include main-wrapper-mixin;
-  left: 100vw;
+  position: absolute;
   opacity: 0;
+  left: calc(100% - 225px);
   transition: left .3s, opacity .3s ease-in-out;
 }
 
