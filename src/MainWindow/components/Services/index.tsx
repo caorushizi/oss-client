@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
-import { addApp, getAppsChannel, updateApp, deleteApp } from "../../helper/ipc";
-import ServicesList from "./ServicesList";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { Button } from "antd";
+import classNames from "classnames";
+import { addApp, deleteApp, getAppsChannel, updateApp } from "../../helper/ipc";
 import FormAdd from "./FormAdd";
 import FormUpdate from "./FormUpdate";
 import { AppStore, OssType } from "../../../main/types";
 import useKeyPress from "../../hooks/useKeyPress";
-import { KeyCode } from "../../helper/enums";
+import { Direction, KeyCode } from "../../helper/enums";
 
 type NewAppStore = {
   _id?: string;
@@ -26,10 +28,20 @@ type PropTypes = {
   onOssActive: (item: AppStore) => void;
 };
 
+enum ServicesPage {
+  list,
+  add
+}
+
+const mainWrapperWidth = document.body.clientWidth - 225;
+const mainWrapperHeight = document.body.clientHeight - 40;
+
 const Services = ({ onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<(AppStore | NewAppStore)[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
   const [hasNew, setHasNew] = useState<boolean>(false);
+  const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
+  const [direction, setDirection] = useState<Direction>(Direction.down);
   const escapePress = useKeyPress(KeyCode.Escape);
 
   const onBucketUpdate = async (store: AppStore) => {
@@ -69,23 +81,25 @@ const Services = ({ onOssActive }: PropTypes) => {
     setHasNew(false);
   };
   const onOssAddClick = () => {
-    if (apps.filter(i => (i as NewAppStore).isNew).length > 0) return;
-    const current: NewAppStore = {
-      name: "新建",
-      ak: "",
-      sk: "",
-      type: OssType.qiniu,
-      bucket: "",
-      uploadPrefix: "",
-      uploadBucket: "",
-      defaultDomain: "",
-      isNew: true
-    };
-    setApps([...apps, current]);
-    setCurrentApp(current);
-    setHasNew(true);
+    // if (apps.filter(i => (i as NewAppStore).isNew).length > 0) return;
+    // const current: NewAppStore = {
+    //   name: "新建",
+    //   ak: "",
+    //   sk: "",
+    //   type: OssType.qiniu,
+    //   bucket: "",
+    //   uploadPrefix: "",
+    //   uploadBucket: "",
+    //   defaultDomain: "",
+    //   isNew: true
+    // };
+    // setApps([...apps, current]);
+    // setCurrentApp(current);
+    // setHasNew(true);
+    setPage(ServicesPage.add);
+    setDirection(Direction.right);
   };
-  const _onOssSelect = (id: string) => {
+  const onOssSelect = (id: string) => {
     const ossList = apps.filter(i => i._id);
     setApps(ossList);
     setHasNew(false);
@@ -116,33 +130,121 @@ const Services = ({ onOssActive }: PropTypes) => {
   }, [escapePress]);
   // fixme: 在上下切换的时候宽度增加
 
-  return (
-    <div className="services-wrapper">
-      <section className="apps-main">
-        <ServicesList
-          hasNew={hasNew}
-          ossList={apps}
-          activeOss={currentApp?._id}
-          onOssAddClick={onOssAddClick}
-          onOssSelect={_onOssSelect}
-        />
-        {currentApp && (
-          <div className="main-right_form_container">
-            <div className="main-right_form_title">修改配置</div>
-            {currentApp._id ? (
-              <FormUpdate
-                key={currentApp._id}
-                activeOss={currentApp}
-                onBucketUpdate={onBucketUpdate}
-                onBucketDelete={onBucketDelete}
-              />
-            ) : (
-              <FormAdd onBucketAdd={onBucketAdd} />
+  const renderIcon = (type: OssType) => {
+    switch (type) {
+      case OssType.ali:
+        return <use xlinkHref="#icon-aliyun-logo" />;
+      case OssType.qiniu:
+        return <use xlinkHref="#icon-qiniuyun1" />;
+      case OssType.tencent:
+        return <use xlinkHref="#icon-tengxunyun" />;
+      default:
+        return <use xlinkHref="#icon-grid" />;
+    }
+  };
+
+  const renderSwitch = (param: ServicesPage) => {
+    switch (param) {
+      case ServicesPage.list:
+        return (
+          <section className="apps-main-wrapper">
+            <div className="main-left">
+              <div className="header">
+                <Button size="small" disabled={hasNew} onClick={onOssAddClick}>
+                  添加
+                </Button>
+              </div>
+              <ul className="app-list">
+                {apps.length > 0 ? (
+                  apps.map(app => (
+                    <li
+                      className={classNames("item", {
+                        active: app._id === currentApp?._id
+                      })}
+                      key={app._id || Date.now()}
+                    >
+                      <button
+                        type="button"
+                        className="button"
+                        disabled={!app._id}
+                        onClick={() => onOssSelect(app._id!)}
+                      >
+                        <svg className="icon" aria-hidden="true">
+                          {renderIcon(app.type)}
+                        </svg>
+                        <span>{app.name}</span>
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="no-result">
+                    <p>没有 Apps</p>
+                    <p>暂时没有搜索到 apps</p>
+                  </li>
+                )}
+              </ul>
+            </div>
+            {currentApp && (
+              <div className="main-right_form_container">
+                <div className="main-right_form_title">修改配置</div>
+                <FormUpdate
+                  key={currentApp._id}
+                  activeOss={currentApp}
+                  onBucketUpdate={onBucketUpdate}
+                  onBucketDelete={onBucketDelete}
+                />
+              </div>
             )}
-          </div>
-        )}
-      </section>
-    </div>
+          </section>
+        );
+      case ServicesPage.add:
+        return (
+          <section className="apps-main-wrapper">
+            <div className="main-left">
+              <div className="header">
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setPage(ServicesPage.list);
+                    setDirection(Direction.left);
+                  }}
+                >
+                  返回
+                </Button>
+              </div>
+            </div>
+            <div className="main-right_form_container">
+              <FormAdd onBucketAdd={onBucketAdd} />
+            </div>
+          </section>
+        );
+      default:
+        return <div>123</div>;
+    }
+  };
+
+  return (
+    <SwitchTransition>
+      <CSSTransition
+        key={page}
+        addEndListener={(node, done) => {
+          node.addEventListener("transitionend", done, false);
+        }}
+        classNames={direction}
+      >
+        <section
+          className="services-wrapper"
+          style={{
+            width: mainWrapperWidth,
+            maxWidth: mainWrapperWidth,
+            height: mainWrapperHeight,
+            maxHeight: mainWrapperHeight
+          }}
+        >
+          {renderSwitch(page)}
+        </section>
+      </CSSTransition>
+    </SwitchTransition>
   );
 };
 

@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import {
+  CSSTransition,
+  SwitchTransition,
+  TransitionGroup
+} from "react-transition-group";
 import { ipcRenderer } from "electron";
 import {
   PlusCircleFilled,
@@ -30,6 +34,8 @@ import {
   minimizeMainWindow
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
+
+const mainWrapperWidth = document.body.clientWidth - 225;
 
 function App() {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -95,6 +101,25 @@ function App() {
     };
   }, []);
 
+  const renderPage = (page: Page) => {
+    switch (page) {
+      case Page.bucket:
+        return (
+          <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
+        );
+      case Page.services:
+        return <Services onOssActive={onOssActive} />;
+      case Page.setting:
+        return <Setting />;
+      case Page.transferDone:
+        return <TransferDone />;
+      case Page.transferList:
+        return <TransferList />;
+      default:
+        return <div>123</div>;
+    }
+  };
+
   return (
     <div
       className="App"
@@ -122,91 +147,26 @@ function App() {
         tabChange={tabChange}
         color={themeColor.asideColor}
       />
-      <TransitionGroup mode="in-out">
-        {Page.bucket === activePage && (
-          <CSSTransition
-            key={Page.bucket}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
+      <SwitchTransition>
+        <CSSTransition
+          key={activePage}
+          addEndListener={(node, done) => {
+            node.addEventListener("transitionend", done, false);
+          }}
+          classNames={direction}
+        >
+          <section
+            className="main-wrapper"
+            style={{
+              backgroundPosition: bgOffset,
+              width: mainWrapperWidth,
+              maxWidth: mainWrapperWidth
             }}
-            classNames={direction}
           >
-            <section
-              className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
-            >
-              <Bucket
-                bucketName={activeBucket}
-                onLoadedBucket={onLoadedBucket}
-              />
-            </section>
-          </CSSTransition>
-        )}
-        {Page.transferList === activePage && (
-          <CSSTransition
-            key={Page.transferList}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <section
-              className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
-            >
-              <TransferList />
-            </section>
-          </CSSTransition>
-        )}
-        {Page.transferDone === activePage && (
-          <CSSTransition
-            key={Page.transferDone}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <section
-              className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
-            >
-              <TransferDone />
-            </section>
-          </CSSTransition>
-        )}
-        {Page.setting === activePage && (
-          <CSSTransition
-            key={Page.setting}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <section
-              className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
-            >
-              <Setting />
-            </section>
-          </CSSTransition>
-        )}
-        {Page.services === activePage && (
-          <CSSTransition
-            key={Page.services}
-            addEndListener={(node, done) => {
-              node.addEventListener("transitionend", done, false);
-            }}
-            classNames={direction}
-          >
-            <section
-              className="main-wrapper"
-              style={{ backgroundPosition: bgOffset }}
-            >
-              <Services onOssActive={onOssActive} />
-            </section>
-          </CSSTransition>
-        )}
-      </TransitionGroup>
+            {renderPage(activePage)}
+          </section>
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   );
 }

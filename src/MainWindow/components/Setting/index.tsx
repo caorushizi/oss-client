@@ -24,6 +24,10 @@ import {
 
 const Setting = () => {
   const [config, setConfig] = useState<ConfigStore>(initialConfig);
+  const radioOptions = [
+    { label: "圆形", value: FlowWindowStyle.circle },
+    { label: "椭圆形", value: FlowWindowStyle.oval }
+  ];
   const onSelectDownloadPath = () => {
     remote.dialog
       .showOpenDialog({
@@ -156,19 +160,15 @@ const Setting = () => {
             </Form.Item>
             <Form.Item label="悬浮窗样式">
               <Radio.Group
-                className="setting-radio"
+                options={radioOptions}
+                value={config.floatWindowStyle}
                 name="FloatWindow"
                 onChange={e => {
                   const style: FlowWindowStyle = Number(e.target.value);
                   changeFloatWindowShape(style);
                   setConfig({ ...config, floatWindowStyle: style });
                 }}
-              >
-                <Radio className="input" value={FlowWindowStyle.circle} />
-                <span className="inner">圆形</span>
-                <Radio className="input" value={FlowWindowStyle.oval} />
-                <span className="inner">椭圆形</span>
-              </Radio.Group>
+              />
             </Form.Item>
           </Form>
         </section>

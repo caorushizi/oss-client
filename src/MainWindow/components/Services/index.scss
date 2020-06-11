@@ -1,12 +1,10 @@
 .services-wrapper {
-  height: 100%;
-  width: 100%;
-
-  .apps-main {
+  .apps-main-wrapper {
     height: 100%;
     display: flex;
     flex-direction: row;
     overflow: auto;
+    padding: 10px;
 
     .main-left {
       padding: 0 5px;
@@ -83,6 +81,68 @@
         font-size: 25px;
         margin-bottom: 30px;
       }
+
+      .main-right_form_wrapper {
+        .custom-inner {
+          color: #fff;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 }
+
+.left-enter {
+  // test
+  position: absolute;
+  left: calc(225px - 100%);
+  opacity: 0;
+}
+
+.left-enter-active {
+  position: absolute;
+  opacity: 1;
+  left: 0;
+  transition: left 0.3s, opacity 0.3s ease-in-out;
+}
+
+.left-exit {
+  position: absolute;
+  left: 0;
+  opacity: 1;
+}
+
+.left-exit-active {
+  position: absolute;
+  opacity: 0;
+  left: calc(225px - 100%);
+  transition: left 0.3s, opacity .3s ease-in-out;
+}
+
+.right-enter {
+  position: absolute;
+  left: calc(100% - 225px);
+  opacity: 0;
+}
+
+.right-enter-active {
+  position: absolute;
+  opacity: 1;
+  left: 0;
+  transition: left .3s, opacity .3s ease-in-out;
+}
+
+.right-exit {
+  position: absolute;
+  left: 0;
+  opacity: 1;
+}
+
+.right-exit-active {
+  position: absolute;
+  opacity: 0;
+  left: calc(100% - 225px);
+  transition: left .3s, opacity .3s ease-in-out;
+}
+
