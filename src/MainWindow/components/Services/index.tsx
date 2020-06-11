@@ -39,10 +39,17 @@ const mainWrapperHeight = document.body.clientHeight - 40;
 const Services = ({ onOssActive }: PropTypes) => {
   const [apps, setApps] = useState<(AppStore | NewAppStore)[]>([]);
   const [currentApp, setCurrentApp] = useState<AppStore>();
-  const [hasNew, setHasNew] = useState<boolean>(false);
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
   const [direction, setDirection] = useState<Direction>(Direction.down);
-  const escapePress = useKeyPress(KeyCode.Escape);
+
+  const _toAddPage = () => {
+    setPage(ServicesPage.add);
+    setDirection(Direction.right);
+  };
+  const _toListPage = () => {
+    setPage(ServicesPage.list);
+    setDirection(Direction.left);
+  };
 
   const onBucketUpdate = async (store: AppStore) => {
     await updateApp(store);
@@ -78,31 +85,11 @@ const Services = ({ onOssActive }: PropTypes) => {
       setCurrentApp(allApps[0]);
       onOssActive(allApps[0]);
     }
-    setHasNew(false);
-  };
-  const onOssAddClick = () => {
-    // if (apps.filter(i => (i as NewAppStore).isNew).length > 0) return;
-    // const current: NewAppStore = {
-    //   name: "新建",
-    //   ak: "",
-    //   sk: "",
-    //   type: OssType.qiniu,
-    //   bucket: "",
-    //   uploadPrefix: "",
-    //   uploadBucket: "",
-    //   defaultDomain: "",
-    //   isNew: true
-    // };
-    // setApps([...apps, current]);
-    // setCurrentApp(current);
-    // setHasNew(true);
-    setPage(ServicesPage.add);
-    setDirection(Direction.right);
+    _toListPage();
   };
   const onOssSelect = (id: string) => {
     const ossList = apps.filter(i => i._id);
     setApps(ossList);
-    setHasNew(false);
     const selected = ossList.find(i => i._id === id);
     if (selected) {
       setCurrentApp(selected);
@@ -118,17 +105,6 @@ const Services = ({ onOssActive }: PropTypes) => {
     };
     initState().then(r => r);
   }, []);
-
-  useEffect(() => {
-    const ossList = apps.filter(i => i._id);
-    if (ossList.length > 0) {
-      setApps(ossList);
-      setHasNew(false);
-      setCurrentApp(ossList[0]);
-      onOssActive(ossList[0]);
-    }
-  }, [escapePress]);
-  // fixme: 在上下切换的时候宽度增加
 
   const renderIcon = (type: OssType) => {
     switch (type) {
@@ -150,7 +126,7 @@ const Services = ({ onOssActive }: PropTypes) => {
           <section className="apps-main-wrapper">
             <div className="main-left">
               <div className="header">
-                <Button size="small" disabled={hasNew} onClick={onOssAddClick}>
+                <Button size="small" onClick={_toAddPage}>
                   添加
                 </Button>
               </div>
@@ -202,18 +178,13 @@ const Services = ({ onOssActive }: PropTypes) => {
           <section className="apps-main-wrapper">
             <div className="main-left">
               <div className="header">
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setPage(ServicesPage.list);
-                    setDirection(Direction.left);
-                  }}
-                >
+                <Button size="small" onClick={_toListPage}>
                   返回
                 </Button>
               </div>
             </div>
             <div className="main-right_form_container">
+              <div className="main-right_form_title">新增配置</div>
               <FormAdd onBucketAdd={onBucketAdd} />
             </div>
           </section>
