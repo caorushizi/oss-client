@@ -18,6 +18,7 @@ const FormUpdate = ({
 }: PropTypes) => {
   const [buckets, setBuckets] = useState<string[]>([]);
   const [domains, setDomains] = useState<string[]>([]);
+  const [editing, setEditing] = useState<boolean>(false);
   useEffect(() => {
     const initState = async () => {
       const { uploadBucket } = activeOss;
@@ -38,7 +39,7 @@ const FormUpdate = ({
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 12 }}
       name="basic"
-      className="custom-form"
+      className="main-right_form_wrapper"
       onFinish={values => {
         const app = { ...activeOss, ...values };
         onBucketUpdate(app);
@@ -66,14 +67,14 @@ const FormUpdate = ({
         name="ak"
         rules={[{ required: true, message: "请输入 AK" }]}
       >
-        <Input />
+        <Input placeholder="请输入 AK" />
       </Form.Item>
       <Form.Item
         label="SK"
         name="sk"
         rules={[{ required: true, message: "请输入 SK" }]}
       >
-        <Input.Password />
+        <Input.Password placeholder="请输入 SK" />
       </Form.Item>
       <Form.Item
         label="默认储存桶"
@@ -100,9 +101,9 @@ const FormUpdate = ({
       <Form.Item
         label="上传前缀"
         name="uploadPrefix"
-        rules={[{ required: true, message: "请输入 SK" }]}
+        rules={[{ required: true, message: "请输入上传前缀" }]}
       >
-        <Input />
+        <Input placeholder="请输入上传前缀" />
       </Form.Item>
 
       <Form.Item

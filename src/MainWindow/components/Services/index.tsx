@@ -200,16 +200,22 @@ const Services = ({ onOssActive }: PropTypes) => {
       case ServicesPage.add:
         return (
           <section className="apps-main-wrapper">
-            <Button
-              size="small"
-              onClick={() => {
-                setPage(ServicesPage.list);
-                setDirection(Direction.left);
-              }}
-            >
-              返回
-            </Button>
-            <FormAdd onBucketAdd={onBucketAdd} />
+            <div className="main-left">
+              <div className="header">
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setPage(ServicesPage.list);
+                    setDirection(Direction.left);
+                  }}
+                >
+                  返回
+                </Button>
+              </div>
+            </div>
+            <div className="main-right_form_container">
+              <FormAdd onBucketAdd={onBucketAdd} />
+            </div>
           </section>
         );
       default:
