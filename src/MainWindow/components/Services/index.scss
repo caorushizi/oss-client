@@ -9,6 +9,7 @@
     .main-left {
       padding: 0 5px;
       width: 300px;
+      min-width: 300px;
       display: flex;
       flex-direction: column;
 
@@ -75,6 +76,7 @@
 
     .main-right_form_container {
       flex: 1;
+      overflow: hidden;
 
       .main-right_form_title {
         color: #fff;

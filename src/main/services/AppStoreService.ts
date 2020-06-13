@@ -31,9 +31,9 @@ export default class AppStoreService implements IStore<AppStore> {
 
   insert(doc: AppStore): Promise<AppStore> {
     return new Promise((resolve, reject) => {
-      this.store.insert(doc, (err, documents) => {
+      this.store.insert(doc, (err, app) => {
         if (err) reject(err);
-        resolve(documents);
+        resolve(app);
       });
     });
   }

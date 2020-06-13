@@ -66,6 +66,10 @@ body {
       color: rgba(255, 255, 255, 0.15);
     }
   }
+
+  &-dangerous {
+    color: red;
+  }
 }
 
 .ant-input-affix-wrapper {

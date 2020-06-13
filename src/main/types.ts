@@ -1,7 +1,7 @@
 export enum OssType {
-  qiniu = "qiniu",
-  ali = "ali",
-  tencent = "tencent"
+  qiniu = "七牛云",
+  ali = "阿里云",
+  tencent = "腾讯云"
 }
 
 export enum TaskType {

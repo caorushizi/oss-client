@@ -3,7 +3,6 @@ import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
   ConfigStore,
   FlowWindowStyle,
-  OssType,
   TransferStore,
   AppStore,
   TransferStatus
@@ -57,13 +56,18 @@ export function getTransfers(query: any): Promise<TransferStore[]> {
   return send("get-transfer", query);
 }
 
-export function addApp(
+export async function addApp(
   name: string,
   type: OssType,
   ak: string,
   sk: string
 ): Promise<AppStore> {
-  return send<AppStore>("add-app", { name, type, ak, sk });
+  const app = { name, type, ak, sk };
+  const { code, msg, data } = await send<AppStore>("add-app", app);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function updateApp(app: AppStore) {

@@ -9,12 +9,14 @@ type PropTypes = {
   activeOss: AppStore;
   onBucketUpdate: (store: AppStore) => void;
   onBucketDelete: (store: AppStore) => void;
+  onBucketCancel: () => void;
 };
 
 const FormUpdate = ({
   activeOss,
   onBucketUpdate,
-  onBucketDelete
+  onBucketDelete,
+  onBucketCancel
 }: PropTypes) => {
   const [buckets, setBuckets] = useState<string[]>([]);
   const [domains, setDomains] = useState<string[]>([]);
@@ -38,11 +40,12 @@ const FormUpdate = ({
       labelAlign="left"
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 12 }}
-      name="basic"
+      hideRequiredMark
       className="main-right_form_wrapper"
       onFinish={values => {
         const app = { ...activeOss, ...values };
         onBucketUpdate(app);
+        onBucketCancel();
       }}
     >
       <Form.Item
@@ -124,10 +127,10 @@ const FormUpdate = ({
       <Form.Item wrapperCol={{ offset: 4, span: 8 }}>
         <Space>
           <Button type="primary" htmlType="submit" size="small">
-            修改
+            确定
           </Button>
-          <Button onClick={() => onBucketDelete(activeOss)} size="small">
-            删除
+          <Button onClick={() => onBucketCancel()} size="small">
+            取消
           </Button>
         </Space>
       </Form.Item>

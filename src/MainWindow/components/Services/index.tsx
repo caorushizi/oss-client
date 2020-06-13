@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button } from "antd";
+import { Button, Space, Spin } from "antd";
 import classNames from "classnames";
 import { addApp, deleteApp, getAppsChannel, updateApp } from "../../helper/ipc";
 import FormAdd from "./FormAdd";
@@ -10,6 +10,7 @@ import FormUpdate from "./FormUpdate";
 import { AppStore, OssType } from "../../../main/types";
 import useKeyPress from "../../hooks/useKeyPress";
 import { Direction, KeyCode } from "../../helper/enums";
+import { hiddenTextFilter } from "../../helper/filters";
 
 type NewAppStore = {
   _id?: string;
@@ -41,6 +42,9 @@ const Services = ({ onOssActive }: PropTypes) => {
   const [currentApp, setCurrentApp] = useState<AppStore>();
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
   const [direction, setDirection] = useState<Direction>(Direction.down);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingTip, setLoadingTip] = useState<string>("");
 
   const _toAddPage = () => {
     setPage(ServicesPage.add);
@@ -68,24 +72,31 @@ const Services = ({ onOssActive }: PropTypes) => {
     setCurrentApp(allApps[0]);
     onOssActive(allApps[0]);
   };
-  const onBucketAdd = async (
-    name: string,
-    ak: string,
-    sk: string,
-    type: OssType
-  ) => {
-    await addApp(name, type, ak, sk);
-    const allApps = await getAppsChannel();
-    setApps(allApps);
-    const addedApp = allApps.find(i => i.sk === sk);
-    if (addedApp) {
-      setCurrentApp(addedApp);
-      onOssActive(addedApp);
-    } else {
-      setCurrentApp(allApps[0]);
-      onOssActive(allApps[0]);
+  const onBucketAdd = async (values: AddForm) => {
+    try {
+      const { name, type, ak, sk } = values;
+      // 开始添加 app 流程
+      // 1、将 app 名称、ak、sk和服务商名称添加到数据库
+      const app = await addApp(name, type, ak, sk);
+      console.log(app);
+      // 2、获取 app 中所有的域名信息，并保存到数据库
+      // 3、获取 app 中所有的 bucket 信息，并保存到数据库
+      // 4、选择当前的 app 作为默认的 app
+      // 5、返回上一页
+      const allApps = await getAppsChannel();
+      setApps(allApps);
+      const addedApp = allApps.find(i => i.sk === sk);
+      if (addedApp) {
+        setCurrentApp(addedApp);
+        onOssActive(addedApp);
+      } else {
+        setCurrentApp(allApps[0]);
+        onOssActive(allApps[0]);
+      }
+      _toListPage();
+    } catch (err) {
+      console.error(err);
     }
-    _toListPage();
   };
   const onOssSelect = (id: string) => {
     const ossList = apps.filter(i => i._id);
@@ -162,13 +173,73 @@ const Services = ({ onOssActive }: PropTypes) => {
             </div>
             {currentApp && (
               <div className="main-right_form_container">
-                <div className="main-right_form_title">修改配置</div>
-                <FormUpdate
-                  key={currentApp._id}
-                  activeOss={currentApp}
-                  onBucketUpdate={onBucketUpdate}
-                  onBucketDelete={onBucketDelete}
-                />
+                <div className="main-right_form_title">
+                  {isEdit ? "修改配置" : "查看配置"}
+                </div>
+                {isEdit ? (
+                  <FormUpdate
+                    key={currentApp._id}
+                    activeOss={currentApp}
+                    onBucketUpdate={onBucketUpdate}
+                    onBucketDelete={onBucketDelete}
+                    onBucketCancel={() => {
+                      setIsEdit(false);
+                    }}
+                  />
+                ) : (
+                  <section>
+                    <div>
+                      <div>基本信息：</div>
+                      <div>
+                        <span>云服务厂商：</span>
+                        {currentApp.type || "暂无配置"}
+                      </div>
+                      <div>
+                        <span>AK：</span>
+                        {currentApp.ak || "暂无配置"}
+                      </div>
+                      <div>
+                        <span>SK：</span>
+                        {hiddenTextFilter(currentApp.sk || "暂无配置")}
+                      </div>
+                    </div>
+                    <div>
+                      <div>软件配置：</div>
+                      <div>
+                        <span>默认上传路径：</span>
+                        {currentApp.uploadBucket || "暂无配置"}
+                      </div>
+                      <div>
+                        <span>默认上传前缀：</span>
+                        {currentApp.uploadPrefix || "暂无配置"}
+                      </div>
+                      <div>
+                        <span>默认域名：</span>
+                        {currentApp.defaultDomain || "暂无配置"}
+                      </div>
+                    </div>
+                    <div>
+                      <div>操作</div>
+                      <Space>
+                        <Button
+                          onClick={() => {
+                            setIsEdit(true);
+                          }}
+                          size="small"
+                        >
+                          编辑
+                        </Button>
+                        <Button
+                          onClick={() => onBucketDelete(currentApp!)}
+                          size="small"
+                          danger
+                        >
+                          删除
+                        </Button>
+                      </Space>
+                    </div>
+                  </section>
+                )}
               </div>
             )}
           </section>
@@ -195,27 +266,29 @@ const Services = ({ onOssActive }: PropTypes) => {
   };
 
   return (
-    <SwitchTransition>
-      <CSSTransition
-        key={page}
-        addEndListener={(node, done) => {
-          node.addEventListener("transitionend", done, false);
-        }}
-        classNames={direction}
-      >
-        <section
-          className="services-wrapper"
-          style={{
-            width: mainWrapperWidth,
-            maxWidth: mainWrapperWidth,
-            height: mainWrapperHeight,
-            maxHeight: mainWrapperHeight
+    <Spin tip={loadingTip} spinning={loading}>
+      <SwitchTransition>
+        <CSSTransition
+          key={page}
+          addEndListener={(node, done) => {
+            node.addEventListener("transitionend", done, false);
           }}
+          classNames={direction}
         >
-          {renderSwitch(page)}
-        </section>
-      </CSSTransition>
-    </SwitchTransition>
+          <section
+            className="services-wrapper"
+            style={{
+              width: mainWrapperWidth,
+              maxWidth: mainWrapperWidth,
+              height: mainWrapperHeight,
+              maxHeight: mainWrapperHeight
+            }}
+          >
+            {renderSwitch(page)}
+          </section>
+        </CSSTransition>
+      </SwitchTransition>
+    </Spin>
   );
 };
 

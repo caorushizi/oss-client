@@ -87,6 +87,12 @@ export default class ElectronAppService implements IApp {
 
   init() {
     this.logger.info("初始化全部 ipc 通道~");
+    const success: IpcSuccessFn = data => ({
+      code: 0,
+      msg: "成功",
+      data
+    });
+    const fail: IpcFailFn = (code, msg) => ({ code, msg, data: {} });
     // 注册全部 ipc 通道
     this.registerIpc("update-app", params =>
       this.appChannels.updateApp(params)
@@ -96,7 +102,18 @@ export default class ElectronAppService implements IApp {
     );
     this.registerIpc("get-apps", () => this.appChannels.getApps());
     this.registerIpc("init-app", params => this.appChannels.initApp(params));
-    this.registerIpc("add-app", params => this.appChannels.addApp(params));
+    this.registerIpc("add-app", async params => {
+      // 1、判断所有参数都不为空
+      const someIsEmpty = Object.keys(params).some(key => !params[key]);
+      if (someIsEmpty) return fail(1, "参数为空");
+      // 开始执行添加 app 方法
+      try {
+        const data = await this.appChannels.addApp(params);
+        return success(data);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("clear-transfer-done-list", params =>
       this.appChannels.removeTransfers(params)
     );

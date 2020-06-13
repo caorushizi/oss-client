@@ -47,6 +47,14 @@ export default class IpcChannelsService {
   }
 
   async addApp(params: any) {
+    const { name, ak } = params;
+    // 1、判断是否已经存在 name
+    const appsByName = await this.appStore.find({ name });
+    if (appsByName.length > 0) throw new Error("应用名称已经存在");
+    // 2、判断是否已经存在 ak
+    const appsByAk = await this.appStore.find({ ak });
+    if (appsByAk.length > 0) throw new Error("该 AK 已经存在");
+    // 通过验证保存数据
     return this.appStore.insert({ ...params });
   }
 
