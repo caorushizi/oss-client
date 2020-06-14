@@ -2,14 +2,19 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button, Space, Spin } from "antd";
+import { Spin, message, Button, Space } from "antd";
 import classNames from "classnames";
-import { addApp, deleteApp, getAppsChannel, updateApp } from "../../helper/ipc";
+import {
+  addApp,
+  deleteApp,
+  getAppsChannel,
+  getBuckets,
+  updateApp
+} from "../../helper/ipc";
 import FormAdd from "./FormAdd";
 import FormUpdate from "./FormUpdate";
 import { AppStore, OssType } from "../../../main/types";
-import useKeyPress from "../../hooks/useKeyPress";
-import { Direction, KeyCode } from "../../helper/enums";
+import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
 
 type NewAppStore = {
@@ -26,6 +31,7 @@ type NewAppStore = {
 };
 
 type PropTypes = {
+  active?: AppStore;
   onOssActive: (item: AppStore) => void;
 };
 
@@ -44,7 +50,6 @@ const Services = ({ onOssActive }: PropTypes) => {
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingTip, setLoadingTip] = useState<string>("");
 
   const _toAddPage = () => {
     setPage(ServicesPage.add);
@@ -73,35 +78,36 @@ const Services = ({ onOssActive }: PropTypes) => {
     onOssActive(allApps[0]);
   };
   const onBucketAdd = async (values: AddForm) => {
+    setLoading(true);
     try {
       const { name, type, ak, sk } = values;
       // 开始添加 app 流程
-      // 1、将 app 名称、ak、sk和服务商名称添加到数据库
+      // 1、获取 app 中所有的 bucket 信息，并保存到数据库（验证 ak，sk 是否可用）
+      const buckets = await getBuckets({ type, ak, sk });
+      console.log(buckets);
+      // 2、获取存储区域，并保存到数据库
+      // 3、将 app 名称、ak、sk和服务商名称添加到数据库
       const app = await addApp(name, type, ak, sk);
       console.log(app);
-      // 2、获取 app 中所有的域名信息，并保存到数据库
-      // 3、获取 app 中所有的 bucket 信息，并保存到数据库
       // 4、选择当前的 app 作为默认的 app
-      // 5、返回上一页
       const allApps = await getAppsChannel();
+      console.log(allApps);
       setApps(allApps);
       const addedApp = allApps.find(i => i.sk === sk);
-      if (addedApp) {
-        setCurrentApp(addedApp);
-        onOssActive(addedApp);
-      } else {
-        setCurrentApp(allApps[0]);
-        onOssActive(allApps[0]);
-      }
+      if (!addedApp) throw new Error("保存 app 失败");
+      setCurrentApp(addedApp);
+      onOssActive(addedApp);
+      // 5、返回上一页
       _toListPage();
+      message.success("添加成功");
     } catch (err) {
-      console.error(err);
+      setLoading(false);
+      message.error(`添加失败：${err.message}`);
+      console.log("添加 app 时出错：", err.message);
     }
   };
   const onOssSelect = (id: string) => {
-    const ossList = apps.filter(i => i._id);
-    setApps(ossList);
-    const selected = ossList.find(i => i._id === id);
+    const selected = apps.find(i => i._id === id);
     if (selected) {
       setCurrentApp(selected);
       onOssActive(selected);
@@ -266,7 +272,7 @@ const Services = ({ onOssActive }: PropTypes) => {
   };
 
   return (
-    <Spin tip={loadingTip} spinning={loading}>
+    <Spin spinning={loading}>
       <SwitchTransition>
         <CSSTransition
           key={page}

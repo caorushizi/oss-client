@@ -19,7 +19,7 @@ export default class OssService implements IOssService {
       case OssType.qiniu:
         return new Qiniu(ak, sk);
       default:
-        throw Error("not support this oss yet");
+        throw Error("暂时还不支持该云存储厂商");
     }
   }
 

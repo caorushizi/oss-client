@@ -1,9 +1,10 @@
 import { inject, injectable, named } from "inversify";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore } from "../interface";
-import { AppStore, TransferStatus, TransferStore } from "../types";
+import { AppStore, OssType, TransferStatus, TransferStore } from "../types";
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
+import OssService from "./OssService";
 
 @injectable()
 export default class IpcChannelsService {
@@ -42,8 +43,9 @@ export default class IpcChannelsService {
     if (findApps.length > 0) {
       const app = findApps[0];
       this.oss.switchApp(app.type, app.ak, app.sk);
+      return app;
     }
-    return true;
+    throw new Error("没有可初始化的 app");
   }
 
   async addApp(params: any) {
@@ -62,7 +64,14 @@ export default class IpcChannelsService {
     return this.transferStore.remove({ status }, { multi: true });
   }
 
-  async getBuckets() {
+  async getBuckets(params?: { type: OssType; ak: string; sk: string }) {
+    if (params && Object.keys(params).length > 0) {
+      // 返回当前配置的 bucket 列表
+      const { type, ak, sk } = params;
+      const app = OssService.create(type, ak, sk);
+      return app.getBucketList();
+    }
+    // 返回当前上下文的 bucket 列表
     const instance = this.oss.getService();
     return instance.getBucketList();
   }

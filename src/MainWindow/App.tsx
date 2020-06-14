@@ -45,6 +45,7 @@ function App() {
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
+  const [activeApp, setActiveApp] = useState<AppStore>();
   const audio = useRef<HTMLAudioElement>(null);
   const tabChange = async (page: Page, bucket?: string) => {
     await setDirection(page < activePage ? Direction.down : Direction.up);
@@ -71,17 +72,12 @@ function App() {
       await audio.current.play();
     }
   };
-
-  useEffect(() => {
-    setThemeColor(getThemeColor());
-    setBgOffset(getBgOffset());
-  }, [activePage]);
-
-  // 相当于初始化流程
-  useEffect(() => {
-    (async () => {
+  const initState = async () => {
+    try {
       // 设置活动 oss 配置
-      await initOss();
+      const app = await initOss();
+      console.log(app);
+      setActiveApp(app);
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
       setBucketList(buckets);
@@ -90,7 +86,19 @@ function App() {
       } else {
         setActivePage(Page.services);
       }
-    })();
+    } catch (err) {
+      console.log("初始化云存储客户端出错：", err.message);
+    }
+  };
+
+  useEffect(() => {
+    setThemeColor(getThemeColor());
+    setBgOffset(getBgOffset());
+  }, [activePage]);
+
+  // 相当于初始化流程
+  useEffect(() => {
+    initState().then(r => r);
 
     ipcRenderer.on("to-setting", toSetting);
     ipcRenderer.on("play-finish", playAudio);
@@ -108,7 +116,7 @@ function App() {
           <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
         );
       case Page.services:
-        return <Services onOssActive={onOssActive} />;
+        return <Services onOssActive={onOssActive} active={activeApp} />;
       case Page.setting:
         return <Setting />;
       case Page.transferDone:

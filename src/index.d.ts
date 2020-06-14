@@ -21,17 +21,11 @@ declare interface BucketAdapter {
   (data: any): BucketItem[];
 }
 
-declare enum OssType {
-  qiniu = "七牛云",
-  ali = "阿里云",
-  tencent = "腾讯云"
-}
-
 declare interface AddForm {
   name: string;
   ak: string;
   sk: string;
-  type: OssType;
+  type: number;
 }
 
 declare interface IpcResponse {

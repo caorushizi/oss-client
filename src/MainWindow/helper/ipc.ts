@@ -5,7 +5,8 @@ import {
   FlowWindowStyle,
   TransferStore,
   AppStore,
-  TransferStatus
+  TransferStatus,
+  OssType
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
@@ -40,15 +41,28 @@ export function switchBucket(bucketName: string): Promise<BucketObj> {
   return send<BucketObj>("switch-bucket", { bucketName });
 }
 
-export function getBuckets(): Promise<string[]> {
-  return send<string[]>("get-buckets");
+/**
+ * 获取云存储的 buckets
+ * @param config （可选）如果传了返回当前配置的 buckets， 如果不是测返回当前上下文中配置的 buckets
+ */
+export async function getBuckets(config?: {
+  type: OssType;
+  ak: string;
+  sk: string;
+}): Promise<string[]> {
+  console.log("renderer ipc get buckets: ", config);
+  const { code, msg, data } = await send<IpcResponse>("get-buckets", config);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function getAppsChannel(): Promise<AppStore[]> {
   return send<AppStore[]>("get-apps");
 }
 
-export function initOss(id?: string): Promise<void> {
+export function initOss(id?: string): Promise<AppStore> {
   return send("init-app", { id });
 }
 
@@ -63,7 +77,7 @@ export async function addApp(
   sk: string
 ): Promise<AppStore> {
   const app = { name, type, ak, sk };
-  const { code, msg, data } = await send<AppStore>("add-app", app);
+  const { code, msg, data } = await send<IpcResponse>("add-app", app);
   if (code !== 0) {
     throw new Error(msg);
   }

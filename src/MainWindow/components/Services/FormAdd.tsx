@@ -45,7 +45,7 @@ const FormAdd = ({ onBucketAdd }: PropTypes) => {
         rules={[{ required: true, message: "请选择存储厂商" }]}
       >
         <Select size="small">
-          <Select.Option value={OssType.qiniu}>{OssType.qiniu}</Select.Option>
+          <Select.Option value={OssType.qiniu}>七牛云</Select.Option>
         </Select>
       </Form.Item>
       <Form.Item

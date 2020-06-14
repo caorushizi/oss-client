@@ -9,7 +9,8 @@
     "prettier/prettier": ["error"],
     "import/prefer-default-export": 0,
     "no-unused-vars": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "no-console": "off"
   },
   "settings": {
     "import/extensions": [".js", ".jsx"],

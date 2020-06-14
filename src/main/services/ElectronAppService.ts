@@ -103,11 +103,8 @@ export default class ElectronAppService implements IApp {
     this.registerIpc("get-apps", () => this.appChannels.getApps());
     this.registerIpc("init-app", params => this.appChannels.initApp(params));
     this.registerIpc("add-app", async params => {
-      // 1、判断所有参数都不为空
-      const someIsEmpty = Object.keys(params).some(key => !params[key]);
-      if (someIsEmpty) return fail(1, "参数为空");
-      // 开始执行添加 app 方法
       try {
+        // 开始执行添加 app 方法
         const data = await this.appChannels.addApp(params);
         return success(data);
       } catch (e) {
@@ -120,7 +117,14 @@ export default class ElectronAppService implements IApp {
     this.registerIpc("get-transfer", params =>
       this.appChannels.getTransfers(params)
     );
-    this.registerIpc("get-buckets", params => this.appChannels.getBuckets());
+    this.registerIpc("get-buckets", async params => {
+      try {
+        const buckets = await this.appChannels.getBuckets(params);
+        return success(buckets);
+      } catch (err) {
+        return fail(1, "获取 buckets 失败，请检查 ak，sk 是否匹配！");
+      }
+    });
     this.registerIpc("get-config", params => this.appChannels.getConfig());
     this.registerIpc("switch-bucket", params =>
       this.appChannels.switchBucket(params)
