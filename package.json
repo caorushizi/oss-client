@@ -56,6 +56,16 @@
                   "html": "./src/FloatWindow/index.html",
                   "js": "./src/FloatWindow/index.tsx",
                   "name": "float_window"
+                },
+                {
+                  "html": "./src/AlertWindow/index.html",
+                  "js": "./src/AlertWindow/index.ts",
+                  "name": "alert_window"
+                },
+                {
+                  "html": "./src/ConfirmWindow/index.html",
+                  "js": "./src/ConfirmWindow/index.ts",
+                  "name": "confirm_window"
                 }
               ]
             }

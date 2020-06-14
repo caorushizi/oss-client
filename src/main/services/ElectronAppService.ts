@@ -7,7 +7,8 @@ import {
   MenuItemConstructorOptions,
   Menu,
   Tray,
-  clipboard
+  clipboard,
+  BrowserWindowConstructorOptions
 } from "electron";
 import { inject, injectable, named } from "inversify";
 import { Platform } from "../../MainWindow/helper/enums";
@@ -41,12 +42,18 @@ import IpcChannelsService from "./IpcChannelsService";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
+declare const ALERT_WINDOW_WEBPACK_ENTRY: string;
+declare const CONFIRM_WINDOW_WEBPACK_ENTRY: string;
 
 @injectable()
 export default class ElectronAppService implements IApp {
   mainWindow: BrowserWindow | null = null;
 
   floatWindow: BrowserWindow | null = null;
+
+  alertWindow: BrowserWindow | null = null;
+
+  confirmWindow: BrowserWindow | null = null;
 
   appTray: Tray | null = null;
 
@@ -223,7 +230,7 @@ export default class ElectronAppService implements IApp {
         webPreferences: { nodeIntegration: true },
         titleBarStyle: "hiddenInset"
       });
-      this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {});
+      this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(r => r);
 
       if (process.env.NODE_ENV === "development") {
         this.mainWindow.webContents.openDevTools();
@@ -254,12 +261,33 @@ export default class ElectronAppService implements IApp {
 
         this.floatWindow.setPosition(size.width - winSize[0] - 100, 100);
 
-        this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(() => {});
+        this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(r => r);
 
         this.floatWindow.on("closed", () => {
           if (this.floatWindow) this.floatWindow = null;
         });
       }
+      const moduleOptions: BrowserWindowConstructorOptions = {
+        frame: false,
+        height: 150,
+        width: 200,
+        resizable: false,
+        parent: this.mainWindow,
+        webPreferences: { nodeIntegration: true },
+        titleBarStyle: "hiddenInset"
+      };
+      // 初始化 alert
+      this.alertWindow = new BrowserWindow(moduleOptions);
+      this.alertWindow.loadURL(ALERT_WINDOW_WEBPACK_ENTRY).then(r => r);
+      this.alertWindow.on("closed", () => {
+        if (this.alertWindow) this.alertWindow = null;
+      });
+      // 初始化 confirm
+      this.confirmWindow = new BrowserWindow(moduleOptions);
+      this.confirmWindow.loadURL(ALERT_WINDOW_WEBPACK_ENTRY).then(r => r);
+      this.confirmWindow.on("closed", () => {
+        if (this.confirmWindow) this.confirmWindow = null;
+      });
 
       this.appTray.on("click", () => {
         if (this.mainWindow) {

@@ -59,10 +59,17 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onOssActive = async (store: AppStore) => {
-    const test = await initOss(store?._id);
-    const buckets = await getBuckets();
-    setBucketList(buckets);
+  const onAppSwitch = async (app: AppStore) => {
+    try {
+      // 1、将上下文信息修改为新的 app
+      const active = await initOss(app._id);
+      setActiveApp(active);
+      // 2、获取新的 app 中的 bucket 列表
+      const buckets = await getBuckets();
+      setBucketList(buckets);
+    } catch (err) {
+      console.log("切换 app 时出错：", err.message);
+    }
   };
   const toSetting = () => {
     setActivePage(Page.setting);
@@ -116,7 +123,7 @@ function App() {
           <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
         );
       case Page.services:
-        return <Services onOssActive={onOssActive} active={activeApp} />;
+        return <Services onAppSwitch={onAppSwitch} activeApp={activeApp} />;
       case Page.setting:
         return <Setting />;
       case Page.transferDone:
@@ -124,7 +131,7 @@ function App() {
       case Page.transferList:
         return <TransferList />;
       default:
-        return <div>123</div>;
+        return <div>404</div>;
     }
   };
 

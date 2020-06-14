@@ -8,6 +8,8 @@ export interface IBootstrap {
 export interface IApp {
   mainWindow: BrowserWindow | null;
   floatWindow: BrowserWindow | null;
+  alertWindow: BrowserWindow | null;
+  confirmWindow: BrowserWindow | null;
   appTray: Tray | null;
   init(): void;
 }
