@@ -28,8 +28,12 @@ export default class IpcChannelsService {
     return this.appStore.update({ _id: app._id }, app, {});
   }
 
-  async deleteApp(app: AppStore) {
-    return this.appStore.remove({ _id: app._id }, {});
+  async deleteApp(id: string) {
+    const selected = await this.appStore.find({ _id: id });
+    if (!selected) {
+      throw new Error("没有找到该 app");
+    }
+    return this.appStore.remove({ _id: id }, {});
   }
 
   async getApps() {

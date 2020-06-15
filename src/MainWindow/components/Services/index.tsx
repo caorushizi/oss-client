@@ -9,6 +9,7 @@ import {
   deleteApp,
   getAppsChannel,
   getBuckets,
+  showConfirm,
   updateApp
 } from "../../helper/ipc";
 import FormAdd from "./FormAdd";
@@ -55,15 +56,27 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
       onAppSwitch(currentStore);
     }
   };
-  const onBucketDelete = async (store: AppStore) => {
-    await deleteApp(store);
-    const allApps = await getAppsChannel();
-    setApps(allApps);
-    onAppSwitch(allApps[0]);
+  const onBucketDelete = async (app: AppStore) => {
+    try {
+      setLoading(true);
+      // 1、弹窗提示
+      await showConfirm({ title: "删除", message: "确定要删除该应用吗？" });
+      // 2、点击确定开始删除 app
+      const id = app._id;
+      await deleteApp(id);
+      const allApps = await getAppsChannel();
+      setApps(allApps);
+      onAppSwitch(allApps[0]);
+    } catch (err) {
+      console.log("删除时出现错误：", err.message);
+      message.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
   const onBucketAdd = async (values: AddForm) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const { name, type, ak, sk } = values;
       // 开始添加 app 流程
       // 1、获取 app 中所有的 bucket 信息，并保存到数据库（验证 ak，sk 是否可用）

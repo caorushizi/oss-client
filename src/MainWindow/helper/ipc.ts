@@ -88,8 +88,12 @@ export function updateApp(app: AppStore) {
   return send<void>("update-app", app);
 }
 
-export function deleteApp(app: AppStore) {
-  return send<void>("delete-app", app);
+export async function deleteApp(id?: string) {
+  const { code, msg, data } = await send<IpcResponse>("delete-app", id);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
 }
 
 export function clearTransferDoneList() {

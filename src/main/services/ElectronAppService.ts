@@ -308,9 +308,15 @@ export default class ElectronAppService implements IApp {
     this.registerIpc("update-app", params =>
       this.appChannels.updateApp(params)
     );
-    this.registerIpc("delete-app", params =>
-      this.appChannels.deleteApp(params)
-    );
+    this.registerIpc("delete-app", async id => {
+      if (!id) return fail(1, "id 不能为空");
+      try {
+        await this.appChannels.deleteApp(id);
+        return success(true);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("get-apps", () => this.appChannels.getApps());
     this.registerIpc("init-app", params => this.appChannels.initApp(params));
     this.registerIpc("add-app", async params => {
