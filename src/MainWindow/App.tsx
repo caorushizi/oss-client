@@ -31,9 +31,12 @@ import {
   getBuckets,
   initOss,
   maximizeMainWindow,
-  minimizeMainWindow
+  minimizeMainWindow,
+  showAlert,
+  showConfirm
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
+import { Button } from "antd";
 
 const mainWrapperWidth = document.body.clientWidth - 225;
 

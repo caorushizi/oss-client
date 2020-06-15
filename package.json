@@ -59,12 +59,12 @@
                 },
                 {
                   "html": "./src/AlertWindow/index.html",
-                  "js": "./src/AlertWindow/index.ts",
+                  "js": "./src/AlertWindow/index.tsx",
                   "name": "alert_window"
                 },
                 {
                   "html": "./src/ConfirmWindow/index.html",
-                  "js": "./src/ConfirmWindow/index.ts",
+                  "js": "./src/ConfirmWindow/index.tsx",
                   "name": "confirm_window"
                 }
               ]

@@ -143,3 +143,25 @@ export function deleteFile(vFile: VFile) {
 export function getConfig() {
   return send<ConfigStore>("get-config");
 }
+
+export async function showAlert(options?: {
+  title?: string;
+  message?: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("show-alert", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function showConfirm(options?: {
+  title?: string;
+  message?: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("show-confirm", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}

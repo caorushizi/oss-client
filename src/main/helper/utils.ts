@@ -21,3 +21,11 @@ export function fattenFileList(fileList: string[]): string[] {
     return prev;
   }, []);
 }
+
+export function success(data: any): IpcResponse {
+  return { code: 0, msg: "成功", data };
+}
+
+export function fail(code: number, msg: string): IpcResponse {
+  return { code, msg, data: {} };
+}
