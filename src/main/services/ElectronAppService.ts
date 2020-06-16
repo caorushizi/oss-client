@@ -331,7 +331,14 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("init-app", params => this.appChannels.initApp(params));
+    this.registerIpc("init-app", async params => {
+      try {
+        const appStore = await this.appChannels.initApp(params);
+        return success(appStore);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("add-app", async params => {
       try {
         // 开始执行添加 app 方法

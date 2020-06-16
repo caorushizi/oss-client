@@ -71,8 +71,12 @@ export async function getAppsChannel(): Promise<AppStore[]> {
   return data;
 }
 
-export function initOss(id?: string): Promise<AppStore> {
-  return send("init-app", { id });
+export async function initOss(id?: string): Promise<AppStore> {
+  const { code, msg, data } = await send<IpcResponse>("init-app", { id });
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function getTransfers(query: any): Promise<TransferStore[]> {

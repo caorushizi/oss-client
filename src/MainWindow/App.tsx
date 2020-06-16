@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { ipcRenderer } from "electron";
 import {
-  PlusCircleFilled,
+  CloseCircleFilled,
   MinusCircleFilled,
-  CloseCircleFilled
+  PlusCircleFilled
 } from "@ant-design/icons";
 import audioSrc from "./assets/tip.mp3";
 
@@ -17,8 +17,8 @@ import TransferDone from "./components/TransferDone";
 import Setting from "./components/Setting";
 import {
   getBgOffset,
-  getThemeColor,
   getPlatform,
+  getThemeColor,
   ThemeColor
 } from "./helper/utils";
 import Services from "./components/Services";
@@ -70,6 +70,9 @@ function App() {
   const toSetting = () => {
     setActivePage(Page.setting);
   };
+  const toService = () => {
+    setActivePage(Page.services);
+  };
   const playAudio = async () => {
     if (audio.current) {
       await audio.current.play();
@@ -79,7 +82,7 @@ function App() {
     try {
       // 设置活动 oss 配置
       const app = await initOss();
-      console.log(app);
+      console.log("首页中初始化状态：", app);
       setActiveApp(app);
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
@@ -91,6 +94,7 @@ function App() {
       }
     } catch (err) {
       console.log("初始化云存储客户端出错：", err.message);
+      toService();
     }
   };
 
