@@ -95,7 +95,7 @@ export async function addApp(
 
 export async function updateApp(app: AppStore) {
   const { code, msg, data } = await send<IpcResponse>("update-app", app);
-  if (code === 0) {
+  if (code !== 0) {
     throw new Error(msg);
   }
   return data;

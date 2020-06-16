@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  CSSTransition,
-  SwitchTransition,
-  TransitionGroup
-} from "react-transition-group";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { ipcRenderer } from "electron";
 import {
   PlusCircleFilled,
@@ -31,12 +27,9 @@ import {
   getBuckets,
   initOss,
   maximizeMainWindow,
-  minimizeMainWindow,
-  showAlert,
-  showConfirm
+  minimizeMainWindow
 } from "./helper/ipc";
 import { AppStore } from "../main/types";
-import { Button } from "antd";
 
 const mainWrapperWidth = document.body.clientWidth - 225;
 

@@ -5,14 +5,14 @@ import { OssType, AppStore } from "../../../main/types";
 import { getBuckets, switchBucket } from "../../helper/ipc";
 
 type PropTypes = {
-  activeOss: AppStore;
+  activeApp: AppStore;
   onBucketUpdate: (store: any) => void;
   onBucketCancel: () => void;
   onFormChange: (changedValues: any, values: any) => void;
 };
 
 const FormUpdate = ({
-  activeOss,
+  activeApp,
   onBucketUpdate,
   onBucketCancel,
   onFormChange
@@ -29,7 +29,7 @@ const FormUpdate = ({
       const bucketList = await getBuckets();
       setBuckets(bucketList);
       // 如果“默认上传 bucket”已经存在，则用来获取域名列表
-      const { uploadBucket } = activeOss;
+      const { uploadBucket } = activeApp;
       if (uploadBucket) {
         const { domains: initialDomains } = await switchBucket(uploadBucket);
         setDomains(initialDomains);
@@ -49,7 +49,7 @@ const FormUpdate = ({
   return (
     <Spin spinning={loading}>
       <Form
-        initialValues={activeOss}
+        initialValues={activeApp}
         labelAlign="left"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 12 }}

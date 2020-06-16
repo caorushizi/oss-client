@@ -32,7 +32,7 @@ enum ServicesPage {
 const mainWrapperWidth = document.body.clientWidth - 225;
 const mainWrapperHeight = document.body.clientHeight - 40;
 
-const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
+const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
   const [direction, setDirection] = useState<Direction>(Direction.down);
@@ -73,7 +73,7 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
       setIsEdit(false);
       setEdited(false);
     } catch (e) {
-      console.log("修改 app 时出错：", e.message);
+      console.log("修改 app 时出错：", e);
       message.error(e.message);
     } finally {
       setLoading(false);
@@ -85,9 +85,9 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
   };
   const onBucketDelete = async (app: AppStore) => {
     try {
-      setLoading(true);
       // 1、弹窗提示
       await showConfirm({ title: "删除", message: "确定要删除该应用吗？" });
+      setLoading(true);
       // 2、点击确定开始删除 app
       const id = app._id;
       await deleteApp(id);
@@ -217,7 +217,7 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
                 {isEdit ? (
                   <FormUpdate
                     key={activeApp.name}
-                    activeOss={activeApp}
+                    activeApp={activeApp}
                     onFormChange={(changedValues, values) => {
                       onFormChange(values, activeApp);
                     }}
@@ -226,38 +226,40 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
                   />
                 ) : (
                   <section>
-                    <div>
-                      <div>基本信息：</div>
-                      <div>
+                    <article>
+                      <h1>基本信息：</h1>
+                      <p>
                         <span>云服务厂商：</span>
-                        {activeApp.type || "暂无配置"}
-                      </div>
-                      <div>
+                        <span>{activeApp.type || "暂无配置"}</span>
+                      </p>
+                      <p>
                         <span>AK：</span>
-                        {activeApp.ak || "暂无配置"}
-                      </div>
-                      <div>
+                        <span>{activeApp.ak || "暂无配置"}</span>
+                      </p>
+                      <p>
                         <span>SK：</span>
-                        {hiddenTextFilter(activeApp.sk || "暂无配置")}
-                      </div>
-                    </div>
-                    <div>
-                      <div>软件配置：</div>
-                      <div>
+                        <span>
+                          {hiddenTextFilter(activeApp.sk || "暂无配置")}
+                        </span>
+                      </p>
+                    </article>
+                    <article>
+                      <h1>软件配置：</h1>
+                      <p>
                         <span>默认上传路径：</span>
-                        {activeApp.uploadBucket || "暂无配置"}
-                      </div>
-                      <div>
+                        <span>{activeApp.uploadBucket || "暂无配置"}</span>
+                      </p>
+                      <p>
                         <span>默认上传前缀：</span>
-                        {activeApp.uploadPrefix || "暂无配置"}
-                      </div>
-                      <div>
+                        <span>{activeApp.uploadPrefix || "暂无配置"}</span>
+                      </p>
+                      <p>
                         <span>默认域名：</span>
-                        {activeApp.defaultDomain || "暂无配置"}
-                      </div>
-                    </div>
-                    <div>
-                      <div>操作</div>
+                        <span>{activeApp.defaultDomain || "暂无配置"}</span>
+                      </p>
+                    </article>
+                    <article>
+                      <h1>操作</h1>
                       <Space>
                         <Button
                           onClick={() => {
@@ -275,7 +277,7 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
                           删除
                         </Button>
                       </Space>
-                    </div>
+                    </article>
                   </section>
                 )}
               </div>
