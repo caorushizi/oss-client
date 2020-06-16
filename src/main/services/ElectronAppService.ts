@@ -7,7 +7,8 @@ import {
   MenuItemConstructorOptions,
   Menu,
   Tray,
-  clipboard
+  clipboard,
+  Notification
 } from "electron";
 import { inject, injectable, named } from "inversify";
 import { Platform } from "../../MainWindow/helper/enums";
@@ -19,6 +20,7 @@ import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
 import { TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
+import { fail, success } from "../helper/utils";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -41,12 +43,18 @@ import IpcChannelsService from "./IpcChannelsService";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
+declare const ALERT_WINDOW_WEBPACK_ENTRY: string;
+declare const CONFIRM_WINDOW_WEBPACK_ENTRY: string;
 
 @injectable()
 export default class ElectronAppService implements IApp {
   mainWindow: BrowserWindow | null = null;
 
   floatWindow: BrowserWindow | null = null;
+
+  alertWindow: BrowserWindow | null = null;
+
+  confirmWindow: BrowserWindow | null = null;
 
   appTray: Tray | null = null;
 
@@ -86,31 +94,10 @@ export default class ElectronAppService implements IApp {
   };
 
   init() {
-    this.logger.info("初始化全部 ipc 通道~");
-    // 注册全部 ipc 通道
-    this.registerIpc("update-app", params =>
-      this.appChannels.updateApp(params)
-    );
-    this.registerIpc("delete-app", params =>
-      this.appChannels.deleteApp(params)
-    );
-    this.registerIpc("get-apps", () => this.appChannels.getApps());
-    this.registerIpc("init-app", params => this.appChannels.initApp(params));
-    this.registerIpc("add-app", params => this.appChannels.addApp(params));
-    this.registerIpc("clear-transfer-done-list", params =>
-      this.appChannels.removeTransfers(params)
-    );
-    this.registerIpc("get-transfer", params =>
-      this.appChannels.getTransfers(params)
-    );
-    this.registerIpc("get-buckets", params => this.appChannels.getBuckets());
-    this.registerIpc("get-config", params => this.appChannels.getConfig());
-    this.registerIpc("switch-bucket", params =>
-      this.appChannels.switchBucket(params)
-    );
-
     // 初始化 app
+    this.logger.info("开始初始化软件");
     app.on("ready", async () => {
+      this.logger.info("初始化软件完成，开始初始化窗口以及托盘图标");
       // 初始化 托盘图标
       const icon = nativeImage.createFromDataURL(TrayIcon);
       this.appTray = new Tray(icon);
@@ -192,54 +179,113 @@ export default class ElectronAppService implements IApp {
       const contextMenu = Menu.buildFromTemplate(menuTemplate);
       this.appTray.setToolTip("云存储客户端");
       this.appTray.setContextMenu(contextMenu);
-      // 初始化主窗口
+
+      // --------------------------------------------------------------
+      // |                                                            |
+      // |                         初始化主窗口                         |
+      // |                                                            |
+      // --------------------------------------------------------------
       this.mainWindow = new BrowserWindow({
         frame: false,
         height: 645,
         width: 1090,
         minHeight: 350,
         minWidth: 750,
-        webPreferences: { nodeIntegration: true },
-        titleBarStyle: "hiddenInset"
+        webPreferences: {
+          nodeIntegration: true,
+          devTools: process.env.NODE_ENV === "development"
+        },
+        titleBarStyle: "hiddenInset",
+        show: false
       });
-      this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {});
-
-      if (process.env.NODE_ENV === "development") {
-        this.mainWindow.webContents.openDevTools();
-      }
-
+      this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(r => r);
       this.mainWindow.on("closed", () => {
         if (this.mainWindow) this.mainWindow = null;
       });
-      // 初始化悬浮窗
+      this.mainWindow.once("ready-to-show", () => {
+        if (this.mainWindow) this.mainWindow.show();
+      });
+
+      // --------------------------------------------------------------
+      // |                                                            |
+      // |                         初始化悬浮窗                         |
+      // |                                                            |
+      // --------------------------------------------------------------
       if (getPlatform() === Platform.windows) {
         this.floatWindow = new BrowserWindow({
           transparent: true,
           frame: false,
-          webPreferences: { nodeIntegration: true },
+          webPreferences: {
+            nodeIntegration: true,
+            devTools: false
+          },
           height: 50,
           width: 110,
           alwaysOnTop: true,
           resizable: false,
-          type: "toolbar"
+          type: "toolbar",
+          show: false
         });
-
-        if (process.env.NODE_ENV === "development") {
-          this.floatWindow.webContents.openDevTools();
-        }
-
         const size = screen.getPrimaryDisplay().workAreaSize;
         const winSize = this.floatWindow.getSize();
-
         this.floatWindow.setPosition(size.width - winSize[0] - 100, 100);
-
-        this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(() => {});
-
+        this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(r => r);
         this.floatWindow.on("closed", () => {
           if (this.floatWindow) this.floatWindow = null;
         });
+        this.floatWindow.once("ready-to-show", () => {
+          if (this.floatWindow) this.floatWindow.show();
+        });
       }
-
+      // --------------------------------------------------------------
+      // |                                                            |
+      // |                         初始化alert                         |
+      // |                                                            |
+      // --------------------------------------------------------------
+      this.alertWindow = new BrowserWindow({
+        frame: false,
+        height: 200,
+        width: 400,
+        resizable: false,
+        parent: this.mainWindow,
+        webPreferences: {
+          nodeIntegration: true,
+          devTools: false
+        },
+        modal: true,
+        show: false
+      });
+      this.alertWindow.loadURL(ALERT_WINDOW_WEBPACK_ENTRY).then(r => r);
+      this.alertWindow.on("closed", () => {
+        if (this.alertWindow) this.alertWindow = null;
+      });
+      // --------------------------------------------------------------
+      // |                                                            |
+      // |                         初始化confirm                       |
+      // |                                                            |
+      // --------------------------------------------------------------
+      this.confirmWindow = new BrowserWindow({
+        frame: false,
+        height: 200,
+        width: 400,
+        resizable: false,
+        parent: this.mainWindow,
+        webPreferences: {
+          nodeIntegration: true,
+          devTools: false
+        },
+        modal: true,
+        show: false
+      });
+      this.confirmWindow.loadURL(CONFIRM_WINDOW_WEBPACK_ENTRY).then(r => r);
+      this.confirmWindow.on("closed", () => {
+        if (this.confirmWindow) this.confirmWindow = null;
+      });
+      // --------------------------------------------------------------
+      // |                                                            |
+      // |                         初始化任务栏                         |
+      // |                                                            |
+      // --------------------------------------------------------------
       this.appTray.on("click", () => {
         if (this.mainWindow) {
           if (this.mainWindow.isVisible()) {
@@ -254,6 +300,117 @@ export default class ElectronAppService implements IApp {
     app.on("window-all-closed", () => {
       if (getPlatform() !== Platform.macos) {
         app.quit();
+      }
+    });
+
+    this.logger.info("初始化窗口成功，开始初始化ipc通道");
+    // 注册全部 ipc 通道
+    this.registerIpc("update-app", async params => {
+      try {
+        await this.appChannels.updateApp(params);
+        return success(true);
+      } catch (e) {
+        this.logger.error("修改 app 出错：", e);
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("delete-app", async id => {
+      if (!id) return fail(1, "id 不能为空");
+      try {
+        await this.appChannels.deleteApp(id);
+        return success(true);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("get-apps", async () => {
+      try {
+        const apps = await this.appChannels.getApps();
+        return success(apps);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("init-app", async params => {
+      try {
+        const appStore = await this.appChannels.initApp(params);
+        return success(appStore);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("add-app", async params => {
+      try {
+        // 开始执行添加 app 方法
+        const data = await this.appChannels.addApp(params);
+        return success(data);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("clear-transfer-done-list", params =>
+      this.appChannels.removeTransfers(params)
+    );
+    this.registerIpc("get-transfer", params =>
+      this.appChannels.getTransfers(params)
+    );
+    this.registerIpc("get-buckets", async params => {
+      try {
+        const buckets = await this.appChannels.getBuckets(params);
+        return success(buckets);
+      } catch (err) {
+        return fail(1, "获取 buckets 失败，请检查 ak，sk 是否匹配！");
+      }
+    });
+    this.registerIpc("get-config", params => this.appChannels.getConfig());
+    this.registerIpc("switch-bucket", async params => {
+      const { bucketName } = params;
+      if (typeof bucketName !== "string" || bucketName === "")
+        return fail(1, "参数错误");
+      try {
+        const obj = await this.appChannels.switchBucket(params);
+        return success(obj);
+      } catch (e) {
+        this.logger.error("切换 bucket 时出错", e);
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("show-alert", async options => {
+      if (this.alertWindow) {
+        // fixme: 提示音
+        this.alertWindow.webContents.send("options", options);
+      }
+      const getWaitFor = () => {
+        return new Promise(resolve => {
+          ipcMain.once("close-alert", () => {
+            if (this.alertWindow) this.alertWindow.hide();
+            resolve();
+          });
+        });
+      };
+      await getWaitFor();
+      return success(true);
+    });
+
+    this.registerIpc("show-confirm", async options => {
+      if (this.confirmWindow) {
+        // fixme: 提示音
+        this.confirmWindow.webContents.send("options", options);
+      }
+      const getWaitFor = () => {
+        return new Promise((resolve, reject) => {
+          ipcMain.once("close-confirm", (e, flag: boolean) => {
+            if (this.confirmWindow) this.confirmWindow.hide();
+            if (flag) resolve();
+            else reject();
+          });
+        });
+      };
+      try {
+        await getWaitFor();
+        return success(true);
+      } catch (err) {
+        return fail(1, "点击取消");
       }
     });
   }

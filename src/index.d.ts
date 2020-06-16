@@ -20,3 +20,24 @@ declare interface BucketItem {
 declare interface BucketAdapter {
   (data: any): BucketItem[];
 }
+
+declare interface AddForm {
+  name: string;
+  ak: string;
+  sk: string;
+  type: number;
+}
+
+declare interface IpcResponse {
+  code: number;
+  msg: string;
+  data: any;
+}
+
+declare interface IpcSuccessFn {
+  (data: any): IpcResponse;
+}
+
+declare interface IpcFailFn {
+  (code: number, msg: string): IpcResponse;
+}

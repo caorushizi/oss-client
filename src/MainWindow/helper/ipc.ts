@@ -3,10 +3,10 @@ import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
   ConfigStore,
   FlowWindowStyle,
-  OssType,
   TransferStore,
   AppStore,
-  TransferStatus
+  TransferStatus,
+  OssType
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
@@ -37,41 +37,80 @@ export type BucketObj = {
   files: [];
 };
 
-export function switchBucket(bucketName: string): Promise<BucketObj> {
-  return send<BucketObj>("switch-bucket", { bucketName });
+export async function switchBucket(bucketName: string): Promise<BucketObj> {
+  const params = { bucketName };
+  const { code, msg, data } = await send<IpcResponse>("switch-bucket", params);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
-export function getBuckets(): Promise<string[]> {
-  return send<string[]>("get-buckets");
+/**
+ * 获取云存储的 buckets
+ * @param config （可选）如果传了返回当前配置的 buckets， 如果不是测返回当前上下文中配置的 buckets
+ */
+export async function getBuckets(config?: {
+  type: OssType;
+  ak: string;
+  sk: string;
+}): Promise<string[]> {
+  console.log("renderer ipc get buckets: ", config);
+  const { code, msg, data } = await send<IpcResponse>("get-buckets", config);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
-export function getAppsChannel(): Promise<AppStore[]> {
-  return send<AppStore[]>("get-apps");
+export async function getAppsChannel(): Promise<AppStore[]> {
+  const { code, msg, data } = await send<IpcResponse>("get-apps");
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
-export function initOss(id?: string): Promise<void> {
-  return send("init-app", { id });
+export async function initOss(id?: string): Promise<AppStore> {
+  const { code, msg, data } = await send<IpcResponse>("init-app", { id });
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function getTransfers(query: any): Promise<TransferStore[]> {
   return send("get-transfer", query);
 }
 
-export function addApp(
+export async function addApp(
   name: string,
   type: OssType,
   ak: string,
   sk: string
 ): Promise<AppStore> {
-  return send<AppStore>("add-app", { name, type, ak, sk });
+  const app = { name, type, ak, sk };
+  const { code, msg, data } = await send<IpcResponse>("add-app", app);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
-export function updateApp(app: AppStore) {
-  return send<void>("update-app", app);
+export async function updateApp(app: AppStore) {
+  const { code, msg, data } = await send<IpcResponse>("update-app", app);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
-export function deleteApp(app: AppStore) {
-  return send<void>("delete-app", app);
+export async function deleteApp(id?: string) {
+  const { code, msg, data } = await send<IpcResponse>("delete-app", id);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
 }
 
 export function clearTransferDoneList() {
@@ -124,4 +163,26 @@ export function deleteFile(vFile: VFile) {
 
 export function getConfig() {
   return send<ConfigStore>("get-config");
+}
+
+export async function showAlert(options?: {
+  title?: string;
+  message?: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("show-alert", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function showConfirm(options?: {
+  title?: string;
+  message?: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("show-confirm", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
 }

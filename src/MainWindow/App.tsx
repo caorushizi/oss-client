@@ -1,14 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  CSSTransition,
-  SwitchTransition,
-  TransitionGroup
-} from "react-transition-group";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { ipcRenderer } from "electron";
 import {
-  PlusCircleFilled,
+  CloseCircleFilled,
   MinusCircleFilled,
-  CloseCircleFilled
+  PlusCircleFilled
 } from "@ant-design/icons";
 import audioSrc from "./assets/tip.mp3";
 
@@ -21,8 +17,8 @@ import TransferDone from "./components/TransferDone";
 import Setting from "./components/Setting";
 import {
   getBgOffset,
-  getThemeColor,
   getPlatform,
+  getThemeColor,
   ThemeColor
 } from "./helper/utils";
 import Services from "./components/Services";
@@ -45,6 +41,7 @@ function App() {
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
+  const [activeApp, setActiveApp] = useState<AppStore>();
   const audio = useRef<HTMLAudioElement>(null);
   const tabChange = async (page: Page, bucket?: string) => {
     await setDirection(page < activePage ? Direction.down : Direction.up);
@@ -58,17 +55,46 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onOssActive = async (store: AppStore) => {
-    const test = await initOss(store?._id);
-    const buckets = await getBuckets();
-    setBucketList(buckets);
+  const onAppSwitch = async (app: AppStore) => {
+    try {
+      // 1、将上下文信息修改为新的 app
+      const active = await initOss(app._id);
+      setActiveApp(active);
+      // 2、获取新的 app 中的 bucket 列表
+      const buckets = await getBuckets();
+      setBucketList(buckets);
+    } catch (err) {
+      console.log("切换 app 时出错：", err.message);
+    }
   };
   const toSetting = () => {
     setActivePage(Page.setting);
   };
+  const toService = () => {
+    setActivePage(Page.services);
+  };
   const playAudio = async () => {
     if (audio.current) {
       await audio.current.play();
+    }
+  };
+  const initState = async () => {
+    try {
+      // 设置活动 oss 配置
+      const app = await initOss();
+      console.log("首页中初始化状态：", app);
+      setActiveApp(app);
+      // 获取 oss 中 bucket 列表，并选中活动项
+      const buckets = await getBuckets();
+      setBucketList(buckets);
+      if (buckets.length > 0) {
+        await tabChange(Page.bucket, buckets[0]);
+      } else {
+        setActivePage(Page.services);
+      }
+    } catch (err) {
+      console.log("初始化云存储客户端出错：", err.message);
+      toService();
     }
   };
 
@@ -79,18 +105,7 @@ function App() {
 
   // 相当于初始化流程
   useEffect(() => {
-    (async () => {
-      // 设置活动 oss 配置
-      await initOss();
-      // 获取 oss 中 bucket 列表，并选中活动项
-      const buckets = await getBuckets();
-      setBucketList(buckets);
-      if (buckets.length > 0) {
-        await tabChange(Page.bucket, buckets[0]);
-      } else {
-        setActivePage(Page.services);
-      }
-    })();
+    initState().then(r => r);
 
     ipcRenderer.on("to-setting", toSetting);
     ipcRenderer.on("play-finish", playAudio);
@@ -108,7 +123,7 @@ function App() {
           <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
         );
       case Page.services:
-        return <Services onOssActive={onOssActive} />;
+        return <Services onAppSwitch={onAppSwitch} activeApp={activeApp} />;
       case Page.setting:
         return <Setting />;
       case Page.transferDone:
@@ -116,7 +131,7 @@ function App() {
       case Page.transferList:
         return <TransferList />;
       default:
-        return <div>123</div>;
+        return <div>404</div>;
     }
   };
 
