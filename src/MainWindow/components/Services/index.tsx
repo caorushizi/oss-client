@@ -17,6 +17,7 @@ import FormUpdate from "./FormUpdate";
 import { AppStore, OssType } from "../../../main/types";
 import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
+import { debounce, deepEqual } from "../../helper/utils";
 
 type PropTypes = {
   onAppSwitch: (item: AppStore) => void;
@@ -35,7 +36,10 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
   const [direction, setDirection] = useState<Direction>(Direction.down);
+  // 是否为中正在编辑的状态
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  // update form 中的数据是否已经被修改
+  const [edited, setEdited] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const _toAddPage = () => {
@@ -46,15 +50,38 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
     setPage(ServicesPage.list);
     setDirection(Direction.left);
   };
-
+  const onFormChange = debounce((values: any, app: any) => {
+    const isEq = deepEqual(values, app);
+    console.log("更新修改，是由与原来相同：", isEq);
+    setEdited(!isEq);
+  }, 200);
   const onBucketUpdate = async (store: AppStore) => {
-    await updateApp(store);
-    const allApps = await getAppsChannel();
-    setApps(allApps);
-    const currentStore = allApps.find(i => i._id === store._id);
-    if (currentStore) {
-      onAppSwitch(currentStore);
+    try {
+      const combineStore = { ...activeApp, ...store };
+      const { _id, type, ak, sk } = combineStore;
+      // 检查新的 ak，sk 是否匹配
+      await getBuckets({ type, ak, sk });
+      // 修改数据库中的字段
+      setLoading(true);
+      await updateApp(combineStore);
+      // 获取其新的 bucket 列表
+      const allApps = await getAppsChannel();
+      setApps(allApps);
+      // 选择当前修改的 app，并且选中
+      const currentStore = allApps.find(i => i._id === _id);
+      if (currentStore) onAppSwitch(currentStore);
+      setIsEdit(false);
+      setEdited(false);
+    } catch (e) {
+      console.log("修改 app 时出错：", e.message);
+      message.error(e.message);
+    } finally {
+      setLoading(false);
     }
+  };
+  const onBucketCancel = () => {
+    setIsEdit(false);
+    setEdited(false);
   };
   const onBucketDelete = async (app: AppStore) => {
     try {
@@ -103,10 +130,18 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
       setLoading(false);
     }
   };
-  const switchApp = (id: string) => {
+  const switchApp = async (id: string) => {
     // 1、判断点击的是否为选中的
     if (activeApp && activeApp._id === id) return;
+    // 切换 app，判断是不是已经编辑
+    // 已经编辑、打开确认窗口
+    if (edited)
+      await showConfirm({
+        title: "通知",
+        message: "更改还没有保存，是否要切换 app ？"
+      });
     // 2、将编辑状态取消
+    setEdited(false);
     setIsEdit(false);
     // 3、选中点击的 app
     const selected = apps.find(i => i._id === id);
@@ -183,11 +218,11 @@ const Services = ({ onAppSwitch, activeApp }: PropTypes) => {
                   <FormUpdate
                     key={activeApp.name}
                     activeOss={activeApp}
-                    onBucketUpdate={onBucketUpdate}
-                    onBucketDelete={onBucketDelete}
-                    onBucketCancel={() => {
-                      setIsEdit(false);
+                    onFormChange={(changedValues, values) => {
+                      onFormChange(values, activeApp);
                     }}
+                    onBucketUpdate={onBucketUpdate}
+                    onBucketCancel={onBucketCancel}
                   />
                 ) : (
                   <section>

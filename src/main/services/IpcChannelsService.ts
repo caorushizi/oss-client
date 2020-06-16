@@ -87,8 +87,9 @@ export default class IpcChannelsService {
   }
 
   async switchBucket(params: any) {
+    const { bucketName } = params;
     const instance = this.oss.getService();
-    instance.setBucket(params.bucketName);
+    instance.setBucket(bucketName);
     const files = await instance.getBucketFiles();
     const domains = await instance.getBucketDomainList();
     return { files, domains };

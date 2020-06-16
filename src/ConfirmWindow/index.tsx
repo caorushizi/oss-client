@@ -25,8 +25,8 @@ const App = () => {
   }, []);
   return (
     <section className="container">
-      <div className="container-header">header</div>
-      <div className="container-body">confirm</div>
+      <div className="container-header">{message.title}</div>
+      <div className="container-body">{message.message}</div>
       <div className="container-footer">
         <Space>
           <Button

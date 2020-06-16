@@ -305,9 +305,15 @@ export default class ElectronAppService implements IApp {
 
     this.logger.info("初始化窗口成功，开始初始化ipc通道");
     // 注册全部 ipc 通道
-    this.registerIpc("update-app", params =>
-      this.appChannels.updateApp(params)
-    );
+    this.registerIpc("update-app", async params => {
+      try {
+        await this.appChannels.updateApp(params);
+        return success(true);
+      } catch (e) {
+        this.logger.error("修改 app 出错：", e);
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("delete-app", async id => {
       if (!id) return fail(1, "id 不能为空");
       try {
@@ -317,7 +323,14 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("get-apps", () => this.appChannels.getApps());
+    this.registerIpc("get-apps", async () => {
+      try {
+        const apps = await this.appChannels.getApps();
+        return success(apps);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("init-app", params => this.appChannels.initApp(params));
     this.registerIpc("add-app", async params => {
       try {
@@ -343,9 +356,18 @@ export default class ElectronAppService implements IApp {
       }
     });
     this.registerIpc("get-config", params => this.appChannels.getConfig());
-    this.registerIpc("switch-bucket", params =>
-      this.appChannels.switchBucket(params)
-    );
+    this.registerIpc("switch-bucket", async params => {
+      const { bucketName } = params;
+      if (typeof bucketName !== "string" || bucketName === "")
+        return fail(1, "参数错误");
+      try {
+        const obj = await this.appChannels.switchBucket(params);
+        return success(obj);
+      } catch (e) {
+        this.logger.error("切换 bucket 时出错", e);
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("show-alert", async options => {
       if (this.alertWindow) {
         // fixme: 提示音

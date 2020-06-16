@@ -90,3 +90,38 @@ export function getIconName(filename?: string): string {
   if (!iconName) iconName = "icon-documents";
   return iconName;
 }
+
+export function deepEqual(a: any, b: any): boolean {
+  if (
+    typeof a === "object" &&
+    a != null &&
+    typeof b === "object" &&
+    b != null
+  ) {
+    // 匹配字段数
+    const count = [0, 0];
+    count[0] = Object.keys(a).length;
+    count[1] = Object.keys(b).length;
+    if (count[0] !== count[1]) return false;
+
+    // 键值比较
+    if (!Object.keys(a).every(key => key in b && deepEqual(a[key], b[key])))
+      return false;
+    if (!Object.keys(b).every(key => key in a && deepEqual(a[key], b[key])))
+      return false;
+    // 比较完成返回成功
+    return true;
+  }
+  return a === b;
+}
+
+export function debounce(fn: Function, delay = 200) {
+  let timer: number | null = null;
+  return (...args: any[]) => {
+    if (timer) clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      fn(...args);
+      timer = null;
+    }, delay);
+  };
+}

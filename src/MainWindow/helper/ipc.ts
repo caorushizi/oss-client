@@ -37,8 +37,13 @@ export type BucketObj = {
   files: [];
 };
 
-export function switchBucket(bucketName: string): Promise<BucketObj> {
-  return send<BucketObj>("switch-bucket", { bucketName });
+export async function switchBucket(bucketName: string): Promise<BucketObj> {
+  const params = { bucketName };
+  const { code, msg, data } = await send<IpcResponse>("switch-bucket", params);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 /**
@@ -58,8 +63,12 @@ export async function getBuckets(config?: {
   return data;
 }
 
-export function getAppsChannel(): Promise<AppStore[]> {
-  return send<AppStore[]>("get-apps");
+export async function getAppsChannel(): Promise<AppStore[]> {
+  const { code, msg, data } = await send<IpcResponse>("get-apps");
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function initOss(id?: string): Promise<AppStore> {
@@ -84,8 +93,12 @@ export async function addApp(
   return data;
 }
 
-export function updateApp(app: AppStore) {
-  return send<void>("update-app", app);
+export async function updateApp(app: AppStore) {
+  const { code, msg, data } = await send<IpcResponse>("update-app", app);
+  if (code === 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export async function deleteApp(id?: string) {
