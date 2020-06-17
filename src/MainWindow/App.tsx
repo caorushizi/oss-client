@@ -55,14 +55,19 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onAppSwitch = async (app: AppStore) => {
+  const onAppSwitch = async (app?: AppStore) => {
     try {
-      // 1、将上下文信息修改为新的 app
-      const active = await initOss(app._id);
-      setActiveApp(active);
-      // 2、获取新的 app 中的 bucket 列表
-      const buckets = await getBuckets();
-      setBucketList(buckets);
+      if (app) {
+        // 1、将上下文信息修改为新的 app
+        const active = await initOss(app._id);
+        setActiveApp(active);
+        // 2、获取新的 app 中的 bucket 列表
+        const buckets = await getBuckets();
+        setBucketList(buckets);
+      } else {
+        setActiveApp(undefined);
+        setBucketList([]);
+      }
     } catch (err) {
       console.log("切换 app 时出错：", err.message);
     }

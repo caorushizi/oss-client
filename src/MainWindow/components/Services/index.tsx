@@ -92,7 +92,9 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       const id = app._id;
       await deleteApp(id);
       const allApps = await getAppsChannel();
+      // 判断数据库中是否还有数据
       setApps(allApps);
+
       onAppSwitch(allApps[0]);
     } catch (err) {
       console.log("删除时出现错误：", err.message);
@@ -171,7 +173,7 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const renderSwitch = (param: ServicesPage) => {
     switch (param) {
       case ServicesPage.list:
-        return (
+        return apps.length > 0 ? (
           <section className="apps-main-wrapper">
             <div className="main-left">
               <div className="header">
@@ -180,33 +182,26 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                 </Button>
               </div>
               <ul className="app-list">
-                {apps.length > 0 ? (
-                  apps.map(app => (
-                    <li
-                      className={classNames("item", {
-                        active: app._id === activeApp?._id
-                      })}
-                      key={app._id || Date.now()}
+                {apps.map(app => (
+                  <li
+                    className={classNames("item", {
+                      active: app._id === activeApp?._id
+                    })}
+                    key={app._id || Date.now()}
+                  >
+                    <button
+                      type="button"
+                      className="button"
+                      disabled={!app._id}
+                      onClick={() => switchApp(app._id!)}
                     >
-                      <button
-                        type="button"
-                        className="button"
-                        disabled={!app._id}
-                        onClick={() => switchApp(app._id!)}
-                      >
-                        <svg className="icon" aria-hidden="true">
-                          {renderIcon(app.type)}
-                        </svg>
-                        <span>{app.name}</span>
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <li className="no-result">
-                    <p>没有 Apps</p>
-                    <p>暂时没有搜索到 apps</p>
+                      <svg className="icon" aria-hidden="true">
+                        {renderIcon(app.type)}
+                      </svg>
+                      <span>{app.name}</span>
+                    </button>
                   </li>
-                )}
+                ))}
               </ul>
             </div>
             {activeApp && (
@@ -282,6 +277,14 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                 )}
               </div>
             )}
+          </section>
+        ) : (
+          <section className="no-result">
+            <p>没有 Apps</p>
+            <p>暂时没有搜索到 apps</p>
+            <Button size="small" onClick={_toAddPage}>
+              添加
+            </Button>
           </section>
         );
       case ServicesPage.add:

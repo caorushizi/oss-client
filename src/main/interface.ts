@@ -54,5 +54,6 @@ export interface IOSS {
 
 export interface IOssService {
   getService(): IOSS;
-  switchApp(type: OssType, ak: string, sk: string): void;
+  changeContext(type: OssType, ak: string, sk: string): void;
+  clearContext(): void;
 }

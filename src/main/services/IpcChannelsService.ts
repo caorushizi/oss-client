@@ -29,11 +29,13 @@ export default class IpcChannelsService {
   }
 
   async deleteApp(id: string) {
+    // 查找数据库中是否存在
     const selected = await this.appStore.find({ _id: id });
-    if (!selected) {
-      throw new Error("没有找到该 app");
-    }
-    return this.appStore.remove({ _id: id }, {});
+    if (!selected) throw new Error("没有找到该 app");
+    // 删除数据
+    await this.appStore.remove({ _id: id }, {});
+    // 清理上下文信息
+    this.oss.clearContext();
   }
 
   async getApps() {
@@ -46,7 +48,7 @@ export default class IpcChannelsService {
     const findApps = await this.appStore.find(query);
     if (findApps.length > 0) {
       const app = findApps[0];
-      this.oss.switchApp(app.type, app.ak, app.sk);
+      this.oss.changeContext(app.type, app.ak, app.sk);
       return app;
     }
     throw new Error("没有可初始化的 app");
