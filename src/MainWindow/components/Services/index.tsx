@@ -35,7 +35,7 @@ const mainWrapperHeight = document.body.clientHeight - 40;
 const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
-  const [direction, setDirection] = useState<Direction>(Direction.down);
+  const [direction, setDirection] = useState<Direction>(Direction.left);
   // 是否为中正在编辑的状态
   const [isEdit, setIsEdit] = useState<boolean>(false);
   // update form 中的数据是否已经被修改

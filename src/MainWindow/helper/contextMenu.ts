@@ -1,7 +1,8 @@
 import { ipcRenderer, remote, clipboard } from "electron";
 import VFolder from "../lib/vdir/VFolder";
 import VFile from "../lib/vdir/VFile";
-import { deleteFile, getConfig } from "./ipc";
+import { deleteFile, getConfig, showConfirm } from "./ipc";
+import { message } from "antd";
 
 export function fileContextMenu(item: VFile, domain: string) {
   const menu = remote.Menu.buildFromTemplate([
@@ -39,24 +40,16 @@ export function fileContextMenu(item: VFile, domain: string) {
     {
       label: "删除",
       click: async () => {
-        const config = await getConfig();
-        const showDialog = config.deleteShowDialog;
-        if (showDialog) {
-          remote.dialog
-            .showMessageBox({
-              type: "question",
-              message: "是否要删除这个文件",
-              buttons: ["取消", "确定"],
-              defaultId: 1,
-              cancelId: 0
-            })
-            .then(({ response }) => {
-              if (response === 1) {
-                deleteFile(item);
-              }
-            });
-        } else {
+        try {
+          const config = await getConfig();
+          const showDialog = config.deleteShowDialog;
+          if (showDialog) {
+            await showConfirm({ title: "警告", message: "是否要删除该文件" });
+          }
           deleteFile(item);
+        } catch (e) {
+          console.log("删除文件时出错：", e.message);
+          message.error(e.message);
         }
       }
     }

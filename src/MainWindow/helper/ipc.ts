@@ -1,8 +1,7 @@
 import uuidV1 from "uuid/v1";
-import { ipcRenderer, IpcRendererEvent } from "electron";
+import { ipcRenderer, IpcRendererEvent, remote } from "electron";
 import {
   ConfigStore,
-  FlowWindowStyle,
   TransferStore,
   AppStore,
   TransferStatus,
@@ -114,18 +113,6 @@ export async function deleteApp(id?: string) {
 
 export function clearTransferDoneList() {
   return send<void>("clear-transfer-done-list", TransferStatus.done);
-}
-
-export function closeMainApp() {
-  ipcRenderer.send("close-main-window");
-}
-
-export function minimizeMainWindow() {
-  ipcRenderer.send("minimize-main-window");
-}
-
-export function maximizeMainWindow() {
-  ipcRenderer.send("maximize-main-window");
 }
 
 export async function changeSetting(key: string, value: any) {

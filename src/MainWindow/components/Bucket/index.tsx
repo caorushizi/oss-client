@@ -120,7 +120,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       ipcRenderer.send("req:file:download", item);
     });
   };
-  const obBatchDelete = () => {};
+  const onBatchDelete = () => {};
 
   return (
     <div className="bucket-wrapper">
@@ -128,7 +128,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
         selectedItems={selectedFileIdList}
         fileUpload={fileUpload}
         onDownload={onBatchDownload}
-        onDelete={obBatchDelete}
+        onDelete={onBatchDelete}
       />
       <HeaderToolbar
         onRefreshBucket={onRefreshBucket}

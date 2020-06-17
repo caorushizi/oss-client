@@ -136,26 +136,6 @@ export default class SimpleBootService implements IBootstrap {
         });
       }
     );
-
-    ipcMain.on("close-main-window", () => {
-      if (this.app.mainWindow) {
-        this.app.mainWindow.hide();
-      }
-    });
-    ipcMain.on("minimize-main-window", () => {
-      if (this.app.mainWindow) {
-        this.app.mainWindow.minimize();
-      }
-    });
-    ipcMain.on("maximize-main-window", () => {
-      if (this.app.mainWindow) {
-        if (this.app.mainWindow.isMaximized()) {
-          this.app.mainWindow.unmaximize();
-        } else {
-          this.app.mainWindow.maximize();
-        }
-      }
-    });
   }
 
   uploadFile(
