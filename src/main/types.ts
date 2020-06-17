@@ -79,7 +79,6 @@ export interface ConfigStore {
   uploadOverwrite: boolean;
   theme: Theme;
   downloadDir: string;
-  cacheDir: string;
   closeApp: boolean;
 
   // 托盘设置

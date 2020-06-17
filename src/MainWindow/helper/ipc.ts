@@ -55,7 +55,6 @@ export async function getBuckets(config?: {
   ak: string;
   sk: string;
 }): Promise<string[]> {
-  console.log("renderer ipc get buckets: ", config);
   const { code, msg, data } = await send<IpcResponse>("get-buckets", config);
   if (code !== 0) {
     throw new Error(msg);
@@ -129,32 +128,15 @@ export function maximizeMainWindow() {
   ipcRenderer.send("maximize-main-window");
 }
 
-export function changeFloatWindowShape(shape: FlowWindowStyle) {
-  ipcRenderer.send("change-theme", { params: shape });
-}
-
-export function changeUseHttps(useHttps: boolean) {
-  ipcRenderer.send("change-use-https", { params: useHttps });
-}
-
-export function changeDirectDelete(directDelete: boolean) {
-  ipcRenderer.send("change-direct-delete", { params: directDelete });
-}
-
-export function changeUploadOverride(uploadOverride: boolean) {
-  ipcRenderer.send("change-upload-override", { params: uploadOverride });
-}
-
-export function changeDownloadDir(downloadDir: string) {
-  ipcRenderer.send("change-download-dir", { params: downloadDir });
-}
-
-export function changeMarkdown(isMarkdown: boolean) {
-  ipcRenderer.send("change-markdown", { params: isMarkdown });
-}
-
-export function changeDownloadTip(transferDoneTip: boolean) {
-  ipcRenderer.send("change-transfer-done-tip", { params: transferDoneTip });
+export async function changeSetting(key: string, value: any) {
+  const { code, data, msg } = await send<IpcResponse>("change-setting", {
+    key,
+    value
+  });
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export function deleteFile(vFile: VFile) {

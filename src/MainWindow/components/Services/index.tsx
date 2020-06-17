@@ -279,12 +279,14 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
             )}
           </section>
         ) : (
-          <section className="no-result">
-            <p>没有 Apps</p>
-            <p>暂时没有搜索到 apps</p>
-            <Button size="small" onClick={_toAddPage}>
-              添加
-            </Button>
+          <section className="apps-main-wrapper">
+            <div className="no-result">
+              <p>没有 Apps</p>
+              <p>暂时没有搜索到 apps</p>
+              <Button size="small" onClick={_toAddPage}>
+                添加
+              </Button>
+            </div>
           </section>
         );
       case ServicesPage.add:
