@@ -17,7 +17,7 @@ body {
   }
 
   .container {
-    padding: 5px;
+    padding: 15px;
     height: 100vh;
     width: 100vw;
     background: #484b58;
@@ -25,6 +25,8 @@ body {
     flex-direction: column;
 
     .container-header {
+      color: #fff;
+      font-size: 25px;
       height: 50px;
       min-height: 50px;
       display: flex;
@@ -33,6 +35,8 @@ body {
     }
 
     .container-body {
+      color: #fff;
+      font-size: 18px;
       flex: 1;
       display: flex;
       flex-direction: row;
@@ -40,11 +44,10 @@ body {
     }
 
     .container-footer {
-      height: 50px;
-      min-height: 50px;
+      height: 24px;
+      min-height: 24px;
       display: flex;
-      flex-direction: row;
-      align-items: center;
+      justify-content: flex-end;
     }
   }
 }

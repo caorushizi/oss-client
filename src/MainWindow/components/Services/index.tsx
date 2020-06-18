@@ -14,7 +14,7 @@ import {
 } from "../../helper/ipc";
 import FormAdd from "./FormAdd";
 import FormUpdate from "./FormUpdate";
-import { AppStore, OssType } from "../../../main/types";
+import { AppStore, OssType, OssTypeMap } from "../../../main/types";
 import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
 import { debounce, deepEqual } from "../../helper/utils";
@@ -220,41 +220,67 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                     onBucketCancel={onBucketCancel}
                   />
                 ) : (
-                  <section>
-                    <article>
-                      <h1>基本信息：</h1>
-                      <p>
-                        <span>云服务厂商：</span>
-                        <span>{activeApp.type || "暂无配置"}</span>
+                  <section className="app-description">
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">
+                        基本信息：
+                      </h1>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          云服务厂商：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {OssTypeMap[activeApp.type] || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>AK：</span>
-                        <span>{activeApp.ak || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          AK：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.ak || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>SK：</span>
-                        <span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          SK：
+                        </span>
+                        <span className="app-description-section_item__content">
                           {hiddenTextFilter(activeApp.sk || "暂无配置")}
                         </span>
                       </p>
                     </article>
-                    <article>
-                      <h1>软件配置：</h1>
-                      <p>
-                        <span>默认上传路径：</span>
-                        <span>{activeApp.uploadBucket || "暂无配置"}</span>
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">
+                        软件配置：
+                      </h1>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认上传路径：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.uploadBucket || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>默认上传前缀：</span>
-                        <span>{activeApp.uploadPrefix || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认上传前缀：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.uploadPrefix || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>默认域名：</span>
-                        <span>{activeApp.defaultDomain || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认域名：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.defaultDomain || "暂无配置"}
+                        </span>
                       </p>
                     </article>
-                    <article>
-                      <h1>操作</h1>
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">操作</h1>
                       <Space>
                         <Button
                           onClick={() => {

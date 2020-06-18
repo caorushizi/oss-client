@@ -4,6 +4,12 @@ export enum OssType {
   tencent
 }
 
+export const OssTypeMap = {
+  [OssType.qiniu]: "七牛云",
+  [OssType.ali]: "阿里云",
+  [OssType.tencent]: "腾讯云"
+};
+
 export enum TaskType {
   download,
   upload
