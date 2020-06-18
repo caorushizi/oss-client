@@ -311,7 +311,7 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   };
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} size="large">
       <SwitchTransition>
         <CSSTransition
           key={page}

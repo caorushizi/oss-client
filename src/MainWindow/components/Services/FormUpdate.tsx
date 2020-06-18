@@ -47,7 +47,7 @@ const FormUpdate = ({
   }, []);
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} size="large">
       <Form
         initialValues={activeApp}
         labelAlign="left"
