@@ -5,7 +5,7 @@ import Qiniu from "../oss/Qiniu";
 
 @injectable()
 export default class OssService implements IOssService {
-  public instance: IOSS | undefined;
+  public instance: IOSS | null = null;
 
   getService(): IOSS {
     if (!this.instance) {
@@ -23,7 +23,11 @@ export default class OssService implements IOssService {
     }
   }
 
-  switchApp(type: OssType, ak: string, sk: string) {
+  changeContext(type: OssType, ak: string, sk: string) {
     this.instance = OssService.create(type, ak, sk);
+  }
+
+  clearContext() {
+    this.instance = null;
   }
 }

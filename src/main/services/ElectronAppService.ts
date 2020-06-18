@@ -7,8 +7,7 @@ import {
   MenuItemConstructorOptions,
   Menu,
   Tray,
-  clipboard,
-  Notification
+  clipboard
 } from "electron";
 import { inject, injectable, named } from "inversify";
 import { Platform } from "../../MainWindow/helper/enums";
@@ -18,9 +17,10 @@ import { configStore } from "../helper/config";
 import { IApp, ILogger, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
-import { TransferStore } from "../types";
+import { FlowWindowStyle, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { fail, success } from "../helper/utils";
+import { checkDirExist, mkdir } from "../helper/fs";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -97,6 +97,9 @@ export default class ElectronAppService implements IApp {
     // 初始化 app
     this.logger.info("开始初始化软件");
     app.on("ready", async () => {
+      // 检查下载目录
+      const downloadIsDir = await checkDirExist(configStore.get("downloadDir"));
+      if (!downloadIsDir) await mkdir(configStore.get("downloadDir"));
       this.logger.info("初始化软件完成，开始初始化窗口以及托盘图标");
       // 初始化 托盘图标
       const icon = nativeImage.createFromDataURL(TrayIcon);
@@ -390,6 +393,61 @@ export default class ElectronAppService implements IApp {
       };
       await getWaitFor();
       return success(true);
+    });
+    this.registerIpc("change-setting", async params => {
+      const { key, value } = params;
+      if (typeof key !== "string" || key === "") return fail(1, "参数不能为空");
+      switch (key) {
+        case "useHttps":
+          // 是否使用 https
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("useHttps", value);
+          return success(true);
+        case "deleteShowDialog":
+          // 删除时是否显示对话框
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("deleteShowDialog", value);
+          return success(true);
+        case "uploadOverwrite":
+          // 是否直接覆盖原始文件
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("uploadOverwrite", value);
+          return success(true);
+        case "markdown":
+          // 是否使用 markdown
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("markdown", value);
+          return success(true);
+        case "transferDoneTip":
+          // 下载完成后是否播放提示音
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("transferDoneTip", value);
+          return success(true);
+        case "downloadDir":
+          // 下载地址
+          // fixme： 检查文件夹位置是否存在
+          configStore.set("downloadDir", value);
+          return success(true);
+        case "floatWindowStyle":
+          // 悬浮窗形状
+          if (typeof value !== "number") return fail(1, "参数错误");
+          configStore.set("floatWindowStyle", value);
+          if (this.floatWindow) {
+            this.floatWindow.webContents.send("switch-shape", value);
+          }
+          return success(true);
+        case "showFloatWindow":
+          // 显示悬浮窗
+          if (typeof value !== "boolean") return fail(1, "参数错误");
+          configStore.set("showFloatWindow", value);
+          if (this.floatWindow) {
+            if (value) this.floatWindow.show();
+            else this.floatWindow.hide();
+          }
+          return success(true);
+        default:
+          return fail(1, "不支持该设置");
+      }
     });
 
     this.registerIpc("show-confirm", async options => {

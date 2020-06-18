@@ -15,7 +15,7 @@ type Options = {
 const App = () => {
   const [message, setMessage] = useState<Options>({
     title: "警告",
-    message: ""
+    message: "警告"
   });
   useEffect(() => {
     ipcRenderer.on("options", (e, options: Options) => {

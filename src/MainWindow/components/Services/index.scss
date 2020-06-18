@@ -91,6 +91,26 @@
           overflow: hidden;
         }
       }
+
+      .app-description {
+        .app-description-section {
+          .app-description-section_title {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 200;
+          }
+
+          .app-description-section_item {
+            .app-description-section_item__title {
+              display: inline-block;
+              width: 100px;
+            }
+
+            .app-description-section_item__content {
+            }
+          }
+        }
+      }
     }
   }
 }

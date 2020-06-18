@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import {
   CloseCircleFilled,
   MinusCircleFilled,
@@ -22,13 +22,7 @@ import {
   ThemeColor
 } from "./helper/utils";
 import Services from "./components/Services";
-import {
-  closeMainApp,
-  getBuckets,
-  initOss,
-  maximizeMainWindow,
-  minimizeMainWindow
-} from "./helper/ipc";
+import { getBuckets, initOss } from "./helper/ipc";
 import { AppStore } from "../main/types";
 
 const mainWrapperWidth = document.body.clientWidth - 225;
@@ -55,14 +49,19 @@ function App() {
   const onLoadedBucket = () => {
     setBucketLoading(false);
   };
-  const onAppSwitch = async (app: AppStore) => {
+  const onAppSwitch = async (app?: AppStore) => {
     try {
-      // 1、将上下文信息修改为新的 app
-      const active = await initOss(app._id);
-      setActiveApp(active);
-      // 2、获取新的 app 中的 bucket 列表
-      const buckets = await getBuckets();
-      setBucketList(buckets);
+      if (app) {
+        // 1、将上下文信息修改为新的 app
+        const active = await initOss(app._id);
+        setActiveApp(active);
+        // 2、获取新的 app 中的 bucket 列表
+        const buckets = await getBuckets();
+        setBucketList(buckets);
+      } else {
+        setActiveApp(undefined);
+        setBucketList([]);
+      }
     } catch (err) {
       console.log("切换 app 时出错：", err.message);
     }
@@ -149,9 +148,29 @@ function App() {
       <div className="drag-area" />
       {getPlatform() === Platform.windows && (
         <div className="app-button">
-          <MinusCircleFilled className="icon" onClick={minimizeMainWindow} />
-          <PlusCircleFilled className="icon" onClick={maximizeMainWindow} />
-          <CloseCircleFilled className="icon" onClick={closeMainApp} />
+          <MinusCircleFilled
+            className="icon"
+            onClick={() => {
+              remote.getCurrentWindow().minimize();
+            }}
+          />
+          <PlusCircleFilled
+            className="icon"
+            onClick={() => {
+              const window = remote.getCurrentWindow();
+              if (window.isMaximized()) {
+                window.unmaximize();
+              } else {
+                window.maximize();
+              }
+            }}
+          />
+          <CloseCircleFilled
+            className="icon"
+            onClick={() => {
+              remote.getCurrentWindow().close();
+            }}
+          />
         </div>
       )}
       <TheSidebar

@@ -14,7 +14,7 @@ import {
 } from "../../helper/ipc";
 import FormAdd from "./FormAdd";
 import FormUpdate from "./FormUpdate";
-import { AppStore, OssType } from "../../../main/types";
+import { AppStore, OssType, OssTypeMap } from "../../../main/types";
 import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
 import { debounce, deepEqual } from "../../helper/utils";
@@ -35,7 +35,7 @@ const mainWrapperHeight = document.body.clientHeight - 40;
 const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
   const [page, setPage] = useState<ServicesPage>(ServicesPage.list);
-  const [direction, setDirection] = useState<Direction>(Direction.down);
+  const [direction, setDirection] = useState<Direction>(Direction.left);
   // 是否为中正在编辑的状态
   const [isEdit, setIsEdit] = useState<boolean>(false);
   // update form 中的数据是否已经被修改
@@ -92,7 +92,9 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       const id = app._id;
       await deleteApp(id);
       const allApps = await getAppsChannel();
+      // 判断数据库中是否还有数据
       setApps(allApps);
+
       onAppSwitch(allApps[0]);
     } catch (err) {
       console.log("删除时出现错误：", err.message);
@@ -171,7 +173,7 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const renderSwitch = (param: ServicesPage) => {
     switch (param) {
       case ServicesPage.list:
-        return (
+        return apps.length > 0 ? (
           <section className="apps-main-wrapper">
             <div className="main-left">
               <div className="header">
@@ -180,33 +182,26 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                 </Button>
               </div>
               <ul className="app-list">
-                {apps.length > 0 ? (
-                  apps.map(app => (
-                    <li
-                      className={classNames("item", {
-                        active: app._id === activeApp?._id
-                      })}
-                      key={app._id || Date.now()}
+                {apps.map(app => (
+                  <li
+                    className={classNames("item", {
+                      active: app._id === activeApp?._id
+                    })}
+                    key={app._id || Date.now()}
+                  >
+                    <button
+                      type="button"
+                      className="button"
+                      disabled={!app._id}
+                      onClick={() => switchApp(app._id!)}
                     >
-                      <button
-                        type="button"
-                        className="button"
-                        disabled={!app._id}
-                        onClick={() => switchApp(app._id!)}
-                      >
-                        <svg className="icon" aria-hidden="true">
-                          {renderIcon(app.type)}
-                        </svg>
-                        <span>{app.name}</span>
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <li className="no-result">
-                    <p>没有 Apps</p>
-                    <p>暂时没有搜索到 apps</p>
+                      <svg className="icon" aria-hidden="true">
+                        {renderIcon(app.type)}
+                      </svg>
+                      <span>{app.name}</span>
+                    </button>
                   </li>
-                )}
+                ))}
               </ul>
             </div>
             {activeApp && (
@@ -225,41 +220,67 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                     onBucketCancel={onBucketCancel}
                   />
                 ) : (
-                  <section>
-                    <article>
-                      <h1>基本信息：</h1>
-                      <p>
-                        <span>云服务厂商：</span>
-                        <span>{activeApp.type || "暂无配置"}</span>
+                  <section className="app-description">
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">
+                        基本信息：
+                      </h1>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          云服务厂商：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {OssTypeMap[activeApp.type] || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>AK：</span>
-                        <span>{activeApp.ak || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          AK：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.ak || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>SK：</span>
-                        <span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          SK：
+                        </span>
+                        <span className="app-description-section_item__content">
                           {hiddenTextFilter(activeApp.sk || "暂无配置")}
                         </span>
                       </p>
                     </article>
-                    <article>
-                      <h1>软件配置：</h1>
-                      <p>
-                        <span>默认上传路径：</span>
-                        <span>{activeApp.uploadBucket || "暂无配置"}</span>
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">
+                        软件配置：
+                      </h1>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认上传路径：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.uploadBucket || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>默认上传前缀：</span>
-                        <span>{activeApp.uploadPrefix || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认上传前缀：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.uploadPrefix || "暂无配置"}
+                        </span>
                       </p>
-                      <p>
-                        <span>默认域名：</span>
-                        <span>{activeApp.defaultDomain || "暂无配置"}</span>
+                      <p className="app-description-section_item">
+                        <span className="app-description-section_item__title">
+                          默认域名：
+                        </span>
+                        <span className="app-description-section_item__content">
+                          {activeApp.defaultDomain || "暂无配置"}
+                        </span>
                       </p>
                     </article>
-                    <article>
-                      <h1>操作</h1>
+                    <article className="app-description-section">
+                      <h1 className="app-description-section_title">操作</h1>
                       <Space>
                         <Button
                           onClick={() => {
@@ -282,6 +303,16 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                 )}
               </div>
             )}
+          </section>
+        ) : (
+          <section className="apps-main-wrapper">
+            <div className="no-result">
+              <p>没有 Apps</p>
+              <p>暂时没有搜索到 apps</p>
+              <Button size="small" onClick={_toAddPage}>
+                添加
+              </Button>
+            </div>
           </section>
         );
       case ServicesPage.add:
@@ -306,7 +337,7 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   };
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} size="large">
       <SwitchTransition>
         <CSSTransition
           key={page}

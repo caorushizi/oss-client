@@ -200,3 +200,26 @@ body {
     }
   }
 }
+
+.ant-spin-nested-loading {
+  .ant-spin-container {
+    &::after {
+      background: transparent;
+    }
+  }
+
+  .ant-spin-blur {
+    opacity: 1;
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  div {
+    .ant-spin {
+      max-height: none;
+    }
+  }
+}
+

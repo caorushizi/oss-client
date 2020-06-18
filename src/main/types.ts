@@ -4,6 +4,12 @@ export enum OssType {
   tencent
 }
 
+export const OssTypeMap = {
+  [OssType.qiniu]: "七牛云",
+  [OssType.ali]: "阿里云",
+  [OssType.tencent]: "腾讯云"
+};
+
 export enum TaskType {
   download,
   upload
@@ -79,7 +85,6 @@ export interface ConfigStore {
   uploadOverwrite: boolean;
   theme: Theme;
   downloadDir: string;
-  cacheDir: string;
   closeApp: boolean;
 
   // 托盘设置

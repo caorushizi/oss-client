@@ -39,18 +39,8 @@ export default class SimpleBootService implements IBootstrap {
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.OSS) private oss: IOssService;
 
-  initConfig = async (): Promise<void> => {
-    // 检查下载目录
-    const downloadIsDir = await checkDirExist(configStore.get("downloadDir"));
-    if (!downloadIsDir) await mkdir(configStore.get("downloadDir"));
-    // 检查缓存目录
-    const cacheIsDir = await checkDirExist(configStore.get("cacheDir"));
-    if (!cacheIsDir) await mkdir(configStore.get("cacheDir"));
-  };
-
   start(): void {
     this.app.init();
-    this.initConfig().then();
 
     events.on("done", async (id: string) => {
       try {
@@ -82,19 +72,6 @@ export default class SimpleBootService implements IBootstrap {
       if (this.app.mainWindow && configStore.get("transferDoneTip")) {
         this.app.mainWindow.webContents.send("play-finish");
       }
-    });
-
-    ipcMain.on("get-buckets-request", async event => {
-      const instance = this.oss.getService();
-      const buckets = await instance.getBucketList();
-      event.reply("get-buckets-response", buckets);
-    });
-
-    ipcMain.on("get-files-request", async (event, bucketName: string) => {
-      const instance = this.oss.getService();
-      instance.setBucket(bucketName);
-      const files = await instance.getBucketFiles();
-      event.reply("get-files-response", files);
     });
 
     ipcMain.on("req:file:download", async (event, item: BucketItem) => {
@@ -159,55 +136,6 @@ export default class SimpleBootService implements IBootstrap {
         });
       }
     );
-
-    ipcMain.on("close-main-window", () => {
-      if (this.app.mainWindow) {
-        this.app.mainWindow.hide();
-      }
-    });
-    ipcMain.on("minimize-main-window", () => {
-      if (this.app.mainWindow) {
-        this.app.mainWindow.minimize();
-      }
-    });
-    ipcMain.on("maximize-main-window", () => {
-      if (this.app.mainWindow) {
-        if (this.app.mainWindow.isMaximized()) {
-          this.app.mainWindow.unmaximize();
-        } else {
-          this.app.mainWindow.maximize();
-        }
-      }
-    });
-    ipcMain.on("change-theme", (e, { params }) => {
-      if (this.app.floatWindow) {
-        this.app.floatWindow.webContents.send("switch-shape", params);
-      }
-    });
-
-    ipcMain.on("change-use-https", (e, { params }) => {
-      configStore.set("useHttps", params);
-    });
-
-    ipcMain.on("change-direct-delete", (e, { params }) => {
-      configStore.set("deleteShowDialog", params);
-    });
-
-    ipcMain.on("change-upload-override", (e, { params }) => {
-      configStore.set("uploadOverwrite", params);
-    });
-
-    ipcMain.on("change-markdown", (e, { params }) => {
-      configStore.set("markdown", params);
-    });
-
-    ipcMain.on("change-transfer-done-tip", (e, { params }) => {
-      configStore.set("transferDoneTip", params);
-    });
-
-    ipcMain.on("change-download-dir", (e, { params }) => {
-      configStore.set("downloadDir", params);
-    });
   }
 
   uploadFile(
