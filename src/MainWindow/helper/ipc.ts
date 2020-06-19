@@ -1,11 +1,11 @@
 import uuidV1 from "uuid/v1";
-import { ipcRenderer, IpcRendererEvent, remote } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
-  ConfigStore,
-  TransferStore,
   AppStore,
+  ConfigStore,
+  OssType,
   TransferStatus,
-  OssType
+  TransferStore
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
@@ -127,7 +127,7 @@ export async function changeSetting(key: string, value: any) {
 }
 
 export function deleteFile(vFile: VFile) {
-  ipcRenderer.send("delete-file", { params: vFile });
+  return send("delete-file", { file: vFile });
 }
 
 export function getConfig() {
@@ -150,6 +150,36 @@ export async function showConfirm(options?: {
   message?: string;
 }) {
   const { code, msg, data } = await send<IpcResponse>("show-confirm", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function uploadFile(options: {
+  remoteDir: string;
+  filepath: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("upload-file", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function uploadFiles(options: {
+  remoteDir: string;
+  fileList: string[];
+}) {
+  const { code, msg, data } = await send<IpcResponse>("upload-files", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function downloadFile(item: VFile) {
+  const { code, msg, data } = await send<IpcResponse>("upload-files", item);
   if (code === 0) {
     return data;
   }

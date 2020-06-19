@@ -34,8 +34,6 @@ const HeaderButtonGroup = ({
       >
         删除
       </Button>
-      {/* <Button value="新建文件夹" onClick={() => {}} /> */}
-      {/* <Button value="离线下载" onClick={() => {}} /> */}
     </Space>
   );
 };

@@ -9,8 +9,6 @@ export default class TaskRunnerService implements ITaskRunner {
 
   private active: Task<any>[] = [];
 
-  private done: Task<any>[] = [];
-
   private limit = 5;
 
   private debug = false;
@@ -20,31 +18,26 @@ export default class TaskRunnerService implements ITaskRunner {
     this.runTask();
   }
 
-  private execute<T>(task: Task<T>) {
-    this.log(`running ${task.id}`);
-    return task.result
-      .then(result => {
-        this.log(`task ${task.id} finished`);
-        events.emit("done", task.id);
-        return result;
-      })
-      .catch(error => {
-        this.log(`${task.id} failed`);
-        events.emit("failed", task.id);
-        throw error;
-      })
-      .then(() => {
-        // 处理当前正在活动的任务
-        const doneId = this.active.findIndex(i => i.id === task.id);
-        const doneTask = this.active.splice(doneId, 1);
-        // 处理完成的任务
-        this.done.push(...doneTask);
-        this.runTask();
-        // 下载完成
-        if (this.queue.length === 0 && this.active.length === 0) {
-          events.emit("finish");
-        }
-      });
+  private async execute<T>(task: Task<T>) {
+    try {
+      this.log(`running ${task.id}`);
+      await task.result;
+      this.log(`task ${task.id} finished`);
+      events.emit("done", task.id);
+    } catch (err) {
+      this.log(`${task.id} failed`);
+      events.emit("failed", task.id);
+    } finally {
+      // 处理当前正在活动的任务
+      const doneId = this.active.findIndex(i => i.id === task.id);
+      this.active.splice(doneId, 1);
+      // 处理完成的任务
+      this.runTask();
+      // 下载完成
+      if (this.queue.length === 0 && this.active.length === 0) {
+        events.emit("finish");
+      }
+    }
   }
 
   private runTask() {

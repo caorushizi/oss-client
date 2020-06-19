@@ -1,26 +1,36 @@
 import {
   app,
-  ipcMain,
   BrowserWindow,
-  screen,
-  nativeImage,
-  MenuItemConstructorOptions,
+  clipboard,
+  ipcMain,
   Menu,
-  Tray,
-  clipboard
+  MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  Tray
 } from "electron";
 import { inject, injectable, named } from "inversify";
+import path from "path";
+import uuid from "uuid/v4";
 import { Platform } from "../../MainWindow/helper/enums";
 import { getPlatform } from "../../MainWindow/helper/utils";
 import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
-import { IApp, ILogger, IStore } from "../interface";
+import {
+  IApp,
+  ILogger,
+  IOSS,
+  IOssService,
+  IStore,
+  ITaskRunner
+} from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
-import { FlowWindowStyle, TransferStore } from "../types";
+import { TaskType, TransferStatus, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
-import { fail, success } from "../helper/utils";
+import { fail, fattenFileList, success } from "../helper/utils";
 import { checkDirExist, mkdir } from "../helper/fs";
+import events from "../helper/events";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -68,6 +78,12 @@ export default class ElectronAppService implements IApp {
 
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IpcChannelsService;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.OSS) private oss: IOssService;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.TASK_RUNNER) public taskRunner: ITaskRunner;
 
   constructor() {
     // eslint-disable-next-line global-require
@@ -307,7 +323,11 @@ export default class ElectronAppService implements IApp {
     });
 
     this.logger.info("初始化窗口成功，开始初始化ipc通道");
-    // 注册全部 ipc 通道
+    // --------------------------------------------------------------
+    // |                                                            |
+    // |                   开始注册 IPC 通道                          |
+    // |                                                            |
+    // --------------------------------------------------------------
     this.registerIpc("update-app", async params => {
       try {
         await this.appChannels.updateApp(params);
@@ -470,6 +490,133 @@ export default class ElectronAppService implements IApp {
       } catch (err) {
         return fail(1, "点击取消");
       }
+    });
+
+    this.registerIpc("delete-file", async params => {
+      const { file } = params;
+      const instance = this.oss.getService();
+      const remotePath = file.webkitRelativePath;
+      await instance.deleteFile(remotePath);
+    });
+
+    this.registerIpc("download-file", async (item: BucketItem) => {
+      const instance = this.oss.getService();
+      const remotePath = item.webkitRelativePath;
+      const customDownloadDir = configStore.get("downloadDir");
+      const downloadPath = path.join(
+        customDownloadDir,
+        item.webkitRelativePath
+      );
+      const callback = (id: string, progress: string) => {
+        console.log(`${id} - progress ${progress}%`);
+      };
+      const id = uuid();
+      const newDoc = {
+        id,
+        name: item.name,
+        date: Date.now(),
+        type: TaskType.download,
+        size: item.size,
+        status: TransferStatus.default
+      };
+      // 存储下载信息
+      const document = await this.transfers.insert(newDoc);
+      // 添加任务，自动执行
+      this.taskRunner.addTask<TransferStore>({
+        ...document,
+        result: instance.downloadFile(id, remotePath, downloadPath, callback)
+      });
+    });
+
+    this.registerIpc("upload-file", async params => {
+      const { remoteDir, filepath } = params;
+      const instance = this.oss.getService();
+      const baseDir = path.dirname(filepath);
+      const callback = (id: string, progress: string) => {
+        console.log(`${id} - progress ${progress}%`);
+      };
+      await this.uploadFile(instance, remoteDir, baseDir, filepath, callback);
+    });
+
+    this.registerIpc("upload-files", async params => {
+      const { remoteDir, fileList } = params;
+      if (Array.isArray(fileList) && fileList.length === 0) return;
+      const instance = this.oss.getService();
+      const baseDir = path.dirname(fileList[0]);
+      const filepathList = fattenFileList(fileList);
+      filepathList.forEach(filepath => {
+        const callback = (id: string, progress: string) => {
+          console.log(`${id} - progress ${progress}%`);
+        };
+        this.uploadFile(instance, remoteDir, baseDir, filepath, callback);
+      });
+    });
+
+    // --------------------------------------------------------------
+    // |                                                            |
+    // |                   软件内部事件通讯机制                        |
+    // |                                                            |
+    // --------------------------------------------------------------
+
+    events.on("done", async (id: string) => {
+      try {
+        // 传输成功
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.done } },
+          {}
+        );
+      } catch (e) {
+        this.logger.error(e);
+      }
+    });
+
+    events.on("failed", async (id: string) => {
+      try {
+        // 传输失败
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.failed } },
+          {}
+        );
+      } catch (e) {
+        this.logger.error("传输失败：", e);
+      }
+    });
+
+    events.on("finish", () => {
+      if (this.mainWindow && configStore.get("transferDoneTip")) {
+        this.mainWindow.webContents.send("play-finish");
+      }
+    });
+  }
+
+  async uploadFile(
+    adapter: IOSS,
+    remoteDir: string,
+    baseDir: string,
+    filepath: string,
+    callback: (id: string, process: string) => void
+  ) {
+    const relativePath = path.relative(baseDir, filepath);
+    let remotePath = path.join(remoteDir, relativePath);
+    remotePath = remotePath.replace(/\\/, "/");
+
+    const id = uuid();
+    const newDoc = {
+      id,
+      name: path.basename(remotePath),
+      date: Date.now(),
+      type: TaskType.upload,
+      size: 0,
+      status: TransferStatus.default
+    };
+    // 存储下载信息
+    const transfers = await this.transfers.insert(newDoc);
+    // 添加任务，自动执行
+    this.taskRunner.addTask<any>({
+      ...transfers,
+      result: adapter.uploadFile(id, remotePath, filepath, callback)
     });
   }
 }

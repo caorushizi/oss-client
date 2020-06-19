@@ -10,11 +10,18 @@ import BodyGrid from "./BodyGrid";
 import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
-import { BucketObj, switchBucket } from "../../helper/ipc";
+import {
+  BucketObj,
+  downloadFile,
+  switchBucket,
+  uploadFile,
+  uploadFiles
+} from "../../helper/ipc";
 import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
+import { message } from "antd";
 
 type PropTypes = {
   bucketName: string;
@@ -48,38 +55,42 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
     switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
   }, [bucketName]);
 
-  const fileUpload = () => {
+  const fileUpload = async () => {
     const userPath = remote.app.getPath("documents");
-    remote.dialog
-      .showOpenDialog({
-        defaultPath: userPath,
-        properties: ["openFile"]
-      })
-      .then(result => {
-        if (!result.canceled) {
-          result.filePaths.forEach(filPath => {
-            ipcRenderer.send(
-              "req:file:upload",
-              vFolder.getPathPrefix(),
-              filPath
-            );
-          });
-        }
-      })
-      .catch(() => {});
+    const result = await remote.dialog.showOpenDialog({
+      defaultPath: userPath,
+      properties: ["openFile"]
+    });
+    if (result.canceled) return;
+    Promise.all(
+      result.filePaths.map(filepath =>
+        uploadFile({ remoteDir: vFolder.getPathPrefix(), filepath })
+      )
+    )
+      .then(() => {})
+      .catch(err => {
+        console.warn("上传文件时出错：", err);
+      });
   };
   const backspace = () => {
     onClearItem();
     vFolder.back();
     setBucket({ ...bucket, items: vFolder.listFiles() });
   };
-  const onFileDrop = (files: FileList | null) => {
-    if (files) {
+  const onFileDrop = async (files: FileList | null) => {
+    try {
+      if (!files) return;
       const filePaths: string[] = [];
       for (let i = 0; i < files.length; i += 1) {
         filePaths.push(files[i].path);
       }
-      ipcRenderer.send("drop-files", vFolder.getPathPrefix(), filePaths);
+      await uploadFiles({
+        remoteDir: vFolder.getPathPrefix(),
+        fileList: filePaths
+      });
+    } catch (e) {
+      message.error(e.message);
+      console.warn("拖拽文件上传时出错：", e.message);
     }
   };
   const onFileContextMenu = (item: VFile) => {
@@ -115,9 +126,11 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
     });
   };
   const onBatchDownload = () => {
-    selectedFileIdList.forEach(fileId => {
+    selectedFileIdList.forEach(async fileId => {
       const item = vFolder.getItem(fileId);
-      ipcRenderer.send("req:file:download", item);
+      if (!item) return;
+      if (item instanceof VFolder) return;
+      await downloadFile(item);
     });
   };
   const onBatchDelete = () => {};

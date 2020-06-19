@@ -1,9 +1,5 @@
 import { BrowserWindow, Tray } from "electron";
-import { AppStore, OssType, Task, TransferStatus } from "./types";
-
-export interface IBootstrap {
-  start(): void;
-}
+import { OssType, Task } from "./types";
 
 export interface IApp {
   mainWindow: BrowserWindow | null;

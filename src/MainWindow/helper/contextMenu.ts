@@ -1,7 +1,7 @@
 import { ipcRenderer, remote, clipboard } from "electron";
 import VFolder from "../lib/vdir/VFolder";
 import VFile from "../lib/vdir/VFile";
-import { deleteFile, getConfig, showConfirm } from "./ipc";
+import { deleteFile, downloadFile, getConfig, showConfirm } from "./ipc";
 import { message } from "antd";
 
 export function fileContextMenu(item: VFile, domain: string) {
@@ -33,8 +33,8 @@ export function fileContextMenu(item: VFile, domain: string) {
     {
       label: "下载",
       enabled: !!domain,
-      click: () => {
-        ipcRenderer.send("req:file:download", item);
+      click: async () => {
+        await downloadFile(item);
       }
     },
     {
