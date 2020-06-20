@@ -10,13 +10,8 @@ import "normalize.css/normalize.css";
 import "./index.scss";
 import FileDrop from "react-file-drop";
 import classNames from "classnames";
-import { getTransfers } from "../MainWindow/helper/ipc";
-import {
-  FlowWindowStyle,
-  TaskType,
-  Theme,
-  TransferStatus
-} from "../main/types";
+import { getTransfers, uploadFiles } from "../MainWindow/helper/ipc";
+import { FlowWindowStyle, TaskType, TransferStatus } from "../main/types";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);
@@ -30,14 +25,10 @@ const App = () => {
       currentWindow.setContentSize(110, 50);
     }
   };
-  const onFileDrop = (files: FileList | null) => {
-    if (files) {
-      const filePaths: string[] = [];
-      for (let i = 0; i < files.length; i += 1) {
-        filePaths.push(files[i].path);
-      }
-      ipcRenderer.send("drop-files", "拖拽上传", filePaths);
-    }
+  const onFileDrop = async (files: FileList | null) => {
+    if (!files) return;
+    const fileList = Array.from(files).map(file => file.path);
+    await uploadFiles({ remoteDir: "拖拽上传", fileList });
   };
 
   useEffect(() => {

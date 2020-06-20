@@ -95,7 +95,7 @@ const BodyGrid = ({
               onDoubleClick={() => onFolderSelect(item.name)}
               id={item.shortId}
             >
-              <IconFont type={getIconName()} style={{ fontSize: 50 }} />
+              <IconFont type={getIconName("folder")} style={{ fontSize: 50 }} />
               <span>{item.name}</span>
             </div>
           ) : (

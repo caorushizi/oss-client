@@ -75,17 +75,17 @@ export const taskTypeFormatter = (type: TaskType) =>
 
 export const getPlatform = () => process.platform;
 
-export function getIconName(filename?: string): string {
+export function getIconName(filename: string): string {
   let iconName: string;
-  if (filename) {
+  if (filename === "folder") {
+    iconName = "icon-wenjian";
+  } else {
     const mimeType = mime.getType(filename);
     if (mimeType) {
       iconName = mapType[mimeType];
     } else {
       iconName = "icon-documents";
     }
-  } else {
-    iconName = "icon-wenjian";
   }
   if (!iconName) iconName = "icon-documents";
   return iconName;
