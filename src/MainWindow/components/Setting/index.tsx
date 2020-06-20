@@ -3,6 +3,7 @@ import { remote, OpenDialogOptions } from "electron";
 import { Switch, Radio, Button, Input, Form, message, Spin } from "antd";
 
 import "./index.scss";
+import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import {
@@ -10,7 +11,6 @@ import {
   FlowWindowStyle,
   initialConfig
 } from "../../../main/types";
-
 import { changeSetting, getConfig } from "../../helper/ipc";
 
 const Setting = () => {
@@ -52,6 +52,14 @@ const Setting = () => {
     <Button size="small" onClick={onSelectDownloadPath}>
       选择下载位置
     </Button>
+  );
+  const inputAfter = () => (
+    <SelectOutlined
+      name="打开文件夹"
+      onClick={() => {
+        remote.shell.showItemInFolder(config.downloadDir);
+      }}
+    />
   );
 
   const initState = async () => {
@@ -100,6 +108,7 @@ const Setting = () => {
                 disabled
                 placeholder="请选择默认下载位置"
                 value={config.downloadDir}
+                addonAfter={inputAfter()}
               />
             </Form.Item>
           </Form>

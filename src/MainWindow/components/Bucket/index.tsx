@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import FileDrop from "react-file-drop";
-import { ipcRenderer, remote } from "electron";
+import { remote } from "electron";
 
 import "./index.scss";
+import { message } from "antd";
 import HeaderToolbar from "./HeaderToolbar";
 import BodyTable from "./BodyTable";
 import { Layout } from "../../helper/enums";
@@ -21,7 +22,6 @@ import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
-import { message } from "antd";
 
 type PropTypes = {
   bucketName: string;

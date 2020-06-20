@@ -179,7 +179,7 @@ export async function uploadFiles(options: {
 }
 
 export async function downloadFile(item: VFile) {
-  const { code, msg, data } = await send<IpcResponse>("upload-files", item);
+  const { code, msg, data } = await send<IpcResponse>("download-file", item);
   if (code === 0) {
     return data;
   }

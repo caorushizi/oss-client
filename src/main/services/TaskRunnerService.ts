@@ -23,10 +23,10 @@ export default class TaskRunnerService implements ITaskRunner {
       this.log(`running ${task.id}`);
       await task.result;
       this.log(`task ${task.id} finished`);
-      events.emit("done", task.id);
+      events.emit("transfer-done", task.id);
     } catch (err) {
       this.log(`${task.id} failed`);
-      events.emit("failed", task.id);
+      events.emit("transfer-failed", task.id);
     } finally {
       // 处理当前正在活动的任务
       const doneId = this.active.findIndex(i => i.id === task.id);
@@ -35,7 +35,7 @@ export default class TaskRunnerService implements ITaskRunner {
       this.runTask();
       // 下载完成
       if (this.queue.length === 0 && this.active.length === 0) {
-        events.emit("finish");
+        events.emit("transfer-finish");
       }
     }
   }
@@ -45,7 +45,7 @@ export default class TaskRunnerService implements ITaskRunner {
       const task = this.queue.shift();
       if (task) {
         this.active.push(task);
-        this.execute(task);
+        this.execute(task).then(r => r);
       }
     }
   }

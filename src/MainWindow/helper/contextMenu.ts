@@ -1,8 +1,8 @@
-import { ipcRenderer, remote, clipboard } from "electron";
+import { remote, clipboard } from "electron";
+import { message } from "antd";
 import VFolder from "../lib/vdir/VFolder";
 import VFile from "../lib/vdir/VFile";
 import { deleteFile, downloadFile, getConfig, showConfirm } from "./ipc";
-import { message } from "antd";
 
 export function fileContextMenu(item: VFile, domain: string) {
   const menu = remote.Menu.buildFromTemplate([

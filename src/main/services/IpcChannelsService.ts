@@ -1,10 +1,20 @@
 import { inject, injectable, named } from "inversify";
+import path from "path";
+import uuid from "uuid/v4";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import { ILogger, IOssService, IStore } from "../interface";
-import { AppStore, OssType, TransferStatus, TransferStore } from "../types";
+import { ILogger, IOSS, IOssService, IStore, ITaskRunner } from "../interface";
+import {
+  AppStore,
+  OssType,
+  TaskType,
+  TransferStatus,
+  TransferStore
+} from "../types";
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 import OssService from "./OssService";
+import { fattenFileList } from "../helper/utils";
+import VFile from "../../MainWindow/lib/vdir/VFile";
 
 @injectable()
 export default class IpcChannelsService {
@@ -16,6 +26,11 @@ export default class IpcChannelsService {
   @inject(SERVICE_IDENTIFIER.STORE)
   @named(TAG.TRANSFER_STORE)
   // @ts-ignore
+  private transfers: IStore<TransferStore>;
+
+  @inject(SERVICE_IDENTIFIER.STORE)
+  @named(TAG.TRANSFER_STORE)
+  // @ts-ignore
   private transferStore: IStore<TransferStore>;
 
   // @ts-ignore
@@ -23,6 +38,9 @@ export default class IpcChannelsService {
 
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.LOGGER) private logger: ILogger;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.TASK_RUNNER) public taskRunner: ITaskRunner;
 
   async updateApp(app: AppStore): Promise<void> {
     return this.appStore.update({ _id: app._id }, app, {});
@@ -95,5 +113,97 @@ export default class IpcChannelsService {
     const files = await instance.getBucketFiles();
     const domains = await instance.getBucketDomainList();
     return { files, domains };
+  }
+
+  async uploadFile(params: any) {
+    const { remoteDir, filepath } = params;
+    const instance = this.oss.getService();
+    const baseDir = path.dirname(filepath);
+    const callback = (id: string, progress: string) => {
+      console.log(`${id} - progress ${progress}%`);
+    };
+    await this.uploadFileToCloud(
+      instance,
+      remoteDir,
+      baseDir,
+      filepath,
+      callback
+    );
+  }
+
+  async uploadFiles(params: any) {
+    const { remoteDir, fileList } = params;
+    if (Array.isArray(fileList) && fileList.length === 0) return;
+    const instance = this.oss.getService();
+    const baseDir = path.dirname(fileList[0]);
+    const filepathList = fattenFileList(fileList);
+    filepathList.forEach(filepath => {
+      const callback = (id: string, progress: string) => {
+        console.log(`${id} - progress ${progress}%`);
+      };
+      this.uploadFileToCloud(instance, remoteDir, baseDir, filepath, callback);
+    });
+  }
+
+  async downloadFile(item: VFile) {
+    const instance = this.oss.getService();
+    const remotePath = item.webkitRelativePath;
+    const customDownloadDir = configStore.get("downloadDir");
+    const downloadPath = path.join(customDownloadDir, item.webkitRelativePath);
+    const callback = (id: string, progress: string) => {
+      console.log(`${id} - progress ${progress}%`);
+    };
+    const id = uuid();
+    const newDoc = {
+      id,
+      name: item.name,
+      date: Date.now(),
+      type: TaskType.download,
+      size: item.size,
+      status: TransferStatus.default
+    };
+    // 存储下载信息
+    const document = await this.transfers.insert(newDoc);
+    // 添加任务，自动执行
+    this.taskRunner.addTask<TransferStore>({
+      ...document,
+      result: instance.downloadFile(id, remotePath, downloadPath, callback)
+    });
+  }
+
+  async deleteFile(params: any) {
+    const { file } = params;
+    const instance = this.oss.getService();
+    const remotePath = file.webkitRelativePath;
+    await instance.deleteFile(remotePath);
+  }
+
+  async uploadFileToCloud(
+    adapter: IOSS,
+    remoteDir: string,
+    baseDir: string,
+    filepath: string,
+    callback: (id: string, process: string) => void
+  ) {
+    const relativePath = path.relative(baseDir, filepath);
+    let remotePath = path.join(remoteDir, relativePath);
+    remotePath = remotePath.replace(/\\/, "/");
+
+    const id = uuid();
+    const newDoc = {
+      id,
+      name: path.basename(remotePath),
+      date: Date.now(),
+      type: TaskType.upload,
+      size: 0,
+      status: TransferStatus.default
+    };
+    // 存储下载信息
+    const transfers = await this.transfers.insert(newDoc);
+    // 添加任务，自动执行
+    this.taskRunner.addTask<any>({
+      ...transfers,
+      result: adapter.uploadFile(id, remotePath, filepath, callback)
+    });
   }
 }

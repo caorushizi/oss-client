@@ -40,8 +40,6 @@ export default class TransferStoreService implements IStore<TransferStore> {
 
   update(query: any, updateQuery: any, options: any) {
     return new Promise<void>((resolve, reject) => {
-      // { id },
-      // { $set: { status: TransferStatus.done } },
       this.store.update(query, updateQuery, options, err => {
         if (err) {
           reject(err);
@@ -54,8 +52,6 @@ export default class TransferStoreService implements IStore<TransferStore> {
 
   remove(query: any, options: any) {
     return new Promise<void>((resolve, reject) => {
-      // { status: TransferStatus.done },
-      // { multi: true },
       this.store.remove(query, options, (err, n) => {
         if (err) {
           reject(err);
