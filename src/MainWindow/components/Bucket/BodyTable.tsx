@@ -36,7 +36,7 @@ const BodyTable = ({
     {
       title: "文件名",
       dataIndex: "name",
-      key: "name",
+      key: "shortId",
       render(name: string, item: any) {
         console.log(item);
         return (
@@ -57,40 +57,43 @@ const BodyTable = ({
     {
       title: "大小",
       dataIndex: "size",
-      key: "size",
-      sorter: (a: any, b: any) => a.age - b.age
+      key: "shortId",
+      sorter: (a: any, b: any) => a.size - b.size,
+      render(size: number) {
+        return fileSizeFormatter(size);
+      }
     },
     {
       title: "修改日期",
       dataIndex: "lastModified",
-      key: "lastModified",
-      sorter: (a: any, b: any) => a.age - b.age
+      key: "shortId",
+      sorter: (a: any, b: any) => a.lastModified - b.lastModified,
+      render(timestamp: number) {
+        return dateFormatter(timestamp);
+      }
     }
   ];
 
   console.log(items);
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === "Disabled User", // Column configuration not to be checked
-      name: record.name
-    })
-  };
-
   return (
     <Table
+      rowKey="shortId"
       className="main-table-wrapper"
       dataSource={items}
       rowSelection={{
         type: "checkbox",
-        ...rowSelection
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+          console.log(
+            `selectedRowKeys: ${selectedRowKeys}`,
+            "selectedRows: ",
+            selectedRows
+          );
+        },
+        getCheckboxProps: (record: any) => ({
+          disabled: record.name === "Disabled User", // Column configuration not to be checked
+          name: record.name
+        })
       }}
       columns={columns}
       pagination={false}
