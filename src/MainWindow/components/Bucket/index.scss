@@ -78,49 +78,6 @@
     .main-table-wrapper {
       height: 100%;
 
-      .main-table {
-        width: 100%;
-        border-spacing: 0;
-
-        .main-table__row {
-          color: #f2f6fc;
-          height: 40px;
-          font-size: 12px;
-          line-height: 17px;
-
-          .main-table__row_cell {
-            text-align: left;
-            vertical-align: middle;
-            padding: 0 5px;
-
-            &.index {
-              width: 30px;
-              text-align: center;
-            }
-
-            &.title {
-              max-width: 150px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-
-              .icon {
-                vertical-align: middle;
-                height: 30px;
-                width: 30px;
-              }
-
-              span {
-                vertical-align: middle;
-              }
-            }
-          }
-
-          &:hover {
-            background: rgba(255, 255, 255, 0.15);
-          }
-        }
-      }
     }
 
     .main-grid {

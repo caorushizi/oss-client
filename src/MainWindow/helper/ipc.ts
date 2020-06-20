@@ -1,11 +1,11 @@
 import uuidV1 from "uuid/v1";
-import { ipcRenderer, IpcRendererEvent, remote } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
-  ConfigStore,
-  TransferStore,
   AppStore,
+  ConfigStore,
+  OssType,
   TransferStatus,
-  OssType
+  TransferStore
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
@@ -13,9 +13,7 @@ function send<T>(eventName: string, options = {}) {
   const data = options;
   const id = uuidV1();
   const responseEvent = `${eventName}_res_${id}`;
-
   return new Promise<T>((resolve, reject) => {
-    // 这里使用 once 监听，响应到达后就销毁
     ipcRenderer.once(
       responseEvent,
       (event: IpcRendererEvent, response: { code: number; data: any }) => {
@@ -26,7 +24,6 @@ function send<T>(eventName: string, options = {}) {
         }
       }
     );
-    // 监听建立之后再发送事件，稳一点
     ipcRenderer.send(eventName, { id, data });
   });
 }
@@ -45,10 +42,6 @@ export async function switchBucket(bucketName: string): Promise<BucketObj> {
   return data;
 }
 
-/**
- * 获取云存储的 buckets
- * @param config （可选）如果传了返回当前配置的 buckets， 如果不是测返回当前上下文中配置的 buckets
- */
 export async function getBuckets(config?: {
   type: OssType;
   ak: string;
@@ -127,7 +120,7 @@ export async function changeSetting(key: string, value: any) {
 }
 
 export function deleteFile(vFile: VFile) {
-  ipcRenderer.send("delete-file", { params: vFile });
+  return send("delete-file", { file: vFile });
 }
 
 export function getConfig() {
@@ -150,6 +143,36 @@ export async function showConfirm(options?: {
   message?: string;
 }) {
   const { code, msg, data } = await send<IpcResponse>("show-confirm", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function uploadFile(options: {
+  remoteDir: string;
+  filepath: string;
+}) {
+  const { code, msg, data } = await send<IpcResponse>("upload-file", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function uploadFiles(options: {
+  remoteDir: string;
+  fileList: string[];
+}) {
+  const { code, msg, data } = await send<IpcResponse>("upload-files", options);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function downloadFile(item: VFile) {
+  const { code, msg, data } = await send<IpcResponse>("download-file", item);
   if (code === 0) {
     return data;
   }

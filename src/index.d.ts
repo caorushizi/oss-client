@@ -33,11 +33,3 @@ declare interface IpcResponse {
   msg: string;
   data: any;
 }
-
-declare interface IpcSuccessFn {
-  (data: any): IpcResponse;
-}
-
-declare interface IpcFailFn {
-  (code: number, msg: string): IpcResponse;
-}

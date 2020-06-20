@@ -1,19 +1,11 @@
 import { Container } from "inversify";
 import SERVICE_IDENTIFIER from "./constants/identifiers";
-import {
-  IApp,
-  IBootstrap,
-  ILogger,
-  IOssService,
-  IStore,
-  ITaskRunner
-} from "./interface";
+import { IApp, ILogger, IOssService, IStore, ITaskRunner } from "./interface";
 import {
   AppStoreService,
   ElectronAppService,
   IpcChannelsService,
   LoggerService,
-  SimpleBootService,
   TaskRunnerService,
   TransferStoreService
 } from "./services";
@@ -34,10 +26,6 @@ container
   .to(AppStoreService)
   .inSingletonScope()
   .whenTargetNamed(TAG.APP_STORE);
-container
-  .bind<IBootstrap>(SERVICE_IDENTIFIER.BOOTSTRAP)
-  .to(SimpleBootService)
-  .inSingletonScope();
 container
   .bind<IApp>(SERVICE_IDENTIFIER.ELECTRON_APP)
   .to(ElectronAppService)

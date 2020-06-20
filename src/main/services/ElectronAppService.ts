@@ -1,26 +1,28 @@
 import {
   app,
-  ipcMain,
   BrowserWindow,
-  screen,
-  nativeImage,
-  MenuItemConstructorOptions,
+  clipboard,
+  ipcMain,
   Menu,
-  Tray,
-  clipboard
+  MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  Tray
 } from "electron";
 import { inject, injectable, named } from "inversify";
 import { Platform } from "../../MainWindow/helper/enums";
 import { getPlatform } from "../../MainWindow/helper/utils";
 import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
-import { IApp, ILogger, IStore } from "../interface";
+import { IApp, ILogger, IOssService, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import TAG from "../constants/tags";
-import { FlowWindowStyle, TransferStore } from "../types";
+import { TransferStatus, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { fail, success } from "../helper/utils";
 import { checkDirExist, mkdir } from "../helper/fs";
+import events from "../helper/events";
+import VFile from "../../MainWindow/lib/vdir/VFile";
+import TAG from "../constants/tags";
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -68,6 +70,9 @@ export default class ElectronAppService implements IApp {
 
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.CHANNELS) private appChannels: IpcChannelsService;
+
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.OSS) private oss: IOssService;
 
   constructor() {
     // eslint-disable-next-line global-require
@@ -307,7 +312,11 @@ export default class ElectronAppService implements IApp {
     });
 
     this.logger.info("初始化窗口成功，开始初始化ipc通道");
-    // 注册全部 ipc 通道
+    // --------------------------------------------------------------
+    // |                                                            |
+    // |                   开始注册 IPC 通道                          |
+    // |                                                            |
+    // --------------------------------------------------------------
     this.registerIpc("update-app", async params => {
       try {
         await this.appChannels.updateApp(params);
@@ -380,7 +389,6 @@ export default class ElectronAppService implements IApp {
     });
     this.registerIpc("show-alert", async options => {
       if (this.alertWindow) {
-        // fixme: 提示音
         this.alertWindow.webContents.send("options", options);
       }
       const getWaitFor = () => {
@@ -469,6 +477,90 @@ export default class ElectronAppService implements IApp {
         return success(true);
       } catch (err) {
         return fail(1, "点击取消");
+      }
+    });
+
+    this.registerIpc("delete-file", async params => {
+      if (!params?.file) return fail(1, "参数错误");
+      try {
+        await this.appChannels.deleteFile(params);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    this.registerIpc("download-file", async (item: VFile) => {
+      try {
+        await this.appChannels.downloadFile(item);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    this.registerIpc("upload-file", async params => {
+      if (!("remoteDir" in params)) return fail(1, "参数错误");
+      if (!("filepath" in params)) return fail(1, "参数错误");
+      try {
+        await this.appChannels.uploadFile(params);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    this.registerIpc("upload-files", async params => {
+      console.log(params);
+      if (!("remoteDir" in params)) return fail(1, "参数错误");
+      if (!("fileList" in params)) return fail(1, "参数错误");
+      try {
+        await this.appChannels.uploadFiles(params);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    // --------------------------------------------------------------
+    // |                                                            |
+    // |                   软件内部事件通讯机制                        |
+    // |                                                            |
+    // --------------------------------------------------------------
+
+    events.on("transfer-done", async (id: string) => {
+      try {
+        // 传输成功
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.done } },
+          {}
+        );
+      } catch (e) {
+        this.logger.error(e);
+      }
+    });
+
+    events.on("transfer-failed", async (id: string) => {
+      try {
+        // 传输失败
+        await this.transfers.update(
+          { id },
+          { $set: { status: TransferStatus.failed } },
+          {}
+        );
+      } catch (e) {
+        this.logger.error("传输失败：", e);
+      }
+    });
+
+    events.on("transfer-finish", () => {
+      if (this.mainWindow && configStore.get("transferDoneTip")) {
+        this.mainWindow.webContents.send("play-finish");
       }
     });
   }

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.scss";
+import { Table } from "antd";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../IconFont";
 import {
@@ -31,79 +32,72 @@ const BodyTable = ({
   onFileSelect,
   onFileContextMenu
 }: PropTypes) => {
+  const columns = [
+    {
+      title: "文件名",
+      dataIndex: "name",
+      key: "shortId",
+      render(name: string, item: any) {
+        console.log(item);
+        return (
+          <>
+            <Icon
+              type={
+                item.itemType !== "folder"
+                  ? getIconName(name)
+                  : getIconName("folder")
+              }
+              style={{ fontSize: 30 }}
+            />
+            <span>{name}</span>
+          </>
+        );
+      }
+    },
+    {
+      title: "大小",
+      dataIndex: "size",
+      key: "shortId",
+      sorter: (a: any, b: any) => a.size - b.size,
+      render(size: number) {
+        return fileSizeFormatter(size);
+      }
+    },
+    {
+      title: "修改日期",
+      dataIndex: "lastModified",
+      key: "shortId",
+      sorter: (a: any, b: any) => a.lastModified - b.lastModified,
+      render(timestamp: number) {
+        return dateFormatter(timestamp);
+      }
+    }
+  ];
+
+  console.log(items);
+
   return (
-    <div className="main-table-wrapper">
-      {items.length > 0 ? (
-        <table className="main-table">
-          <thead>
-            <tr className="main-table__row">
-              <th className="main-table__row_cell index">#</th>
-              <th className="main-table__row_cell">文件名</th>
-              <th className="main-table__row_cell">大小</th>
-              <th className="main-table__row_cell">修改日期</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item: Item, index) =>
-              item instanceof VFolder ? (
-                // 文件夹
-                <tr
-                  key={item.name}
-                  className="main-table__row"
-                  onContextMenu={() => onFolderContextMenu(item)}
-                  onDoubleClick={() => onFolderSelect(item.name)}
-                >
-                  <td className="main-table__row_cell index">{index + 1}</td>
-                  <td className="main-table__row_cell title">
-                    <Icon
-                      type={getIconName()}
-                      className="icon"
-                      style={{ fontSize: 30 }}
-                    />
-                    <span>{item.name}</span>
-                  </td>
-                  <td className="main-table__row_cell size">
-                    {fileSizeFormatter(item.size)}
-                  </td>
-                  <td className="main-table__row_cell date">
-                    {dateFormatter(item.lastModified)}
-                  </td>
-                </tr>
-              ) : (
-                // 文件
-                <tr
-                  key={item.name}
-                  className="main-table__row"
-                  onContextMenu={() => onFileContextMenu(item)}
-                  onDoubleClick={onFileSelect}
-                >
-                  <td className="main-table__row_cell index">{index + 1}</td>
-                  <td className="main-table__row_cell title">
-                    <Icon
-                      type={getIconName(item.name)}
-                      className="icon"
-                      style={{ fontSize: 30 }}
-                    />
-                    <span>{item.name}</span>
-                  </td>
-                  <td className="main-table__row_cell size">
-                    {fileSizeFormatter(item.size)}
-                  </td>
-                  <td className="main-table__row_cell date">
-                    {dateFormatter(item.lastModified)}
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
-      ) : (
-        <div className="no-files">
-          <div className="title">没有文件</div>
-          <div className="sub-title">当前 bucket 中没有文件</div>
-        </div>
-      )}
-    </div>
+    <Table
+      rowKey="shortId"
+      className="main-table-wrapper"
+      dataSource={items}
+      rowSelection={{
+        type: "checkbox",
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+          console.log(
+            `selectedRowKeys: ${selectedRowKeys}`,
+            "selectedRows: ",
+            selectedRows
+          );
+        },
+        getCheckboxProps: (record: any) => ({
+          disabled: record.name === "Disabled User", // Column configuration not to be checked
+          name: record.name
+        })
+      }}
+      columns={columns}
+      pagination={false}
+    />
   );
 };
 

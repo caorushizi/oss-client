@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { container } from "./inversify.config";
-import { IBootstrap } from "./interface";
 import SERVICE_IDENTIFIER from "./constants/identifiers";
+import { IApp } from "./interface";
 
-const boot = container.get<IBootstrap>(SERVICE_IDENTIFIER.BOOTSTRAP);
-boot.start();
+const app = container.get<IApp>(SERVICE_IDENTIFIER.ELECTRON_APP);
+app.init();

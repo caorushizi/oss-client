@@ -32,7 +32,11 @@ const HeaderToolbar = ({
   return (
     <div className="toolbar-wrapper">
       <Space size="middle" className="toolbar-left">
-        <Button size="small" onClick={backspace}>
+        <Button
+          size="small"
+          onClick={backspace}
+          disabled={navigators.length === 0}
+        >
           <ArrowLeftOutlined />
         </Button>
         <Button size="small" onClick={onRefreshBucket}>

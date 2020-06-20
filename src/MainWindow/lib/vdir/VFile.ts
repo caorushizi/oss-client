@@ -17,6 +17,8 @@ export default class VFile {
 
   shortId = shortId();
 
+  itemType = "file";
+
   constructor({
     name,
     webkitRelativePath,
