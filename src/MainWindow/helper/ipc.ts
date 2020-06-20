@@ -13,9 +13,7 @@ function send<T>(eventName: string, options = {}) {
   const data = options;
   const id = uuidV1();
   const responseEvent = `${eventName}_res_${id}`;
-
   return new Promise<T>((resolve, reject) => {
-    // 这里使用 once 监听，响应到达后就销毁
     ipcRenderer.once(
       responseEvent,
       (event: IpcRendererEvent, response: { code: number; data: any }) => {
@@ -26,7 +24,6 @@ function send<T>(eventName: string, options = {}) {
         }
       }
     );
-    // 监听建立之后再发送事件，稳一点
     ipcRenderer.send(eventName, { id, data });
   });
 }
@@ -45,10 +42,6 @@ export async function switchBucket(bucketName: string): Promise<BucketObj> {
   return data;
 }
 
-/**
- * 获取云存储的 buckets
- * @param config （可选）如果传了返回当前配置的 buckets， 如果不是测返回当前上下文中配置的 buckets
- */
 export async function getBuckets(config?: {
   type: OssType;
   ak: string;
