@@ -16,9 +16,7 @@ export default class Qiniu implements IOSS {
 
   constructor(accessKey: string, secretKey: string) {
     this.mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-    this.config = new qiniu.conf.Config({
-      zone: qiniu.zone.Zone_z0
-    });
+    this.config = new qiniu.conf.Config();
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
