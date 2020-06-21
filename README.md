@@ -14,7 +14,11 @@ npm start
 
 ## 页面展示
 
-![页面展示](https://github.com/caorushizi/oss-client/raw/master/images/home-page.png)
+![首页](http://static.ziying.site/home-page-grid.png)
+
+![首页](http://static.ziying.site/home-page-table.png)
+
+![设置](http://static.ziying.site/setting.png)
 
 ## 技术栈
 
