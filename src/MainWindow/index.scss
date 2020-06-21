@@ -125,6 +125,15 @@ body {
   }
 }
 
+.ant-input-wrapper {
+  .ant-input-group-addon {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border: rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+}
+
 .ant-select {
   .ant-select-selector {
     border-radius: 5px !important;
@@ -219,6 +228,61 @@ body {
   div {
     .ant-spin {
       max-height: none;
+    }
+  }
+}
+
+.ant-table-wrapper {
+  background: transparent;
+
+  .ant-table {
+    background: transparent;
+
+    .ant-table-thead {
+      .ant-table-cell {
+        .ant-table-column-sorters-with-tooltip {
+          .ant-table-column-sorters {
+            padding: 5px;
+          }
+        }
+
+        background: transparent;
+        border: none;
+        color: #fff;
+      }
+    }
+
+    .ant-table-tbody {
+      .ant-table-row {
+
+        .ant-table-cell {
+          padding: 5px;
+          color: #fff;
+          border: none;
+
+          &.ant-table-column-sort {
+            background: transparent;
+          }
+        }
+
+        &.ant-table-row-selected {
+          .ant-table-cell {
+            background: rgba(255, 255, 255, 0.3);
+          }
+
+          &:hover {
+            .ant-table-cell {
+              background: rgba(255, 255, 255, 0.3);
+            }
+          }
+        }
+
+        &:hover {
+          .ant-table-cell {
+            background: rgba(255, 255, 255, 0.1);
+          }
+        }
+      }
     }
   }
 }

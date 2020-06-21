@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./index.scss";
 import { Table } from "antd";
 import { Item } from "../../lib/vdir/types";
@@ -22,6 +22,8 @@ type PropTypes = {
   onFileContextMenu: (item: VFile) => void;
 };
 
+const tableBodyWrapperHeight = document.body.clientHeight - 160 - 57;
+
 const BodyTable = ({
   items,
   selectedItems,
@@ -38,26 +40,25 @@ const BodyTable = ({
       dataIndex: "name",
       key: "shortId",
       render(name: string, item: any) {
-        console.log(item);
         return (
-          <>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Icon
               type={
                 item.itemType !== "folder"
                   ? getIconName(name)
                   : getIconName("folder")
               }
-              style={{ fontSize: 30 }}
+              style={{ fontSize: 25 }}
             />
-            <span>{name}</span>
-          </>
+            <div style={{ paddingLeft: "10px" }}>{name}</div>
+          </div>
         );
       }
     },
     {
       title: "大小",
       dataIndex: "size",
-      key: "shortId",
+      key: "size",
       sorter: (a: any, b: any) => a.size - b.size,
       render(size: number) {
         return fileSizeFormatter(size);
@@ -66,7 +67,7 @@ const BodyTable = ({
     {
       title: "修改日期",
       dataIndex: "lastModified",
-      key: "shortId",
+      key: "lastModified",
       sorter: (a: any, b: any) => a.lastModified - b.lastModified,
       render(timestamp: number) {
         return dateFormatter(timestamp);
@@ -95,6 +96,8 @@ const BodyTable = ({
           name: record.name
         })
       }}
+      bordered={false}
+      scroll={{ y: tableBodyWrapperHeight }}
       columns={columns}
       pagination={false}
     />
