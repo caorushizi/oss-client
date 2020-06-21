@@ -20,6 +20,15 @@ npm start
 
 ![设置](http://static.ziying.site/setting.png)
 
+## 下载链接
+
+v0.0.1
+---
+[windows](http://static.ziying.site/oss-client-mac-v0.0.1.zip)
+
+[mac](http://static.ziying.site/oss-client-windows-v0.0.1.exe)
+
+
 ## 技术栈
 
 - electron
