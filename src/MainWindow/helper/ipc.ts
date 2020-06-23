@@ -70,8 +70,12 @@ export async function initOss(id?: string): Promise<AppStore> {
   return data;
 }
 
-export function getTransfers(query: any): Promise<TransferStore[]> {
-  return send("get-transfer", query);
+export async function getTransfers(query: any): Promise<TransferStore[]> {
+  const { code, msg, data } = await send<IpcResponse>("get-transfer", query);
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export async function addApp(
@@ -104,8 +108,15 @@ export async function deleteApp(id?: string) {
   throw new Error(msg);
 }
 
-export function clearTransferDoneList() {
-  return send<void>("clear-transfer-done-list", TransferStatus.done);
+export async function clearTransferDoneList() {
+  const { code, msg, data } = await send<IpcResponse>(
+    "clear-transfer-done-list",
+    TransferStatus.done
+  );
+  if (code !== 0) {
+    throw new Error(msg);
+  }
+  return data;
 }
 
 export async function changeSetting(key: string, value: any) {

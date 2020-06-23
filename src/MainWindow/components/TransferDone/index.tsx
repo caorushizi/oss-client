@@ -15,17 +15,17 @@ import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
 const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
 
-  const initTransferList = async () => {
+  const initState = async () => {
     const transferList = await getTransfers({ status: TransferStatus.done });
-    setTransfers(transferList);
+    setTransfers(transferList.sort((a, b) => b.date - a.date));
   };
   const onClearTransferDoneList = async () => {
     await clearTransferDoneList();
-    await initTransferList();
+    setTransfers([]);
   };
 
   useEffect(() => {
-    initTransferList();
+    initState().then(r => r);
   }, []);
   return (
     <div className="transfer-done-wrapper">

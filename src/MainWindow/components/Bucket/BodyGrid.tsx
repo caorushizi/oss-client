@@ -9,7 +9,7 @@ import IconFont from "../IconFont";
 import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
 import { KeyCode } from "../../helper/enums";
-import { getIconName } from "../../helper/utils";
+import { getIconName, supportedImage } from "../../helper/utils";
 
 type PropTypes = {
   items: Item[];
@@ -107,7 +107,7 @@ const BodyGrid = ({
               onDoubleClick={onFileSelect}
               id={item.shortId}
             >
-              {item.type.startsWith("image/") && domains.length > 0 ? (
+              {supportedImage(item.type) && domains.length > 0 ? (
                 <LazyLoad>
                   <img
                     className="preview-image"

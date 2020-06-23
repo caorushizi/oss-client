@@ -125,3 +125,7 @@ export function debounce(fn: Function, delay = 200) {
     }, delay);
   };
 }
+
+export function supportedImage(mimeType: string) {
+  return /image\/(png|img|jpe?g|svg|gif)/.test(mimeType.toLowerCase());
+}
