@@ -8,13 +8,15 @@ import { getTransfers } from "../../helper/ipc";
 
 const TransferList = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);
+  const initState = async () => {
+    const transferList = await getTransfers({
+      status: TransferStatus.default
+    });
+    setTransfers(transferList);
+  };
+
   useEffect(() => {
-    (async () => {
-      const transferList = await getTransfers({
-        status: TransferStatus.default
-      });
-      setTransfers(transferList);
-    })();
+    initState().then(r => r);
   }, []);
   return (
     <div className="transfer-list-wrapper">

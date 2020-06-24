@@ -360,12 +360,22 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("clear-transfer-done-list", params =>
-      this.appChannels.removeTransfers(params)
-    );
-    this.registerIpc("get-transfer", params =>
-      this.appChannels.getTransfers(params)
-    );
+    this.registerIpc("clear-transfer-done-list", async params => {
+      try {
+        await this.appChannels.removeTransfers(params);
+        return success(true);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
+    this.registerIpc("get-transfer", async params => {
+      try {
+        const transfers = await this.appChannels.getTransfers(params);
+        return success(transfers);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("get-buckets", async params => {
       try {
         const buckets = await this.appChannels.getBuckets(params);

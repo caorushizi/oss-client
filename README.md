@@ -1,5 +1,7 @@
 # 云存储客户端
 
+> 添加 VX `a84996057` BUG 秒修复
+
 ## 安装步骤
 
 ```shell script
@@ -19,6 +21,18 @@ npm start
 ![首页](http://static.ziying.site/home-page-table.png)
 
 ![设置](http://static.ziying.site/setting.png)
+
+# todo list
+
+- 刷新后 grid 样式没有变化，selected 数组重置，进入文件夹
+- grid 模式下点击取消选中
+- 上传完成后刷新、删除完成后刷新
+- 下拉菜单样式
+- 批量下载、批量删除、右键全选
+- 缓存列表位置、缓存选中文件
+- 默认储存痛、默认上传前缀、默认域名
+- input 出错时样式
+- 大量文件同时上传出错、大文件上传时进度
 
 ## 下载链接
 
