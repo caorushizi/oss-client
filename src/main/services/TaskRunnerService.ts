@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { Task } from "../types";
-import events from "../helper/events";
 import { ITaskRunner } from "../interface";
+import { emitter } from "../helper/utils";
 
 @injectable()
 export default class TaskRunnerService implements ITaskRunner {
@@ -23,10 +23,10 @@ export default class TaskRunnerService implements ITaskRunner {
       this.log(`running ${task.id}`);
       await task.result;
       this.log(`task ${task.id} finished`);
-      events.emit("transfer-done", task.id);
+      emitter.emit("transfer-done", task.id);
     } catch (err) {
       this.log(`${task.id} failed`);
-      events.emit("transfer-failed", task.id);
+      emitter.emit("transfer-failed", task.id);
     } finally {
       // 处理当前正在活动的任务
       const doneId = this.active.findIndex(i => i.id === task.id);
@@ -35,7 +35,7 @@ export default class TaskRunnerService implements ITaskRunner {
       this.runTask();
       // 下载完成
       if (this.queue.length === 0 && this.active.length === 0) {
-        events.emit("transfer-finish");
+        emitter.emit("transfer-finish");
       }
     }
   }

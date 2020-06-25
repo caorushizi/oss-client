@@ -1,6 +1,6 @@
 import { inject, injectable, named } from "inversify";
-import path from "path";
 import uuid from "uuid/v4";
+import path from "path";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import {
@@ -13,9 +13,8 @@ import {
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 import OssService from "./OssService";
-import { fattenFileList } from "../helper/utils";
+import { fattenFileList, pathStatsSync } from "../helper/utils";
 import VFile from "../../MainWindow/lib/vdir/VFile";
-import { pathStatsSync } from "../helper/fs";
 
 @injectable()
 export default class IpcChannelsService {
@@ -149,12 +148,9 @@ export default class IpcChannelsService {
 
   async uploadFiles(params: any) {
     const { remoteDir, fileList } = params;
-    if (Array.isArray(fileList) && fileList.length === 0) return;
     const instance = this.oss.getService();
     const baseDir = path.dirname(fileList[0]);
     const filepathList = fattenFileList(fileList);
-
-    // eslint-disable-next-line no-restricted-syntax
     for (const filepath of filepathList) {
       const fileSize = pathStatsSync(filepath).size;
       const callback = (id: string, progress: string) => {

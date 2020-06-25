@@ -18,9 +18,7 @@ import { IApp, ILogger, IOssService, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { TransferStatus, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
-import { fail, success } from "../helper/utils";
-import { checkDirExist, mkdir } from "../helper/fs";
-import events from "../helper/events";
+import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
 import VFile from "../../MainWindow/lib/vdir/VFile";
 import TAG from "../constants/tags";
 
@@ -524,9 +522,12 @@ export default class ElectronAppService implements IApp {
     });
 
     this.registerIpc("upload-files", async params => {
-      console.log(params);
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("fileList" in params)) return fail(1, "参数错误");
+      const { fileList } = params;
+      if (Array.isArray(fileList) && fileList.length === 0) {
+        return fail(1, "参数错误");
+      }
       try {
         await this.appChannels.uploadFiles(params);
         return success(true);
@@ -542,7 +543,7 @@ export default class ElectronAppService implements IApp {
     // |                                                            |
     // --------------------------------------------------------------
 
-    events.on("transfer-done", async (id: string) => {
+    emitter.on("transfer-done", async (id: string) => {
       try {
         // 传输成功
         await this.transfers.update(
@@ -555,7 +556,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    events.on("transfer-failed", async (id: string) => {
+    emitter.on("transfer-failed", async (id: string) => {
       try {
         // 传输失败
         await this.transfers.update(
@@ -568,7 +569,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    events.on("transfer-finish", () => {
+    emitter.on("transfer-finish", () => {
       if (this.mainWindow && configStore.get("transferDoneTip")) {
         this.mainWindow.webContents.send("play-finish");
       }
