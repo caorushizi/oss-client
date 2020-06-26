@@ -1,6 +1,6 @@
 import { inject, injectable, named } from "inversify";
-import path from "path";
 import uuid from "uuid/v4";
+import path from "path";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import {
@@ -13,9 +13,8 @@ import {
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 import OssService from "./OssService";
-import { fattenFileList } from "../helper/utils";
+import { fattenFileList, pathStatsSync } from "../helper/utils";
 import VFile from "../../MainWindow/lib/vdir/VFile";
-import { pathStatsSync } from "../helper/fs";
 
 @injectable()
 export default class IpcChannelsService {
@@ -127,7 +126,7 @@ export default class IpcChannelsService {
     const fileSize = pathStatsSync(filepath).size;
     const relativePath = path.relative(baseDir, filepath);
     let remotePath = path.join(remoteDir, relativePath);
-    remotePath = remotePath.replace(/\\/, "/");
+    remotePath = remotePath.replace(/\\+/g, "/");
 
     const id = uuid();
     const newDoc = {
@@ -149,12 +148,9 @@ export default class IpcChannelsService {
 
   async uploadFiles(params: any) {
     const { remoteDir, fileList } = params;
-    if (Array.isArray(fileList) && fileList.length === 0) return;
     const instance = this.oss.getService();
     const baseDir = path.dirname(fileList[0]);
     const filepathList = fattenFileList(fileList);
-
-    // eslint-disable-next-line no-restricted-syntax
     for (const filepath of filepathList) {
       const fileSize = pathStatsSync(filepath).size;
       const callback = (id: string, progress: string) => {
@@ -162,7 +158,7 @@ export default class IpcChannelsService {
       };
       const relativePath = path.relative(baseDir, filepath);
       let remotePath = path.join(remoteDir, relativePath);
-      remotePath = remotePath.replace(/\\/, "/");
+      remotePath = remotePath.replace(/\\+/g, "/");
 
       const id = uuid();
       const newDoc = {
@@ -210,10 +206,49 @@ export default class IpcChannelsService {
     });
   }
 
-  async deleteFile(params: any) {
-    const { file } = params;
+  async downloadFiles(items: VFile[]) {
     const instance = this.oss.getService();
-    const remotePath = file.webkitRelativePath;
+    const customDownloadDir = configStore.get("downloadDir");
+    for (const item of items) {
+      this.logger.info(item);
+      const remotePath = item.webkitRelativePath;
+      const downloadPath = path.join(
+        customDownloadDir,
+        item.webkitRelativePath
+      );
+      const callback = (id: string, progress: string) => {
+        console.log(`${id} - progress ${progress}%`);
+      };
+      const id = uuid();
+      const newDoc = {
+        id,
+        name: item.name,
+        date: Date.now(),
+        type: TaskType.download,
+        size: item.size,
+        status: TransferStatus.default
+      };
+      this.logger.info("newDoc", newDoc);
+      // 存储下载信息
+      const document = await this.transfers.insert(newDoc);
+      this.logger.info("document", document);
+      // 添加任务，自动执行
+      this.taskRunner.addTask<TransferStore>({
+        ...document,
+        result: instance.downloadFile(id, remotePath, downloadPath, callback)
+      });
+    }
+  }
+
+  async deleteFile(remotePath: string) {
+    const instance = this.oss.getService();
     await instance.deleteFile(remotePath);
+  }
+
+  async deleteFiles(remotePaths: string[]) {
+    const instance = this.oss.getService();
+    for (const remotePath of remotePaths) {
+      await instance.deleteFile(remotePath);
+    }
   }
 }

@@ -13,7 +13,12 @@ import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
 import {
   BucketObj,
+  deleteFile,
+  deleteFiles,
   downloadFile,
+  downloadFiles,
+  getConfig,
+  showConfirm,
   switchBucket,
   uploadFile,
   uploadFiles
@@ -125,15 +130,57 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       return f.slice(0);
     });
   };
+  const _getFiles = (folder: VFolder) => {
+    let items: VFile[] = [];
+    for (const item of folder.getItems()) {
+      if (item instanceof VFolder) {
+        items = [...items, ..._getFiles(item)];
+      } else {
+        items.push(item);
+      }
+    }
+    return items;
+  };
   const onBatchDownload = () => {
     selectedFileIdList.forEach(async fileId => {
       const item = vFolder.getItem(fileId);
       if (!item) return;
-      if (item instanceof VFolder) return;
-      await downloadFile(item);
+      let items: VFile[] = [];
+      if (item instanceof VFolder) {
+        items = [...items, ..._getFiles(item)];
+      }
+      try {
+        await downloadFiles(items);
+        console.log("success");
+      } catch (e) {
+        console.log("出错：", e);
+      }
     });
   };
-  const onBatchDelete = () => {};
+
+  const onBatchDelete = async () => {
+    try {
+      const config = await getConfig();
+      const showDialog = config.deleteShowDialog;
+      if (showDialog) {
+        await showConfirm({ title: "警告", message: "是否要删除该文件" });
+      }
+
+      let items: VFile[] = [];
+      for (const fileId of selectedFileIdList) {
+        const item = vFolder.getItem(fileId);
+        if (item instanceof VFolder) {
+          items = [...items, ..._getFiles(item)];
+        } else if (item instanceof VFile) {
+          items.push(item);
+        }
+      }
+      await deleteFiles(items.map(i => i.webkitRelativePath));
+    } catch (e) {
+      console.log("删除文件时出错：", e.message);
+      message.error(e.message);
+    }
+  };
 
   return (
     <div className="bucket-wrapper">

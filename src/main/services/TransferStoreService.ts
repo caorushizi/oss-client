@@ -2,8 +2,8 @@ import DataStore from "nedb";
 import * as path from "path";
 import { injectable } from "inversify";
 import { TransferStore } from "../types";
-import { appDir } from "../helper/dir";
 import { IStore } from "../interface";
+import { appDir } from "../helper/config";
 
 @injectable()
 export default class TransferStoreService implements IStore<TransferStore> {

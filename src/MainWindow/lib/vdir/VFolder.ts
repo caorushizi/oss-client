@@ -125,4 +125,8 @@ export default class VFolder {
   public getItem(fileId: string) {
     return this.children.find(item => item.shortId === fileId);
   }
+
+  public getItems() {
+    return this.children;
+  }
 }

@@ -1,9 +1,9 @@
 import DataStore from "nedb";
 import * as path from "path";
 import { injectable } from "inversify";
-import { appDir } from "../helper/dir";
 import { AppStore } from "../types";
 import { IStore } from "../interface";
+import { appDir } from "../helper/config";
 
 @injectable()
 export default class AppStoreService implements IStore<AppStore> {
