@@ -201,3 +201,11 @@ export async function downloadFile(item: VFile) {
   }
   throw new Error(msg);
 }
+
+export async function downloadFiles(items: VFile[]) {
+  const { code, msg, data } = await send<IpcResponse>("download-files", items);
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}

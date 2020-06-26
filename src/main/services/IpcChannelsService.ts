@@ -206,6 +206,40 @@ export default class IpcChannelsService {
     });
   }
 
+  async downloadFiles(items: VFile[]) {
+    const instance = this.oss.getService();
+    const customDownloadDir = configStore.get("downloadDir");
+    for (const item of items) {
+      this.logger.info(item);
+      const remotePath = item.webkitRelativePath;
+      const downloadPath = path.join(
+        customDownloadDir,
+        item.webkitRelativePath
+      );
+      const callback = (id: string, progress: string) => {
+        console.log(`${id} - progress ${progress}%`);
+      };
+      const id = uuid();
+      const newDoc = {
+        id,
+        name: item.name,
+        date: Date.now(),
+        type: TaskType.download,
+        size: item.size,
+        status: TransferStatus.default
+      };
+      this.logger.info("newDoc", newDoc);
+      // 存储下载信息
+      const document = await this.transfers.insert(newDoc);
+      this.logger.info("document", document);
+      // 添加任务，自动执行
+      this.taskRunner.addTask<TransferStore>({
+        ...document,
+        result: instance.downloadFile(id, remotePath, downloadPath, callback)
+      });
+    }
+  }
+
   async deleteFile(remotePath: string) {
     const instance = this.oss.getService();
     await instance.deleteFile(remotePath);

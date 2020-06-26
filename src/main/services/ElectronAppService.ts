@@ -522,6 +522,17 @@ export default class ElectronAppService implements IApp {
       }
     });
 
+    this.registerIpc("download-files", async (items: VFile[]) => {
+      this.logger.info(items);
+      try {
+        await this.appChannels.downloadFiles(items);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
     this.registerIpc("upload-file", async params => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("filepath" in params)) return fail(1, "参数错误");

@@ -16,6 +16,7 @@ import {
   deleteFile,
   deleteFiles,
   downloadFile,
+  downloadFiles,
   getConfig,
   showConfirm,
   switchBucket,
@@ -129,15 +130,6 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       return f.slice(0);
     });
   };
-  const onBatchDownload = () => {
-    selectedFileIdList.forEach(async fileId => {
-      const item = vFolder.getItem(fileId);
-      if (!item) return;
-      if (item instanceof VFolder) return;
-      await downloadFile(item);
-    });
-  };
-
   const _getFiles = (folder: VFolder) => {
     let items: VFile[] = [];
     for (const item of folder.getItems()) {
@@ -148,6 +140,22 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       }
     }
     return items;
+  };
+  const onBatchDownload = () => {
+    selectedFileIdList.forEach(async fileId => {
+      const item = vFolder.getItem(fileId);
+      if (!item) return;
+      let items: VFile[] = [];
+      if (item instanceof VFolder) {
+        items = [...items, ..._getFiles(item)];
+      }
+      try {
+        await downloadFiles(items);
+        console.log("success");
+      } catch (e) {
+        console.log("出错：", e);
+      }
+    });
   };
 
   const onBatchDelete = async () => {
