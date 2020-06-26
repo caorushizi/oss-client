@@ -126,7 +126,7 @@ export default class IpcChannelsService {
     const fileSize = pathStatsSync(filepath).size;
     const relativePath = path.relative(baseDir, filepath);
     let remotePath = path.join(remoteDir, relativePath);
-    remotePath = remotePath.replace(/\\/, "/");
+    remotePath = remotePath.replace(/\\+/g, "/");
 
     const id = uuid();
     const newDoc = {
@@ -158,7 +158,7 @@ export default class IpcChannelsService {
       };
       const relativePath = path.relative(baseDir, filepath);
       let remotePath = path.join(remoteDir, relativePath);
-      remotePath = remotePath.replace(/\\/, "/");
+      remotePath = remotePath.replace(/\\+/g, "/");
 
       const id = uuid();
       const newDoc = {
@@ -206,10 +206,15 @@ export default class IpcChannelsService {
     });
   }
 
-  async deleteFile(params: any) {
-    const { file } = params;
+  async deleteFile(remotePath: string) {
     const instance = this.oss.getService();
-    const remotePath = file.webkitRelativePath;
     await instance.deleteFile(remotePath);
+  }
+
+  async deleteFiles(remotePaths: string[]) {
+    const instance = this.oss.getService();
+    for (const remotePath of remotePaths) {
+      await instance.deleteFile(remotePath);
+    }
   }
 }

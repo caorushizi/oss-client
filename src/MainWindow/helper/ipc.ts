@@ -130,8 +130,20 @@ export async function changeSetting(key: string, value: any) {
   return data;
 }
 
-export function deleteFile(vFile: VFile) {
-  return send("delete-file", { file: vFile });
+export async function deleteFile(path: string) {
+  const { code, msg, data } = await send("delete-file", { path });
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
+}
+
+export async function deleteFiles(paths: string[]) {
+  const { code, msg, data } = await send("delete-files", { paths });
+  if (code === 0) {
+    return data;
+  }
+  throw new Error(msg);
 }
 
 export function getConfig() {

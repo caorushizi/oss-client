@@ -489,9 +489,22 @@ export default class ElectronAppService implements IApp {
     });
 
     this.registerIpc("delete-file", async params => {
-      if (!params?.file) return fail(1, "参数错误");
+      if (!params?.path) return fail(1, "参数错误");
       try {
-        await this.appChannels.deleteFile(params);
+        const { path } = params;
+        await this.appChannels.deleteFile(path);
+        return success(true);
+      } catch (e) {
+        this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    this.registerIpc("delete-files", async params => {
+      if (!params?.paths) return fail(1, "参数错误");
+      try {
+        const { paths } = params;
+        await this.appChannels.deleteFiles(paths);
         return success(true);
       } catch (e) {
         this.logger.error("上传文件时出错：", e);

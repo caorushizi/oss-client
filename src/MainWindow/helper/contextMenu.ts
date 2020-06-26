@@ -46,7 +46,7 @@ export function fileContextMenu(item: VFile, domain: string) {
           if (showDialog) {
             await showConfirm({ title: "警告", message: "是否要删除该文件" });
           }
-          deleteFile(item);
+          await deleteFile(item.webkitRelativePath);
         } catch (e) {
           console.log("删除文件时出错：", e.message);
           message.error(e.message);
