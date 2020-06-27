@@ -13,9 +13,7 @@ import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
 import {
   BucketObj,
-  deleteFile,
   deleteFiles,
-  downloadFile,
   downloadFiles,
   getConfig,
   showConfirm,
@@ -148,8 +146,11 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       let items: VFile[] = [];
       if (item instanceof VFolder) {
         items = [...items, ..._getFiles(item)];
+      } else {
+        items = [...items, item];
       }
       try {
+        console.log(items);
         await downloadFiles(items);
         console.log("success");
       } catch (e) {

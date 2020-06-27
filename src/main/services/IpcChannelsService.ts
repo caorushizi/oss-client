@@ -1,6 +1,7 @@
 import { inject, injectable, named } from "inversify";
 import uuid from "uuid/v4";
 import path from "path";
+import * as fs from "fs";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import {
@@ -228,10 +229,9 @@ export default class IpcChannelsService {
         size: item.size,
         status: TransferStatus.default
       };
-      this.logger.info("newDoc", newDoc);
       // 存储下载信息
       const document = await this.transfers.insert(newDoc);
-      this.logger.info("document", document);
+      fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
       // 添加任务，自动执行
       this.taskRunner.addTask<TransferStore>({
         ...document,
