@@ -35,9 +35,9 @@ npm start
 
 v0.0.1
 ---
-[windows](http://static.ziying.site/oss-client-mac-v0.0.1.zip)
+[mac](http://static.ziying.site/oss-client-mac-v0.0.1.zip)
 
-[mac](http://static.ziying.site/oss-client-windows-v0.0.1.exe)
+[windows](http://static.ziying.site/oss-client-windows-v0.0.1.exe)
 
 
 ## 技术栈
