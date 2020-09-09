@@ -12,6 +12,8 @@ cd oss-client
 npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electron/" npm_config_electron_custom_dir="9.1.0" npm install
 # 运行
 npm start
+# 打包
+npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electron/" npm_config_electron_custom_dir="9.1.0" npm run make
 ```
 
 ## 页面展示

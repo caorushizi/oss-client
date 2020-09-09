@@ -18,11 +18,15 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./static/icon"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
-          "config": {}
+          "config": {
+            "setupIcon": "./static/icon.ico"
+          }
         },
         {
           "name": "@electron-forge/maker-zip",
