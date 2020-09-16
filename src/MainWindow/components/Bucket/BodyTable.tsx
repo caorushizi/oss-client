@@ -82,6 +82,7 @@ const BodyTable = ({
       rowKey="shortId"
       className="main-table-wrapper"
       dataSource={items}
+      childrenColumnName="never"
       rowSelection={{
         type: "checkbox",
         onChange: (selectedRowKeys: any, selectedRows: any) => {
@@ -95,6 +96,19 @@ const BodyTable = ({
           disabled: record.name === "Disabled User", // Column configuration not to be checked
           name: record.name
         })
+      }}
+      onRow={record => {
+        return {
+          onClick: event => {}, // 点击行
+          onDoubleClick: event => {
+            console.log(event);
+            console.log(record);
+            onFolderSelect(record.name);
+          },
+          onContextMenu: event => {},
+          onMouseEnter: event => {}, // 鼠标移入行
+          onMouseLeave: event => {}
+        };
       }}
       bordered={false}
       scroll={{ y: tableBodyWrapperHeight }}

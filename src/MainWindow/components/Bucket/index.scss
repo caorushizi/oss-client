@@ -57,7 +57,7 @@
 
         &.file-drop-dragging-over-target {
           &::after {
-            z-index: 999;
+            z-index: 9999;
             content: "文件将储存到当前目录下";
             position: absolute;
             top: 10px;
