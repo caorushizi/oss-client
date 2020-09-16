@@ -3,6 +3,7 @@
   "productName": "云存储客户端",
   "version": "0.0.1",
   "description": "OSS 云存储客户端",
+  "repository": "https://github.com/caorushizi/oss-client",
   "main": ".webpack/main",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron-forge start --inspect-electron",
@@ -132,7 +133,7 @@
   "dependencies": {
     "@ant-design/icons": "4.1.0",
     "@simonwep/selection-js": "1.7.0",
-    "antd": "4.2.2",
+    "antd": "4.6.4",
     "axios": "0.19.1",
     "classnames": "2.2.6",
     "electron-log": "4.1.2",

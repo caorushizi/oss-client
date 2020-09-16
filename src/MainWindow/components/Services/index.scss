@@ -139,7 +139,7 @@
   position: absolute;
   opacity: 0;
   left: calc(225px - 100%);
-  transition: left 0.3s, opacity .3s ease-in-out;
+  transition: left 0.3s, opacity 0.3s ease-in-out;
 }
 
 .right-enter {
@@ -152,7 +152,7 @@
   position: absolute;
   opacity: 1;
   left: 0;
-  transition: left .3s, opacity .3s ease-in-out;
+  transition: left 0.3s, opacity 0.3s ease-in-out;
 }
 
 .right-exit {
@@ -165,6 +165,5 @@
   position: absolute;
   opacity: 0;
   left: calc(100% - 225px);
-  transition: left .3s, opacity .3s ease-in-out;
+  transition: left 0.3s, opacity 0.3s ease-in-out;
 }
-
