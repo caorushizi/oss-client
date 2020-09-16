@@ -23,9 +23,7 @@ jobs:
           path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: 安装依赖并且开始打包
-        run: |
-          npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electron/" npm_config_electron_custom_dir="9.1.0" npm install && \
-          npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electron/" npm_config_electron_custom_dir="9.1.0" npm run make
+        run: npm install && npm run make
       - name: 添加 artifact
         uses: actions/upload-artifact@v2
         with:
