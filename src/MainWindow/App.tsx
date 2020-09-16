@@ -22,32 +22,38 @@ import {
   ThemeColor
 } from "./helper/utils";
 import Services from "./components/Services";
-import { getBuckets, initOss } from "./helper/ipc";
+import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { AppStore } from "../main/types";
+import { BucketMeta } from "./types";
 
 const mainWrapperWidth = document.body.clientWidth - 225;
 
-function App() {
+const App: React.FC = () => {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [bgOffset, setBgOffset] = useState<string>(getBgOffset());
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
+  const [bucketMeta, setBucketMeta] = useState<BucketMeta>(new BucketMeta());
   const [activePage, setActivePage] = useState<Page>(Page.bucket);
   const [activeBucket, setActiveBucket] = useState<string>("");
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const [activeApp, setActiveApp] = useState<AppStore>();
   const audio = useRef<HTMLAudioElement>(null);
-  const tabChange = async (page: Page, bucket?: string) => {
+  /**
+   * 应用侧边栏变换触发
+   * @param page 页面名称
+   * @param bucket bucket名称，如果不是 bucket page ，则没有 bucket 参数
+   */
+  const tabChange = async (page: Page, bucket: string) => {
     await setDirection(page < activePage ? Direction.down : Direction.up);
-    await setActivePage(page);
     if (bucket) {
-      if (bucket === activeBucket) return;
-      await setActiveBucket(bucket);
-      await setBucketLoading(true);
+      setBucketLoading(true);
+      const resp = await switchBucket(bucket);
+      setActiveBucket(bucket);
+      setBucketMeta({ ...resp, name: bucket });
+      setBucketLoading(false);
     }
-  };
-  const onLoadedBucket = () => {
-    setBucketLoading(false);
+    setActivePage(page);
   };
   const onAppSwitch = async (app?: AppStore) => {
     try {
@@ -118,9 +124,7 @@ function App() {
   const renderPage = (page: Page) => {
     switch (page) {
       case Page.bucket:
-        return (
-          <Bucket bucketName={activeBucket} onLoadedBucket={onLoadedBucket} />
-        );
+        return <Bucket bucketMeta={bucketMeta} />;
       case Page.services:
         return <Services onAppSwitch={onAppSwitch} activeApp={activeApp} />;
       case Page.setting:
@@ -203,6 +207,6 @@ function App() {
       </SwitchTransition>
     </div>
   );
-}
+};
 
 export default App;
