@@ -24,7 +24,9 @@
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
-          "config": {}
+          "config": {
+            "setupIcon": ".\\\\static\\\\icon.ico"
+          }
         },
         {
           "name": "@electron-forge/maker-zip",

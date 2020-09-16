@@ -8,20 +8,12 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - name: 安装 node 14
+      - name: 安装 node 14.10
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '14'
+          node-version: '14.10'
       - name: 将代码检出
         uses: actions/checkout@v2
-      - name: Get npm cache directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: 安装依赖并且开始打包
         run: npm install && npm run make
       - name: 添加 artifact
@@ -32,16 +24,12 @@ jobs:
   build-mac:
     runs-on: macOS-latest
     steps:
-      - name: 安装 node 14
+      - name: 安装 node 14.10
         uses: actions/setup-node@v2-beta
         with:
-          node-version: '14'
+          node-version: '14.10'
       - name: 将代码检出
         uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: 安装依赖并且开始打包
         run: npm install && npm run make
       - name: 添加 artifact
