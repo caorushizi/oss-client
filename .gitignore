@@ -89,7 +89,3 @@ typings/
 out/
 
 .idea/
-package-lock.json
-yarn.lock
-.yarnrc.yml
-.yarn
