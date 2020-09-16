@@ -28,14 +28,19 @@ function send<T>(eventName: string, options = {}) {
   });
 }
 
-export type BucketObj = {
-  domains: [];
-  files: [];
+type BucketObj = {
+  domains: string[];
+  files: string[];
 };
 
-export async function switchBucket(bucketName: string): Promise<BucketObj> {
-  const params = { bucketName };
-  const { code, msg, data } = await send<IpcResponse>("switch-bucket", params);
+export async function switchBucket(
+  bucketName: string,
+  force?: boolean
+): Promise<BucketObj> {
+  const { code, msg, data } = await send<IpcResponse>("switch-bucket", {
+    bucketName,
+    force
+  });
   if (code !== 0) {
     throw new Error(msg);
   }

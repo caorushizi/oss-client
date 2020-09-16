@@ -86,12 +86,14 @@ export default class ElectronAppService implements IApp {
     ipcMain.on(eventName, async (event, request: { id: string; data: any }) => {
       const { id, data } = request;
       const response = { code: 200, data: {} };
+      this.logger.info(`IPC 请求 ${eventName} => `, JSON.stringify(data));
       try {
         response.data = await handler(data);
       } catch (err) {
         response.code = err.code || 500;
         response.data = err.message || "Main process error.";
       }
+      this.logger.info(`IPC 响应 ${eventName} => `, JSON.stringify(response));
       event.sender.send(`${eventName}_res_${id}`, response);
     });
   };
@@ -507,7 +509,7 @@ export default class ElectronAppService implements IApp {
         await this.appChannels.deleteFiles(paths);
         return success(true);
       } catch (e) {
-        this.logger.error("上传文件时出错：", e);
+        this.logger.error("删除文件时出错：", e);
         return fail(1, e.message);
       }
     });

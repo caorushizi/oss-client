@@ -2,13 +2,13 @@ import React from "react";
 import "./index.scss";
 import classNames from "classnames";
 import {
-  FolderFilled,
+  AppstoreFilled,
   ArrowUpOutlined,
   CheckCircleFilled,
-  SettingFilled,
-  AppstoreFilled,
+  FolderFilled,
+  LoadingOutlined,
   MinusCircleOutlined,
-  LoadingOutlined
+  SettingFilled
 } from "@ant-design/icons";
 import { Spin } from "antd";
 import { Page } from "../../helper/enums";
@@ -20,23 +20,22 @@ type PropTypes = {
   bucketLoading: boolean;
   activeBucket: string;
   activePage: Page;
-  tabChange: (page: Page, bucket?: string) => void;
+  tabChange: (page: Page, bucket: string) => void;
   color: string;
 };
 
-function TheSidebar({
+const TheSidebar: React.FC<PropTypes> = ({
   bucketList,
   bucketLoading,
   activeBucket,
   activePage,
   tabChange,
   color
-}: PropTypes) {
-  const activeTag = (page: Page, bucket?: string) => {
-    if (bucket) {
-      return { active: activePage === page && activeBucket === bucket };
-    }
-    return { active: activePage === page };
+}) => {
+  const activeTag = (page: Page, bucket: string) => {
+    return bucket
+      ? { active: activePage === page && activeBucket === bucket }
+      : { active: activePage === page };
   };
 
   return (
@@ -85,22 +84,22 @@ function TheSidebar({
           <div className="text">传输列表</div>
         </div>
         <ul className="sidebar-list">
-          <li className={classNames("item", activeTag(Page.transferList))}>
+          <li className={classNames("item", activeTag(Page.transferList, ""))}>
             <ArrowUpOutlined className="icon" />
             <input
               type="button"
               value="传输列表"
               className="link"
-              onClick={() => tabChange(Page.transferList)}
+              onClick={() => tabChange(Page.transferList, "")}
             />
           </li>
-          <li className={classNames("item", activeTag(Page.transferDone))}>
+          <li className={classNames("item", activeTag(Page.transferDone, ""))}>
             <CheckCircleFilled className="icon" />
             <input
               type="button"
               value="传输完成"
               className="link"
-              onClick={() => tabChange(Page.transferDone)}
+              onClick={() => tabChange(Page.transferDone, "")}
             />
           </li>
         </ul>
@@ -110,28 +109,28 @@ function TheSidebar({
           <div className="text">设置</div>
         </div>
         <ul className="sidebar-list">
-          <li className={classNames("item", activeTag(Page.setting))}>
+          <li className={classNames("item", activeTag(Page.setting, ""))}>
             <SettingFilled className="icon" />
             <input
               type="button"
               value="设置"
               className="link"
-              onClick={() => tabChange(Page.setting)}
+              onClick={() => tabChange(Page.setting, "")}
             />
           </li>
-          <li className={classNames("item", activeTag(Page.services))}>
+          <li className={classNames("item", activeTag(Page.services, ""))}>
             <AppstoreFilled className="icon" />
             <input
               type="button"
               value="apps"
               className="link"
-              onClick={() => tabChange(Page.services)}
+              onClick={() => tabChange(Page.services, "")}
             />
           </li>
         </ul>
       </section>
     </div>
   );
-}
+};
 
 export default TheSidebar;

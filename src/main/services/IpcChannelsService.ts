@@ -107,14 +107,25 @@ export default class IpcChannelsService {
     return this.transferStore.find(query);
   }
 
-  async switchBucket(params: any) {
-    const { bucketName } = params;
-    const instance = this.oss.getService();
-    instance.setBucket(bucketName);
-    const files = await instance.getBucketFiles();
-    const domains = await instance.getBucketDomainList();
-    return { files, domains };
+  switchBucketWithCache() {
+    const cacheData: Map<string, any> = new Map<string, any>();
+    return async (params: any) => {
+      const { bucketName, force } = params;
+      const cache = cacheData.get(bucketName);
+      const instance = this.oss.getService();
+      instance.setBucket(bucketName);
+      if (!cache || force) {
+        const files = await instance.getBucketFiles();
+        const domains = await instance.getBucketDomainList();
+        const data = { files, domains };
+        cacheData.set(bucketName, data);
+        return data;
+      }
+      return cache;
+    };
   }
+
+  switchBucket = this.switchBucketWithCache();
 
   async uploadFile(params: any) {
     const { remoteDir, filepath } = params;

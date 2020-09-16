@@ -3,7 +3,7 @@ import FileDrop from "react-file-drop";
 import { remote } from "electron";
 
 import "./index.scss";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import HeaderToolbar from "./HeaderToolbar";
 import BodyTable from "./BodyTable";
 import { Layout } from "../../helper/enums";
@@ -12,7 +12,6 @@ import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
 import {
-  BucketObj,
   deleteFiles,
   downloadFiles,
   getConfig,
@@ -25,10 +24,10 @@ import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
+import { BucketMeta } from "../../types";
 
 type PropTypes = {
-  bucketName: string;
-  onLoadedBucket: () => void;
+  bucketMeta: BucketMeta;
 };
 
 interface IBucket {
@@ -36,27 +35,28 @@ interface IBucket {
   items: Item[];
 }
 
-const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
+const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   const [vFolder, setVFolder] = useState<VFolder>(new VFolder("root"));
   const [layout, setLayout] = useState<Layout>(Layout.grid);
-  const [bucket, setBucket] = useState<IBucket>({ domains: [], items: [] });
+  const [domains, setDomains] = useState<string[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [searchedItem, setSearchedItem] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedFileIdList, setSelectedFileIdList] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onClearItem = () => setSelectedFileIdList([]);
-  const displayBucketFiles = (bucketObj: BucketObj) => {
-    const adaptedFiles = qiniuAdapter(bucketObj.files);
+  const displayBucketFiles = (meta: BucketMeta) => {
+    const adaptedFiles = qiniuAdapter(meta.files);
     const vf = VFolder.from(adaptedFiles);
-    onLoadedBucket();
     setVFolder(vf);
-    setBucket({ items: vf.listFiles(), domains: bucketObj.domains });
+    setItems(vf.listFiles());
+    setDomains(meta.domains);
   };
 
   useEffect(() => {
-    if (!bucketName) return;
-    switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
-  }, [bucketName]);
+    displayBucketFiles(bucketMeta);
+  }, [bucketMeta]);
 
   const fileUpload = async () => {
     const userPath = remote.app.getPath("documents");
@@ -78,7 +78,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
   const backspace = () => {
     onClearItem();
     vFolder.back();
-    setBucket({ ...bucket, items: vFolder.listFiles() });
+    setItems(vFolder.listFiles());
   };
   const onFileDrop = async (files: FileList | null) => {
     try {
@@ -97,11 +97,11 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
     }
   };
   const onFileContextMenu = (item: VFile) => {
-    fileContextMenu(item, bucket.domains[0]);
+    fileContextMenu(item, domains[0]);
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);
-    setBucket({ ...bucket, items: vFolder.listFiles() });
+    setItems(vFolder.listFiles());
   };
   const onFolderContextMenu = (item: VFolder) => {};
   const onSearchChange = (value: string) => {
@@ -114,9 +114,12 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
     onClearItem();
     setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
   };
-  const onRefreshBucket = () => {
+  const onRefreshBucket = async () => {
+    setLoading(true);
     onClearItem();
-    switchBucket(bucketName).then(bucketObj => displayBucketFiles(bucketObj));
+    const resp = await switchBucket(bucketMeta.name, true);
+    displayBucketFiles({ ...resp, name: bucketMeta.name });
+    setLoading(false);
   };
   const onSelectItem = (fileId: string) => {
     setSelectedFileIdList(f => f.concat(fileId));
@@ -129,29 +132,29 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
     });
   };
   const _getFiles = (folder: VFolder) => {
-    let items: VFile[] = [];
+    let files: VFile[] = [];
     for (const item of folder.getItems()) {
       if (item instanceof VFolder) {
-        items = [...items, ..._getFiles(item)];
+        files = [...files, ..._getFiles(item)];
       } else {
-        items.push(item);
+        files.push(item);
       }
     }
-    return items;
+    return files;
   };
   const onBatchDownload = () => {
     selectedFileIdList.forEach(async fileId => {
       const item = vFolder.getItem(fileId);
       if (!item) return;
-      let items: VFile[] = [];
+      let files: VFile[] = [];
       if (item instanceof VFolder) {
-        items = [...items, ..._getFiles(item)];
+        files = [...files, ..._getFiles(item)];
       } else {
-        items = [...items, item];
+        files = [...files, item];
       }
       try {
-        console.log(items);
-        await downloadFiles(items);
+        console.log(files);
+        await downloadFiles(files);
         console.log("success");
       } catch (e) {
         console.log("出错：", e);
@@ -167,16 +170,16 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
         await showConfirm({ title: "警告", message: "是否要删除该文件" });
       }
 
-      let items: VFile[] = [];
+      let files: VFile[] = [];
       for (const fileId of selectedFileIdList) {
         const item = vFolder.getItem(fileId);
         if (item instanceof VFolder) {
-          items = [...items, ..._getFiles(item)];
+          files = [...files, ..._getFiles(item)];
         } else if (item instanceof VFile) {
-          items.push(item);
+          files.push(item);
         }
       }
-      await deleteFiles(items.map(i => i.webkitRelativePath));
+      await deleteFiles(files.map(i => i.webkitRelativePath));
     } catch (e) {
       console.log("删除文件时出错：", e.message);
       message.error(e.message);
@@ -199,13 +202,14 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
         onChangeLayout={onChangeLayout}
         navigators={vFolder.getNav()}
       />
-      {bucketName ? (
+      {bucketMeta.name ? (
         <div className="content-wrapper">
+          <Spin spinning={loading} />
           <FileDrop onDrop={onFileDrop} />
           {Layout.grid === layout ? (
             <BodyGrid
-              items={searchValue ? searchedItem : bucket.items}
-              domains={bucket.domains}
+              items={searchValue ? searchedItem : items}
+              domains={domains}
               selectedItems={selectedFileIdList}
               onSelectItem={onSelectItem}
               onRemoveItem={onRemoveItem}
@@ -217,7 +221,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
             />
           ) : (
             <BodyTable
-              items={searchValue ? searchedItem : bucket.items}
+              items={searchValue ? searchedItem : items}
               selectedItems={selectedFileIdList}
               onSelectItem={onSelectItem}
               onRemoveItem={onRemoveItem}
@@ -239,7 +243,7 @@ const Bucket = ({ bucketName, onLoadedBucket }: PropTypes) => {
       <Footer
         totalItem={vFolder.getTotalItem()}
         selectedItem={selectedFileIdList.length}
-        domains={bucket.domains}
+        domains={domains}
       />
     </div>
   );
