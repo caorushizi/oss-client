@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import LazyLoad from "react-lazyload";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
+import { Image } from "antd";
 
 import "./index.scss";
 import VFolder from "../../lib/vdir/VFolder";
@@ -108,13 +109,12 @@ const BodyGrid = ({
               id={item.shortId}
             >
               {supportedImage(item.type) && domains.length > 0 ? (
-                <LazyLoad>
-                  <img
-                    className="preview-image"
-                    src={`http://${domains[0]}/${item.webkitRelativePath}`}
-                    alt={item.name}
-                  />
-                </LazyLoad>
+                <Image
+                  placeholder
+                  className="preview-image"
+                  src={`http://${domains[0]}/${item.webkitRelativePath}`}
+                  alt={item.name}
+                />
               ) : (
                 <IconFont
                   type={getIconName(item.name)}

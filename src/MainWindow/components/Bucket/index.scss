@@ -46,6 +46,7 @@
     .file-drop {
       .file-drop-target {
         &.file-drop-dragging-over-frame {
+          z-index: 9999;
           position: absolute;
           top: 0;
           left: 0;
@@ -101,10 +102,12 @@
         }
 
         .preview-image {
-          height: 50px;
-          width: 50px;
-          object-fit: cover;
           overflow: hidden;
+          img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+          }
         }
 
         span {

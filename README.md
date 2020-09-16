@@ -35,11 +35,11 @@ npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electro
 
 ## 下载链接
 
-v0.0.1
+v0.0.2
 ---
-[mac](http://static.ziying.site/oss-client-mac-v0.0.1.zip)
+[mac](http://static.ziying.site/oss-client-mac-v0.0.3.zip)
 
-[windows](http://static.ziying.site/oss-client-windows-v0.0.1.exe)
+[windows](http://static.ziying.site/oss-client-windows-v0.0.3.exe)
 
 
 ## 技术栈
