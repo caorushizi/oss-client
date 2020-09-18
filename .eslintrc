@@ -12,9 +12,7 @@
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": 0,
     "import/extensions": 0,
-    "prettier/prettier": [
-      "error"
-    ],
+    "prettier/prettier": 2,
     "import/prefer-default-export": 0,
     "no-unused-vars": 0,
     "no-underscore-dangle": 0,
