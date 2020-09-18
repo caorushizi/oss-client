@@ -1,7 +1,5 @@
 # 云存储客户端
 
-> 添加 VX `a84996057` BUG 秒修复
-
 ## 安装步骤
 
 ```shell script
@@ -24,22 +22,13 @@ npx cross-env npm_config_electron_mirror="https://npm.taobao.org/mirrors/electro
 
 ![设置](http://static.ziying.site/setting.png)
 
-# todo list
-
-- selected 数组重置，进入文件夹
-- grid 模式下点击取消选中、右键全选
-- 上传完成后刷新、删除完成后刷新
-- 缓存列表位置、缓存选中文件
-- 默认储存痛、默认上传前缀、默认域名
-- 样式：表单 input 出错时、下拉菜单、刷新后 grid 样式
-
 ## 下载链接
 
-v0.0.2
+v0.0.3
 ---
-[mac](http://static.ziying.site/oss-client-mac-v0.0.3.zip)
+[oss-client-mac-v0.0.3](http://static.ziying.site/oss-client-mac-v0.0.3.zip)
 
-[windows](http://static.ziying.site/oss-client-windows-v0.0.3.exe)
+[oss-client-windows-v0.0.3](http://static.ziying.site/oss-client-windows-v0.0.3.exe)
 
 
 ## 技术栈
