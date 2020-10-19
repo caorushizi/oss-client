@@ -31,6 +31,7 @@ function send<T>(eventName: string, options = {}) {
 type BucketObj = {
   domains: string[];
   files: string[];
+  type: OssType;
 };
 
 export async function switchBucket(

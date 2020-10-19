@@ -4,6 +4,7 @@ import qiniu from "qiniu";
 import { ReadStream } from "fs";
 import http from "../helper/http";
 import { IOSS } from "../interface";
+import { OssType } from "../types";
 
 export default class Qiniu implements IOSS {
   private bucket = "";
@@ -164,4 +165,6 @@ export default class Qiniu implements IOSS {
   setBucket(bucket: string): void {
     this.bucket = bucket;
   }
+
+  type: OssType = OssType.qiniu;
 }

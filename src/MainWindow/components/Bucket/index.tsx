@@ -20,11 +20,11 @@ import {
   uploadFile,
   uploadFiles
 } from "../../helper/ipc";
-import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 import { BucketMeta } from "../../types";
+import adapter from "../../lib/adapter";
 
 type PropTypes = {
   bucketMeta: BucketMeta;
@@ -47,7 +47,9 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
   const onClearItem = () => setSelectedFileIdList([]);
   const displayBucketFiles = (meta: BucketMeta) => {
-    const adaptedFiles = qiniuAdapter(meta.files);
+    console.log("meta", meta);
+    const adaptedFiles = adapter(meta.type, meta.files);
+    console.log("test", adaptedFiles);
     const vf = VFolder.from(adaptedFiles);
     setVFolder(vf);
     setItems(vf.listFiles());

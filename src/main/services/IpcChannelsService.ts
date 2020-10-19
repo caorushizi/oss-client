@@ -117,7 +117,7 @@ export default class IpcChannelsService {
       if (!cache || force) {
         const files = await instance.getBucketFiles();
         const domains = await instance.getBucketDomainList();
-        const data = { files, domains };
+        const data = { files, domains, type: instance.type };
         cacheData.set(bucketName, data);
         return data;
       }
