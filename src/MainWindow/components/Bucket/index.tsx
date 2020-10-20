@@ -24,7 +24,6 @@ import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
 import { BucketMeta } from "../../types";
-import adapter from "../../lib/adapter";
 
 type PropTypes = {
   bucketMeta: BucketMeta;
@@ -47,10 +46,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
   const onClearItem = () => setSelectedFileIdList([]);
   const displayBucketFiles = (meta: BucketMeta) => {
-    console.log("meta", meta);
-    const adaptedFiles = adapter(meta.type, meta.files);
-    console.log("test", adaptedFiles);
-    const vf = VFolder.from(adaptedFiles);
+    const vf = VFolder.from(meta.files);
     setVFolder(vf);
     setItems(vf.listFiles());
     setDomains(meta.domains);
@@ -99,7 +95,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     }
   };
   const onFileContextMenu = (item: VFile) => {
-    fileContextMenu(item, domains[0]);
+    fileContextMenu(item);
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);

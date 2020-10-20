@@ -384,7 +384,14 @@ export default class ElectronAppService implements IApp {
         return fail(1, "获取 buckets 失败，请检查 ak，sk 是否匹配！");
       }
     });
-    this.registerIpc("get-config", params => this.appChannels.getConfig());
+    this.registerIpc("get-config", async () => {
+      try {
+        const data = await this.appChannels.getConfig();
+        return success(data);
+      } catch (e) {
+        return fail(1, e.message);
+      }
+    });
     this.registerIpc("switch-bucket", async params => {
       const { bucketName } = params;
       if (typeof bucketName !== "string" || bucketName === "")
@@ -559,6 +566,16 @@ export default class ElectronAppService implements IApp {
         return success(true);
       } catch (e) {
         this.logger.error("上传文件时出错：", e);
+        return fail(1, e.message);
+      }
+    });
+
+    this.registerIpc("get-url", async key => {
+      if (!key) return fail(1, "参数错误");
+      try {
+        const url = await this.appChannels.getFileUrl(key);
+        return success(url);
+      } catch (e) {
         return fail(1, e.message);
       }
     });

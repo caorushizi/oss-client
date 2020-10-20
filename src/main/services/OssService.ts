@@ -3,6 +3,7 @@ import { IOSS, IOssService } from "../interface";
 import { OssType } from "../types";
 import Qiniu from "../oss/Qiniu";
 import Ali from "../oss/Ali";
+import Tencent from "../oss/Tencent";
 
 @injectable()
 export default class OssService implements IOssService {
@@ -21,6 +22,8 @@ export default class OssService implements IOssService {
         return new Qiniu(ak, sk);
       case OssType.ali:
         return new Ali(ak, sk);
+      case OssType.tencent:
+        return new Tencent(ak, sk);
       default:
         throw Error("暂时还不支持该云存储厂商");
     }

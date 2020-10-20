@@ -1,9 +1,12 @@
-import axios from "axios";
 import * as fs from "fs";
 import { ReadStream } from "fs";
 import OSS from "ali-oss";
+import mime from "mime";
+import shortid from "shortid";
 import { IOSS } from "../interface";
 import { OssType } from "../types";
+import { download } from "../helper/utils";
+import VFile from "../../MainWindow/lib/vdir/VFile";
 
 export default class Ali implements IOSS {
   private bucket = "";
@@ -12,17 +15,11 @@ export default class Ali implements IOSS {
 
   private readonly secretKey: string;
 
+  private region = "oss-cn-beijing";
+
   constructor(accessKey: string, secretKey: string) {
     this.accessKey = accessKey;
     this.secretKey = secretKey;
-  }
-
-  private createStore() {
-    return new OSS({
-      accessKeyId: this.accessKey,
-      accessKeySecret: this.secretKey,
-      bucket: this.bucket
-    });
   }
 
   public async downloadFile(
@@ -31,30 +28,14 @@ export default class Ali implements IOSS {
     localPath: string,
     cb: (id: string, progress: string) => void
   ): Promise<any> {
-    const store = this.createStore();
+    const store = new OSS({
+      region: this.region,
+      accessKeyId: this.accessKey,
+      accessKeySecret: this.secretKey,
+      bucket: this.bucket
+    });
     const url = store.signatureUrl(remotePath);
-    console.log(url);
-    // 获取 domains
-    return axios
-      .get(url, {
-        responseType: "stream",
-        headers: { "Cache-Control": "no-cache" }
-      })
-      .then(({ data, headers }) => {
-        return new Promise((resolve, reject) => {
-          const writer = fs.createWriteStream(localPath);
-          data.pipe(writer);
-          let length = 0;
-          const totalLength = headers["content-length"];
-          data.on("data", (thunk: any) => {
-            length += thunk.length;
-            const process = (length / totalLength).toFixed(3);
-            cb(id, process);
-          });
-          writer.on("finish", resolve);
-          writer.on("error", reject);
-        });
-      });
+    return download(url, localPath, p => cb(id, p));
   }
 
   public async uploadFile(
@@ -63,7 +44,12 @@ export default class Ali implements IOSS {
     localPath: string,
     cb: (id: string, progress: string) => void
   ): Promise<any> {
-    const store = this.createStore();
+    const store = new OSS({
+      region: this.region,
+      accessKeyId: this.accessKey,
+      accessKeySecret: this.secretKey,
+      bucket: this.bucket
+    });
     const fileSize = fs.statSync(localPath).size;
     const reader: ReadStream = fs.createReadStream(localPath);
 
@@ -77,7 +63,12 @@ export default class Ali implements IOSS {
   }
 
   public async deleteFile(remotePath: string): Promise<any> {
-    const store = this.createStore();
+    const store = new OSS({
+      region: this.region,
+      accessKeyId: this.accessKey,
+      accessKeySecret: this.secretKey,
+      bucket: this.bucket
+    });
     return store.delete(remotePath);
   }
 
@@ -88,15 +79,14 @@ export default class Ali implements IOSS {
   }
 
   public async getBucketFiles(): Promise<any[]> {
-    // oss-cn-beijing.aliyuncs.com
     const store = new OSS({
-      region: "oss-cn-beijing",
+      region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
       bucket: this.bucket
     });
     const result = await store.list(null, { timeout: 1000 });
-    return result.objects || [];
+    return result.objects.map(this.itemAdapter) || [];
   }
 
   public async getBucketList(): Promise<string[]> {
@@ -108,9 +98,34 @@ export default class Ali implements IOSS {
     return result.buckets.map((item: any) => item.name);
   }
 
-  setBucket(bucket: string): void {
+  async setBucket(bucket: string): Promise<void> {
     this.bucket = bucket;
   }
 
   type: OssType = OssType.ali;
+
+  generateUrl(remotePath: string): string {
+    const client = new OSS({
+      region: this.region,
+      accessKeyId: this.accessKey,
+      accessKeySecret: this.secretKey,
+      bucket: this.bucket
+    });
+    return client.signatureUrl(remotePath);
+  }
+
+  itemAdapter = (item: any): VFile => {
+    const { name } = item;
+    return {
+      shortId: shortid(),
+      itemType: "file",
+      name,
+      lastModified: item.lastModified,
+      webkitRelativePath: item.name,
+      meta: item,
+      size: item.size,
+      type: mime.getType(item.name) || "",
+      lastModifiedDate: new Date(item.lastModified)
+    };
+  };
 }

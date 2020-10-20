@@ -27,6 +27,7 @@ import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { AppStore } from "../main/types";
 import { BucketMeta } from "./types";
 
+// fixme： resize 变化是窗口尺寸变化
 const mainWrapperWidth = document.body.clientWidth - 225;
 
 const App: React.FC = () => {
@@ -51,7 +52,6 @@ const App: React.FC = () => {
       if (bucket) {
         setBucketLoading(true);
         const resp = await switchBucket(bucket);
-        console.log("123123", resp);
         setActiveBucket(bucket);
         setBucketMeta({ ...resp, name: bucket });
         setBucketLoading(false);

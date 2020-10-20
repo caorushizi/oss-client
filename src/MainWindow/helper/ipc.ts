@@ -9,16 +9,20 @@ import {
 } from "../../main/types";
 import VFile from "../lib/vdir/VFile";
 
-function send<T>(eventName: string, options = {}) {
+function send(eventName: string, options = {}): any {
   const data = options;
   const id = uuidV1();
   const responseEvent = `${eventName}_res_${id}`;
-  return new Promise<T>((resolve, reject) => {
+  return new Promise<IpcResponse>((resolve, reject) => {
     ipcRenderer.once(
       responseEvent,
       (event: IpcRendererEvent, response: { code: number; data: any }) => {
         if (response.code === 200) {
-          resolve(response.data);
+          const { code, msg, data: resData } = response.data;
+          if (code !== 0) {
+            reject(new Error(msg));
+          }
+          resolve(resData);
         } else {
           reject(response.data);
         }
@@ -28,24 +32,18 @@ function send<T>(eventName: string, options = {}) {
   });
 }
 
-type BucketObj = {
-  domains: string[];
-  files: string[];
-  type: OssType;
-};
-
 export async function switchBucket(
   bucketName: string,
   force?: boolean
-): Promise<BucketObj> {
-  const { code, msg, data } = await send<IpcResponse>("switch-bucket", {
+): Promise<{
+  domains: string[];
+  files: VFile[];
+  type: OssType;
+}> {
+  return send("switch-bucket", {
     bucketName,
     force
   });
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
 }
 
 export async function getBuckets(config?: {
@@ -53,35 +51,19 @@ export async function getBuckets(config?: {
   ak: string;
   sk: string;
 }): Promise<string[]> {
-  const { code, msg, data } = await send<IpcResponse>("get-buckets", config);
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("get-buckets", config);
 }
 
 export async function getAppsChannel(): Promise<AppStore[]> {
-  const { code, msg, data } = await send<IpcResponse>("get-apps");
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("get-apps");
 }
 
 export async function initOss(id?: string): Promise<AppStore> {
-  const { code, msg, data } = await send<IpcResponse>("init-app", { id });
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("init-app", { id });
 }
 
 export async function getTransfers(query: any): Promise<TransferStore[]> {
-  const { code, msg, data } = await send<IpcResponse>("get-transfer", query);
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("get-transfer", query);
 }
 
 export async function addApp(
@@ -91,42 +73,23 @@ export async function addApp(
   sk: string
 ): Promise<AppStore> {
   const app = { name, type, ak, sk };
-  const { code, msg, data } = await send<IpcResponse>("add-app", app);
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("add-app", app);
 }
 
 export async function updateApp(app: AppStore) {
-  const { code, msg, data } = await send<IpcResponse>("update-app", app);
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("update-app", app);
 }
 
 export async function deleteApp(id?: string) {
-  const { code, msg, data } = await send<IpcResponse>("delete-app", id);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("delete-app", id);
 }
 
 export async function clearTransferDoneList() {
-  const { code, msg, data } = await send<IpcResponse>(
-    "clear-transfer-done-list",
-    TransferStatus.done
-  );
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("clear-transfer-done-list", TransferStatus.done);
 }
 
 export async function changeSetting(key: string, value: any) {
-  const { code, data, msg } = await send<IpcResponse>("change-setting", {
+  const { code, data, msg } = await send("change-setting", {
     key,
     value
   });
@@ -137,81 +100,53 @@ export async function changeSetting(key: string, value: any) {
 }
 
 export async function deleteFile(path: string) {
-  const { code, msg, data } = await send("delete-file", { path });
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("delete-file", { path });
 }
 
 export async function deleteFiles(paths: string[]) {
-  const { code, msg, data } = await send("delete-files", { paths });
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("delete-files", { paths });
 }
 
 export function getConfig() {
-  return send<ConfigStore>("get-config");
+  return send("get-config");
 }
 
 export async function showAlert(options?: {
   title?: string;
   message?: string;
 }) {
-  const { code, msg, data } = await send<IpcResponse>("show-alert", options);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("show-alert", options);
 }
 
 export async function showConfirm(options?: {
   title?: string;
   message?: string;
 }) {
-  const { code, msg, data } = await send<IpcResponse>("show-confirm", options);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("show-confirm", options);
 }
 
 export async function uploadFile(options: {
   remoteDir: string;
   filepath: string;
 }) {
-  const { code, msg, data } = await send<IpcResponse>("upload-file", options);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("upload-file", options);
 }
 
 export async function uploadFiles(options: {
   remoteDir: string;
   fileList: string[];
 }) {
-  const { code, msg, data } = await send<IpcResponse>("upload-files", options);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("upload-files", options);
 }
 
 export async function downloadFile(item: VFile) {
-  const { code, msg, data } = await send<IpcResponse>("download-file", item);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("download-file", item);
 }
 
 export async function downloadFiles(items: VFile[]) {
-  const { code, msg, data } = await send<IpcResponse>("download-files", items);
-  if (code === 0) {
-    return data;
-  }
-  throw new Error(msg);
+  return send("download-files", items);
+}
+
+export async function getFileUrl(key: string) {
+  return send("get-url", key);
 }
