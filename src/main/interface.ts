@@ -1,5 +1,6 @@
 import { BrowserWindow, Tray } from "electron";
 import { OssType, Task } from "./types";
+import VFile from "../MainWindow/lib/vdir/VFile";
 
 export interface IApp {
   mainWindow: BrowserWindow | null;
@@ -29,6 +30,7 @@ export interface ILogger {
 }
 
 export interface IOSS {
+  type: OssType;
   uploadFile(
     id: string,
     remotePath: string,
@@ -45,7 +47,9 @@ export interface IOSS {
   getBucketList(): Promise<string[]>;
   getBucketFiles(): Promise<any[]>;
   getBucketDomainList(): Promise<string[]>;
-  setBucket(bucket: string): void;
+  setBucket(bucket: string): Promise<void>;
+  generateUrl(remotePath: string): string;
+  itemAdapter(item: any): VFile;
 }
 
 export interface IOssService {

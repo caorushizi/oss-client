@@ -307,8 +307,8 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
         ) : (
           <section className="apps-main-wrapper">
             <div className="no-result">
-              <p>没有 Apps</p>
-              <p>暂时没有搜索到 apps</p>
+              <p className="title">没有 Apps</p>
+              <p className="sub-title">暂时没有搜索到 apps</p>
               <Button size="small" onClick={_toAddPage}>
                 添加
               </Button>

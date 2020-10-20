@@ -6,6 +6,7 @@ import {
   MinusCircleFilled,
   PlusCircleFilled
 } from "@ant-design/icons";
+import { message } from "antd";
 import audioSrc from "./assets/tip.mp3";
 
 import "./App.scss";
@@ -26,6 +27,7 @@ import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { AppStore } from "../main/types";
 import { BucketMeta } from "./types";
 
+// fixme： resize 变化是窗口尺寸变化
 const mainWrapperWidth = document.body.clientWidth - 225;
 
 const App: React.FC = () => {
@@ -45,15 +47,21 @@ const App: React.FC = () => {
    * @param bucket bucket名称，如果不是 bucket page ，则没有 bucket 参数
    */
   const tabChange = async (page: Page, bucket: string) => {
-    await setDirection(page < activePage ? Direction.down : Direction.up);
-    if (bucket) {
-      setBucketLoading(true);
-      const resp = await switchBucket(bucket);
-      setActiveBucket(bucket);
-      setBucketMeta({ ...resp, name: bucket });
+    try {
+      await setDirection(page < activePage ? Direction.down : Direction.up);
+      if (bucket) {
+        setBucketLoading(true);
+        const resp = await switchBucket(bucket);
+        setActiveBucket(bucket);
+        setBucketMeta({ ...resp, name: bucket });
+        setBucketLoading(false);
+      }
+      setActivePage(page);
+    } catch (e) {
+      message.error(e.message);
+    } finally {
       setBucketLoading(false);
     }
-    setActivePage(page);
   };
   const onAppSwitch = async (app?: AppStore) => {
     try {

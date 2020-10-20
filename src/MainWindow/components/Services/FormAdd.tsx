@@ -46,6 +46,8 @@ const FormAdd = ({ onBucketAdd }: PropTypes) => {
       >
         <Select size="small">
           <Select.Option value={OssType.qiniu}>七牛云</Select.Option>
+          <Select.Option value={OssType.ali}>阿里云</Select.Option>
+          <Select.Option value={OssType.tencent}>腾讯云</Select.Option>
         </Select>
       </Form.Item>
       <Form.Item

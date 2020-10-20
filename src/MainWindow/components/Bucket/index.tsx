@@ -20,7 +20,6 @@ import {
   uploadFile,
   uploadFiles
 } from "../../helper/ipc";
-import { qiniuAdapter } from "../../lib/adapter/qiniu";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import { fileContextMenu } from "../../helper/contextMenu";
@@ -47,8 +46,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
   const onClearItem = () => setSelectedFileIdList([]);
   const displayBucketFiles = (meta: BucketMeta) => {
-    const adaptedFiles = qiniuAdapter(meta.files);
-    const vf = VFolder.from(adaptedFiles);
+    const vf = VFolder.from(meta.files);
     setVFolder(vf);
     setItems(vf.listFiles());
     setDomains(meta.domains);
@@ -97,7 +95,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     }
   };
   const onFileContextMenu = (item: VFile) => {
-    fileContextMenu(item, domains[0]);
+    fileContextMenu(item);
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);

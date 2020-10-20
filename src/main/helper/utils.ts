@@ -1,6 +1,7 @@
 import klawSync from "klaw-sync";
 import fs, { Stats } from "fs";
 import EventEmitter from "events";
+import axios from "axios";
 
 export function pathStatsSync(path: string): Stats {
   return fs.statSync(path);
@@ -48,3 +49,27 @@ export function fail(code: number, msg: string): IpcResponse {
 class MyEmitter extends EventEmitter {}
 
 export const emitter = new MyEmitter();
+
+export async function download(
+  url: string,
+  localPath: string,
+  cb: (p: string) => void
+) {
+  const { data, headers } = await axios.get(url, {
+    responseType: "stream",
+    headers: { "Cache-Control": "no-cache" }
+  });
+  return new Promise((resolve, reject) => {
+    const writer = fs.createWriteStream(localPath);
+    data.pipe(writer);
+    let length = 0;
+    const totalLength = headers["content-length"];
+    data.on("data", (thunk: any) => {
+      length += thunk.length;
+      const process = (length / totalLength).toFixed(2);
+      cb(process);
+    });
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
+}

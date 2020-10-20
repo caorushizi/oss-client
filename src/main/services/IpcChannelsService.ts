@@ -113,11 +113,11 @@ export default class IpcChannelsService {
       const { bucketName, force } = params;
       const cache = cacheData.get(bucketName);
       const instance = this.oss.getService();
-      instance.setBucket(bucketName);
+      await instance.setBucket(bucketName);
       if (!cache || force) {
         const files = await instance.getBucketFiles();
         const domains = await instance.getBucketDomainList();
-        const data = { files, domains };
+        const data = { files, domains, type: instance.type };
         cacheData.set(bucketName, data);
         return data;
       }
@@ -261,5 +261,10 @@ export default class IpcChannelsService {
     for (const remotePath of remotePaths) {
       await instance.deleteFile(remotePath);
     }
+  }
+
+  async getFileUrl(remotePath: string) {
+    const instance = this.oss.getService();
+    return instance.generateUrl(remotePath);
   }
 }

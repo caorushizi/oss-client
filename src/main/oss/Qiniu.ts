@@ -1,9 +1,12 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import * as fs from "fs";
 import qiniu from "qiniu";
 import { ReadStream } from "fs";
-import http from "../helper/http";
+import shortid from "shortid";
 import { IOSS } from "../interface";
+import { OssType } from "../types";
+import { download } from "../helper/utils";
+import VFile from "../../MainWindow/lib/vdir/VFile";
 
 export default class Qiniu implements IOSS {
   private bucket = "";
@@ -12,7 +15,23 @@ export default class Qiniu implements IOSS {
 
   private readonly config: qiniu.conf.Config;
 
+  private domains: string[] = [];
+
   private bucketManager: qiniu.rs.BucketManager;
+
+  private async initDomains() {
+    // 1. 获取 domains
+    const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
+    const accessToken = qiniu.util.generateAccessToken(this.mac, url);
+
+    const { data } = await axios.get(url, {
+      headers: { Authorization: accessToken }
+    });
+    if (!Array.isArray(data) || data.length <= 0) {
+      throw new Error("没有获取到域名");
+    }
+    this.domains = data;
+  }
 
   constructor(accessKey: string, secretKey: string) {
     this.mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
@@ -20,43 +39,15 @@ export default class Qiniu implements IOSS {
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
   }
 
-  public downloadFile(
+  public async downloadFile(
     id: string,
     remotePath: string,
     localPath: string,
     cb: (id: string, progress: string) => void
   ): Promise<any> {
-    // 获取 domains
-    const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
-    const accessToken = qiniu.util.generateAccessToken(this.mac, url);
-    return http
-      .get(url, { headers: { Authorization: accessToken } })
-      .then((data: any) => {
-        if (!Array.isArray(data) || data.length <= 0) {
-          throw new Error("没有获取到域名");
-        }
-        const thisurl = encodeURI(`http://${data[0]}/${remotePath}`);
-        return axios.get(thisurl, {
-          responseType: "stream",
-          headers: { "Cache-Control": "no-cache" }
-        });
-      })
-      .then((rep: AxiosResponse) => {
-        const { data, headers } = rep;
-        return new Promise((resolve, reject) => {
-          const writer = fs.createWriteStream(localPath);
-          data.pipe(writer);
-          let length = 0;
-          const totalLength = headers["content-length"];
-          data.on("data", (thunk: any) => {
-            length += thunk.length;
-            const process = (length / totalLength).toFixed(3);
-            cb(id, process);
-          });
-          writer.on("finish", resolve);
-          writer.on("error", reject);
-        });
-      });
+    if (this.domains.length <= 0) throw new Error("请先初始化存储服务");
+    const url = encodeURI(`http://${this.domains[0]}/${remotePath}`);
+    return download(url, localPath, p => cb(id, p));
   }
 
   public uploadFile(
@@ -72,44 +63,32 @@ export default class Qiniu implements IOSS {
     const token = putPolicy.uploadToken(this.mac);
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
-    // 获取文件大小
-    return new Promise<number>((resolve, reject) => {
-      fs.stat(localPath, (error, stats) => {
-        if (error) {
-          reject(new Error("获取文件大小失败"));
-        } else {
-          // 文件大小
-          resolve(stats.size);
-        }
+    const fileSize = fs.statSync(localPath).size;
+    // 文件上传
+    return new Promise((resolve, reject) => {
+      const reader: ReadStream = fs.createReadStream(localPath);
+      let length = 0;
+      reader.on("data", (thunk: any) => {
+        length += thunk.length;
+        const progress = (length / fileSize).toFixed(3);
+        cb(id, progress);
       });
-    }).then(fileSize => {
-      // 文件上传
-      return new Promise((resolve, reject) => {
-        const reader: ReadStream = fs.createReadStream(localPath);
-
-        let length = 0;
-        reader.on("data", (thunk: any) => {
-          length += thunk.length;
-          const progress = (length / fileSize).toFixed(3);
-          cb(id, progress);
-        });
-        formUploader.putStream(
-          token,
-          remotePath,
-          reader,
-          putExtra,
-          (err, respBody, respInfo) => {
-            if (err) {
-              reject(err);
-            }
-            if (respInfo.statusCode === 200) {
-              resolve(respBody);
-            } else {
-              reject(new Error(respBody.error));
-            }
+      formUploader.putStream(
+        token,
+        remotePath,
+        reader,
+        putExtra,
+        (err, respBody, respInfo) => {
+          if (err) {
+            reject(err);
           }
-        );
-      });
+          if (respInfo.statusCode === 200) {
+            resolve(respBody);
+          } else {
+            reject(new Error(respBody.error));
+          }
+        }
+      );
     });
   }
 
@@ -133,35 +112,58 @@ export default class Qiniu implements IOSS {
     });
   }
 
-  public getBucketDomainList(): Promise<string[]> {
+  public async getBucketDomainList(): Promise<string[]> {
     const url = `https://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return axios.get<string[]>(url, options).then(({ data }) => data);
+    const { data } = await axios.get<string[]>(url, options);
+    return data;
   }
 
-  public getBucketFiles(): Promise<any[]> {
+  public async getBucketFiles(): Promise<any[]> {
     const url = `https://rsf.qbox.me/list?bucket=${this.bucket}`;
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return http.get(url, options).then((result: any) => {
-      return result.items;
-    });
+    const { data } = await axios.get(url, options);
+    return data.items.map(this.itemAdapter);
   }
 
-  public getBucketList(): Promise<string[]> {
+  public async getBucketList(): Promise<string[]> {
     const url = "https://rs.qbox.me/buckets";
     const accessToken = qiniu.util.generateAccessToken(this.mac, url);
     const options = { headers: { Authorization: accessToken } };
-    return axios.get<string[]>(url, options).then(({ data }) => {
-      if (data.length > 0) {
-        this.setBucket(data[0]);
-      }
-      return data;
-    });
+    const { data } = await axios.get<string[]>(url, options);
+    if (data.length > 0) {
+      await this.setBucket(data[0]);
+    }
+    return data;
   }
 
-  setBucket(bucket: string): void {
+  async setBucket(bucket: string): Promise<void> {
     this.bucket = bucket;
+    await this.initDomains();
   }
+
+  type: OssType = OssType.qiniu;
+
+  generateUrl(remotePath: string): string {
+    if (this.domains.length <= 0) throw new Error("请先初始化云存储");
+    return encodeURI(`http://${this.domains[0]}/${remotePath}`);
+  }
+
+  itemAdapter = (item: any): VFile => {
+    const lastModified = Math.ceil(item.putTime / 1e4);
+    const name = item.key.split("/").pop();
+    return {
+      shortId: shortid(),
+      itemType: "file",
+      name,
+      lastModified,
+      webkitRelativePath: item.key,
+      meta: item,
+      size: item.fsize,
+      type: item.mimeType,
+      lastModifiedDate: new Date(lastModified)
+    };
+  };
 }

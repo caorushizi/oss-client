@@ -63,8 +63,13 @@ const Setting = () => {
   );
 
   const initState = async () => {
-    const config1 = await getConfig();
-    setConfig(config1);
+    try {
+      const config1 = await getConfig();
+      setConfig(config1);
+    } catch (e) {
+      console.log(e);
+      message.error(e.message);
+    }
   };
   useEffect(() => {
     initState().then(r => r);
