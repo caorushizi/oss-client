@@ -133,7 +133,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "4.1.0",
-    "@simonwep/selection-js": "1.7.0",
+    "@simonwep/selection-js": "1.7.1",
     "ali-oss": "6.11.2",
     "antd": "4.6.4",
     "axios": "0.19.1",
@@ -151,7 +151,7 @@
     "qiniu": "7.3.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-file-drop": "0.2.8",
+    "react-file-drop": "3.1.0",
     "react-lazyload": "2.6.7",
     "react-transition-group": "4.4.1",
     "reflect-metadata": "0.1.13",

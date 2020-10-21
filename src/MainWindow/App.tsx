@@ -27,9 +27,6 @@ import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { AppStore } from "../main/types";
 import { BucketMeta } from "./types";
 
-// fixme： resize 变化是窗口尺寸变化
-const mainWrapperWidth = document.body.clientWidth - 225;
-
 const App: React.FC = () => {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [bgOffset, setBgOffset] = useState<string>(getBgOffset());
@@ -41,6 +38,9 @@ const App: React.FC = () => {
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const [activeApp, setActiveApp] = useState<AppStore>();
   const audio = useRef<HTMLAudioElement>(null);
+  const [mainWrapperWidth, setMainWrapperWidth] = useState<number>(
+    document.body.clientWidth - 225
+  );
   /**
    * 应用侧边栏变换触发
    * @param page 页面名称
@@ -114,6 +114,11 @@ const App: React.FC = () => {
   useEffect(() => {
     setThemeColor(getThemeColor());
     setBgOffset(getBgOffset());
+
+    // fixme： resize 变化是窗口尺寸变化
+    window.onresize = () => {
+      setMainWrapperWidth(document.body.clientWidth - 225);
+    };
   }, [activePage]);
 
   // 相当于初始化流程

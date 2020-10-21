@@ -16,8 +16,6 @@ export default class VFolder {
 
   shortId = shortId();
 
-  itemType = "folder";
-
   private children: Item[];
 
   private cursor: VFolder;

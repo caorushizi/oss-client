@@ -118,7 +118,6 @@ export default class Ali implements IOSS {
     const { name } = item;
     return {
       shortId: shortid(),
-      itemType: "file",
       name,
       lastModified: item.lastModified,
       webkitRelativePath: item.name,

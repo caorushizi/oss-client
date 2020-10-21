@@ -156,7 +156,6 @@ export default class Qiniu implements IOSS {
     const name = item.key.split("/").pop();
     return {
       shortId: shortid(),
-      itemType: "file",
       name,
       lastModified,
       webkitRelativePath: item.key,

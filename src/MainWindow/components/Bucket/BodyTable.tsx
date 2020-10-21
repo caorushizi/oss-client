@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import "./index.scss";
 import { Table } from "antd";
 import { Item } from "../../lib/vdir/types";
@@ -14,12 +14,15 @@ import VFile from "../../lib/vdir/VFile";
 type PropTypes = {
   items: Item[];
   selectedItems: string[];
-  onSelectItem: (fileId: string) => void;
-  onRemoveItem: (fileId: string) => void;
   onFolderSelect: (name: string) => void;
-  onFolderContextMenu: (item: VFolder) => void;
+  onFolderContextMenu: (
+    event: MouseEvent<HTMLDivElement>,
+    item: VFolder
+  ) => void;
   onFileSelect: () => void;
-  onFileContextMenu: (item: VFile) => void;
+  onFileContextMenu: (event: MouseEvent<HTMLElement>, item: VFile) => void;
+  onPanelContextMenu: () => void;
+  onPanelMouseDown: (event: MouseEvent<HTMLElement>) => void;
 };
 
 const tableBodyWrapperHeight = document.body.clientHeight - 160 - 57;
@@ -27,24 +30,24 @@ const tableBodyWrapperHeight = document.body.clientHeight - 160 - 57;
 const BodyTable = ({
   items,
   selectedItems,
-  onSelectItem,
-  onRemoveItem,
   onFolderSelect,
   onFolderContextMenu,
   onFileSelect,
-  onFileContextMenu
+  onFileContextMenu,
+  onPanelMouseDown,
+  onPanelContextMenu
 }: PropTypes) => {
   const columns = [
     {
       title: "文件名",
       dataIndex: "name",
       key: "shortId",
-      render(name: string, item: any) {
+      render(name: string, item: Item) {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Icon
               type={
-                item.itemType !== "folder"
+                item instanceof VFile
                   ? getIconName(name)
                   : getIconName("folder")
               }
@@ -59,7 +62,7 @@ const BodyTable = ({
       title: "大小",
       dataIndex: "size",
       key: "size",
-      sorter: (a: any, b: any) => a.size - b.size,
+      sorter: (a: Item, b: Item) => a.size - b.size,
       render(size: number) {
         return fileSizeFormatter(size);
       }
@@ -68,53 +71,43 @@ const BodyTable = ({
       title: "修改日期",
       dataIndex: "lastModified",
       key: "lastModified",
-      sorter: (a: any, b: any) => a.lastModified - b.lastModified,
+      sorter: (a: Item, b: Item) => a.lastModified - b.lastModified,
       render(timestamp: number) {
         return dateFormatter(timestamp);
       }
     }
   ];
 
-  console.log(items);
-
   return (
-    <Table
-      rowKey="shortId"
-      className="main-table-wrapper"
-      dataSource={items}
-      childrenColumnName="never"
-      rowSelection={{
-        type: "checkbox",
-        onChange: (selectedRowKeys: any, selectedRows: any) => {
-          console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            "selectedRows: ",
-            selectedRows
-          );
-        },
-        getCheckboxProps: (record: any) => ({
-          disabled: record.name === "Disabled User", // Column configuration not to be checked
-          name: record.name
-        })
-      }}
-      onRow={record => {
-        return {
-          onClick: event => {}, // 点击行
-          onDoubleClick: event => {
-            console.log(event);
-            console.log(record);
-            onFolderSelect(record.name);
-          },
-          onContextMenu: event => {},
-          onMouseEnter: event => {}, // 鼠标移入行
-          onMouseLeave: event => {}
-        };
-      }}
-      bordered={false}
-      scroll={{ y: tableBodyWrapperHeight }}
-      columns={columns}
-      pagination={false}
-    />
+    <div
+      className="main-table"
+      onMouseDown={onPanelMouseDown}
+      onContextMenu={onPanelContextMenu}
+      role="presentation"
+    >
+      <Table
+        rowKey="shortId"
+        dataSource={items}
+        childrenColumnName="never"
+        onRow={record => {
+          return {
+            onDoubleClick: event => {
+              if (record instanceof VFolder) {
+                onFolderSelect(record.name);
+              }
+            },
+            onContextMenu: event => {
+              if (record instanceof VFile) {
+                onFileContextMenu(event, record);
+              }
+            }
+          };
+        }}
+        scroll={{ y: tableBodyWrapperHeight }}
+        columns={columns}
+        pagination={false}
+      />
+    </div>
   );
 };
 
