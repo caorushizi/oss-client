@@ -18,6 +18,7 @@ import { AppStore, OssType, OssTypeMap } from "../../../main/types";
 import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
 import { debounce, deepEqual } from "../../helper/utils";
+import NoResult from "../NoResult";
 
 type PropTypes = {
   onAppSwitch: (item: AppStore) => void;
@@ -306,13 +307,11 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
           </section>
         ) : (
           <section className="apps-main-wrapper">
-            <div className="no-result">
-              <p className="title">没有 Apps</p>
-              <p className="sub-title">暂时没有搜索到 apps</p>
+            <NoResult title="没有 Apps" subTitle="暂时没有搜索到 apps">
               <Button size="small" onClick={_toAddPage}>
                 添加
               </Button>
-            </div>
+            </NoResult>
           </section>
         );
       case ServicesPage.add:

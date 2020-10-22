@@ -8,29 +8,24 @@ type PropTypes = {
   onDownload: () => void;
   onDelete: () => void;
 };
-const HeaderButtonGroup: React.FC<PropTypes> = ({
-  fileUpload,
-  selectedItems,
-  onDownload,
-  onDelete
-}) => {
+const HeaderButtonGroup: React.FC<PropTypes> = params => {
   return (
     <Space size="middle" className="buttons-wrapper">
-      <Button size="small" onClick={fileUpload}>
+      <Button size="small" onClick={params.fileUpload}>
         <UploadOutlined />
         上传文件
       </Button>
       <Button
         size="small"
-        disabled={selectedItems.length === 0}
-        onClick={onDownload}
+        disabled={params.selectedItems.length === 0}
+        onClick={params.onDownload}
       >
         下载
       </Button>
       <Button
         size="small"
-        disabled={selectedItems.length === 0}
-        onClick={onDelete}
+        disabled={params.selectedItems.length === 0}
+        onClick={params.onDelete}
       >
         删除
       </Button>

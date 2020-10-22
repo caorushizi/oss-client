@@ -160,7 +160,11 @@ body {
     color: #fff;
 
     &:hover {
-      background: transparent;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    &-active {
+      background: rgba(0, 0, 0, 0.3);
     }
 
     &-selected {

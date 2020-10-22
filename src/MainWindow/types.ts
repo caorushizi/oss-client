@@ -7,6 +7,4 @@ export class BucketMeta {
   domains: string[] = [];
 
   files: VFile[] = [];
-
-  type: OssType = OssType.qiniu;
 }

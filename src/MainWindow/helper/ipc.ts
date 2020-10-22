@@ -89,14 +89,7 @@ export async function clearTransferDoneList() {
 }
 
 export async function changeSetting(key: string, value: any) {
-  const { code, data, msg } = await send("change-setting", {
-    key,
-    value
-  });
-  if (code !== 0) {
-    throw new Error(msg);
-  }
-  return data;
+  return send("change-setting", { key, value });
 }
 
 export async function deleteFile(path: string) {

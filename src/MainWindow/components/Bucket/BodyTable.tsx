@@ -27,16 +27,7 @@ type PropTypes = {
 
 const tableBodyWrapperHeight = document.body.clientHeight - 160 - 57;
 
-const BodyTable = ({
-  items,
-  selectedItems,
-  onFolderSelect,
-  onFolderContextMenu,
-  onFileSelect,
-  onFileContextMenu,
-  onPanelMouseDown,
-  onPanelContextMenu
-}: PropTypes) => {
+const BodyTable: React.FC<PropTypes> = params => {
   const columns = [
     {
       title: "文件名",
@@ -81,24 +72,24 @@ const BodyTable = ({
   return (
     <div
       className="main-table"
-      onMouseDown={onPanelMouseDown}
-      onContextMenu={onPanelContextMenu}
+      onMouseDown={params.onPanelMouseDown}
+      onContextMenu={params.onPanelContextMenu}
       role="presentation"
     >
       <Table
         rowKey="shortId"
-        dataSource={items}
+        dataSource={params.items}
         childrenColumnName="never"
         onRow={record => {
           return {
             onDoubleClick: event => {
               if (record instanceof VFolder) {
-                onFolderSelect(record.name);
+                params.onFolderSelect(record.name);
               }
             },
             onContextMenu: event => {
               if (record instanceof VFile) {
-                onFileContextMenu(event, record);
+                params.onFileContextMenu(event, record);
               }
             }
           };
