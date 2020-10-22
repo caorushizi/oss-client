@@ -27,8 +27,7 @@ import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { AppStore } from "../main/types";
 import { BucketMeta } from "./types";
 
-// fixme： resize 变化是窗口尺寸变化
-const mainWrapperWidth = document.body.clientWidth - 225;
+const audio = new Audio(audioSrc);
 
 const App: React.FC = () => {
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -40,7 +39,9 @@ const App: React.FC = () => {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const [activeApp, setActiveApp] = useState<AppStore>();
-  const audio = useRef<HTMLAudioElement>(null);
+  const [mainWrapperWidth, setMainWrapperWidth] = useState<number>(
+    document.body.clientWidth - 225
+  );
   /**
    * 应用侧边栏变换触发
    * @param page 页面名称
@@ -49,7 +50,7 @@ const App: React.FC = () => {
   const tabChange = async (page: Page, bucket: string) => {
     try {
       await setDirection(page < activePage ? Direction.down : Direction.up);
-      if (bucket) {
+      if (bucket && bucket !== activeBucket) {
         setBucketLoading(true);
         const resp = await switchBucket(bucket);
         setActiveBucket(bucket);
@@ -87,8 +88,8 @@ const App: React.FC = () => {
     setActivePage(Page.services);
   };
   const playAudio = async () => {
-    if (audio.current) {
-      await audio.current.play();
+    if (audio) {
+      await audio.play();
     }
   };
   const initState = async () => {
@@ -120,6 +121,11 @@ const App: React.FC = () => {
   useEffect(() => {
     initState().then(r => r);
 
+    // fixme： resize 变化是窗口尺寸变化
+    window.onresize = () => {
+      setMainWrapperWidth(document.body.clientWidth - 225);
+    };
+
     ipcRenderer.on("to-setting", toSetting);
     ipcRenderer.on("play-finish", playAudio);
 
@@ -142,7 +148,7 @@ const App: React.FC = () => {
       case Page.transferList:
         return <TransferList />;
       default:
-        return <div>404</div>;
+        return null;
     }
   };
 
@@ -153,10 +159,6 @@ const App: React.FC = () => {
         background: themeColor.appColor
       }}
     >
-      <audio ref={audio} style={{ display: "none" }}>
-        <source src={audioSrc} />
-        <track kind="captions" />
-      </audio>
       <div className="drag-area" />
       {getPlatform() === Platform.windows && (
         <div className="app-button">
@@ -180,7 +182,7 @@ const App: React.FC = () => {
           <CloseCircleFilled
             className="icon"
             onClick={() => {
-              remote.getCurrentWindow().close();
+              remote.getCurrentWindow().hide();
             }}
           />
         </div>

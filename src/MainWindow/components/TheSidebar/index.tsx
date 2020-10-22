@@ -24,22 +24,15 @@ type PropTypes = {
   color: string;
 };
 
-const TheSidebar: React.FC<PropTypes> = ({
-  bucketList,
-  bucketLoading,
-  activeBucket,
-  activePage,
-  tabChange,
-  color
-}) => {
+const TheSidebar: React.FC<PropTypes> = params => {
   const activeTag = (page: Page, bucket: string) => {
     return bucket
-      ? { active: activePage === page && activeBucket === bucket }
-      : { active: activePage === page };
+      ? { active: params.activePage === page && params.activeBucket === bucket }
+      : { active: params.activePage === page };
   };
 
   return (
-    <div className="the-sidebar-wrapper" style={{ background: color }}>
+    <div className="the-sidebar-wrapper" style={{ background: params.color }}>
       <section className="title-bar">
         <span>OSS Client</span>
       </section>
@@ -49,12 +42,12 @@ const TheSidebar: React.FC<PropTypes> = ({
           <Spin
             className="loading"
             indicator={antIcon}
-            spinning={bucketLoading}
+            spinning={params.bucketLoading}
           />
         </div>
         <ul className="sidebar-list">
-          {bucketList.length ? (
-            bucketList.map((bucket: string) => (
+          {params.bucketList.length ? (
+            params.bucketList.map((bucket: string) => (
               <li
                 className={classNames("item", activeTag(Page.bucket, bucket))}
                 key={bucket}
@@ -63,7 +56,7 @@ const TheSidebar: React.FC<PropTypes> = ({
                 <input
                   type="button"
                   className="link"
-                  onClick={() => tabChange(Page.bucket, bucket)}
+                  onClick={() => params.tabChange(Page.bucket, bucket)}
                   title={bucket}
                   value={bucket}
                 />
@@ -90,7 +83,7 @@ const TheSidebar: React.FC<PropTypes> = ({
               type="button"
               value="传输列表"
               className="link"
-              onClick={() => tabChange(Page.transferList, "")}
+              onClick={() => params.tabChange(Page.transferList, "")}
             />
           </li>
           <li className={classNames("item", activeTag(Page.transferDone, ""))}>
@@ -99,7 +92,7 @@ const TheSidebar: React.FC<PropTypes> = ({
               type="button"
               value="传输完成"
               className="link"
-              onClick={() => tabChange(Page.transferDone, "")}
+              onClick={() => params.tabChange(Page.transferDone, "")}
             />
           </li>
         </ul>
@@ -115,7 +108,7 @@ const TheSidebar: React.FC<PropTypes> = ({
               type="button"
               value="设置"
               className="link"
-              onClick={() => tabChange(Page.setting, "")}
+              onClick={() => params.tabChange(Page.setting, "")}
             />
           </li>
           <li className={classNames("item", activeTag(Page.services, ""))}>
@@ -124,7 +117,7 @@ const TheSidebar: React.FC<PropTypes> = ({
               type="button"
               value="apps"
               className="link"
-              onClick={() => tabChange(Page.services, "")}
+              onClick={() => params.tabChange(Page.services, "")}
             />
           </li>
         </ul>

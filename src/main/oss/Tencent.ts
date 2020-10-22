@@ -139,7 +139,6 @@ export default class Tencent implements IOSS {
 
     return {
       shortId: shortid(),
-      itemType: "file",
       name,
       lastModified: item.LastModified,
       webkitRelativePath: item.Key,

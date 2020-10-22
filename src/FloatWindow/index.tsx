@@ -8,7 +8,7 @@ import {
 import reactDom from "react-dom";
 import "normalize.css/normalize.css";
 import "./index.scss";
-import FileDrop from "react-file-drop";
+import { FileDrop } from "react-file-drop";
 import classNames from "classnames";
 import { getTransfers, uploadFiles } from "../MainWindow/helper/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "../main/types";

@@ -86,7 +86,7 @@ export default class Ali implements IOSS {
       bucket: this.bucket
     });
     const result = await store.list(null, { timeout: 1000 });
-    return result.objects.map(this.itemAdapter) || [];
+    return result.objects ? result.objects.map(this.itemAdapter) : [];
   }
 
   public async getBucketList(): Promise<string[]> {
@@ -118,7 +118,6 @@ export default class Ali implements IOSS {
     const { name } = item;
     return {
       shortId: shortid(),
-      itemType: "file",
       name,
       lastModified: item.lastModified,
       webkitRelativePath: item.name,
