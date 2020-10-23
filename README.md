@@ -14,13 +14,13 @@ npm start
 npx cross-env npm_config_electron_mirror="https://mirrors.huaweicloud.com/electron/" npm_config_electron_custom_dir="9.3.1" npm run make
 ```
 
-## 页面展示
+## 软件展示
 
-![首页](http://static.ziying.site/home-page-grid.png)
+![切换](http://static.ziying.site/switch.gif)
 
-![首页](http://static.ziying.site/home-page-table.png)
+![模式切换](http://static.ziying.site/table.gif)
 
-![设置](http://static.ziying.site/setting.png)
+![拖拽上传](http://static.ziying.site/table.gif)
 
 ## 下载链接
 
