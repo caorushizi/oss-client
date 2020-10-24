@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import "./index.scss";
 import { Table } from "antd";
 import { Item } from "../../lib/vdir/types";
@@ -25,26 +25,49 @@ type PropTypes = {
   onPanelMouseDown: (event: MouseEvent<HTMLElement>) => void;
 };
 
-const tableBodyWrapperHeight = document.body.clientHeight - 160 - 57;
-
 const BodyTable: React.FC<PropTypes> = params => {
+  const getHeight = () => document.body.clientHeight - 160 - 39;
+  const [tableHeight, setTableHeight] = useState<number>(getHeight());
+  const throttle = () => {
+    let running = false;
+    return () => {
+      if (running) {
+        return;
+      }
+      running = true;
+      requestAnimationFrame(() => {
+        setTableHeight(getHeight());
+        running = false;
+      });
+    };
+  };
+  const throttleFn = throttle();
+
+  useEffect(() => {
+    window.addEventListener("resize", throttleFn);
+    return () => {
+      window.removeEventListener("resize", throttleFn);
+    };
+  }, []);
+
   const columns = [
     {
       title: "文件名",
       dataIndex: "name",
       key: "shortId",
+      ellipsis: true,
       render(name: string, item: Item) {
         return (
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="file-meta">
             <Icon
               type={
                 item instanceof VFile
                   ? getIconName(name)
                   : getIconName("folder")
               }
-              style={{ fontSize: 25 }}
+              className="file-icon"
             />
-            <div style={{ paddingLeft: "10px" }}>{name}</div>
+            <div className="file-name">{name}</div>
           </div>
         );
       }
@@ -54,6 +77,7 @@ const BodyTable: React.FC<PropTypes> = params => {
       dataIndex: "size",
       key: "size",
       sorter: (a: Item, b: Item) => a.size - b.size,
+      ellipsis: true,
       render(size: number) {
         return fileSizeFormatter(size);
       }
@@ -62,6 +86,7 @@ const BodyTable: React.FC<PropTypes> = params => {
       title: "修改日期",
       dataIndex: "lastModified",
       key: "lastModified",
+      ellipsis: true,
       sorter: (a: Item, b: Item) => a.lastModified - b.lastModified,
       render(timestamp: number) {
         return dateFormatter(timestamp);
@@ -78,23 +103,25 @@ const BodyTable: React.FC<PropTypes> = params => {
     >
       <Table
         rowKey="shortId"
+        size="small"
         dataSource={params.items}
         childrenColumnName="never"
+        showSorterTooltip={false}
         onRow={record => {
           return {
-            onDoubleClick: event => {
+            onDoubleClick(event) {
               if (record instanceof VFolder) {
                 params.onFolderSelect(record.name);
               }
             },
-            onContextMenu: event => {
+            onContextMenu(event) {
               if (record instanceof VFile) {
                 params.onFileContextMenu(event, record);
               }
             }
           };
         }}
-        scroll={{ y: tableBodyWrapperHeight }}
+        scroll={{ y: tableHeight }}
         columns={columns}
         pagination={false}
       />

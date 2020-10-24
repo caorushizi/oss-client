@@ -1,20 +1,30 @@
+.services-loading {
+  height: 100%;
+  .ant-spin-container {
+    height: 100%;
+  }
+}
+
 .services-wrapper {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
   .apps-main-wrapper {
     height: 100%;
     display: flex;
     flex-direction: row;
     overflow: auto;
-    padding: 10px;
+    padding: 18px 0;
 
     .main-left {
-      padding: 0 5px;
-      width: 300px;
-      min-width: 300px;
       display: flex;
       flex-direction: column;
+      padding: 0 18px;
 
       .header {
         height: 50px;
+        line-height: 50px;
       }
 
       .app-list {
@@ -34,9 +44,8 @@
 
         .item {
           height: 40px;
-          margin: 5px;
-          padding: 0 15px;
           color: #fff;
+          padding: 0 18px;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -62,6 +71,9 @@
 
             span {
               text-indent: 10px;
+              overflow: hidden; //超出的文本隐藏
+              text-overflow: ellipsis; //溢出用省略号显示
+              white-space: nowrap; //溢出不换行
             }
           }
 

@@ -6,34 +6,69 @@
   flex-direction: column;
 
   .buttons-wrapper {
+    height: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
     border-bottom: 1px solid $color-border;
     padding: 8px 12px;
   }
 
   .toolbar-wrapper {
+    height: 40px;
+    min-height: 40px;
     padding: 8px 12px;
-    box-sizing: border-box;
     border-bottom: 1px solid $color-border;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     color: #fff;
 
-    .toolbar-icon {
-    }
-
     .toolbar-left {
-      display: flex;
-      align-items: center;
+      .ant-space-item {
+        display: flex;
+        align-items: center;
+        .back {
+          display: inline-block;
+          width: 10px;
+          height: 16px;
+          &.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+          }
+        }
+        .reload {
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          margin-left: 10px;
+        }
+      }
     }
 
     .toolbar-right {
-      display: flex;
-      align-items: center;
+      .ant-space-item {
+        display: flex;
+        align-items: center;
 
-      .toolbar-right__search {
-        margin: 0 5px;
+        .ant-input-affix-wrapper {
+          margin: 0 5px;
+
+          .ant-input-prefix {
+            img {
+              display: inline-block;
+              height: 14px;
+              width: 14px;
+            }
+          }
+        }
+
+        .mode-icon {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+        }
       }
     }
   }
@@ -41,6 +76,7 @@
   .loading-wrapper {
     height: 100%;
     overflow: hidden;
+    box-sizing: border-box;
     .ant-spin-container {
       height: 100%;
       position: relative;
@@ -89,6 +125,20 @@
 
             .main-table {
               height: 100%;
+              .file-meta {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .file-icon {
+                  font-size: 25px;
+                }
+                .file-name {
+                  overflow: hidden; //超出的文本隐藏
+                  text-overflow: ellipsis; //溢出用省略号显示
+                  white-space: nowrap; //溢出不换行
+                  margin-left: 10px;
+                }
+              }
             }
 
             .main-grid {
@@ -144,6 +194,8 @@
 
   .footer {
     height: 40px;
+    min-height: 40px;
+    box-sizing: border-box;
     padding: 0 10px;
     border-top: 1px solid $color-border;
     display: flex;

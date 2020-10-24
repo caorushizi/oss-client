@@ -135,7 +135,7 @@
     "@ant-design/icons": "4.1.0",
     "@simonwep/selection-js": "1.7.1",
     "ali-oss": "6.11.2",
-    "antd": "4.6.4",
+    "antd": "4.7.2",
     "axios": "0.20.0",
     "classnames": "2.2.6",
     "cos-nodejs-sdk-v5": "^2.8.2",

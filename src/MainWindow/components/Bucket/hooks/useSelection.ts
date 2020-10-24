@@ -6,7 +6,7 @@ const selection = Selection.create({
   class: "selection",
   selectables: [".main-grid__cell-inner", ".ant-table-row"],
   boundaries: [".main-grid", ".main-table"],
-  startThreshold: 0,
+  startThreshold: 10,
   disableTouch: true,
   singleClick: true
 });

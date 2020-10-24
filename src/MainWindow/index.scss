@@ -1,5 +1,12 @@
+@font-face {
+  font-family: "webfont";
+  font-display: swap;
+  src: url("https://at.alicdn.com/t/webfont_zfjvmmzcym.ttf") format("truetype");
+}
+
 * {
   user-select: none;
+  font-family: "webfont";
 }
 
 body {
@@ -8,17 +15,15 @@ body {
   overflow: hidden;
 }
 
-/* 滚动条 */
 ::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
-/* 滚动槽 */
 ::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
 }
@@ -51,7 +56,7 @@ body {
   &:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.25);
-    color: #fff;
+    color: rgba(255, 255, 255, 0.35);
   }
 
   &[disabled] {
@@ -68,7 +73,11 @@ body {
   }
 
   &-dangerous {
-    color: red;
+    color: rgba(207, 19, 34, 1);
+
+    &:hover {
+      color: rgba(130, 0, 20, 0.35);
+    }
   }
 }
 
@@ -79,11 +88,22 @@ body {
   border-radius: 5px;
   color: rgba(255, 255, 255, 1);
   backdrop-filter: blur(5px);
+  outline: none;
+  box-shadow: unset;
 
   .ant-input {
     background: transparent;
     color: rgba(255, 255, 255, 1);
     backdrop-filter: none;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -97,21 +117,21 @@ body {
 
   &-password {
     &:hover {
-      border-color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     &:focus {
-      border-color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
       box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
     }
   }
 
   &:hover {
-    border-color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   &:focus {
-    border-color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
   }
 
@@ -122,15 +142,25 @@ body {
     border-radius: 5px;
     color: rgba(255, 255, 255, 1);
     backdrop-filter: blur(5px);
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
   }
 }
 
 .ant-input-wrapper {
   .ant-input-group-addon {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
-    border: rgba(255, 255, 255, 0.3);
-    color: #fff;
+    border-color: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.3);
+    border-radius: 0 5px 5px 0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
   }
 }
 
@@ -207,6 +237,23 @@ body {
 
 .ant-radio-group {
   .ant-radio-wrapper {
+    .ant-radio {
+      .ant-radio-inner {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 1);
+        &::after {
+          background: transparent;
+        }
+      }
+      &.ant-radio-checked {
+        .ant-radio-inner {
+          border-color: rgba(255, 255, 255, 1);
+          &::after {
+            background: rgba(255, 255, 255, 1);
+          }
+        }
+      }
+    }
     span {
       color: #fff;
     }
@@ -243,24 +290,30 @@ body {
 
     .ant-table-thead {
       .ant-table-cell {
-        .ant-table-column-sorters-with-tooltip {
-          .ant-table-column-sorters {
-            padding: 5px;
+        box-sizing: border-box;
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border-radius: 0;
+
+        .ant-table-column-sorters {
+          .ant-table-column-sorter {
+            .ant-table-column-sorter-inner {
+              .active {
+                color: rgba(0, 0, 0, 0.5);
+              }
+            }
           }
         }
-
-        background: transparent;
-        border: none;
-        color: #fff;
       }
     }
 
     .ant-table-tbody {
       .ant-table-row {
         .ant-table-cell {
-          padding: 5px;
           color: #fff;
-          border: none;
+          border-color: rgba(255, 255, 255, 0.1);
+          box-sizing: border-box;
 
           &.ant-table-column-sort {
             background: transparent;
@@ -273,6 +326,33 @@ body {
           }
         }
       }
+    }
+  }
+}
+
+.ant-form-item-has-error {
+  .ant-input {
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .ant-input-password {
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.1);
+
+    .ant-input {
+      background: transparent;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
     }
   }
 }
