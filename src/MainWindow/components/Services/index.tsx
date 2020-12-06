@@ -6,6 +6,7 @@ import { Spin, message, Button, Space, Row, Col } from "antd";
 import classNames from "classnames";
 import {
   addApp,
+  changeSetting,
   deleteApp,
   getAppsChannel,
   getBuckets,
@@ -131,23 +132,31 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
     }
   };
   const switchApp = async (id: string) => {
-    // 1、判断点击的是否为选中的
-    if (activeApp && activeApp._id === id) return;
-    // 切换 app，判断是不是已经编辑
-    // 已经编辑、打开确认窗口
-    if (edited)
-      await showConfirm({
-        title: "通知",
-        message: "更改还没有保存，是否要切换 app ？"
-      });
-    // 2、将编辑状态取消
-    setEdited(false);
-    setIsEdit(false);
-    // 3、选中点击的 app
-    const selected = apps.find(i => i._id === id);
-    if (selected) onAppSwitch(selected);
+    try {
+      // 1、判断点击的是否为选中的
+      if (activeApp && activeApp._id === id) return;
+      // 切换 app，判断是不是已经编辑
+      // 已经编辑、打开确认窗口
+      if (edited)
+        await showConfirm({
+          title: "通知",
+          message: "更改还没有保存，是否要切换 app ？"
+        });
+      // 2、将编辑状态取消
+      setEdited(false);
+      setIsEdit(false);
+      // 3、选中点击的 app
+      const selected = apps.find(i => i._id === id);
+      if (selected) onAppSwitch(selected);
+      // 4、设置默认选中的 appid
+      await changeSetting("currentAppId", id);
+    } catch (e) {
+      message.error(e.message);
+      console.log("出错：", e);
+    }
   };
   const initState = async () => {
+    // 获取所有 app 信息
     const allApps = await getAppsChannel();
     setApps(allApps);
   };

@@ -2,6 +2,7 @@ import uuidV1 from "uuid/v1";
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
   AppStore,
+  ConfigStore,
   OssType,
   TransferStatus,
   TransferStore
@@ -95,7 +96,7 @@ export async function deleteFiles(paths: string[]) {
   return send("delete-files", { paths });
 }
 
-export function getConfig() {
+export function getConfig(): Promise<ConfigStore> {
   return send("get-config");
 }
 

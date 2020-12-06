@@ -100,8 +100,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         remoteDir: vFolder.getPathPrefix(),
         fileList: paths
       });
-      console.log("上传文件完成。");
-      await onRefreshBucket();
+      console.log("上传任务添加完成。");
     } catch (e) {
       message.error(e.message);
       console.warn("拖拽文件上传时出错：", e.message);

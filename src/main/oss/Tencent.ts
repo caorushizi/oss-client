@@ -33,7 +33,7 @@ export default class Tencent implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
     const url = this.cos.getObjectUrl({
       Bucket: this.bucket,
@@ -48,14 +48,14 @@ export default class Tencent implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
     const fileSize = fs.statSync(localPath).size;
     const reader: ReadStream = fs.createReadStream(localPath);
     let length = 0;
     reader.on("data", (thunk: any) => {
       length += thunk.length;
-      const progress = (length / fileSize).toFixed(3);
+      const progress = Math.ceil((length / fileSize) * 100);
       cb(id, progress);
     });
     return new Promise((resolve, reject) => {

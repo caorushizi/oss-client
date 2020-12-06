@@ -53,7 +53,7 @@ export const emitter = new MyEmitter();
 export async function download(
   url: string,
   localPath: string,
-  cb: (p: string) => void
+  cb: (p: number) => void
 ) {
   const { data, headers } = await axios.get(url, {
     responseType: "stream",
@@ -66,7 +66,7 @@ export async function download(
     const totalLength = headers["content-length"];
     data.on("data", (thunk: any) => {
       length += thunk.length;
-      const process = (length / totalLength).toFixed(2);
+      const process = Math.ceil((length / totalLength) * 100);
       cb(process);
     });
     writer.on("finish", resolve);

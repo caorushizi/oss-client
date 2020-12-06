@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./index.scss";
 import classNames from "classnames";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
+import { Progress, Spin } from "antd";
+import { ipcRenderer } from "electron";
 import { Page } from "../../helper/enums";
 import FileIcon from "../../assets/images/file.png";
 import SettingIcon from "../../assets/images/setting.png";
@@ -21,12 +22,32 @@ type PropTypes = {
   color: string;
 };
 
+type ProgressItem = {
+  id: string;
+  progress: number;
+};
+
 const TheSidebar: React.FC<PropTypes> = params => {
+  const [progress, setProgress] = useState<number>(100);
+
   const activeTag = (page: Page, bucket: string) => {
     return bucket
       ? { active: params.activePage === page && params.activeBucket === bucket }
       : { active: params.activePage === page };
   };
+
+  const onProgress = (e: any, progressList: ProgressItem[]) => {
+    const total = progressList.reduce((pre, cur) => pre + cur.progress, 0);
+    setProgress(total / progressList.length);
+  };
+
+  useEffect(() => {
+    ipcRenderer.on("transfer-progress", onProgress);
+
+    return () => {
+      ipcRenderer.removeListener("transfer-progress", onProgress);
+    };
+  }, []);
 
   return (
     <div className="the-sidebar-wrapper" style={{ background: params.color }}>
@@ -68,6 +89,14 @@ const TheSidebar: React.FC<PropTypes> = params => {
       <section className="container">
         <div className="title">
           <div className="text">传输列表</div>
+          <Progress
+            className="loading"
+            type="circle"
+            showInfo={false}
+            percent={progress}
+            width={15}
+            strokeWidth={20}
+          />
         </div>
         <div className="sidebar-list">
           <div

@@ -470,6 +470,9 @@ export default class ElectronAppService implements IApp {
             else this.floatWindow.hide();
           }
           return success(true);
+        case "currentAppId":
+          configStore.set(key, value);
+          return success(true);
         default:
           return fail(1, "不支持该设置");
       }
@@ -552,30 +555,19 @@ export default class ElectronAppService implements IApp {
     // |                                                            |
     // --------------------------------------------------------------
 
-    emitter.on("transfer-done", async (id: string) => {
-      try {
-        // 传输成功
-        await this.transfers.update(
-          { id },
-          { $set: { status: TransferStatus.done } },
-          {}
-        );
-      } catch (e) {
-        this.logger.error(e);
+    emitter.on("transfer-done", (id: string) => {
+      console.log("传输文件完成");
+    });
+
+    emitter.on("transfer-process", progressList => {
+      console.log("传输列表为：", progressList);
+      if (this.mainWindow) {
+        this.mainWindow.webContents.send("transfer-progress", progressList);
       }
     });
 
-    emitter.on("transfer-failed", async (id: string) => {
-      try {
-        // 传输失败
-        await this.transfers.update(
-          { id },
-          { $set: { status: TransferStatus.failed } },
-          {}
-        );
-      } catch (e) {
-        this.logger.error("传输失败：", e);
-      }
+    emitter.on("transfer-failed", (id: string) => {
+      this.logger.error("传输文件失败");
     });
 
     emitter.on("transfer-finish", () => {
