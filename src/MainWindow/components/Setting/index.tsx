@@ -76,8 +76,8 @@ const Setting = () => {
   }, []);
 
   return (
-    <Spin spinning={loading} size="large">
-      <div className="setting-wrapper">
+    <div className="setting-wrapper">
+      <Spin spinning={loading} size="large">
         <section className="section">
           <div className="title">全局设置</div>
           <Form
@@ -174,8 +174,8 @@ const Setting = () => {
             </Form>
           </section>
         )}
-      </div>
-    </Spin>
+      </Spin>
+    </div>
   );
 };
 

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Spin, message, Button, Space } from "antd";
+import { Spin, message, Button, Space, Row, Col } from "antd";
 import classNames from "classnames";
 import {
   addApp,
+  changeSetting,
   deleteApp,
   getAppsChannel,
   getBuckets,
@@ -29,9 +30,6 @@ enum ServicesPage {
   list,
   add
 }
-
-const mainWrapperWidth = document.body.clientWidth - 225;
-const mainWrapperHeight = document.body.clientHeight - 40;
 
 const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   const [apps, setApps] = useState<AppStore[]>([]);
@@ -134,23 +132,31 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
     }
   };
   const switchApp = async (id: string) => {
-    // 1、判断点击的是否为选中的
-    if (activeApp && activeApp._id === id) return;
-    // 切换 app，判断是不是已经编辑
-    // 已经编辑、打开确认窗口
-    if (edited)
-      await showConfirm({
-        title: "通知",
-        message: "更改还没有保存，是否要切换 app ？"
-      });
-    // 2、将编辑状态取消
-    setEdited(false);
-    setIsEdit(false);
-    // 3、选中点击的 app
-    const selected = apps.find(i => i._id === id);
-    if (selected) onAppSwitch(selected);
+    try {
+      // 1、判断点击的是否为选中的
+      if (activeApp && activeApp._id === id) return;
+      // 切换 app，判断是不是已经编辑
+      // 已经编辑、打开确认窗口
+      if (edited)
+        await showConfirm({
+          title: "通知",
+          message: "更改还没有保存，是否要切换 app ？"
+        });
+      // 2、将编辑状态取消
+      setEdited(false);
+      setIsEdit(false);
+      // 3、选中点击的 app
+      const selected = apps.find(i => i._id === id);
+      if (selected) onAppSwitch(selected);
+      // 4、设置默认选中的 appid
+      await changeSetting("currentAppId", id);
+    } catch (e) {
+      message.error(e.message);
+      console.log("出错：", e);
+    }
   };
   const initState = async () => {
+    // 获取所有 app 信息
     const allApps = await getAppsChannel();
     setApps(allApps);
   };
@@ -175,8 +181,8 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
     switch (param) {
       case ServicesPage.list:
         return apps.length > 0 ? (
-          <section className="apps-main-wrapper">
-            <div className="main-left">
+          <Row className="apps-main-wrapper">
+            <Col span={8} className="main-left">
               <div className="header">
                 <Button size="small" onClick={_toAddPage}>
                   添加
@@ -190,23 +196,22 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                     })}
                     key={app._id || Date.now()}
                   >
-                    <button
-                      type="button"
+                    <div
+                      role="presentation"
                       className="button"
-                      disabled={!app._id}
                       onClick={() => switchApp(app._id!)}
                     >
                       <svg className="icon" aria-hidden="true">
                         {renderIcon(app.type)}
                       </svg>
                       <span>{app.name}</span>
-                    </button>
+                    </div>
                   </li>
                 ))}
               </ul>
-            </div>
+            </Col>
             {activeApp && (
-              <div className="main-right_form_container">
+              <Col span={16} className="main-right_form_container">
                 <div className="main-right_form_title">
                   {isEdit ? "修改配置" : "查看配置"}
                 </div>
@@ -302,9 +307,9 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
                     </article>
                   </section>
                 )}
-              </div>
+              </Col>
             )}
-          </section>
+          </Row>
         ) : (
           <section className="apps-main-wrapper">
             <NoResult title="没有 Apps" subTitle="暂时没有搜索到 apps">
@@ -316,27 +321,27 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
         );
       case ServicesPage.add:
         return (
-          <section className="apps-main-wrapper">
-            <div className="main-left">
+          <Row className="apps-main-wrapper">
+            <Col span={8} className="main-left">
               <div className="header">
                 <Button size="small" onClick={_toListPage}>
                   返回
                 </Button>
               </div>
-            </div>
-            <div className="main-right_form_container">
+            </Col>
+            <Col span={16} className="main-right_form_container">
               <div className="main-right_form_title">新增配置</div>
               <FormAdd onBucketAdd={onBucketAdd} />
-            </div>
-          </section>
+            </Col>
+          </Row>
         );
       default:
-        return <div>123</div>;
+        return "";
     }
   };
 
   return (
-    <Spin spinning={loading} size="large">
+    <Spin spinning={loading} size="large" wrapperClassName="services-loading">
       <SwitchTransition>
         <CSSTransition
           key={page}
@@ -345,17 +350,7 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
           }}
           classNames={direction}
         >
-          <section
-            className="services-wrapper"
-            style={{
-              width: mainWrapperWidth,
-              maxWidth: mainWrapperWidth,
-              height: mainWrapperHeight,
-              maxHeight: mainWrapperHeight
-            }}
-          >
-            {renderSwitch(page)}
-          </section>
+          <section className="services-wrapper">{renderSwitch(page)}</section>
         </CSSTransition>
       </SwitchTransition>
     </Spin>

@@ -28,7 +28,7 @@
 
       .loading {
         margin-left: 10px;
-        height: 20px;
+        height: className= "loading" px;
         color: #fff;
         display: flex;
         align-items: center;
@@ -41,7 +41,6 @@
 
       .item {
         height: 26px;
-        line-height: 17px;
         color: $color-font;
         font-size: 12px;
         display: flex;
@@ -49,30 +48,28 @@
         align-items: center;
         padding-left: 15px;
         margin: 0 8px;
+        cursor: pointer;
 
         .icon {
-          font-size: 12px;
+          display: inline-block;
+          width: 12px;
+          height: 12px;
         }
 
-        .link {
-          border: none;
-          background: transparent;
+        .name {
           padding-left: 10px;
-          cursor: pointer;
-          color: $color-font;
+        }
 
-          &.disabled {
-            cursor: not-allowed;
-          }
-
-          &:focus {
-            outline: none;
-          }
+        &.disabled {
+          color: rgba(255, 255, 255, 1);
+          opacity: 0.3;
+          cursor: not-allowed;
         }
 
         &.active {
-          background-color: rgba(0, 0, 0, 0.15);
+          background-color: rgba(0, 0, 0, 0.2);
           border-radius: 10px;
+          color: white;
         }
       }
     }

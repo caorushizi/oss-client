@@ -92,15 +92,11 @@ export async function changeSetting(key: string, value: any) {
   return send("change-setting", { key, value });
 }
 
-export async function deleteFile(path: string) {
-  return send("delete-file", { path });
-}
-
 export async function deleteFiles(paths: string[]) {
   return send("delete-files", { paths });
 }
 
-export function getConfig() {
+export function getConfig(): Promise<ConfigStore> {
   return send("get-config");
 }
 
@@ -118,13 +114,6 @@ export async function showConfirm(options?: {
   return send("show-confirm", options);
 }
 
-export async function uploadFile(options: {
-  remoteDir: string;
-  filepath: string;
-}) {
-  return send("upload-file", options);
-}
-
 export async function uploadFiles(options: {
   remoteDir: string;
   fileList: string[];
@@ -132,12 +121,11 @@ export async function uploadFiles(options: {
   return send("upload-files", options);
 }
 
-export async function downloadFile(item: VFile) {
-  return send("download-file", item);
-}
-
-export async function downloadFiles(items: VFile[]) {
-  return send("download-files", items);
+export async function downloadFiles(options: {
+  remoteDir: string;
+  fileList: VFile[];
+}) {
+  return send("download-files", options);
 }
 
 export async function getFileUrl(key: string) {

@@ -1,24 +1,78 @@
 import React, { useEffect, useState } from "react";
 
 import "./index.scss";
+import { Progress } from "antd";
+import { ipcRenderer } from "electron";
+import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import Icon from "../IconFont";
-import { TransferStatus, TransferStore } from "../../../main/types";
+import { TaskType, TransferStatus, TransferStore } from "../../../main/types";
 import { fileSizeFormatter, getIconName } from "../../helper/utils";
 import { getTransfers } from "../../helper/ipc";
 import NoResult from "../NoResult";
 
+type ProgressListType = {
+  id: string;
+  progress: number;
+};
+
+interface TransferStoreWithProgress extends TransferStore {
+  progress: number;
+}
+
 const TransferList = () => {
-  const [transfers, setTransfers] = useState<TransferStore[]>([]);
+  const [transfers, setTransfers] = useState<TransferStoreWithProgress[]>([]);
+
   const initState = async () => {
     const transferList = await getTransfers({
       status: TransferStatus.default
     });
-    setTransfers(transferList);
+    const transfer = transferList.map(item => ({ ...item, progress: 0 }));
+    setTransfers(transfer);
+  };
+
+  const typeFormatter = (type: TaskType) => {
+    switch (type) {
+      case TaskType.download:
+        return <DownloadOutlined />;
+      case TaskType.upload:
+        return <UploadOutlined />;
+      default:
+        return "";
+    }
+  };
+
+  const onProgress = async (e: any, list: ProgressListType[]) => {
+    const transferList = await getTransfers({
+      status: TransferStatus.default
+    });
+
+    const transfer = transferList.map(item => {
+      const progress = list.find(i => i.id === item.id);
+      return {
+        ...item,
+        progress: progress ? progress.progress : 0
+      };
+    });
+
+    setTransfers(transfer);
+  };
+
+  const onTransferDone = () => {
+    initState();
   };
 
   useEffect(() => {
-    initState().then(r => r);
+    initState();
+
+    ipcRenderer.on("transfer-progress", onProgress);
+    ipcRenderer.on("transfer-finish", onTransferDone);
+
+    return () => {
+      ipcRenderer.removeListener("transfer-progress", onProgress);
+      ipcRenderer.removeListener("transfer-finish", onTransferDone);
+    };
   }, []);
+
   return (
     <div className="transfer-list-wrapper">
       {transfers.length > 0 ? (
@@ -30,8 +84,8 @@ const TransferList = () => {
           <section className="transfer-table__wrapper">
             <table className="transfer-table">
               <tbody>
-                {transfers.map((item: TransferStore) => (
-                  <tr className="transfer-table__row" key={item.id + item.name}>
+                {transfers.map(item => (
+                  <tr className="transfer-table__row" key={item.id}>
                     <td className="transfer-table__row_item meta">
                       <Icon
                         className="icon"
@@ -45,6 +99,13 @@ const TransferList = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="transfer-table__row_item progress">
+                      <Progress percent={item.progress} />
+                    </td>
+                    <td className="transfer-table__row_item type">
+                      {typeFormatter(item.type)}
+                    </td>
+                    <td className="transfer-table__row_item action">123</td>
                   </tr>
                 ))}
               </tbody>

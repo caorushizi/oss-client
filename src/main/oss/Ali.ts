@@ -26,7 +26,7 @@ export default class Ali implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
     const store = new OSS({
       region: this.region,
@@ -42,7 +42,7 @@ export default class Ali implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
     const store = new OSS({
       region: this.region,
@@ -56,7 +56,7 @@ export default class Ali implements IOSS {
     let length = 0;
     reader.on("data", (thunk: any) => {
       length += thunk.length;
-      const progress = (length / fileSize).toFixed(3);
+      const progress = Math.ceil((length / fileSize) * 100);
       cb(id, progress);
     });
     return store.putStream(remotePath, reader);

@@ -43,7 +43,7 @@ export default class Qiniu implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
     if (this.domains.length <= 0) throw new Error("请先初始化存储服务");
     const url = encodeURI(`http://${this.domains[0]}/${remotePath}`);
@@ -54,29 +54,24 @@ export default class Qiniu implements IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any> {
-    // generate uploadToken
-    const putPolicy = new qiniu.rs.PutPolicy({
-      scope: `${this.bucket}:${remotePath}`
-    });
-    const token = putPolicy.uploadToken(this.mac);
-    const formUploader = new qiniu.form_up.FormUploader(this.config);
-    const putExtra = new qiniu.form_up.PutExtra();
-    const fileSize = fs.statSync(localPath).size;
     // 文件上传
     return new Promise((resolve, reject) => {
-      const reader: ReadStream = fs.createReadStream(localPath);
-      let length = 0;
-      reader.on("data", (thunk: any) => {
-        length += thunk.length;
-        const progress = (length / fileSize).toFixed(3);
+      const putPolicy = new qiniu.rs.PutPolicy({
+        scope: `${this.bucket}:${remotePath}`
+      });
+      const token = putPolicy.uploadToken(this.mac);
+      const formUploader = new qiniu.resume_up.ResumeUploader(this.config);
+      const totalLength = fs.statSync(localPath).size;
+      const putExtra = new qiniu.resume_up.PutExtra("", {}, "", "", data => {
+        const progress = Math.ceil((data / totalLength) * 100);
         cb(id, progress);
       });
-      formUploader.putStream(
+      formUploader.putFile(
         token,
         remotePath,
-        reader,
+        localPath,
         putExtra,
         (err, respBody, respInfo) => {
           if (err) {

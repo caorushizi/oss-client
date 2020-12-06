@@ -30,6 +30,8 @@ import { BucketMeta } from "./types";
 const audio = new Audio(audioSrc);
 
 const App: React.FC = () => {
+  const getWidth = () => document.body.clientWidth - 225;
+
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
   const [bgOffset, setBgOffset] = useState<string>(getBgOffset());
   const [bucketLoading, setBucketLoading] = useState<boolean>(false);
@@ -39,9 +41,20 @@ const App: React.FC = () => {
   const [bucketList, setBucketList] = useState<string[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.down);
   const [activeApp, setActiveApp] = useState<AppStore>();
-  const [mainWrapperWidth, setMainWrapperWidth] = useState<number>(
-    document.body.clientWidth - 225
-  );
+  const [mainWrapperWidth, setMainWrapperWidth] = useState<number>(getWidth());
+
+  const throttle = () => {
+    let running = false;
+    return () => {
+      if (running) return;
+      running = true;
+      requestAnimationFrame(() => {
+        setMainWrapperWidth(getWidth());
+        running = false;
+      });
+    };
+  };
+  const throttleFn = throttle();
   /**
    * 应用侧边栏变换触发
    * @param page 页面名称
@@ -127,11 +140,13 @@ const App: React.FC = () => {
     };
 
     ipcRenderer.on("to-setting", toSetting);
-    ipcRenderer.on("play-finish", playAudio);
+    ipcRenderer.on("transfer-finish", playAudio);
+    window.addEventListener("resize", throttleFn);
 
     return () => {
       ipcRenderer.removeListener("to-setting", toSetting);
-      ipcRenderer.removeListener("play-finish", playAudio);
+      ipcRenderer.removeListener("transfer-finish", playAudio);
+      window.removeEventListener("resize", throttleFn);
     };
   }, []);
 

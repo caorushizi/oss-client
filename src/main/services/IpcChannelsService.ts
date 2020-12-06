@@ -7,6 +7,7 @@ import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import {
   AppStore,
   OssType,
+  Task,
   TaskType,
   TransferStatus,
   TransferStore
@@ -62,15 +63,29 @@ export default class IpcChannelsService {
   }
 
   async initApp(params: any) {
-    const query: any = {};
-    if (params.id) query._id = params.id;
-    const findApps = await this.appStore.find(query);
-    if (findApps.length > 0) {
-      const app = findApps[0];
-      this.oss.changeContext(app.type, app.ak, app.sk);
-      return app;
+    let finallyApp: AppStore;
+    if (params.id) {
+      // 传入 id 证明用户选择了 id
+      const findApps = await this.appStore.find({ _id: params.id });
+      if (findApps.length <= 0) throw new Error("没有可初始化的 app");
+      [finallyApp] = findApps;
+    } else {
+      // 软件初始化
+      const currentAppId = configStore.get("currentAppId");
+      if (currentAppId) {
+        // 有默认值
+        const findApps = await this.appStore.find({ _id: currentAppId });
+        if (findApps.length <= 0) throw new Error("没有可初始化的 app");
+        [finallyApp] = findApps;
+      } else {
+        const findApps = await this.appStore.find({});
+        if (findApps.length <= 0) throw new Error("没有可初始化的 app");
+        [finallyApp] = findApps;
+      }
     }
-    throw new Error("没有可初始化的 app");
+
+    this.oss.changeContext(finallyApp.type, finallyApp.ak, finallyApp.sk);
+    return finallyApp;
   }
 
   async addApp(params: any) {
@@ -127,133 +142,58 @@ export default class IpcChannelsService {
 
   switchBucket = this.switchBucketWithCache();
 
-  async uploadFile(params: any) {
-    const { remoteDir, filepath } = params;
-    const instance = this.oss.getService();
-    const baseDir = path.dirname(filepath);
-    const callback = (id: string, progress: string) => {
-      console.log(`${id} - progress ${progress}%`);
-    };
-
-    const fileSize = pathStatsSync(filepath).size;
-    const relativePath = path.relative(baseDir, filepath);
-    let remotePath = path.join(remoteDir, relativePath);
-    remotePath = remotePath.replace(/\\+/g, "/");
-
-    const id = uuid();
-    const newDoc = {
-      id,
-      name: path.basename(remotePath),
-      date: Date.now(),
-      type: TaskType.upload,
-      size: fileSize,
-      status: TransferStatus.default
-    };
-    // 存储下载信息
-    const transfers = await this.transfers.insert(newDoc);
-    // 添加任务，自动执行
-    this.taskRunner.addTask<any>({
-      ...transfers,
-      result: instance.uploadFile(id, remotePath, filepath, callback)
-    });
-  }
-
   async uploadFiles(params: any) {
     const { remoteDir, fileList } = params;
     const instance = this.oss.getService();
     const baseDir = path.dirname(fileList[0]);
     const filepathList = fattenFileList(fileList);
     for (const filepath of filepathList) {
-      const fileSize = pathStatsSync(filepath).size;
-      const callback = (id: string, progress: string) => {
-        console.log(`${id} - progress ${progress}%`);
-      };
       const relativePath = path.relative(baseDir, filepath);
       let remotePath = path.join(remoteDir, relativePath);
       remotePath = remotePath.replace(/\\+/g, "/");
 
       const id = uuid();
-      const newDoc = {
+      const callback = (taskId: string, process: number) =>
+        this.taskRunner.setProgress(taskId, process);
+      const task: Task<any> = {
         id,
         name: path.basename(remotePath),
         date: Date.now(),
         type: TaskType.upload,
-        size: fileSize,
-        status: TransferStatus.default
-      };
-      // 存储下载信息
-      // eslint-disable-next-line no-await-in-loop
-      const transfers = await this.transfers.insert(newDoc);
-      // 添加任务，自动执行
-      this.taskRunner.addTask<any>({
-        ...transfers,
+        size: pathStatsSync(filepath).size,
+        progress: 0,
         result: instance.uploadFile(id, remotePath, filepath, callback)
-      });
-    }
-  }
-
-  async downloadFile(item: VFile) {
-    const instance = this.oss.getService();
-    const remotePath = item.webkitRelativePath;
-    const customDownloadDir = configStore.get("downloadDir");
-    const downloadPath = path.join(customDownloadDir, item.webkitRelativePath);
-    const callback = (id: string, progress: string) => {
-      console.log(`${id} - progress ${progress}%`);
-    };
-    const id = uuid();
-    const newDoc = {
-      id,
-      name: item.name,
-      date: Date.now(),
-      type: TaskType.download,
-      size: item.size,
-      status: TransferStatus.default
-    };
-    // 存储下载信息
-    const document = await this.transfers.insert(newDoc);
-    // 添加任务，自动执行
-    this.taskRunner.addTask<TransferStore>({
-      ...document,
-      result: instance.downloadFile(id, remotePath, downloadPath, callback)
-    });
-  }
-
-  async downloadFiles(items: VFile[]) {
-    const instance = this.oss.getService();
-    const customDownloadDir = configStore.get("downloadDir");
-    for (const item of items) {
-      this.logger.info(item);
-      const remotePath = item.webkitRelativePath;
-      const downloadPath = path.join(
-        customDownloadDir,
-        item.webkitRelativePath
-      );
-      const callback = (id: string, progress: string) => {
-        console.log(`${id} - progress ${progress}%`);
       };
-      const id = uuid();
-      const newDoc = {
-        id,
-        name: item.name,
-        date: Date.now(),
-        type: TaskType.download,
-        size: item.size,
-        status: TransferStatus.default
-      };
-      // 存储下载信息
-      const document = await this.transfers.insert(newDoc);
-      fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
       // 添加任务，自动执行
-      this.taskRunner.addTask<TransferStore>({
-        ...document,
-        result: instance.downloadFile(id, remotePath, downloadPath, callback)
-      });
+      this.taskRunner.addTask(task);
     }
   }
 
-  async deleteFile(remotePath: string) {
+  async downloadFiles(params: any) {
+    const { remoteDir, fileList } = params;
     const instance = this.oss.getService();
-    await instance.deleteFile(remotePath);
+    const customDownloadDir = configStore.get("downloadDir");
+    for (const item of fileList) {
+      const remotePath = item.webkitRelativePath;
+      const localPath = path.relative(remoteDir, item.webkitRelativePath);
+      const downloadPath = path.join(customDownloadDir, localPath);
+      fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
+
+      const id = uuid();
+      const callback = (taskId: string, process: number) =>
+        this.taskRunner.setProgress(taskId, process);
+      const task: Task<any> = {
+        id,
+        name: path.basename(localPath),
+        date: Date.now(),
+        type: TaskType.upload,
+        size: item.size,
+        progress: 0,
+        result: instance.downloadFile(id, remotePath, downloadPath, callback)
+      };
+      // 添加任务，自动执行
+      this.taskRunner.addTask(task);
+    }
   }
 
   async deleteFiles(remotePaths: string[]) {

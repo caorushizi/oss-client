@@ -2,13 +2,13 @@ import React from "react";
 
 import "./index.scss";
 import { Button, Input, Breadcrumb, Space } from "antd";
-import {
-  SearchOutlined,
-  NumberOutlined,
-  MenuOutlined,
-  ArrowLeftOutlined,
-  RedoOutlined
-} from "@ant-design/icons";
+import { NumberOutlined, MenuOutlined } from "@ant-design/icons";
+import classNames from "classnames";
+import BackIcon from "../../assets/images/back.png";
+import ReloadIcon from "../../assets/images/reload.png";
+import SearchIcon from "../../assets/images/search.png";
+import GridIcon from "../../assets/images/grid.png";
+import TableIcon from "../../assets/images/table.png";
 
 import { Layout } from "../../helper/enums";
 
@@ -31,33 +31,51 @@ const HeaderToolbar = ({
 }: PropTypes) => {
   return (
     <div className="toolbar-wrapper">
-      <Space size="middle" className="toolbar-left">
-        <Button
-          size="small"
+      <Space size="middle" align="center" className="toolbar-left">
+        <img
+          className={classNames("back", { disabled: navigators.length === 0 })}
+          role="presentation"
+          src={BackIcon}
+          alt=""
           onClick={backspace}
-          disabled={navigators.length === 0}
-        >
-          <ArrowLeftOutlined />
-        </Button>
-        <Button size="small" onClick={onRefreshBucket}>
-          <RedoOutlined />
-        </Button>
+        />
+        <img
+          className="reload"
+          role="presentation"
+          src={ReloadIcon}
+          alt=""
+          onClick={onRefreshBucket}
+        />
         <Breadcrumb>
           {["首页"].concat(navigators).map(item => (
             <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
           ))}
         </Breadcrumb>
       </Space>
-      <Space size="middle" className="toolbar-right">
+      <Space size="middle" align="center" className="toolbar-right">
         <Input
           size="small"
-          prefix={<SearchOutlined />}
-          placeholder="搜索"
+          prefix={<img src={SearchIcon} alt="" />}
+          placeholder="搜索文件"
           onChange={event => onSearchChange(event.target.value)}
         />
-        <Button size="small" onClick={onChangeLayout}>
-          {layout === Layout.grid ? <MenuOutlined /> : <NumberOutlined />}
-        </Button>
+        {layout === Layout.grid ? (
+          <img
+            role="presentation"
+            className="mode-icon"
+            src={GridIcon}
+            onClick={onChangeLayout}
+            alt=""
+          />
+        ) : (
+          <img
+            role="presentation"
+            className="mode-icon"
+            src={TableIcon}
+            onClick={onChangeLayout}
+            alt=""
+          />
+        )}
       </Space>
     </div>
   );

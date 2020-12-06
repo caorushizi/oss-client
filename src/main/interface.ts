@@ -13,6 +13,7 @@ export interface IApp {
 
 export interface ITaskRunner {
   addTask<T>(task: Task<T>): void;
+  setProgress(id: string, progress: number): void;
 }
 
 export interface IStore<T> {
@@ -35,13 +36,13 @@ export interface IOSS {
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any>;
   downloadFile(
     id: string,
     remotePath: string,
     localPath: string,
-    cb: (id: string, progress: string) => void
+    cb: (id: string, progress: number) => void
   ): Promise<any>;
   deleteFile(remotePath: string): Promise<undefined>;
   getBucketList(): Promise<string[]>;

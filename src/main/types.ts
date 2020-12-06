@@ -21,6 +21,7 @@ export type Task<T> = {
   size: number;
   date: number;
   type: TaskType;
+  progress: number;
   result: Promise<T>;
 };
 
@@ -77,7 +78,7 @@ export const initialConfig = {
 
 export interface ConfigStore {
   // 当前状态
-  currentApp?: string;
+  currentAppId?: string;
 
   // 全局设置
   useHttps: boolean;

@@ -470,6 +470,9 @@ export default class ElectronAppService implements IApp {
             else this.floatWindow.hide();
           }
           return success(true);
+        case "currentAppId":
+          configStore.set(key, value);
+          return success(true);
         default:
           return fail(1, "不支持该设置");
       }
@@ -497,18 +500,6 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("delete-file", async params => {
-      if (!params?.path) return fail(1, "参数错误");
-      try {
-        const { path } = params;
-        await this.appChannels.deleteFile(path);
-        return success(true);
-      } catch (e) {
-        this.logger.error("上传文件时出错：", e);
-        return fail(1, e.message);
-      }
-    });
-
     this.registerIpc("delete-files", async params => {
       if (!params?.paths) return fail(1, "参数错误");
       try {
@@ -521,32 +512,15 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("download-file", async (item: VFile) => {
-      try {
-        await this.appChannels.downloadFile(item);
-        return success(true);
-      } catch (e) {
-        this.logger.error("上传文件时出错：", e);
-        return fail(1, e.message);
-      }
-    });
-
-    this.registerIpc("download-files", async (items: VFile[]) => {
-      this.logger.info(items);
-      try {
-        await this.appChannels.downloadFiles(items);
-        return success(true);
-      } catch (e) {
-        this.logger.error("上传文件时出错：", e);
-        return fail(1, e.message);
-      }
-    });
-
-    this.registerIpc("upload-file", async params => {
+    this.registerIpc("download-files", async params => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
-      if (!("filepath" in params)) return fail(1, "参数错误");
+      if (!("fileList" in params)) return fail(1, "参数错误");
+      const { fileList } = params;
+      if (Array.isArray(fileList) && fileList.length === 0) {
+        return fail(1, "参数错误");
+      }
       try {
-        await this.appChannels.uploadFile(params);
+        await this.appChannels.downloadFiles(params);
         return success(true);
       } catch (e) {
         this.logger.error("上传文件时出错：", e);
@@ -586,35 +560,24 @@ export default class ElectronAppService implements IApp {
     // |                                                            |
     // --------------------------------------------------------------
 
-    emitter.on("transfer-done", async (id: string) => {
-      try {
-        // 传输成功
-        await this.transfers.update(
-          { id },
-          { $set: { status: TransferStatus.done } },
-          {}
-        );
-      } catch (e) {
-        this.logger.error(e);
+    emitter.on("transfer-done", (id: string) => {
+      console.log("传输文件完成");
+    });
+
+    emitter.on("transfer-process", progressList => {
+      console.log("传输列表为：", progressList);
+      if (this.mainWindow) {
+        this.mainWindow.webContents.send("transfer-progress", progressList);
       }
     });
 
-    emitter.on("transfer-failed", async (id: string) => {
-      try {
-        // 传输失败
-        await this.transfers.update(
-          { id },
-          { $set: { status: TransferStatus.failed } },
-          {}
-        );
-      } catch (e) {
-        this.logger.error("传输失败：", e);
-      }
+    emitter.on("transfer-failed", (id: string) => {
+      this.logger.error("传输文件失败");
     });
 
     emitter.on("transfer-finish", () => {
       if (this.mainWindow && configStore.get("transferDoneTip")) {
-        this.mainWindow.webContents.send("play-finish");
+        this.mainWindow.webContents.send("transfer-finish");
       }
     });
   }
