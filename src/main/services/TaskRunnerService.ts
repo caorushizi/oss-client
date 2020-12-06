@@ -42,7 +42,6 @@ export default class TaskRunnerService implements ITaskRunner {
     if (activeTask) activeTask.progress = progress;
 
     const nowTime = Date.now();
-    console.log(nowTime - this.timeLimiter);
     if (nowTime > this.timeLimiter + 500) {
       const progressList = this.active.map(item => ({
         id: item.id,

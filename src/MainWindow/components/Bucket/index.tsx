@@ -110,7 +110,10 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     try {
       const files = getOperationFiles(item);
       console.log("开始下载文件，选中的文件有：", files);
-      await downloadFiles(files);
+      await downloadFiles({
+        remoteDir: vFolder.getPathPrefix(),
+        fileList: files
+      });
       console.log("ipc 通讯完成，下载成功。");
     } catch (e) {
       console.log("下载文件出错：", e);

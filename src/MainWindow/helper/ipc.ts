@@ -121,8 +121,11 @@ export async function uploadFiles(options: {
   return send("upload-files", options);
 }
 
-export async function downloadFiles(items: VFile[]) {
-  return send("download-files", items);
+export async function downloadFiles(options: {
+  remoteDir: string;
+  fileList: VFile[];
+}) {
+  return send("download-files", options);
 }
 
 export async function getFileUrl(key: string) {

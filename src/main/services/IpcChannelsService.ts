@@ -169,16 +169,14 @@ export default class IpcChannelsService {
     }
   }
 
-  async downloadFiles(items: VFile[]) {
+  async downloadFiles(params: any) {
+    const { remoteDir, fileList } = params;
     const instance = this.oss.getService();
     const customDownloadDir = configStore.get("downloadDir");
-    for (const item of items) {
-      this.logger.info(item);
+    for (const item of fileList) {
       const remotePath = item.webkitRelativePath;
-      const downloadPath = path.join(
-        customDownloadDir,
-        item.webkitRelativePath
-      );
+      const localPath = path.relative(remoteDir, item.webkitRelativePath);
+      const downloadPath = path.join(customDownloadDir, localPath);
       fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
 
       const id = uuid();
@@ -186,7 +184,7 @@ export default class IpcChannelsService {
         this.taskRunner.setProgress(taskId, process);
       const task: Task<any> = {
         id,
-        name: path.basename(remotePath),
+        name: path.basename(localPath),
         date: Date.now(),
         type: TaskType.upload,
         size: item.size,

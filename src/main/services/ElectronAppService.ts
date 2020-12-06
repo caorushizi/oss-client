@@ -512,10 +512,15 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("download-files", async (items: VFile[]) => {
-      this.logger.info(items);
+    this.registerIpc("download-files", async params => {
+      if (!("remoteDir" in params)) return fail(1, "参数错误");
+      if (!("fileList" in params)) return fail(1, "参数错误");
+      const { fileList } = params;
+      if (Array.isArray(fileList) && fileList.length === 0) {
+        return fail(1, "参数错误");
+      }
       try {
-        await this.appChannels.downloadFiles(items);
+        await this.appChannels.downloadFiles(params);
         return success(true);
       } catch (e) {
         this.logger.error("上传文件时出错：", e);
