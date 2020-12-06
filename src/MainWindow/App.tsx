@@ -140,12 +140,12 @@ const App: React.FC = () => {
     };
 
     ipcRenderer.on("to-setting", toSetting);
-    ipcRenderer.on("play-finish", playAudio);
+    ipcRenderer.on("transfer-finish", playAudio);
     window.addEventListener("resize", throttleFn);
 
     return () => {
       ipcRenderer.removeListener("to-setting", toSetting);
-      ipcRenderer.removeListener("play-finish", playAudio);
+      ipcRenderer.removeListener("transfer-finish", playAudio);
       window.removeEventListener("resize", throttleFn);
     };
   }, []);

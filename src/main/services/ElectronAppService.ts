@@ -572,7 +572,7 @@ export default class ElectronAppService implements IApp {
 
     emitter.on("transfer-finish", () => {
       if (this.mainWindow && configStore.get("transferDoneTip")) {
-        this.mainWindow.webContents.send("play-finish");
+        this.mainWindow.webContents.send("transfer-finish");
       }
     });
   }

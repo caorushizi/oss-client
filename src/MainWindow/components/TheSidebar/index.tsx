@@ -28,7 +28,8 @@ type ProgressItem = {
 };
 
 const TheSidebar: React.FC<PropTypes> = params => {
-  const [progress, setProgress] = useState<number>(100);
+  const [progress, setProgress] = useState<number>(0);
+  const [showProgress, setShowProgress] = useState<boolean>(false);
 
   const activeTag = (page: Page, bucket: string) => {
     return bucket
@@ -37,15 +38,23 @@ const TheSidebar: React.FC<PropTypes> = params => {
   };
 
   const onProgress = (e: any, progressList: ProgressItem[]) => {
+    setShowProgress(true);
     const total = progressList.reduce((pre, cur) => pre + cur.progress, 0);
     setProgress(total / progressList.length);
   };
 
+  const onFinish = () => {
+    setProgress(100);
+    setTimeout(() => setShowProgress(false), 200);
+  };
+
   useEffect(() => {
     ipcRenderer.on("transfer-progress", onProgress);
+    ipcRenderer.on("transfer-finish", onFinish);
 
     return () => {
       ipcRenderer.removeListener("transfer-progress", onProgress);
+      ipcRenderer.removeListener("transfer-finish", onFinish);
     };
   }, []);
 
@@ -89,14 +98,16 @@ const TheSidebar: React.FC<PropTypes> = params => {
       <section className="container">
         <div className="title">
           <div className="text">传输列表</div>
-          <Progress
-            className="loading"
-            type="circle"
-            showInfo={false}
-            percent={progress}
-            width={15}
-            strokeWidth={20}
-          />
+          {showProgress && (
+            <Progress
+              className="loading"
+              type="circle"
+              showInfo={false}
+              percent={progress}
+              width={15}
+              strokeWidth={20}
+            />
+          )}
         </div>
         <div className="sidebar-list">
           <div
