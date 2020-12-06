@@ -120,7 +120,7 @@ export default class VFolder {
     return this.cursor.children.length;
   }
 
-  public getItem(fileId: string) {
+  public getItem(fileId: string): Item | undefined {
     return this.children.find(item => item.shortId === fileId);
   }
 

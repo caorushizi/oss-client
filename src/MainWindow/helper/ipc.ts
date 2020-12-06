@@ -2,7 +2,6 @@ import uuidV1 from "uuid/v1";
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import {
   AppStore,
-  ConfigStore,
   OssType,
   TransferStatus,
   TransferStore
@@ -92,10 +91,6 @@ export async function changeSetting(key: string, value: any) {
   return send("change-setting", { key, value });
 }
 
-export async function deleteFile(path: string) {
-  return send("delete-file", { path });
-}
-
 export async function deleteFiles(paths: string[]) {
   return send("delete-files", { paths });
 }
@@ -118,22 +113,11 @@ export async function showConfirm(options?: {
   return send("show-confirm", options);
 }
 
-export async function uploadFile(options: {
-  remoteDir: string;
-  filepath: string;
-}) {
-  return send("upload-file", options);
-}
-
 export async function uploadFiles(options: {
   remoteDir: string;
   fileList: string[];
 }) {
   return send("upload-files", options);
-}
-
-export async function downloadFile(item: VFile) {
-  return send("download-file", item);
 }
 
 export async function downloadFiles(items: VFile[]) {

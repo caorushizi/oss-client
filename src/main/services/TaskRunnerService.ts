@@ -11,7 +11,7 @@ export default class TaskRunnerService implements ITaskRunner {
 
   private limit = 5;
 
-  private debug = false;
+  private debug = true;
 
   public addTask<T>(task: Task<T>) {
     this.queue.push(task);
@@ -33,7 +33,7 @@ export default class TaskRunnerService implements ITaskRunner {
       this.active.splice(doneId, 1);
       // 处理完成的任务
       this.runTask();
-      // 下载完成
+      // 传输完成
       if (this.queue.length === 0 && this.active.length === 0) {
         emitter.emit("transfer-finish");
       }
@@ -45,7 +45,7 @@ export default class TaskRunnerService implements ITaskRunner {
       const task = this.queue.shift();
       if (task) {
         this.active.push(task);
-        this.execute(task).then(r => r);
+        this.execute(task);
       }
     }
   }

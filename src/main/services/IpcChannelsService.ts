@@ -127,37 +127,6 @@ export default class IpcChannelsService {
 
   switchBucket = this.switchBucketWithCache();
 
-  async uploadFile(params: any) {
-    const { remoteDir, filepath } = params;
-    const instance = this.oss.getService();
-    const baseDir = path.dirname(filepath);
-    const callback = (id: string, progress: string) => {
-      console.log(`${id} - progress ${progress}%`);
-    };
-
-    const fileSize = pathStatsSync(filepath).size;
-    const relativePath = path.relative(baseDir, filepath);
-    let remotePath = path.join(remoteDir, relativePath);
-    remotePath = remotePath.replace(/\\+/g, "/");
-
-    const id = uuid();
-    const newDoc = {
-      id,
-      name: path.basename(remotePath),
-      date: Date.now(),
-      type: TaskType.upload,
-      size: fileSize,
-      status: TransferStatus.default
-    };
-    // 存储下载信息
-    const transfers = await this.transfers.insert(newDoc);
-    // 添加任务，自动执行
-    this.taskRunner.addTask<any>({
-      ...transfers,
-      result: instance.uploadFile(id, remotePath, filepath, callback)
-    });
-  }
-
   async uploadFiles(params: any) {
     const { remoteDir, fileList } = params;
     const instance = this.oss.getService();
@@ -166,7 +135,7 @@ export default class IpcChannelsService {
     for (const filepath of filepathList) {
       const fileSize = pathStatsSync(filepath).size;
       const callback = (id: string, progress: string) => {
-        console.log(`${id} - progress ${progress}%`);
+        this.logger.info(`${id} - progress ${progress}%`);
       };
       const relativePath = path.relative(baseDir, filepath);
       let remotePath = path.join(remoteDir, relativePath);
@@ -190,32 +159,6 @@ export default class IpcChannelsService {
         result: instance.uploadFile(id, remotePath, filepath, callback)
       });
     }
-  }
-
-  async downloadFile(item: VFile) {
-    const instance = this.oss.getService();
-    const remotePath = item.webkitRelativePath;
-    const customDownloadDir = configStore.get("downloadDir");
-    const downloadPath = path.join(customDownloadDir, item.webkitRelativePath);
-    const callback = (id: string, progress: string) => {
-      console.log(`${id} - progress ${progress}%`);
-    };
-    const id = uuid();
-    const newDoc = {
-      id,
-      name: item.name,
-      date: Date.now(),
-      type: TaskType.download,
-      size: item.size,
-      status: TransferStatus.default
-    };
-    // 存储下载信息
-    const document = await this.transfers.insert(newDoc);
-    // 添加任务，自动执行
-    this.taskRunner.addTask<TransferStore>({
-      ...document,
-      result: instance.downloadFile(id, remotePath, downloadPath, callback)
-    });
   }
 
   async downloadFiles(items: VFile[]) {
@@ -249,11 +192,6 @@ export default class IpcChannelsService {
         result: instance.downloadFile(id, remotePath, downloadPath, callback)
       });
     }
-  }
-
-  async deleteFile(remotePath: string) {
-    const instance = this.oss.getService();
-    await instance.deleteFile(remotePath);
   }
 
   async deleteFiles(remotePaths: string[]) {

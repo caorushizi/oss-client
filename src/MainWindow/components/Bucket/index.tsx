@@ -12,15 +12,12 @@ import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
 import VFolder from "../../lib/vdir/VFolder";
 import {
-  deleteFile,
   deleteFiles,
-  downloadFile,
   downloadFiles,
   getConfig,
   getFileUrl,
   showConfirm,
   switchBucket,
-  uploadFile,
   uploadFiles
 } from "../../helper/ipc";
 import { Item } from "../../lib/vdir/types";
@@ -56,74 +53,22 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     displayBucketFiles(bucketMeta);
   }, [bucketMeta]);
 
-  const fileUpload = async () => {
-    try {
-      const userPath = remote.app.getPath("documents");
-      const result = await remote.dialog.showOpenDialog({
-        defaultPath: userPath,
-        properties: ["openFile"]
-      });
-      if (result.canceled) return;
-      const pathPrefix = vFolder.getPathPrefix();
-      for (const filepath of result.filePaths) {
-        await uploadFile({ remoteDir: pathPrefix, filepath });
-      }
-    } catch (e) {
-      console.warn("上传文件时出错：", e);
-    }
-  };
   const backspace = () => {
     selection.clear();
     vFolder.back();
     setItems(vFolder.listFiles());
   };
-  const onFileDrop = async (files: FileList | null) => {
-    try {
-      if (!files) return;
-      const filePaths: string[] = [];
-      for (let i = 0; i < files.length; i += 1) {
-        filePaths.push(files[i].path);
-      }
-      await uploadFiles({
-        remoteDir: vFolder.getPathPrefix(),
-        fileList: filePaths
-      });
-    } catch (e) {
-      message.error(e.message);
-      console.warn("拖拽文件上传时出错：", e.message);
-    }
-  };
-  const _getFiles = (folder: VFolder) => {
+  const _getFiles = (itemArr: Item[]) => {
     let files: VFile[] = [];
-    for (const item of folder.getItems()) {
-      if (item instanceof VFolder) {
-        files = [...files, ..._getFiles(item)];
-      } else {
+    itemArr.forEach(item => {
+      if (item instanceof VFile) {
         files.push(item);
-      }
-    }
-    return files;
-  };
-  const onBatchDownload = () => {
-    selection.fileIds.forEach(async fileId => {
-      const item = vFolder.getItem(fileId);
-      if (!item) return;
-      let files: VFile[] = [];
-      if (item instanceof VFolder) {
-        files = [...files, ..._getFiles(item)];
       } else {
-        files = [...files, item];
-      }
-      try {
-        console.log(files);
-        await downloadFiles(files);
-        console.log("success");
-      } catch (e) {
-        console.log("出错：", e);
+        files = [...files, ..._getFiles([...item.getItems()])];
       }
     });
+    return files;
   };
-
   const onRefreshBucket = async () => {
     setLoading(true);
     selection.clear();
@@ -131,27 +76,64 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     displayBucketFiles({ ...resp, name: bucketMeta.name });
     setLoading(false);
   };
-  const onBatchDelete = async () => {
+  const getOperationFiles = (opItem?: Item) => {
+    // 开始获取选中文件数量
+    let files: VFile[] = [];
+    if (selection.fileIds.length > 0) {
+      // 如果选中区域有文件的话，那么下载选中区域的文件
+      const itemsArr: Item[] = [];
+      selection.fileIds.forEach(fileId => {
+        const item = vFolder.getItem(fileId);
+        if (item) itemsArr.push(item);
+      });
+      files = _getFiles(itemsArr);
+    } else if (opItem) {
+      // 如果选中区域没有文件，那么直接下载当前上下文中的区域
+      files = _getFiles([opItem]);
+    }
+    return files;
+  };
+  const handleUpload = async (paths: string[]) => {
+    try {
+      console.log("开始上传文件，选中的文件路径有：", paths);
+      await uploadFiles({
+        remoteDir: vFolder.getPathPrefix(),
+        fileList: paths
+      });
+      console.log("上传文件完成。");
+      await onRefreshBucket();
+    } catch (e) {
+      message.error(e.message);
+      console.warn("拖拽文件上传时出错：", e.message);
+    }
+  };
+  const handleDownload = async (item?: Item) => {
+    try {
+      const files = getOperationFiles(item);
+      console.log("开始下载文件，选中的文件有：", files);
+      await downloadFiles(files);
+      console.log("ipc 通讯完成，下载成功。");
+    } catch (e) {
+      console.log("下载文件出错：", e);
+    }
+  };
+  const handleDelete = async (item?: Item) => {
     try {
       const config = await getConfig();
       const showDialog = config.deleteShowDialog;
       if (showDialog) {
-        await showConfirm({ title: "警告", message: "是否要删除该文件" });
+        await showConfirm({
+          title: "警告",
+          message: "是否要删除该文件夹"
+        });
       }
-
-      let files: VFile[] = [];
-      for (const fileId of selection.fileIds) {
-        const item = vFolder.getItem(fileId);
-        if (item instanceof VFolder) {
-          files = [...files, ..._getFiles(item)];
-        } else if (item instanceof VFile) {
-          files.push(item);
-        }
-      }
+      const files = getOperationFiles(item);
+      console.log("开始删除文件，选中的文件有：", files);
       await deleteFiles(files.map(i => i.webkitRelativePath));
+      await onRefreshBucket();
+      console.log("ipc 通讯完成，删除成功。");
     } catch (e) {
-      console.log("删除文件时出错：", e.message);
-      message.error(e.message);
+      console.log("删除文件出错：", e);
     }
   };
   const onFileContextMenu = (event: MouseEvent<HTMLElement>, item: VFile) => {
@@ -181,29 +163,11 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
       { type: "separator" },
       {
         label: "下载",
-        click: async () => {
-          if (selection.fileIds.length > 1) {
-            await onBatchDownload();
-          } else {
-            await downloadFile(item);
-          }
-        }
+        click: () => handleDownload(item)
       },
       {
         label: "删除",
-        click: async () => {
-          try {
-            const config = await getConfig();
-            const showDialog = config.deleteShowDialog;
-            if (showDialog) {
-              await showConfirm({ title: "警告", message: "是否要删除该文件" });
-            }
-            await deleteFile(item.webkitRelativePath);
-          } catch (e) {
-            console.log("删除文件时出错：", e.message);
-            message.error(e.message);
-          }
-        }
+        click: () => handleDelete(item)
       }
     ]);
     menu.popup();
@@ -227,28 +191,11 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
       { type: "separator" },
       {
         label: "下载",
-        click: async () => {
-          await onBatchDownload();
-        }
+        click: () => handleDownload(item)
       },
       {
         label: "删除",
-        click: async () => {
-          try {
-            const config = await getConfig();
-            const showDialog = config.deleteShowDialog;
-            if (showDialog) {
-              await showConfirm({
-                title: "警告",
-                message: "是否要删除该文件夹"
-              });
-            }
-            await onBatchDelete();
-          } catch (e) {
-            console.log("删除文件时出错：", e.message);
-            message.error(e.message);
-          }
-        }
+        click: () => handleDelete(item)
       }
     ]);
     menu.popup();
@@ -258,9 +205,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     const menu = remote.Menu.buildFromTemplate([
       {
         label: "刷新",
-        click: async () => {
-          await onRefreshBucket();
-        }
+        click: () => onRefreshBucket()
       },
       { type: "separator" },
       {
@@ -271,16 +216,18 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
       },
       {
         label: "取消",
-        click: async () => {}
+        click: async () => {
+          selection.clear();
+        }
       },
       { type: "separator" },
       {
         label: "下载",
-        click: async () => {}
+        click: () => handleDownload()
       },
       {
         label: "删除",
-        click: async () => {}
+        click: () => handleDelete()
       }
     ]);
     menu.popup();
@@ -343,9 +290,17 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     <div className="bucket-wrapper">
       <HeaderButtonGroup
         selectedItems={selection.fileIds}
-        fileUpload={fileUpload}
-        onDownload={onBatchDownload}
-        onDelete={onBatchDelete}
+        fileUpload={async () => {
+          const userPath = remote.app.getPath("documents");
+          const result = await remote.dialog.showOpenDialog({
+            defaultPath: userPath,
+            properties: ["openFile"]
+          });
+          if (result.canceled) return;
+          await handleUpload(result.filePaths);
+        }}
+        onDownload={() => handleDownload()}
+        onDelete={() => handleDelete()}
       />
       <HeaderToolbar
         onRefreshBucket={onRefreshBucket}
@@ -358,12 +313,15 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
       <Spin spinning={loading} wrapperClassName="loading-wrapper">
         <FileDrop
-          onFrameDragEnter={event => console.log("onFrameDragEnter", event)}
-          onFrameDragLeave={event => console.log("onFrameDragLeave", event)}
-          onFrameDrop={event => console.log("onFrameDrop", event)}
-          onDragOver={event => console.log("onDragOver", event)}
-          onDragLeave={event => console.log("onDragLeave", event)}
-          onDrop={onFileDrop}
+          onDrop={async files => {
+            if (files) {
+              const filePaths: string[] = [];
+              for (let i = 0; i < files.length; i += 1) {
+                filePaths.push(files[i].path);
+              }
+              await handleUpload(filePaths);
+            }
+          }}
         >
           <div className="content-wrapper">{renderMainPanel()}</div>
         </FileDrop>
