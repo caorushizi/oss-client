@@ -26,6 +26,7 @@ import { BucketMeta } from "../../types";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "./hooks/useSelection";
 import NoResult from "../NoResult";
+import store from "../../../main/helper/store";
 
 type PropTypes = {
   bucketMeta: BucketMeta;
@@ -241,9 +242,11 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
     setSearchedItem(it);
   };
-  const onChangeLayout = () => {
+  const onChangeLayout = async () => {
     selection.clear();
-    setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
+    const nextLayout = layout === Layout.grid ? Layout.table : Layout.grid;
+    setLayout(nextLayout);
+    await store.setItem<Layout>("layout", nextLayout);
   };
 
   const onPanelMouseDown = (event: MouseEvent<HTMLElement>) => {
@@ -255,6 +258,14 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   useEffect(() => {
     if (keypress) selection.clear();
   }, [keypress]);
+
+  useEffect(() => {
+    store.getItem<Layout>("layout").then(value => {
+      if (value) {
+        setLayout(value);
+      }
+    });
+  }, []);
 
   const renderMainPanel = () => {
     if (!bucketMeta.name) {
