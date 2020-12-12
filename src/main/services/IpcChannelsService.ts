@@ -121,10 +121,17 @@ export default class IpcChannelsService {
     return this.transferStore.find(query);
   }
 
-  async switchBucket(params: any) {
-    const { bucketName, force } = params;
+  async switchBucket(bucketName: string) {
     const instance = this.oss.getService();
     await instance.setBucket(bucketName);
+    const files = await instance.getBucketFiles();
+    const domains = await instance.getBucketDomainList();
+    return { files, domains, type: instance.type };
+  }
+
+  async refreshBucket(force: boolean) {
+    // todo: 缓存
+    const instance = this.oss.getService();
     const files = await instance.getBucketFiles();
     const domains = await instance.getBucketDomainList();
     return { files, domains, type: instance.type };

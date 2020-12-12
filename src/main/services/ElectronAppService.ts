@@ -397,13 +397,25 @@ export default class ElectronAppService implements IApp {
       if (typeof bucketName !== "string" || bucketName === "")
         return fail(1, "参数错误");
       try {
-        const obj = await this.appChannels.switchBucket(params);
+        const obj = await this.appChannels.switchBucket(bucketName);
         return success(obj);
       } catch (e) {
         this.logger.error("切换 bucket 时出错", e);
         return fail(1, e.message);
       }
     });
+    this.registerIpc(
+      "refresh-bucket",
+      async ({ force }: { force?: boolean }) => {
+        try {
+          const object = await this.appChannels.refreshBucket(!!force);
+          return success(object);
+        } catch (e) {
+          this.logger.error("刷新 bucket 出错：", e);
+          return fail(1, e.message);
+        }
+      }
+    );
     this.registerIpc("show-alert", async options => {
       if (this.alertWindow) {
         this.alertWindow.webContents.send("options", options);

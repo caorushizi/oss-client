@@ -16,8 +16,8 @@ import {
   downloadFiles,
   getConfig,
   getFileUrl,
+  refreshBucket,
   showConfirm,
-  switchBucket,
   uploadFiles
 } from "../../helper/ipc";
 import { Item } from "../../lib/vdir/types";
@@ -71,10 +71,9 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     return files;
   };
   const onRefreshBucket = async () => {
-    console.log("切换bucket的参数为：", bucketMeta);
     setLoading(true);
     selection.clear();
-    const resp = await switchBucket(bucketMeta.name, true);
+    const resp = await refreshBucket(true);
     displayBucketFiles({ ...resp, name: bucketMeta.name });
     setLoading(false);
   };
