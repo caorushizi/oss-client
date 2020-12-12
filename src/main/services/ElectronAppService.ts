@@ -560,10 +560,12 @@ export default class ElectronAppService implements IApp {
     // |                                                            |
     // --------------------------------------------------------------
 
+    // 处理文件传输完成
     emitter.on("transfer-done", (id: string) => {
       console.log("传输文件完成");
     });
 
+    // 处理传输进度
     emitter.on("transfer-process", progressList => {
       console.log("传输列表为：", progressList);
       if (this.mainWindow) {
@@ -571,13 +573,22 @@ export default class ElectronAppService implements IApp {
       }
     });
 
+    // 处理传输文件失败
     emitter.on("transfer-failed", (id: string) => {
       this.logger.error("传输文件失败");
     });
 
+    // 处理传输完成
     emitter.on("transfer-finish", () => {
       if (this.mainWindow && configStore.get("transferDoneTip")) {
         this.mainWindow.webContents.send("transfer-finish");
+      }
+    });
+
+    // 处理上传任务完成
+    emitter.on("upload-finish", () => {
+      if (this.mainWindow) {
+        this.mainWindow.webContents.send("upload-finish");
       }
     });
   }

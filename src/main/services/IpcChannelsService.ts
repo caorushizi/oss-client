@@ -16,7 +16,6 @@ import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 import OssService from "./OssService";
 import { fattenFileList, pathStatsSync } from "../helper/utils";
-import VFile from "../../MainWindow/lib/vdir/VFile";
 
 @injectable()
 export default class IpcChannelsService {
@@ -122,25 +121,14 @@ export default class IpcChannelsService {
     return this.transferStore.find(query);
   }
 
-  switchBucketWithCache() {
-    const cacheData: Map<string, any> = new Map<string, any>();
-    return async (params: any) => {
-      const { bucketName, force } = params;
-      const cache = cacheData.get(bucketName);
-      const instance = this.oss.getService();
-      await instance.setBucket(bucketName);
-      if (!cache || force) {
-        const files = await instance.getBucketFiles();
-        const domains = await instance.getBucketDomainList();
-        const data = { files, domains, type: instance.type };
-        cacheData.set(bucketName, data);
-        return data;
-      }
-      return cache;
-    };
+  async switchBucket(params: any) {
+    const { bucketName, force } = params;
+    const instance = this.oss.getService();
+    await instance.setBucket(bucketName);
+    const files = await instance.getBucketFiles();
+    const domains = await instance.getBucketDomainList();
+    return { files, domains, type: instance.type };
   }
-
-  switchBucket = this.switchBucketWithCache();
 
   async uploadFiles(params: any) {
     const { remoteDir, fileList } = params;

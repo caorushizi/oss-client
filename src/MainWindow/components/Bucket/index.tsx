@@ -1,6 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import { FileDrop } from "react-file-drop";
-import { clipboard, remote } from "electron";
+import { clipboard, ipcRenderer, remote } from "electron";
 
 import "./index.scss";
 import { message, Spin } from "antd";
@@ -71,6 +71,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     return files;
   };
   const onRefreshBucket = async () => {
+    console.log("切换bucket的参数为：", bucketMeta);
     setLoading(true);
     selection.clear();
     const resp = await switchBucket(bucketMeta.name, true);
@@ -255,6 +256,10 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     }
   };
 
+  const onUploadFinish = () => {
+    onRefreshBucket();
+  };
+
   useEffect(() => {
     if (keypress) selection.clear();
   }, [keypress]);
@@ -266,6 +271,15 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    ipcRenderer.on("upload-finish", onUploadFinish);
+
+    return () => {
+      console.log("开始卸载组件");
+      ipcRenderer.removeListener("upload-finish", onUploadFinish);
+    };
+  }, [bucketMeta]);
 
   const renderMainPanel = () => {
     if (!bucketMeta.name) {
