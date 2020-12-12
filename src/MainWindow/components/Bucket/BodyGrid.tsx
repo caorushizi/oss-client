@@ -28,7 +28,11 @@ const BodyGrid: React.FC<PropTypes> = params => {
         onContextMenu={e => params.onFileContextMenu(e, item)}
         onDoubleClick={params.onFileSelect}
       >
-        <div className="main-grid__cell-inner" data-row-key={item.shortId}>
+        <div
+          className="main-grid__cell-inner"
+          data-row-key={item.shortId}
+          title={item.name}
+        >
           {supportedImage(item.type) && params.domains.length > 0 ? (
             <Image
               placeholder
