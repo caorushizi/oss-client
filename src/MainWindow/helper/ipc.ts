@@ -32,18 +32,18 @@ function send(eventName: string, options = {}): any {
   });
 }
 
-export async function switchBucket(
-  bucketName: string,
-  force?: boolean
-): Promise<{
+type BucketMeta = {
   domains: string[];
   files: VFile[];
   type: OssType;
-}> {
-  return send("switch-bucket", {
-    bucketName,
-    force
-  });
+};
+
+export async function switchBucket(bucketName: string): Promise<BucketMeta> {
+  return send("switch-bucket", { bucketName });
+}
+
+export function refreshBucket(force?: boolean): Promise<BucketMeta> {
+  return send("refresh-bucket", { force });
 }
 
 export async function getBuckets(config?: {

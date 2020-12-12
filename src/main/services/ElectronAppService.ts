@@ -397,13 +397,25 @@ export default class ElectronAppService implements IApp {
       if (typeof bucketName !== "string" || bucketName === "")
         return fail(1, "参数错误");
       try {
-        const obj = await this.appChannels.switchBucket(params);
+        const obj = await this.appChannels.switchBucket(bucketName);
         return success(obj);
       } catch (e) {
         this.logger.error("切换 bucket 时出错", e);
         return fail(1, e.message);
       }
     });
+    this.registerIpc(
+      "refresh-bucket",
+      async ({ force }: { force?: boolean }) => {
+        try {
+          const object = await this.appChannels.refreshBucket(!!force);
+          return success(object);
+        } catch (e) {
+          this.logger.error("刷新 bucket 出错：", e);
+          return fail(1, e.message);
+        }
+      }
+    );
     this.registerIpc("show-alert", async options => {
       if (this.alertWindow) {
         this.alertWindow.webContents.send("options", options);
@@ -560,10 +572,12 @@ export default class ElectronAppService implements IApp {
     // |                                                            |
     // --------------------------------------------------------------
 
+    // 处理文件传输完成
     emitter.on("transfer-done", (id: string) => {
       console.log("传输文件完成");
     });
 
+    // 处理传输进度
     emitter.on("transfer-process", progressList => {
       console.log("传输列表为：", progressList);
       if (this.mainWindow) {
@@ -571,13 +585,22 @@ export default class ElectronAppService implements IApp {
       }
     });
 
+    // 处理传输文件失败
     emitter.on("transfer-failed", (id: string) => {
       this.logger.error("传输文件失败");
     });
 
+    // 处理传输完成
     emitter.on("transfer-finish", () => {
       if (this.mainWindow && configStore.get("transferDoneTip")) {
         this.mainWindow.webContents.send("transfer-finish");
+      }
+    });
+
+    // 处理上传任务完成
+    emitter.on("upload-finish", () => {
+      if (this.mainWindow) {
+        this.mainWindow.webContents.send("upload-finish");
       }
     });
   }

@@ -1,5 +1,5 @@
 import { inject, injectable, named } from "inversify";
-import { Task, TransferStatus, TransferStore } from "../types";
+import { Task, TaskType, TransferStatus, TransferStore } from "../types";
 import { IStore, ITaskRunner } from "../interface";
 import { emitter } from "../helper/utils";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
@@ -87,6 +87,15 @@ export default class TaskRunnerService implements ITaskRunner {
       if (this.queue.length === 0 && this.active.length === 0) {
         // fixme: 上传完成刷新 bucket
         emitter.emit("transfer-finish");
+      }
+      // 上传完成
+      if (
+        // 下载队列中没有上传的项目
+        this.queue.every(i => i.type !== TaskType.upload) &&
+        // 正在下载的队列中没有上传的项目
+        this.active.every(i => i.type !== TaskType.upload)
+      ) {
+        emitter.emit("upload-finish");
       }
     }
   }

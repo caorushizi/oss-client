@@ -144,6 +144,7 @@
     "electron-store": "5.1.1",
     "inversify": "5.0.1",
     "klaw-sync": "6.0.0",
+    "localforage": "^1.9.0",
     "mime": "2.4.5",
     "moment": "2.25.3",
     "nedb": "1.8.0",

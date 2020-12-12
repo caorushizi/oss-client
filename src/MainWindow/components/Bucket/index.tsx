@@ -1,6 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import { FileDrop } from "react-file-drop";
-import { clipboard, remote } from "electron";
+import { clipboard, ipcRenderer, remote } from "electron";
 
 import "./index.scss";
 import { message, Spin } from "antd";
@@ -16,8 +16,8 @@ import {
   downloadFiles,
   getConfig,
   getFileUrl,
+  refreshBucket,
   showConfirm,
-  switchBucket,
   uploadFiles
 } from "../../helper/ipc";
 import { Item } from "../../lib/vdir/types";
@@ -26,6 +26,7 @@ import { BucketMeta } from "../../types";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "./hooks/useSelection";
 import NoResult from "../NoResult";
+import store from "../../../main/helper/store";
 
 type PropTypes = {
   bucketMeta: BucketMeta;
@@ -72,7 +73,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   const onRefreshBucket = async () => {
     setLoading(true);
     selection.clear();
-    const resp = await switchBucket(bucketMeta.name, true);
+    const resp = await refreshBucket(true);
     displayBucketFiles({ ...resp, name: bucketMeta.name });
     setLoading(false);
   };
@@ -241,9 +242,11 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
     setSearchedItem(it);
   };
-  const onChangeLayout = () => {
+  const onChangeLayout = async () => {
     selection.clear();
-    setLayout(layout === Layout.grid ? Layout.table : Layout.grid);
+    const nextLayout = layout === Layout.grid ? Layout.table : Layout.grid;
+    setLayout(nextLayout);
+    await store.setItem<Layout>("layout", nextLayout);
   };
 
   const onPanelMouseDown = (event: MouseEvent<HTMLElement>) => {
@@ -252,9 +255,30 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     }
   };
 
+  const onUploadFinish = () => {
+    onRefreshBucket();
+  };
+
   useEffect(() => {
     if (keypress) selection.clear();
   }, [keypress]);
+
+  useEffect(() => {
+    store.getItem<Layout>("layout").then(value => {
+      if (value) {
+        setLayout(value);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    ipcRenderer.on("upload-finish", onUploadFinish);
+
+    return () => {
+      console.log("开始卸载组件");
+      ipcRenderer.removeListener("upload-finish", onUploadFinish);
+    };
+  }, [bucketMeta]);
 
   const renderMainPanel = () => {
     if (!bucketMeta.name) {
