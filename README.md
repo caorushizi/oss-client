@@ -20,7 +20,7 @@ npx cross-env npm_config_electron_mirror="https://mirrors.huaweicloud.com/electr
 
 ![模式切换](http://static.ziying.site/table.gif)
 
-![拖拽上传](http://static.ziying.site/table.gif)
+![拖拽上传](http://static.ziying.site/upload.gif)
 
 ## 下载链接
 
