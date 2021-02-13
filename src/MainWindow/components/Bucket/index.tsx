@@ -275,7 +275,6 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     ipcRenderer.on("upload-finish", onUploadFinish);
 
     return () => {
-      console.log("开始卸载组件");
       ipcRenderer.removeListener("upload-finish", onUploadFinish);
     };
   }, [bucketMeta]);

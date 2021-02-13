@@ -19,10 +19,10 @@ const App = () => {
     const currentWindow = remote.getCurrentWindow();
     if (t === FlowWindowStyle.circle) {
       setCircle(true);
-      currentWindow.setContentSize(85, 85);
+      currentWindow.setContentSize(67, 67);
     } else {
       setCircle(false);
-      currentWindow.setContentSize(110, 50);
+      currentWindow.setContentSize(87, 30);
     }
   };
   const onFileDrop = async (files: FileList | null) => {

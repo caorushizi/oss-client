@@ -16,10 +16,9 @@ import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
 import { IApp, ILogger, IOssService, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import { TransferStatus, TransferStore } from "../types";
+import { TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
-import VFile from "../../MainWindow/lib/vdir/VFile";
 import TAG from "../constants/tags";
 
 /**
@@ -115,9 +114,10 @@ export default class ElectronAppService implements IApp {
           label: "显示悬浮窗",
           visible: getPlatform() === Platform.windows,
           type: "checkbox",
-          checked: true,
+          checked: configStore.get("showFloatWindow"),
           click: item => {
             if (this.floatWindow) {
+              configStore.set("showFloatWindow", item.checked);
               if (item.checked) {
                 this.floatWindow.show();
               } else {
@@ -242,7 +242,8 @@ export default class ElectronAppService implements IApp {
           if (this.floatWindow) this.floatWindow = null;
         });
         this.floatWindow.once("ready-to-show", () => {
-          if (this.floatWindow) this.floatWindow.show();
+          if (this.floatWindow && configStore.get("showFloatWindow"))
+            this.floatWindow.show();
         });
       }
       // --------------------------------------------------------------
