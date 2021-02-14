@@ -16,7 +16,7 @@ import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
 import { IApp, ILogger, IOssService, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import { TransferStore } from "../types";
+import { FlowWindowStyle, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
 import TAG from "../constants/tags";
@@ -227,17 +227,27 @@ export default class ElectronAppService implements IApp {
             nodeIntegration: true,
             devTools: false
           },
-          height: 50,
-          width: 110,
+          height: 0,
+          width: 0,
           alwaysOnTop: true,
           resizable: false,
           type: "toolbar",
           show: false
         });
+        // 开始加载悬浮窗口的静态资源
+        await this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY);
+        // 设置悬浮窗的样式
+        const style = configStore.get("floatWindowStyle");
+        if (style === FlowWindowStyle.circle) {
+          // 圆形的
+          this.floatWindow.setContentSize(67, 67);
+        } else {
+          // 椭圆形
+          this.floatWindow.setContentSize(87, 30);
+        }
         const size = screen.getPrimaryDisplay().workAreaSize;
         const winSize = this.floatWindow.getSize();
         this.floatWindow.setPosition(size.width - winSize[0] - 100, 100);
-        this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY).then(r => r);
         this.floatWindow.on("closed", () => {
           if (this.floatWindow) this.floatWindow = null;
         });
@@ -486,6 +496,9 @@ export default class ElectronAppService implements IApp {
         case "currentAppId":
           configStore.set(key, value);
           return success(true);
+        case "uploadRename":
+          configStore.set(key, value);
+          return success(true);
         default:
           return fail(1, "不支持该设置");
       }
@@ -575,12 +588,11 @@ export default class ElectronAppService implements IApp {
 
     // 处理文件传输完成
     emitter.on("transfer-done", (id: string) => {
-      console.log("传输文件完成");
+      this.logger.info("传输文件完成");
     });
 
     // 处理传输进度
     emitter.on("transfer-process", progressList => {
-      console.log("传输列表为：", progressList);
       if (this.mainWindow) {
         this.mainWindow.webContents.send("transfer-progress", progressList);
       }

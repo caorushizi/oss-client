@@ -10,7 +10,7 @@ import "normalize.css/normalize.css";
 import "./index.scss";
 import { FileDrop } from "react-file-drop";
 import classNames from "classnames";
-import { getTransfers, uploadFiles } from "../MainWindow/helper/ipc";
+import { getConfig, getTransfers, uploadFiles } from "../MainWindow/helper/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "../main/types";
 
 const App = () => {
@@ -28,11 +28,17 @@ const App = () => {
   const onFileDrop = async (files: FileList | null) => {
     if (!files) return;
     const fileList = Array.from(files).map(file => file.path);
-    await uploadFiles({ remoteDir: "拖拽上传", fileList });
+    await uploadFiles({ remoteDir: "拖拽上传", fileList, flag: true });
   };
 
   useEffect(() => {
     ipcRenderer.on("switch-shape", onSwitchShape);
+
+    (async () => {
+      const config = await getConfig();
+      onSwitchShape({} as any, config.floatWindowStyle);
+    })();
+
     return () => {
       ipcRenderer.removeListener("switch-shape", onSwitchShape);
     };

@@ -35,7 +35,6 @@ const FormUpdate = ({
         setDomains(initialDomains);
       }
     } catch (e) {
-      console.log("初始化 update 表单时出错：", e.message);
       message.error(e.message);
       onBucketCancel();
     } finally {
@@ -94,7 +93,7 @@ const FormUpdate = ({
         <Form.Item
           label="默认储存桶"
           name="uploadBucket"
-          rules={[{ required: true, message: "请选择默认储存桶" }]}
+          rules={[{ required: false }]}
         >
           <Select
             size="small"
@@ -105,7 +104,6 @@ const FormUpdate = ({
                 const { domains: selectedDomains } = await switchBucket(val);
                 setDomains(selectedDomains);
               } catch (e) {
-                console.log("update 表单修改 bucket 失败");
                 message.error(e.message);
               } finally {
                 setLoading(false);
@@ -124,7 +122,7 @@ const FormUpdate = ({
         <Form.Item
           label="上传前缀"
           name="uploadPrefix"
-          rules={[{ required: true, message: "请输入上传前缀" }]}
+          rules={[{ required: false }]}
         >
           <Input placeholder="请输入上传前缀" />
         </Form.Item>
@@ -132,7 +130,7 @@ const FormUpdate = ({
         <Form.Item
           label="默认域名"
           name="defaultDomain"
-          rules={[{ required: true, message: "请输入 SK" }]}
+          rules={[{ required: false }]}
         >
           <Select size="small" notFoundContent="当前 bucket 没有绑定域名">
             {domains.length > 0 &&

@@ -19,6 +19,8 @@ export default class Qiniu implements IOSS {
 
   private bucketManager: qiniu.rs.BucketManager;
 
+  appId: string;
+
   private async initDomains() {
     // 1. 获取 domains
     const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
@@ -34,6 +36,7 @@ export default class Qiniu implements IOSS {
   }
 
   constructor(accessKey: string, secretKey: string) {
+    this.appId = accessKey;
     this.mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
     this.config = new qiniu.conf.Config();
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);

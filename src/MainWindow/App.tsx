@@ -91,7 +91,7 @@ const App: React.FC = () => {
         setBucketList([]);
       }
     } catch (err) {
-      console.log("切换 app 时出错：", err.message);
+      message.error(`切换 app 时出错：${err.message}`);
     }
   };
   const toSetting = () => {
@@ -109,7 +109,6 @@ const App: React.FC = () => {
     try {
       // 设置活动 oss 配置
       const app = await initOss();
-      console.log("首页中初始化状态：", app);
       setActiveApp(app);
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await getBuckets();
@@ -120,7 +119,6 @@ const App: React.FC = () => {
         setActivePage(Page.services);
       }
     } catch (err) {
-      console.log("初始化云存储客户端出错：", err.message);
       toService();
     }
   };

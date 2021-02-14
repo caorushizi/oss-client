@@ -73,7 +73,8 @@ export const initialConfig = {
   transferDoneTip: true,
   markdown: true,
   showFloatWindow: true,
-  floatWindowStyle: FlowWindowStyle.circle
+  floatWindowStyle: FlowWindowStyle.circle,
+  uploadRename: false
 };
 
 export interface ConfigStore {
@@ -95,4 +96,5 @@ export interface ConfigStore {
   // 悬浮窗设置
   showFloatWindow: boolean;
   floatWindowStyle: FlowWindowStyle;
+  uploadRename: boolean;
 }

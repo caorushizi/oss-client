@@ -20,7 +20,10 @@ export default class Tencent implements IOSS {
 
   private cos: COS;
 
+  appId: string;
+
   constructor(accessKey: string, secretKey: string) {
+    this.appId = accessKey;
     this.accessKey = accessKey;
     this.secretKey = secretKey;
     this.cos = new COS({

@@ -117,6 +117,7 @@ export async function showConfirm(options?: {
 export async function uploadFiles(options: {
   remoteDir: string;
   fileList: string[];
+  flag?: boolean; // 是不是悬浮窗上传
 }) {
   return send("upload-files", options);
 }

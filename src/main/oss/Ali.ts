@@ -17,7 +17,10 @@ export default class Ali implements IOSS {
 
   private region = "oss-cn-beijing";
 
+  appId: string;
+
   constructor(accessKey: string, secretKey: string) {
+    this.appId = accessKey;
     this.accessKey = accessKey;
     this.secretKey = secretKey;
   }

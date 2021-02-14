@@ -88,36 +88,34 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         if (item) itemsArr.push(item);
       });
       files = _getFiles(itemsArr);
-    } else if (opItem) {
+    }
+
+    if (files.length <= 0 && opItem) {
       // 如果选中区域没有文件，那么直接下载当前上下文中的区域
       files = _getFiles([opItem]);
     }
+
     return files;
   };
   const handleUpload = async (paths: string[]) => {
     try {
-      console.log("开始上传文件，选中的文件路径有：", paths);
       await uploadFiles({
         remoteDir: vFolder.getPathPrefix(),
         fileList: paths
       });
-      console.log("上传任务添加完成。");
     } catch (e) {
       message.error(e.message);
-      console.warn("拖拽文件上传时出错：", e.message);
     }
   };
   const handleDownload = async (item?: Item) => {
     try {
       const files = getOperationFiles(item);
-      console.log("开始下载文件，选中的文件有：", files);
       await downloadFiles({
         remoteDir: vFolder.getPathPrefix(),
         fileList: files
       });
-      console.log("ipc 通讯完成，下载成功。");
     } catch (e) {
-      console.log("下载文件出错：", e);
+      message.error(`下载文件出错：${e.message}`);
     }
   };
   const handleDelete = async (item?: Item) => {
@@ -131,12 +129,10 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         });
       }
       const files = getOperationFiles(item);
-      console.log("开始删除文件，选中的文件有：", files);
       await deleteFiles(files.map(i => i.webkitRelativePath));
       await onRefreshBucket();
-      console.log("ipc 通讯完成，删除成功。");
     } catch (e) {
-      console.log("删除文件出错：", e);
+      message.error(`删除文件出错：${e.message}`);
     }
   };
   const onFileContextMenu = (event: MouseEvent<HTMLElement>, item: VFile) => {

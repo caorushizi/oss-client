@@ -2,6 +2,7 @@ import { inject, injectable, named } from "inversify";
 import uuid from "uuid/v4";
 import path from "path";
 import * as fs from "fs";
+import uuidV1 from "uuid/v1";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import {
@@ -138,13 +139,31 @@ export default class IpcChannelsService {
   }
 
   async uploadFiles(params: any) {
-    const { remoteDir, fileList } = params;
+    const { remoteDir, fileList, flag } = params;
     const instance = this.oss.getService();
     const baseDir = path.dirname(fileList[0]);
     const filepathList = fattenFileList(fileList);
     for (const filepath of filepathList) {
       const relativePath = path.relative(baseDir, filepath);
-      let remotePath = path.join(remoteDir, relativePath);
+
+      let remotePath;
+      // 如果是从悬浮传的文件，判断 flag
+      if (flag) {
+        // 如果 flag 为 true，在所有路径前面添加 uploadPrefix
+        const { appId } = instance;
+        const [curAppStore] = await this.appStore.find({ ak: appId });
+        const prefix = curAppStore?.uploadPrefix || "";
+        remotePath = path.join(prefix, relativePath);
+        if (configStore.get("uploadRename")) {
+          // 需要重命名
+          remotePath = path.join(
+            path.dirname(remotePath),
+            uuidV1() + path.extname(remotePath)
+          );
+        }
+      } else {
+        remotePath = path.join(remoteDir, relativePath);
+      }
       remotePath = remotePath.replace(/\\+/g, "/");
 
       const id = uuid();

@@ -51,7 +51,6 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
   };
   const onFormChange = debounce((values: any, app: any) => {
     const isEq = deepEqual(values, app);
-    console.log("更新修改，是由与原来相同：", isEq);
     setEdited(!isEq);
   }, 200);
   const onBucketUpdate = async (store: AppStore) => {
@@ -72,7 +71,6 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       setIsEdit(false);
       setEdited(false);
     } catch (e) {
-      console.log("修改 app 时出错：", e);
       message.error(e.message);
     } finally {
       setLoading(false);
@@ -96,7 +94,6 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
 
       onAppSwitch(allApps[0]);
     } catch (err) {
-      console.log("删除时出现错误：", err.message);
       message.error(err.message);
     } finally {
       setLoading(false);
@@ -109,14 +106,11 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       // 开始添加 app 流程
       // 1、获取 app 中所有的 bucket 信息，并保存到数据库（验证 ak，sk 是否可用）
       const buckets = await getBuckets({ type, ak, sk });
-      console.log(buckets);
       // 2、获取存储区域，并保存到数据库
       // 3、将 app 名称、ak、sk和服务商名称添加到数据库
       const app = await addApp(name, type, ak, sk);
-      console.log(app);
       // 4、选择当前的 app 作为默认的 app
       const allApps = await getAppsChannel();
-      console.log(allApps);
       setApps(allApps);
       const addedApp = allApps.find(i => i.sk === sk);
       if (!addedApp) throw new Error("保存 app 失败");
@@ -126,7 +120,6 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       message.success("添加成功");
     } catch (err) {
       message.error(`添加失败：${err.message}`);
-      console.log("添加 app 时出错：", err.message);
     } finally {
       setLoading(false);
     }
@@ -152,7 +145,6 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
       await changeSetting("currentAppId", id);
     } catch (e) {
       message.error(e.message);
-      console.log("出错：", e);
     }
   };
   const initState = async () => {

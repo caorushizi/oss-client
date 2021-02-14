@@ -22,7 +22,6 @@ const Setting = () => {
       await changeSetting(key, value);
       setConfig({ ...config, [key]: value });
     } catch (e) {
-      console.log("修改设置时出错：", e.message);
       message.error(e.message);
     } finally {
       setLoading(false);
@@ -67,7 +66,6 @@ const Setting = () => {
       const config1 = await getConfig();
       setConfig(config1);
     } catch (e) {
-      console.log(e);
       message.error(e.message);
     }
   };
@@ -169,6 +167,13 @@ const Setting = () => {
                       Number(v.target.value)
                     );
                   }}
+                />
+              </Form.Item>
+              <Form.Item label="上传时是否重命名">
+                <Switch
+                  size="small"
+                  checked={config.uploadRename}
+                  onChange={v => onSettingChange("uploadRename", v)}
                 />
               </Form.Item>
             </Form>

@@ -32,6 +32,7 @@ export interface ILogger {
 
 export interface IOSS {
   type: OssType;
+  appId: string;
   uploadFile(
     id: string,
     remotePath: string,
