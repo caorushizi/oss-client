@@ -26,9 +26,9 @@ npx cross-env npm_config_electron_mirror="https://mirrors.huaweicloud.com/electr
 
 v0.0.3
 ---
-[oss-client-mac-v0.0.3](http://static.ziying.site/oss-client-mac-v0.0.3.zip)
+[oss-client-mac-v0.0.6](http://static.ziying.site/oss-client-mac-v0.0.6.zip)
 
-[oss-client-windows-v0.0.3](http://static.ziying.site/oss-client-windows-v0.0.3.exe)
+[oss-client-windows-v0.0.6](http://static.ziying.site/oss-client-windows-v0.0.6.exe)
 
 
 ## 技术栈
