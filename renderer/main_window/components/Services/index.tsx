@@ -20,6 +20,18 @@ import { hiddenTextFilter } from "../../helper/filters";
 import { debounce, deepEqual } from "../../helper/utils";
 import NoResult from "../NoResult";
 
+enum OssType {
+  qiniu,
+  ali,
+  tencent
+}
+
+const OssTypeMap = {
+  [OssType.qiniu]: "七牛云",
+  [OssType.ali]: "阿里云",
+  [OssType.tencent]: "腾讯云"
+};
+
 type PropTypes = {
   onAppSwitch: (item: AppStore) => void;
   activeApp?: AppStore;

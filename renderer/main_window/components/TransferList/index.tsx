@@ -19,6 +19,17 @@ interface TransferStoreWithProgress extends TransferStore {
   progress: number;
 }
 
+enum TransferStatus {
+  default,
+  done,
+  failed
+}
+
+enum TaskType {
+  download,
+  upload
+}
+
 const TransferList = () => {
   const [transfers, setTransfers] = useState<TransferStoreWithProgress[]>([]);
 

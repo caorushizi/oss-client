@@ -5,9 +5,14 @@ import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import { changeSetting, getConfig } from "../../helper/ipc";
-import { initialConfig } from "../../../../main/types";
+import { initialConfig, Theme } from "../../../../main/types";
 
-const { remote, OpenDialogOptions } = window.require("electron");
+const { remote } = window.require("electron");
+
+enum FlowWindowStyle {
+  circle,
+  oval
+}
 
 const Setting = () => {
   const [config, setConfig] = useState<ConfigStore>(initialConfig);
@@ -28,7 +33,7 @@ const Setting = () => {
     { label: "椭圆形", value: FlowWindowStyle.oval }
   ];
   const onSelectDownloadPath = async () => {
-    const dialogOptions: OpenDialogOptions = {
+    const dialogOptions = {
       properties: [
         "openDirectory",
         "createDirectory",
