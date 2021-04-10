@@ -91,3 +91,5 @@ out/
 .idea/
 
 dist/
+package.json
+yarn.lock
