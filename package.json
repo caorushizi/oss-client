@@ -98,7 +98,7 @@
       ".bin/**"
     ],
     "win": {
-      "icon": "static/icon.ico",
+      "icon": "assets/icon.ico",
       "target": [
         {
           "target": "nsis"
