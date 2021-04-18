@@ -6,7 +6,6 @@ import shortid from "shortid";
 import { IOSS } from "../interface";
 import { OssType } from "../types";
 import { download } from "../helper/utils";
-import VFile from "../../MainWindow/lib/vdir/VFile";
 
 export default class Qiniu implements IOSS {
   private bucket = "";
@@ -101,7 +100,7 @@ export default class Qiniu implements IOSS {
             reject(err);
           }
           if (respInfo.statusCode === 200) {
-            resolve();
+            resolve(undefined);
           } else {
             reject(new Error(respBody.error));
           }

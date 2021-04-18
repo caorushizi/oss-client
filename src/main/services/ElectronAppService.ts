@@ -6,12 +6,13 @@ import {
   Menu,
   MenuItemConstructorOptions,
   nativeImage,
+  protocol,
   screen,
   Tray
 } from "electron";
+import { resolve } from "path";
 import { inject, injectable, named } from "inversify";
-import { Platform } from "../../MainWindow/helper/enums";
-import { getPlatform } from "../../MainWindow/helper/utils";
+import { is } from "electron-util";
 import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
 import { IApp, ILogger, IOssService, IStore } from "../interface";
@@ -20,6 +21,8 @@ import { FlowWindowStyle, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
 import TAG from "../constants/tags";
+
+console.log("lll", TrayIcon);
 
 /**
  * 现只考虑 windows 平台和 mac 平台
@@ -39,11 +42,6 @@ import TAG from "../constants/tags";
  * - 使用 markdown 格式
  * - 退出程序
  */
-
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-declare const FLOAT_WINDOW_WEBPACK_ENTRY: string;
-declare const ALERT_WINDOW_WEBPACK_ENTRY: string;
-declare const CONFIRM_WINDOW_WEBPACK_ENTRY: string;
 
 @injectable()
 export default class ElectronAppService implements IApp {
@@ -100,19 +98,30 @@ export default class ElectronAppService implements IApp {
   init() {
     // 初始化 app
     this.logger.info("开始初始化软件");
+
+    protocol.registerSchemesAsPrivileged([
+      { scheme: "oss-client", privileges: { secure: true, standard: true } }
+    ]);
+
     app.on("ready", async () => {
+      protocol.registerFileProtocol("oss-client", (request, callback) => {
+        const url = request.url.substr(13);
+        callback({ path: resolve(__dirname, "../", url) });
+      });
+
       // 检查下载目录
       const downloadIsDir = await checkDirExist(configStore.get("downloadDir"));
       if (!downloadIsDir) await mkdir(configStore.get("downloadDir"));
       this.logger.info("初始化软件完成，开始初始化窗口以及托盘图标");
       // 初始化 托盘图标
-      const icon = nativeImage.createFromDataURL(TrayIcon);
+      const iconPath = resolve(__dirname, TrayIcon);
+      const icon = nativeImage.createFromPath(iconPath);
       this.appTray = new Tray(icon);
 
       let menuTemplate: MenuItemConstructorOptions[] = [
         {
           label: "显示悬浮窗",
-          visible: getPlatform() === Platform.windows,
+          visible: is.windows,
           type: "checkbox",
           checked: configStore.get("showFloatWindow"),
           click: item => {
@@ -136,7 +145,7 @@ export default class ElectronAppService implements IApp {
           }
         }
       ];
-      if (getPlatform() === Platform.macos) {
+      if (is.macos) {
         const recentListStore = await this.transfers.find({});
         const recentList: MenuItemConstructorOptions[] =
           recentListStore.length > 0
@@ -206,7 +215,10 @@ export default class ElectronAppService implements IApp {
         titleBarStyle: "hiddenInset",
         show: false
       });
-      this.mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(r => r);
+      const mainWindowUrl = is.development
+        ? "http://localhost:3000/main-window.html"
+        : "oss-client://electron/main-window.html";
+      await this.mainWindow.loadURL(mainWindowUrl);
       this.mainWindow.on("closed", () => {
         if (this.mainWindow) this.mainWindow = null;
       });
@@ -219,13 +231,13 @@ export default class ElectronAppService implements IApp {
       // |                         初始化悬浮窗                         |
       // |                                                            |
       // --------------------------------------------------------------
-      if (getPlatform() === Platform.windows) {
+      if (is.windows) {
         this.floatWindow = new BrowserWindow({
           transparent: true,
           frame: false,
           webPreferences: {
             nodeIntegration: true,
-            devTools: false
+            devTools: is.development
           },
           height: 0,
           width: 0,
@@ -235,7 +247,10 @@ export default class ElectronAppService implements IApp {
           show: false
         });
         // 开始加载悬浮窗口的静态资源
-        await this.floatWindow.loadURL(FLOAT_WINDOW_WEBPACK_ENTRY);
+        const floatWindowUrl = is.development
+          ? "http://localhost:3000/float-window.html"
+          : "oss-client://electron/float-window.html";
+        await this.floatWindow.loadURL(floatWindowUrl);
         // 设置悬浮窗的样式
         const style = configStore.get("floatWindowStyle");
         if (style === FlowWindowStyle.circle) {
@@ -274,7 +289,10 @@ export default class ElectronAppService implements IApp {
         modal: true,
         show: false
       });
-      this.alertWindow.loadURL(ALERT_WINDOW_WEBPACK_ENTRY).then(r => r);
+      const alertWindowUrl = is.development
+        ? "http://localhost:3000/alert-window.html"
+        : "oss-client://electron/alert-window.html";
+      await this.alertWindow.loadURL(alertWindowUrl);
       this.alertWindow.on("closed", () => {
         if (this.alertWindow) this.alertWindow = null;
       });
@@ -296,7 +314,10 @@ export default class ElectronAppService implements IApp {
         modal: true,
         show: false
       });
-      this.confirmWindow.loadURL(CONFIRM_WINDOW_WEBPACK_ENTRY).then(r => r);
+      const confirmWindowUrl = is.development
+        ? "http://localhost:3000/confirm-window.html"
+        : "oss-client://electron/confirm-window.html";
+      await this.confirmWindow.loadURL(confirmWindowUrl);
       this.confirmWindow.on("closed", () => {
         if (this.confirmWindow) this.confirmWindow = null;
       });
@@ -317,7 +338,7 @@ export default class ElectronAppService implements IApp {
     });
 
     app.on("window-all-closed", () => {
-      if (getPlatform() !== Platform.macos) {
+      if (is.macos) {
         app.quit();
       }
     });
@@ -432,10 +453,10 @@ export default class ElectronAppService implements IApp {
         this.alertWindow.webContents.send("options", options);
       }
       const getWaitFor = () => {
-        return new Promise(resolve => {
+        return new Promise(r => {
           ipcMain.once("close-alert", () => {
             if (this.alertWindow) this.alertWindow.hide();
-            resolve();
+            r(true);
           });
         });
       };
@@ -510,10 +531,10 @@ export default class ElectronAppService implements IApp {
         this.confirmWindow.webContents.send("options", options);
       }
       const getWaitFor = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise((r, reject) => {
           ipcMain.once("close-confirm", (e, flag: boolean) => {
             if (this.confirmWindow) this.confirmWindow.hide();
-            if (flag) resolve();
+            if (flag) r(true);
             else reject();
           });
         });

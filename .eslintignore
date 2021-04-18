@@ -1,6 +1,8 @@
 /node_modules/*/*
 /.webpack/*
-webpack.main.config.js
-webpack.renderer.config.js
-webpack.rules.js
-webpack.plugins.js
+.eslintrc.js
+esbuild.config.js
+babel.config.js
+webpack.config.js
+script/dev-server.js
+vite.config.ts

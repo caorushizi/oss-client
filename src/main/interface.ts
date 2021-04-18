@@ -1,6 +1,5 @@
 import { BrowserWindow, Tray } from "electron";
 import { OssType, Task } from "./types";
-import VFile from "../MainWindow/lib/vdir/VFile";
 
 export interface IApp {
   mainWindow: BrowserWindow | null;

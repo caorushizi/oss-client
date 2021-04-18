@@ -6,7 +6,6 @@ import shortid from "shortid";
 import { IOSS } from "../interface";
 import { OssType } from "../types";
 import { download } from "../helper/utils";
-import VFile from "../../MainWindow/lib/vdir/VFile";
 
 export default class Ali implements IOSS {
   private bucket = "";

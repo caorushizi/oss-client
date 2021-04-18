@@ -7,7 +7,6 @@ import shortid from "shortid";
 import { IOSS } from "../interface";
 import { OssType } from "../types";
 import { download } from "../helper/utils";
-import VFile from "../../MainWindow/lib/vdir/VFile";
 
 export default class Tencent implements IOSS {
   private bucket = "";
@@ -38,11 +37,14 @@ export default class Tencent implements IOSS {
     localPath: string,
     cb: (id: string, progress: number) => void
   ): Promise<any> {
-    const url = this.cos.getObjectUrl({
-      Bucket: this.bucket,
-      Region: this.region,
-      Key: remotePath
-    });
+    const url = this.cos.getObjectUrl(
+      {
+        Bucket: this.bucket,
+        Region: this.region,
+        Key: remotePath
+      },
+      {}
+    );
 
     return download(url, localPath, p => cb(id, p));
   }
