@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import "./index.scss";
 import { Progress } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
