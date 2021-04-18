@@ -1,31 +1,46 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es5",
-    "module": "es2015",
+    "target": "ESNext",
     "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
-      "dom"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
-    "strict": true,
-    "sourceMap": true,
-    "declaration": true,
+    "types": [
+      "vite/client"
+    ],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "declaration": true,
     "typeRoots": [
       "node_modules/@types"
     ],
+    "noEmit": true,
     "jsx": "react",
-    "types": [
-      "reflect-metadata"
-    ]
+    "baseUrl": "./src",
+    "paths": {
+      "main/*": [
+        "main/*"
+      ],
+      "renderer/*": [
+        "renderer/*"
+      ],
+      "types/*": [
+        "types/*"
+      ]
+    }
   },
   "include": [
-    "renderer",
-    "main",
-    "types"
+    "src"
   ]
 }

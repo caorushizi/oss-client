@@ -4,11 +4,14 @@
   "version": "0.0.1",
   "description": "OSS 云存储客户端",
   "repository": "https://github.com/caorushizi/oss-client",
-  "main": ".webpack/main",
+  "main": "dist/main/index.js",
   "scripts": {
     "dev": "vite",
     "electron": "node esbuild.config.js && electron dist/main/index.js",
-    "start": "cross-env NODE_ENV=development concurrently -n=vite,electron -c=green,blue \"npm run dev\" \"npm run electron\""
+    "start": "cross-env NODE_ENV=development concurrently -n=vite,electron -c=green,blue \"npm run dev\" \"npm run electron\"",
+    "build": "rimraf dist && vite build && node esbuild.config.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [],
   "author": {
@@ -16,66 +19,6 @@
     "email": "84996057@qq.com"
   },
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./static/icon"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/MainWindow/index.html",
-                  "js": "./src/MainWindow/index.tsx",
-                  "name": "main_window"
-                },
-                {
-                  "html": "./src/FloatWindow/index.html",
-                  "js": "./src/FloatWindow/index.tsx",
-                  "name": "float_window"
-                },
-                {
-                  "html": "./src/AlertWindow/index.html",
-                  "js": "./src/AlertWindow/index.tsx",
-                  "name": "alert_window"
-                },
-                {
-                  "html": "./src/ConfirmWindow/index.html",
-                  "js": "./src/ConfirmWindow/index.tsx",
-                  "name": "confirm_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
-  },
   "devDependencies": {
     "@types/ali-oss": "6.0.8",
     "@types/classnames": "2.2.10",
@@ -96,17 +39,15 @@
     "cross-env": "7.0.3",
     "dotenv": "8.2.0",
     "electron": "9.4.0",
+    "electron-builder": "^22.10.5",
     "electron-debug": "3.0.1",
-    "electron-util": "0.14.2",
     "esbuild": "0.9.7",
     "eslint": "7.2.0",
-    "eslint-config-airbnb": "18.2.1",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-prettier": "3.1.3",
     "eslint-plugin-react": "7.21.5",
-    "eslint-plugin-react-hooks": "1.7.0",
+    "eslint-plugin-react-hooks": "4.0.4",
     "prettier": "1.19.1",
     "rimraf": "3.0.2",
     "sass": "1.32.8",
@@ -124,6 +65,7 @@
     "electron-log": "4.1.2",
     "electron-squirrel-startup": "1.0.0",
     "electron-store": "5.1.1",
+    "electron-util": "0.14.2",
     "inversify": "5.0.1",
     "klaw-sync": "6.0.0",
     "localforage": "1.9.0",
@@ -140,5 +82,50 @@
     "reflect-metadata": "0.1.13",
     "shortid": "2.2.15",
     "uuid": "3.4.0"
+  },
+  "build": {
+    "productName": "云存储客户端",
+    "appId": "oss-client.ziying.site",
+    "copyright": "caorushizi",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      ".bin/**"
+    ],
+    "win": {
+      "icon": "static/icon.ico",
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
+    },
+    "dmg": {
+      "contents": []
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "linux": {
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "",
+      "uninstallerIcon": "",
+      "installerHeaderIcon": "",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "",
+      "include": "",
+      "script": ""
+    }
   }
 }

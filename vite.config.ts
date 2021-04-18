@@ -9,8 +9,10 @@ export default defineConfig({
     target: "es2015",
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "main_window.html"),
-        browser: resolve(__dirname, "browser_window.html")
+        main: resolve(__dirname, "main-window.html"),
+        alert: resolve(__dirname, "alert-window.html"),
+        float: resolve(__dirname, "float-window.html"),
+        confirm: resolve(__dirname, "confirm-window.html")
       }
     },
     outDir: resolve(__dirname, "dist/electron")

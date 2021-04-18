@@ -9,6 +9,7 @@ import {
   getTransfers,
   uploadFiles
 } from "../main_window/helper/ipc";
+import { FlowWindowStyle, TaskType, TransferStatus } from "../../main/types";
 
 const {
   ipcRenderer,
@@ -78,6 +79,7 @@ const onMouseUp = () => {
   state.dragging = false;
 };
 const onContextMenu = async () => {
+  console.log(TaskType.upload);
   const recentList = await getTransfers({
     type: TaskType.upload,
     status: TransferStatus.done

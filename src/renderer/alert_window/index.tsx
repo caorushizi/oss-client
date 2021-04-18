@@ -2,9 +2,9 @@ import "normalize.css/normalize.css";
 import "./index.scss";
 import reactDom from "react-dom";
 import React, { useEffect, useState } from "react";
-import { Button, Space } from "antd";
+import { Button } from "antd";
 import "antd/dist/antd.css";
-import "../MainWindow/index.scss";
+import "../main_window/index.scss";
 
 const { ipcRenderer, remote } = window.require("electron");
 
@@ -29,24 +29,14 @@ const App = () => {
       <div className="container-header">{message.title}</div>
       <div className="container-body">{message.message}</div>
       <div className="container-footer">
-        <Space>
-          <Button
-            size="small"
-            onClick={() => {
-              ipcRenderer.send("close-confirm", false);
-            }}
-          >
-            取消
-          </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              ipcRenderer.send("close-confirm", true);
-            }}
-          >
-            确定
-          </Button>
-        </Space>
+        <Button
+          size="small"
+          onClick={() => {
+            ipcRenderer.send("close-alert");
+          }}
+        >
+          确定
+        </Button>
       </div>
     </section>
   );
