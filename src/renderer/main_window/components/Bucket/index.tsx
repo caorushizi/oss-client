@@ -156,7 +156,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         label: "复制链接（markdown）",
         click: async () => {
           const url = await getFileUrl(item.webkitRelativePath);
-          clipboard.writeText(`![${item.name}]("${url}")`);
+          clipboard.writeText(`![${item.name}](${url})`);
         }
       },
       { type: "separator" },
@@ -235,7 +235,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   const onSearchChange = (value: string) => {
     selection.clear();
     setSearchValue(value);
-    const it = vFolder.listFiles().filter(i => i.name.indexOf(value) >= 0);
+    const it = vFolder.listFiles().filter(i => i.name.includes(value));
     setSearchedItem(it);
   };
   const onChangeLayout = async () => {
