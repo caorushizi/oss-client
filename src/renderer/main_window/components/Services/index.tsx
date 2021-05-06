@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "./index.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Spin, message, Button, Space, Row, Col } from "antd";
+import { Button, Col, message, Row, Space, Spin } from "antd";
 import classNames from "classnames";
 import {
   addApp,

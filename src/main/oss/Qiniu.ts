@@ -1,38 +1,19 @@
 import axios from "axios";
 import * as fs from "fs";
 import qiniu from "qiniu";
-import { ReadStream } from "fs";
 import shortid from "shortid";
 import { IOSS } from "../interface";
 import { OssType } from "../types";
 import { download } from "../helper/utils";
 
 export default class Qiniu implements IOSS {
-  private bucket = "";
-
-  private readonly mac: qiniu.auth.digest.Mac;
-
-  private readonly config: qiniu.conf.Config;
-
-  private domains: string[] = [];
-
-  private bucketManager: qiniu.rs.BucketManager;
-
   appId: string;
-
-  private async initDomains() {
-    // 1. 获取 domains
-    const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
-    const accessToken = qiniu.util.generateAccessToken(this.mac, url);
-
-    const { data } = await axios.get(url, {
-      headers: { Authorization: accessToken }
-    });
-    if (!Array.isArray(data) || data.length <= 0) {
-      throw new Error("没有获取到域名");
-    }
-    this.domains = data;
-  }
+  type: OssType = OssType.qiniu;
+  private bucket = "";
+  private readonly mac: qiniu.auth.digest.Mac;
+  private readonly config: qiniu.conf.Config;
+  private domains: string[] = [];
+  private bucketManager: qiniu.rs.BucketManager;
 
   constructor(accessKey: string, secretKey: string) {
     this.appId = accessKey;
@@ -141,8 +122,6 @@ export default class Qiniu implements IOSS {
     await this.initDomains();
   }
 
-  type: OssType = OssType.qiniu;
-
   generateUrl(remotePath: string): string {
     if (this.domains.length <= 0) throw new Error("请先初始化云存储");
     return encodeURI(`http://${this.domains[0]}/${remotePath}`);
@@ -162,4 +141,18 @@ export default class Qiniu implements IOSS {
       lastModifiedDate: new Date(lastModified)
     };
   };
+
+  private async initDomains() {
+    // 1. 获取 domains
+    const url = `http://api.qiniu.com/v6/domain/list?tbl=${this.bucket}`;
+    const accessToken = qiniu.util.generateAccessToken(this.mac, url);
+
+    const { data } = await axios.get(url, {
+      headers: { Authorization: accessToken }
+    });
+    if (!Array.isArray(data) || data.length <= 0) {
+      throw new Error("没有获取到域名");
+    }
+    this.domains = data;
+  }
 }

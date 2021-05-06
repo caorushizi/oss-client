@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
 import { Item } from "../../../lib/vdir/types";
 

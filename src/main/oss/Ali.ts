@@ -8,15 +8,12 @@ import { OssType } from "../types";
 import { download } from "../helper/utils";
 
 export default class Ali implements IOSS {
-  private bucket = "";
-
-  private readonly accessKey: string;
-
-  private readonly secretKey: string;
-
-  private region = "oss-cn-beijing";
-
   appId: string;
+  type: OssType = OssType.ali;
+  private bucket = "";
+  private readonly accessKey: string;
+  private readonly secretKey: string;
+  private region = "oss-cn-beijing";
 
   constructor(accessKey: string, secretKey: string) {
     this.appId = accessKey;
@@ -64,6 +61,8 @@ export default class Ali implements IOSS {
     return store.putStream(remotePath, reader);
   }
 
+  // fixme: 阿里云获取存储空间域名
+
   public async deleteFile(remotePath: string): Promise<any> {
     const store = new OSS({
       region: this.region,
@@ -74,7 +73,6 @@ export default class Ali implements IOSS {
     return store.delete(remotePath);
   }
 
-  // fixme: 阿里云获取存储空间域名
   // eslint-disable-next-line class-methods-use-this
   public async getBucketDomainList(): Promise<string[]> {
     return [];
@@ -103,8 +101,6 @@ export default class Ali implements IOSS {
   async setBucket(bucket: string): Promise<void> {
     this.bucket = bucket;
   }
-
-  type: OssType = OssType.ali;
 
   generateUrl(remotePath: string): string {
     const client = new OSS({

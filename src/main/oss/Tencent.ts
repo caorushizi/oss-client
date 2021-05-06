@@ -9,17 +9,13 @@ import { OssType } from "../types";
 import { download } from "../helper/utils";
 
 export default class Tencent implements IOSS {
-  private bucket = "";
-
-  private readonly accessKey: string;
-
-  private readonly secretKey: string;
-
-  private region = "ap-nanjing";
-
-  private cos: COS;
-
   appId: string;
+  type: OssType = OssType.tencent;
+  private bucket = "";
+  private readonly accessKey: string;
+  private readonly secretKey: string;
+  private region = "ap-nanjing";
+  private cos: COS;
 
   constructor(accessKey: string, secretKey: string) {
     this.appId = accessKey;
@@ -79,6 +75,8 @@ export default class Tencent implements IOSS {
     });
   }
 
+  // fixme: 阿里云获取存储空间域名
+
   public async deleteFile(remotePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.cos.deleteObject(
@@ -95,7 +93,6 @@ export default class Tencent implements IOSS {
     });
   }
 
-  // fixme: 阿里云获取存储空间域名
   // eslint-disable-next-line class-methods-use-this
   public async getBucketDomainList(): Promise<string[]> {
     return [];
@@ -128,8 +125,6 @@ export default class Tencent implements IOSS {
   async setBucket(bucket: string): Promise<void> {
     this.bucket = bucket;
   }
-
-  type: OssType = OssType.tencent;
 
   generateUrl(remotePath: string): string {
     return this.cos.getObjectUrl({

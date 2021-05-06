@@ -20,29 +20,24 @@ import { fattenFileList, pathStatsSync } from "../helper/utils";
 
 @injectable()
 export default class IpcChannelsService {
+  // @ts-ignore
+  @inject(SERVICE_IDENTIFIER.TASK_RUNNER) public taskRunner: ITaskRunner;
   @inject(SERVICE_IDENTIFIER.STORE)
   @named(TAG.APP_STORE)
   // @ts-ignore
   private appStore: IStore<AppStore>;
-
   @inject(SERVICE_IDENTIFIER.STORE)
   @named(TAG.TRANSFER_STORE)
   // @ts-ignore
   private transfers: IStore<TransferStore>;
-
   @inject(SERVICE_IDENTIFIER.STORE)
   @named(TAG.TRANSFER_STORE)
   // @ts-ignore
   private transferStore: IStore<TransferStore>;
-
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.OSS) private oss: IOssService;
-
   // @ts-ignore
   @inject(SERVICE_IDENTIFIER.LOGGER) private logger: ILogger;
-
-  // @ts-ignore
-  @inject(SERVICE_IDENTIFIER.TASK_RUNNER) public taskRunner: ITaskRunner;
 
   async updateApp(app: AppStore): Promise<void> {
     return this.appStore.update({ _id: app._id }, app, {});

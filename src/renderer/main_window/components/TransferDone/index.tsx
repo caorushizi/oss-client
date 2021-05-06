@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
-import { TransferStatus, TaskType } from "../../../../main/types";
+import { TransferStatus } from "../../../../main/types";
 
 import "./index.scss";
 import {

@@ -29,15 +29,18 @@
       .ant-space-item {
         display: flex;
         align-items: center;
+
         .back {
           display: inline-block;
           width: 10px;
           height: 16px;
+
           &.disabled {
             opacity: 0.3;
             cursor: not-allowed;
           }
         }
+
         .reload {
           display: inline-block;
           width: 14px;
@@ -77,11 +80,14 @@
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
+
     .ant-spin-container {
       height: 100%;
       position: relative;
+
       .file-drop {
         height: 100%;
+
         .file-drop-target {
           height: 100%;
 
@@ -124,13 +130,16 @@
 
             .main-table {
               height: 100%;
+
               .file-meta {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
+
                 .file-icon {
                   font-size: 25px;
                 }
+
                 .file-name {
                   overflow: hidden; //超出的文本隐藏
                   text-overflow: ellipsis; //溢出用省略号显示
@@ -143,6 +152,7 @@
             .main-grid {
               min-height: 100%;
               overflow: hidden;
+
               .main-grid__cell {
                 float: left;
                 height: 80px;
@@ -155,14 +165,17 @@
                     background: rgba(0, 0, 0, 0.3);
                   }
                 }
+
                 .main-grid__cell-inner {
                   padding: 5px;
                   border-radius: 3px;
                   display: flex;
                   flex-direction: column;
                   align-items: center;
+
                   .preview-image {
                     overflow: hidden;
+
                     img {
                       width: 50px;
                       height: 50px;

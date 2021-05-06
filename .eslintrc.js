@@ -8,23 +8,13 @@ module.exports = {
   },
   extends: [
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:react-hooks/recommended",
-    "prettier"
+    "react-app",
+    "plugin:prettier/recommended"
   ],
-  plugins: ["@typescript-eslint", "prettier"],
+  plugins: ["@typescript-eslint", "react"],
   rules: {
     "prettier/prettier": "error",
-    "react/jsx-filename-extension": 0,
-    "import/extensions": 0,
-    "@typescript-eslint/no-empty-interface": 0,
-    "@typescript-eslint/naming-convention": 0,
-    "@typescript-eslint/no-misused-promises": 0,
-    "@typescript-eslint/no-unsafe-assignment": 0,
-    "@typescript-eslint/ban-ts-comment": 0,
-    "@typescript-eslint/no-unsafe-member-access": 0,
-    "@typescript-eslint/no-unsafe-call": 0,
-    "no-underscore-dangle": 0
+    "@typescript-eslint/ban-ts-comment": 0
   },
   settings: {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"],

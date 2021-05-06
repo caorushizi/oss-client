@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { KeyCode } from "../helper/enums";
 
 const useKeyPress = (targetKeyCode: KeyCode) => {

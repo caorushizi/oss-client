@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./index.scss";
-import { Input, Breadcrumb, Space } from "antd";
+import { Breadcrumb, Input, Space } from "antd";
 import classNames from "classnames";
 import BackIcon from "../../assets/images/back.png";
 import ReloadIcon from "../../assets/images/reload.png";

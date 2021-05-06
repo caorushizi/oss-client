@@ -230,19 +230,23 @@ body {
       .ant-radio-inner {
         background: transparent;
         border-color: rgba(255, 255, 255, 1);
+
         &::after {
           background: transparent;
         }
       }
+
       &.ant-radio-checked {
         .ant-radio-inner {
           border-color: rgba(255, 255, 255, 1);
+
           &::after {
             background: rgba(255, 255, 255, 1);
           }
         }
       }
     }
+
     span {
       color: #fff;
     }
@@ -340,6 +344,7 @@ body {
         background: transparent;
       }
     }
+
     &:hover {
       background: rgba(0, 0, 0, 0.2);
     }

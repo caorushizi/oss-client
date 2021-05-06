@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Radio, Button, Input, Form, message, Spin } from "antd";
+import { Button, Form, Input, message, Radio, Spin, Switch } from "antd";
 import "./index.scss";
 import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import { changeSetting, getConfig } from "../../helper/ipc";
-import { initialConfig, Theme } from "../../../../main/types";
+import { initialConfig } from "main/types";
 
 const { remote } = window.require("electron");
 

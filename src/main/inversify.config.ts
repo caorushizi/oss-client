@@ -45,6 +45,7 @@ container
 container
   .bind<IOssService>(SERVICE_IDENTIFIER.OSS)
   .to(OssService)
+
   .inSingletonScope();
 
 export { container };

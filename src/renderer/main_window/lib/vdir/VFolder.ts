@@ -30,6 +30,55 @@ export default class VFolder {
     this.cursor = this;
   }
 
+  public static from(itemList: BucketItem[]): VFolder {
+    const dir = new VFolder("#");
+    itemList.forEach(item => dir.touchFile(item));
+    return dir;
+  }
+
+  static isDir(o: any) {
+    return o instanceof VFolder;
+  }
+
+  public listFiles(): Item[] {
+    return this.cursor.children;
+  }
+
+  public changeDir(path: string) {
+    this.cursor =
+      (this.cursor.children.find(
+        item => item.name === path && VFolder.isDir(item)
+      ) as VFolder) || this.cursor;
+    this.navigator.push(path);
+  }
+
+  public back() {
+    if (this.cursor.parent) {
+      this.navigator.pop();
+      this.cursor = this.cursor.parent;
+    }
+  }
+
+  public getNav() {
+    return this.navigator;
+  }
+
+  public getPathPrefix(): string {
+    return this.navigator.join("/");
+  }
+
+  public getTotalItem(): number {
+    return this.cursor.children.length;
+  }
+
+  public getItem(fileId: string): Item | undefined {
+    return this.cursor.children.find(item => item.shortId === fileId);
+  }
+
+  public getItems() {
+    return this.cursor.children;
+  }
+
   /**
    * 创建文件夹
    * @param vpath 以 '/' 分割，文件夹路径。
@@ -77,54 +126,5 @@ export default class VFolder {
 
     cursor.children.push(file);
     return file;
-  }
-
-  public static from(itemList: BucketItem[]): VFolder {
-    const dir = new VFolder("#");
-    itemList.forEach(item => dir.touchFile(item));
-    return dir;
-  }
-
-  public listFiles(): Item[] {
-    return this.cursor.children;
-  }
-
-  public changeDir(path: string) {
-    this.cursor =
-      (this.cursor.children.find(
-        item => item.name === path && VFolder.isDir(item)
-      ) as VFolder) || this.cursor;
-    this.navigator.push(path);
-  }
-
-  public back() {
-    if (this.cursor.parent) {
-      this.navigator.pop();
-      this.cursor = this.cursor.parent;
-    }
-  }
-
-  public getNav() {
-    return this.navigator;
-  }
-
-  public getPathPrefix(): string {
-    return this.navigator.join("/");
-  }
-
-  static isDir(o: any) {
-    return o instanceof VFolder;
-  }
-
-  public getTotalItem(): number {
-    return this.cursor.children.length;
-  }
-
-  public getItem(fileId: string): Item | undefined {
-    return this.cursor.children.find(item => item.shortId === fileId);
-  }
-
-  public getItems() {
-    return this.cursor.children;
   }
 }

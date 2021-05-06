@@ -22,8 +22,6 @@ import IpcChannelsService from "./IpcChannelsService";
 import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
 import TAG from "../constants/tags";
 
-console.log("lll", TrayIcon);
-
 /**
  * 现只考虑 windows 平台和 mac 平台
  *
@@ -75,25 +73,6 @@ export default class ElectronAppService implements IApp {
       app.quit();
     }
   }
-
-  private registerIpc = (
-    eventName: string,
-    handler: (data: any) => Promise<any>
-  ) => {
-    ipcMain.on(eventName, async (event, request: { id: string; data: any }) => {
-      const { id, data } = request;
-      const response = { code: 200, data: {} };
-      this.logger.info(`IPC 请求 ${eventName} => `, JSON.stringify(data));
-      try {
-        response.data = await handler(data);
-      } catch (err) {
-        response.code = err.code || 500;
-        response.data = err.message || "Main process error.";
-      }
-      this.logger.info(`IPC 响应 ${eventName} => `, JSON.stringify(response));
-      event.sender.send(`${eventName}_res_${id}`, response);
-    });
-  };
 
   init() {
     // 初始化 app
@@ -638,4 +617,23 @@ export default class ElectronAppService implements IApp {
       }
     });
   }
+
+  private registerIpc = (
+    eventName: string,
+    handler: (data: any) => Promise<any>
+  ) => {
+    ipcMain.on(eventName, async (event, request: { id: string; data: any }) => {
+      const { id, data } = request;
+      const response = { code: 200, data: {} };
+      this.logger.info(`IPC 请求 ${eventName} => `, JSON.stringify(data));
+      try {
+        response.data = await handler(data);
+      } catch (err) {
+        response.code = err.code || 500;
+        response.data = err.message || "Main process error.";
+      }
+      this.logger.info(`IPC 响应 ${eventName} => `, JSON.stringify(response));
+      event.sender.send(`${eventName}_res_${id}`, response);
+    });
+  };
 }

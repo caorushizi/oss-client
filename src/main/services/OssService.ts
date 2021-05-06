@@ -9,13 +9,6 @@ import Tencent from "../oss/Tencent";
 export default class OssService implements IOssService {
   public instance: IOSS | null = null;
 
-  getService(): IOSS {
-    if (!this.instance) {
-      throw new Error("没有初始化 app");
-    }
-    return this.instance;
-  }
-
   public static create(type: OssType, ak: string, sk: string): IOSS {
     switch (type) {
       case OssType.qiniu:
@@ -27,6 +20,13 @@ export default class OssService implements IOssService {
       default:
         throw Error("暂时还不支持该云存储厂商");
     }
+  }
+
+  getService(): IOSS {
+    if (!this.instance) {
+      throw new Error("没有初始化 app");
+    }
+    return this.instance;
   }
 
   changeContext(type: OssType, ak: string, sk: string) {
