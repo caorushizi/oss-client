@@ -1,4 +1,3 @@
-import React from "react";
 import { createFromIconfontCN } from "@ant-design/icons";
 
 export default createFromIconfontCN({

@@ -4,9 +4,7 @@ import reactDom from "react-dom";
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import "antd/dist/antd.css";
-import "../main_window/index.scss";
-
-const { ipcRenderer, remote } = window.require("electron");
+import { ipcRenderer, remote } from "../common/script/electron";
 
 type Options = {
   title: string;
@@ -18,11 +16,14 @@ const App = () => {
     title: "警告",
     message: "警告"
   });
+
+  const onTest = (event: Electron.IpcRendererEvent, options: Options) => {
+    setMessage({ ...message, ...options });
+    remote.getCurrentWindow().show();
+  };
+
   useEffect(() => {
-    ipcRenderer.on("options", (e, options: Options) => {
-      setMessage({ ...message, ...options });
-      remote.getCurrentWindow().show();
-    });
+    ipcRenderer.on("options", onTest);
   }, []);
   return (
     <section className="container">

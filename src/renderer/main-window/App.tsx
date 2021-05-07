@@ -24,8 +24,8 @@ import {
 import Services from "./components/Services";
 import { getBuckets, initOss, switchBucket } from "./helper/ipc";
 import { BucketMeta } from "./types";
+import { ipcRenderer, remote } from "../common/script/electron";
 
-const { ipcRenderer, remote } = window.require("electron");
 const audio = new Audio(audioSrc);
 
 const App: React.FC = () => {

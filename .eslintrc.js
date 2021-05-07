@@ -23,9 +23,6 @@ module.exports = {
       node: {
         paths: ["main", "renderer", "types"],
         extensions: [".js", ".jsx", ".ts", ".tsx"]
-      },
-      webpack: {
-        config: join(__dirname, "webpack.config.js")
       }
     }
   },

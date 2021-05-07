@@ -7,3 +7,10 @@ export class BucketMeta {
 
   files: VFile[] = [];
 }
+
+export enum OssType {
+  qiniu,
+  ali,
+
+  tencent
+}

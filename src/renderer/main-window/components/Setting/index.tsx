@@ -5,9 +5,8 @@ import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import { changeSetting, getConfig } from "../../helper/ipc";
-import { initialConfig } from "main/types";
-
-const { remote } = window.require("electron");
+import { initialConfig } from "../../../../main/types";
+import { remote } from "../../../common/script/electron";
 
 enum FlowWindowStyle {
   circle,

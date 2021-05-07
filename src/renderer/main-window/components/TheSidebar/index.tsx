@@ -9,8 +9,7 @@ import SettingIcon from "../../assets/images/setting.png";
 import DoneIcon from "../../assets/images/done.png";
 import DownloadIcon from "../../assets/images/download.png";
 import AppsIcon from "../../assets/images/apps.png";
-
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "../../../common/script/electron";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 

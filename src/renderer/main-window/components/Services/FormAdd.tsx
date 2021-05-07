@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Input, Select } from "antd";
 import "./index.scss";
 import shortId from "shortid";
-import { OssType } from "main/types";
+import { OssType } from "../../../../main/types";
 
 type PropTypes = {
   onBucketAdd: (values: AddForm) => void;

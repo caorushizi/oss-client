@@ -9,9 +9,9 @@
     "dev": "vite",
     "electron": "node esbuild.config.js && electron dist/main/index.js",
     "start": "cross-env NODE_ENV=development concurrently -n=vite,electron -c=green,blue \"npm run dev\" \"npm run electron\"",
-    "build": "rimraf dist && vite build && node esbuild.config.js",
+    "build": "electron-builder",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "rimraf dist && vite build && node esbuild.config.js"
   },
   "keywords": [],
   "author": {
@@ -20,6 +20,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-eslint": "^8.0.1",
     "@types/ali-oss": "6.0.8",
     "@types/classnames": "2.2.10",
     "@types/klaw-sync": "6.0.0",
@@ -46,6 +47,7 @@
     "eslint": "^7.5.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-config-react-app": "^6.0.0",
+    "eslint-friendly-formatter": "^4.0.1",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",

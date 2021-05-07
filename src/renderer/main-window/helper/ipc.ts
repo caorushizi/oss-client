@@ -1,6 +1,5 @@
 import uuidV1 from "uuid/v1";
-
-const { ipcRenderer, IpcRendererEvent } = window.require("electron");
+import { ipcRenderer } from "../../common/script/electron";
 
 function send(eventName: string, options = {}): any {
   const data = options;
@@ -9,7 +8,10 @@ function send(eventName: string, options = {}): any {
   return new Promise<IpcResponse>((resolve, reject) => {
     ipcRenderer.once(
       responseEvent,
-      (event: IpcRendererEvent, response: { code: number; data: any }) => {
+      (
+        event: Electron.IpcRendererEvent,
+        response: { code: number; data: any }
+      ) => {
         if (response.code === 200) {
           const { code, msg, data: resData } = response.data;
           if (code !== 0) {
@@ -69,23 +71,23 @@ export async function addApp(
   return send("add-app", app);
 }
 
-export async function updateApp(app: AppStore) {
+export function updateApp(app: AppStore) {
   return send("update-app", app);
 }
 
-export async function deleteApp(id?: string) {
+export function deleteApp(id?: string) {
   return send("delete-app", id);
 }
 
-export async function clearTransferDoneList() {
+export function clearTransferDoneList() {
   return send("clear-transfer-done-list", TransferStatus.done);
 }
 
-export async function changeSetting(key: string, value: any) {
+export function changeSetting(key: string, value: any) {
   return send("change-setting", { key, value });
 }
 
-export async function deleteFiles(paths: string[]) {
+export function deleteFiles(paths: string[]) {
   return send("delete-files", { paths });
 }
 
@@ -93,21 +95,15 @@ export function getConfig(): Promise<ConfigStore> {
   return send("get-config");
 }
 
-export async function showAlert(options?: {
-  title?: string;
-  message?: string;
-}) {
+export function showAlert(options?: { title?: string; message?: string }) {
   return send("show-alert", options);
 }
 
-export async function showConfirm(options?: {
-  title?: string;
-  message?: string;
-}) {
+export function showConfirm(options?: { title?: string; message?: string }) {
   return send("show-confirm", options);
 }
 
-export async function uploadFiles(options: {
+export function uploadFiles(options: {
   remoteDir: string;
   fileList: string[];
   flag?: boolean; // 是不是悬浮窗上传
@@ -115,13 +111,13 @@ export async function uploadFiles(options: {
   return send("upload-files", options);
 }
 
-export async function downloadFiles(options: {
+export function downloadFiles(options: {
   remoteDir: string;
   fileList: VFile[];
 }) {
   return send("download-files", options);
 }
 
-export async function getFileUrl(key: string) {
+export function getFileUrl(key: string) {
   return send("get-url", key);
 }

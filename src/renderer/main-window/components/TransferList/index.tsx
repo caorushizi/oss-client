@@ -6,8 +6,7 @@ import Icon from "../IconFont";
 import { fileSizeFormatter, getIconName } from "../../helper/utils";
 import { getTransfers } from "../../helper/ipc";
 import NoResult from "../NoResult";
-
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "../../../common/script/electron";
 
 type ProgressListType = {
   id: string;

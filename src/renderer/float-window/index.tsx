@@ -8,19 +8,16 @@ import {
   getConfig,
   getTransfers,
   uploadFiles
-} from "../main_window/helper/ipc";
+} from "../main-window/helper/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "../../main/types";
-
-const {
-  ipcRenderer,
-  IpcRendererEvent,
-  MenuItemConstructorOptions,
-  remote
-} = window.require("electron");
+import { ipcRenderer, remote } from "../common/script/electron";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);
-  const onSwitchShape = (_: IpcRendererEvent, t: FlowWindowStyle) => {
+  const onSwitchShape = (
+    event: Electron.IpcRendererEvent,
+    t: FlowWindowStyle
+  ) => {
     const currentWindow = remote.getCurrentWindow();
     if (t === FlowWindowStyle.circle) {
       setCircle(true);
@@ -84,7 +81,7 @@ const onContextMenu = async () => {
     type: TaskType.upload,
     status: TransferStatus.done
   });
-  const recentMenu: MenuItemConstructorOptions[] =
+  const recentMenu: Electron.MenuItemConstructorOptions[] =
     recentList.length > 0
       ? recentList.splice(0, 5).map(i => ({
           label: i.name.replace(
@@ -94,7 +91,7 @@ const onContextMenu = async () => {
           click: () => {}
         }))
       : [{ label: "暂无最近记录", enabled: false }];
-  const contextMenuTemplate: MenuItemConstructorOptions[] = [
+  const contextMenuTemplate: Electron.MenuItemConstructorOptions[] = [
     ...recentMenu,
     { type: "separator" },
     { label: "清除最近记录" },

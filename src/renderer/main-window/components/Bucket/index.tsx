@@ -25,8 +25,11 @@ import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "./hooks/useSelection";
 import NoResult from "../NoResult";
 import store from "../../../../main/helper/store";
-
-const { clipboard, ipcRenderer, remote } = window.require("electron");
+import {
+  clipboard,
+  ipcRenderer,
+  remote
+} from "../../../common/script/electron";
 
 type PropTypes = {
   bucketMeta: BucketMeta;

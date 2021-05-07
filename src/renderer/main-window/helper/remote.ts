@@ -1,4 +1,4 @@
-const { remote } = window.require('"electron"');
+import { remote } from "../../common/script/electron";
 
 export function dialog() {
   return remote.dialog.showOpenDialog({

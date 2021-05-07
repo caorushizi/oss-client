@@ -1,10 +1,23 @@
 import { defineConfig } from "vite";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { resolve } from "path";
+import eslint from "@rollup/plugin-eslint";
+const friendlyFormatter = require("eslint-friendly-formatter");
+console.log("test: ", friendlyFormatter);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh()],
+  plugins: [
+    {
+      ...eslint({
+        include: "**/*.+(vue|js|jsx|ts|tsx)",
+        formatter: friendlyFormatter
+      }),
+      enforce: "pre",
+      apply: "serve"
+    },
+    reactRefresh()
+  ],
   build: {
     target: "es2015",
     rollupOptions: {
