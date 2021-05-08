@@ -1,6 +1,6 @@
 import moment from "moment";
 import mime from "mime";
-import { TaskType } from "../../../main/types";
+import { TaskType } from "types/enum";
 
 export function fileSizeFormatter(value = 0): string {
   if (!value) return "0 Bytes";
@@ -114,7 +114,7 @@ export function deepEqual(a: any, b: any): boolean {
   return a === b;
 }
 
-export function debounce(fn: Function, delay = 200) {
+export function debounce(fn: any, delay = 200) {
   let timer: number | null = null;
   return (...args: any[]) => {
     if (timer) clearTimeout(timer);

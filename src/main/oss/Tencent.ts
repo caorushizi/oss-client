@@ -5,8 +5,9 @@ import COS from "cos-nodejs-sdk-v5";
 import mime from "mime";
 import shortid from "shortid";
 import { IOSS } from "../interface";
-import { OssType } from "../types";
+import { OssType } from "types/enum";
 import { download } from "../helper/utils";
+import { VFile } from "types/common";
 
 export default class Tencent implements IOSS {
   appId: string;
@@ -39,6 +40,7 @@ export default class Tencent implements IOSS {
         Region: this.region,
         Key: remotePath
       },
+      // @ts-ignore
       {}
     );
 
@@ -115,6 +117,7 @@ export default class Tencent implements IOSS {
 
   public async getBucketList(): Promise<string[]> {
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       this.cos.getService((err: any, data: any) => {
         if (err) reject(err);
         resolve(data.Buckets.map((item: any) => item.Name));
@@ -127,6 +130,7 @@ export default class Tencent implements IOSS {
   }
 
   generateUrl(remotePath: string): string {
+    // @ts-ignore
     return this.cos.getObjectUrl({
       Bucket: this.bucket,
       Region: this.region,

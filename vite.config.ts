@@ -2,16 +2,13 @@ import { defineConfig } from "vite";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { resolve } from "path";
 import eslint from "@rollup/plugin-eslint";
-const friendlyFormatter = require("eslint-friendly-formatter");
-console.log("test: ", friendlyFormatter);
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     {
       ...eslint({
-        include: "**/*.+(vue|js|jsx|ts|tsx)",
-        formatter: friendlyFormatter
+        include: "**/*.+(js|jsx|ts|tsx)"
       }),
       enforce: "pre",
       apply: "serve"
@@ -29,5 +26,12 @@ export default defineConfig({
       }
     },
     outDir: resolve(__dirname, "dist/electron")
+  },
+  resolve: {
+    alias: {
+      main: resolve(__dirname, "src/main"),
+      renderer: resolve(__dirname, "src/renderer"),
+      types: resolve(__dirname, "src/types")
+    }
   }
 });

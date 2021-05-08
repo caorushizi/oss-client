@@ -7,6 +7,7 @@ import { fileSizeFormatter, getIconName } from "../../helper/utils";
 import { getTransfers } from "../../helper/ipc";
 import NoResult from "../NoResult";
 import { ipcRenderer } from "../../../common/script/electron";
+import { TransferStore } from "types/common";
 
 type ProgressListType = {
   id: string;

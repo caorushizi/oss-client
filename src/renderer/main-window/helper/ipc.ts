@@ -1,5 +1,8 @@
 import uuidV1 from "uuid/v1";
 import { ipcRenderer } from "../../common/script/electron";
+import { IpcResponse } from "types/renderer";
+import { AppStore, ConfigStore, TransferStore, VFile } from "types/common";
+import { OssType, TransferStatus } from "types/enum";
 
 function send(eventName: string, options = {}): any {
   const data = options;

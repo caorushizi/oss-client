@@ -3,8 +3,9 @@ import * as fs from "fs";
 import qiniu from "qiniu";
 import shortid from "shortid";
 import { IOSS } from "../interface";
-import { OssType } from "../types";
+import { OssType } from "types/enum";
 import { download } from "../helper/utils";
+import { VFile } from "types/common";
 
 export default class Qiniu implements IOSS {
   appId: string;

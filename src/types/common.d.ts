@@ -1,3 +1,11 @@
+import {
+  FlowWindowStyle,
+  OssType,
+  TaskType,
+  Theme,
+  TransferStatus
+} from "./enum";
+
 declare class VFile {
   name: string;
   webkitRelativePath: string;
@@ -7,17 +15,6 @@ declare class VFile {
   lastModified: number;
   lastModifiedDate: Date;
   shortId: string;
-}
-
-declare enum OssType {
-  qiniu,
-  ali,
-  tencent
-}
-
-declare enum TaskType {
-  download,
-  upload
 }
 
 declare type Task<T> = {
@@ -50,22 +47,6 @@ declare type AppStore = {
   uploadPrefix: string;
   defaultDomain: string;
 };
-
-declare enum TransferStatus {
-  default,
-  done,
-  failed
-}
-
-declare enum FlowWindowStyle {
-  circle,
-  oval
-}
-
-declare enum Theme {
-  simple,
-  colorful
-}
 
 declare interface ConfigStore {
   // 当前状态

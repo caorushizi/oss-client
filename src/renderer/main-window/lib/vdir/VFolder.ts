@@ -2,6 +2,7 @@ import shortId from "shortid";
 import VFile from "./VFile";
 import { Item, Parent } from "./types";
 import { dirname } from "./utils";
+import { BucketItem } from "types/renderer";
 
 export default class VFolder {
   parent: Parent;

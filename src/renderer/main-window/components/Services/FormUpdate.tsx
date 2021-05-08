@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { Button, Form, Input, message, Select, Space, Spin } from "antd";
 import { getBuckets, switchBucket } from "../../helper/ipc";
-import { OssType } from "../../../../main/types";
+import { AppStore } from "types/common";
+import { OssType } from "types/enum";
 
 type PropTypes = {
   activeApp: AppStore;

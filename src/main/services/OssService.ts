@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 import { IOSS, IOssService } from "../interface";
-import { OssType } from "../types";
 import Qiniu from "../oss/Qiniu";
 import Ali from "../oss/Ali";
 import Tencent from "../oss/Tencent";
+import { OssType } from "types/enum";
 
 @injectable()
 export default class OssService implements IOssService {

@@ -1,5 +1,6 @@
 import { BrowserWindow, Tray } from "electron";
-import { OssType, Task } from "./types";
+import { Task, VFile } from "types/common";
+import { OssType } from "types/enum";
 
 export interface IApp {
   mainWindow: BrowserWindow | null;

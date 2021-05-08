@@ -2,6 +2,7 @@ import klawSync from "klaw-sync";
 import fs, { Stats } from "fs";
 import EventEmitter from "events";
 import axios from "axios";
+import { IpcResponse } from "types/renderer";
 
 export function pathStatsSync(path: string): Stats {
   return fs.statSync(path);

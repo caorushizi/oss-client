@@ -5,8 +5,9 @@ import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import { changeSetting, getConfig } from "../../helper/ipc";
-import { initialConfig } from "../../../../main/types";
+import { initialConfig } from "main/types";
 import { remote } from "../../../common/script/electron";
+import { ConfigStore } from "types/common";
 
 enum FlowWindowStyle {
   circle,
@@ -32,7 +33,7 @@ const Setting = () => {
     { label: "椭圆形", value: FlowWindowStyle.oval }
   ];
   const onSelectDownloadPath = async () => {
-    const dialogOptions = {
+    const dialogOptions: Electron.OpenDialogOptions = {
       properties: [
         "openDirectory",
         "createDirectory",

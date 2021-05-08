@@ -20,7 +20,6 @@ import {
 } from "../../helper/ipc";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
-import { BucketMeta } from "../../types";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "./hooks/useSelection";
 import NoResult from "../NoResult";
@@ -30,6 +29,7 @@ import {
   ipcRenderer,
   remote
 } from "../../../common/script/electron";
+import { BucketMeta } from "types/index";
 
 type PropTypes = {
   bucketMeta: BucketMeta;
@@ -291,7 +291,9 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         domains={domains}
         onFolderSelect={onFolderSelect}
         onFolderContextMenu={onFolderContextMenu}
-        onFileSelect={() => {}}
+        onFileSelect={() => {
+          console.log();
+        }}
         onFileContextMenu={onFileContextMenu}
         onPanelContextMenu={onPanelContextMenu}
         onPanelMouseDown={onPanelMouseDown}
@@ -302,7 +304,9 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         selectedItems={selection.fileIds}
         onFolderSelect={onFolderSelect}
         onFolderContextMenu={onFolderContextMenu}
-        onFileSelect={() => {}}
+        onFileSelect={() => {
+          console.log();
+        }}
         onFileContextMenu={onFileContextMenu}
         onPanelContextMenu={onPanelContextMenu}
         onPanelMouseDown={onPanelMouseDown}

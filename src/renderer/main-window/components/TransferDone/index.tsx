@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
-import { TransferStatus } from "../../../../main/types";
 
 import "./index.scss";
 import {
@@ -12,6 +11,8 @@ import {
 import Icon from "../IconFont";
 import NoResult from "../NoResult";
 import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
+import { TransferStore } from "types/common";
+import { TransferStatus } from "types/enum";
 
 const TransferDone = () => {
   const [transfers, setTransfers] = useState<TransferStore[]>([]);

@@ -19,6 +19,8 @@ import { Direction } from "../../helper/enums";
 import { hiddenTextFilter } from "../../helper/filters";
 import { debounce, deepEqual } from "../../helper/utils";
 import NoResult from "../NoResult";
+import { AppStore } from "types/common";
+import { AddForm } from "types/renderer";
 
 enum OssType {
   qiniu,

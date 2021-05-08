@@ -17,10 +17,10 @@ import TrayIcon from "../tray-icon.png";
 import { configStore } from "../helper/config";
 import { IApp, ILogger, IOssService, IStore } from "../interface";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import { FlowWindowStyle, TransferStore } from "../types";
 import IpcChannelsService from "./IpcChannelsService";
 import { checkDirExist, emitter, fail, mkdir, success } from "../helper/utils";
 import TAG from "../constants/tags";
+import { FlowWindowStyle } from "types/enum";
 
 /**
  * 现只考虑 windows 平台和 mac 平台

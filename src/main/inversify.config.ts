@@ -10,8 +10,8 @@ import {
   TransferStoreService
 } from "./services";
 import TAG from "./constants/tags";
-import { AppStore, TransferStore } from "./types";
 import OssService from "./services/OssService";
+import { AppStore, TransferStore } from "types/common";
 
 const container = new Container();
 

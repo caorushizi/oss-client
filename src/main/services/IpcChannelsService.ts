@@ -5,18 +5,12 @@ import * as fs from "fs";
 import uuidV1 from "uuid/v1";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
-import {
-  AppStore,
-  OssType,
-  Task,
-  TaskType,
-  TransferStatus,
-  TransferStore
-} from "../types";
 import TAG from "../constants/tags";
 import { configStore } from "../helper/config";
 import OssService from "./OssService";
 import { fattenFileList, pathStatsSync } from "../helper/utils";
+import { OssType, TaskType, TransferStatus } from "types/enum";
+import { AppStore, Task } from "types/common";
 
 @injectable()
 export default class IpcChannelsService {

@@ -4,8 +4,9 @@ import OSS from "ali-oss";
 import mime from "mime";
 import shortid from "shortid";
 import { IOSS } from "../interface";
-import { OssType } from "../types";
+import { OssType } from "types/enum";
 import { download } from "../helper/utils";
+import { VFile } from "types/common";
 
 export default class Ali implements IOSS {
   appId: string;

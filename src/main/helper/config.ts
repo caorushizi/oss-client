@@ -1,7 +1,8 @@
 import Store from "electron-store";
 import path from "path";
 import { app } from "electron";
-import { ConfigStore, initialConfig } from "../types";
+import { initialConfig } from "../types";
+import { ConfigStore } from "types/common";
 
 export const appDir = path.join(app.getPath("appData"), "oss client");
 export const downloadDir = app.getPath("downloads");

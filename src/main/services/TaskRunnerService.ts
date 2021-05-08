@@ -1,9 +1,10 @@
 import { inject, injectable, named } from "inversify";
-import { Task, TaskType, TransferStatus, TransferStore } from "../types";
 import { IStore, ITaskRunner } from "../interface";
 import { emitter } from "../helper/utils";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import TAG from "../constants/tags";
+import { Task } from "types/common";
+import { TaskType, TransferStatus } from "types/enum";
 
 @injectable()
 export default class TaskRunnerService implements ITaskRunner {

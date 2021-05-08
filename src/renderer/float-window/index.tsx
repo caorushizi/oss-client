@@ -9,7 +9,7 @@ import {
   getTransfers,
   uploadFiles
 } from "../main-window/helper/ipc";
-import { FlowWindowStyle, TaskType, TransferStatus } from "../../main/types";
+import { FlowWindowStyle, TaskType, TransferStatus } from "types/enum";
 import { ipcRenderer, remote } from "../common/script/electron";
 
 const App = () => {
