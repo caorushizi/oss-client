@@ -197,7 +197,7 @@ export default class ElectronAppService implements IApp {
       const mainWindowUrl = is.development
         ? "http://localhost:3000/main-window.html"
         : "oss-client://electron/main-window.html";
-      await this.mainWindow.loadURL(mainWindowUrl);
+      this.mainWindow.loadURL(mainWindowUrl).then(r => r);
       this.mainWindow.on("closed", () => {
         if (this.mainWindow) this.mainWindow = null;
       });

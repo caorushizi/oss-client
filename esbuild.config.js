@@ -11,10 +11,7 @@ require("esbuild").buildSync({
   sourcemap: true,
   target: ["node10.4"],
   external: ["electron"],
-  define: {
-    // 开发环境中二进制可执行文件的路径
-    __bin__: `"${resolve(__dirname, ".bin").replace(/\\/g, "\\\\")}"`
-  },
+  define: {},
   outdir: resolve(__dirname, "./dist/main"),
   loader: { ".png": "file" }
 });
