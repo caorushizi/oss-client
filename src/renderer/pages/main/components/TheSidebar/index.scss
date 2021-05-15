@@ -1,4 +1,4 @@
-@import "../../variable";
+@import "../../../../assets/variable";
 
 .the-sidebar-wrapper {
   .title-bar {
@@ -10,7 +10,7 @@
     opacity: 0.5;
   }
 
-  .container {
+  .sidebar-container {
     margin-bottom: 30px;
 
     .title {

@@ -107,4 +107,4 @@ window.addEventListener("mousemove", onMouseMove, false);
 window.addEventListener("mouseup", onMouseUp, false);
 window.addEventListener("contextmenu", onContextMenu, false);
 
-reactDom.render(<App />, document.getElementById("root"));
+export default App;

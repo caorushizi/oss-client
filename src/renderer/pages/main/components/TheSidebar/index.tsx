@@ -59,10 +59,10 @@ const TheSidebar: React.FC<PropTypes> = (params) => {
 
   return (
     <div className="the-sidebar-wrapper" style={{ background: params.color }}>
-      <section className="title-bar">
+      <div className="title-bar">
         <span>OSS Client</span>
-      </section>
-      <section className="container">
+      </div>
+      <div className="sidebar-container">
         <div className="title">
           <div className="text">储存空间</div>
           <Spin
@@ -93,8 +93,8 @@ const TheSidebar: React.FC<PropTypes> = (params) => {
             </li>
           )}
         </ul>
-      </section>
-      <section className="container">
+      </div>
+      <div className="sidebar-container">
         <div className="title">
           <div className="text">传输列表</div>
           {showProgress && (
@@ -126,8 +126,8 @@ const TheSidebar: React.FC<PropTypes> = (params) => {
             <div className="name">传输完成</div>
           </div>
         </div>
-      </section>
-      <section className="container">
+      </div>
+      <div className="sidebar-container">
         <div className="title">
           <div className="text">设置</div>
         </div>
@@ -149,7 +149,7 @@ const TheSidebar: React.FC<PropTypes> = (params) => {
             <div className="name">apps</div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

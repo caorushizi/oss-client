@@ -1,6 +1,5 @@
 import "normalize.css/normalize.css";
 import "./index.scss";
-import reactDom from "react-dom";
 import React, { useEffect, useState } from "react";
 import { Button, Space } from "antd";
 import "antd/dist/antd.css";
@@ -54,4 +53,4 @@ const App = () => {
   );
 };
 
-reactDom.render(<App />, document.getElementById("root"));
+export default App;

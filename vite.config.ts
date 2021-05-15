@@ -18,12 +18,7 @@ export default defineConfig({
   build: {
     target: "es2015",
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, "main-window.html"),
-        alert: resolve(__dirname, "alert-window.html"),
-        float: resolve(__dirname, "float-window.html"),
-        confirm: resolve(__dirname, "confirm-window.html"),
-      },
+      input: resolve(__dirname, "index.html"),
     },
     outDir: resolve(__dirname, "dist/electron"),
   },
