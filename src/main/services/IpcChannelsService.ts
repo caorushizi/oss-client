@@ -1,8 +1,8 @@
 import { inject, injectable, named } from "inversify";
-import uuid from "uuid/v4";
+import { v4 as uuidV4 } from "uuid";
 import path from "path";
 import * as fs from "fs";
-import uuidV1 from "uuid/v1";
+import { v1 as uuidV1 } from "uuid";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import TAG from "../constants/tags";
@@ -155,7 +155,7 @@ export default class IpcChannelsService {
       }
       remotePath = remotePath.replace(/\\+/g, "/");
 
-      const id = uuid();
+      const id = uuidV4();
       const callback = (taskId: string, process: number) =>
         this.taskRunner.setProgress(taskId, process);
       const task: Task<any> = {
@@ -165,7 +165,7 @@ export default class IpcChannelsService {
         type: TaskType.upload,
         size: pathStatsSync(filepath).size,
         progress: 0,
-        result: instance.uploadFile(id, remotePath, filepath, callback)
+        result: instance.uploadFile(id, remotePath, filepath, callback),
       };
       // 添加任务，自动执行
       this.taskRunner.addTask(task);
@@ -182,7 +182,7 @@ export default class IpcChannelsService {
       const downloadPath = path.join(customDownloadDir, localPath);
       fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
 
-      const id = uuid();
+      const id = uuidV4();
       const callback = (taskId: string, process: number) =>
         this.taskRunner.setProgress(taskId, process);
       const task: Task<any> = {
@@ -192,7 +192,7 @@ export default class IpcChannelsService {
         type: TaskType.upload,
         size: item.size,
         progress: 0,
-        result: instance.downloadFile(id, remotePath, downloadPath, callback)
+        result: instance.downloadFile(id, remotePath, downloadPath, callback),
       };
       // 添加任务，自动执行
       this.taskRunner.addTask(task);

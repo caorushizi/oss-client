@@ -8,7 +8,7 @@ import {
   nativeImage,
   protocol,
   screen,
-  Tray
+  Tray,
 } from "electron";
 import { resolve } from "path";
 import { inject, injectable, named } from "inversify";
@@ -79,7 +79,7 @@ export default class ElectronAppService implements IApp {
     this.logger.info("开始初始化软件");
 
     protocol.registerSchemesAsPrivileged([
-      { scheme: "oss-client", privileges: { secure: true, standard: true } }
+      { scheme: "oss-client", privileges: { secure: true, standard: true } },
     ]);
 
     app.on("ready", async () => {
@@ -103,7 +103,7 @@ export default class ElectronAppService implements IApp {
           visible: is.windows,
           type: "checkbox",
           checked: configStore.get("showFloatWindow"),
-          click: item => {
+          click: (item) => {
             if (this.floatWindow) {
               configStore.set("showFloatWindow", item.checked);
               if (item.checked) {
@@ -112,7 +112,7 @@ export default class ElectronAppService implements IApp {
                 this.floatWindow.hide();
               }
             }
-          }
+          },
         },
         {
           label: "设置",
@@ -121,30 +121,30 @@ export default class ElectronAppService implements IApp {
               this.mainWindow.show();
               this.mainWindow.webContents.send("to-setting");
             }
-          }
-        }
+          },
+        },
       ];
       if (is.macos) {
         const recentListStore = await this.transfers.find({});
         const recentList: MenuItemConstructorOptions[] =
           recentListStore.length > 0
-            ? recentListStore.splice(0, 5).map(i => ({
+            ? recentListStore.splice(0, 5).map((i) => ({
                 label: i.name,
                 click: () => {
                   if (configStore.get("markdown")) {
                     clipboard.write({
-                      text: `![${i.name}](图片链接 "http://${i.name}")`
+                      text: `![${i.name}](图片链接 "http://${i.name}")`,
                     });
                   } else {
                     clipboard.write({ text: i.name });
                   }
-                }
+                },
               }))
             : [
                 {
                   label: "暂无最近使用",
-                  enabled: false
-                }
+                  enabled: false,
+                },
               ];
 
         menuTemplate = menuTemplate.concat([
@@ -159,8 +159,8 @@ export default class ElectronAppService implements IApp {
             click: () => {
               const markdown = configStore.get("markdown");
               configStore.set("markdown", !markdown);
-            }
-          }
+            },
+          },
         ]);
       }
       menuTemplate = menuTemplate.concat([
@@ -169,8 +169,8 @@ export default class ElectronAppService implements IApp {
           label: "关闭程序",
           click() {
             app.quit();
-          }
-        }
+          },
+        },
       ]);
       const contextMenu = Menu.buildFromTemplate(menuTemplate);
       this.appTray.setToolTip("云存储客户端");
@@ -189,15 +189,16 @@ export default class ElectronAppService implements IApp {
         minWidth: 750,
         webPreferences: {
           nodeIntegration: true,
-          devTools: process.env.NODE_ENV === "development"
+          devTools: process.env.NODE_ENV === "development",
+          preload: resolve(__dirname, "../preload/index.js"),
         },
         titleBarStyle: "hiddenInset",
-        show: false
+        show: false,
       });
       const mainWindowUrl = is.development
         ? "http://localhost:3000/main-window.html"
         : "oss-client://electron/main-window.html";
-      this.mainWindow.loadURL(mainWindowUrl).then(r => r);
+      this.mainWindow.loadURL(mainWindowUrl).then((r) => r);
       this.mainWindow.on("closed", () => {
         if (this.mainWindow) this.mainWindow = null;
       });
@@ -216,14 +217,15 @@ export default class ElectronAppService implements IApp {
           frame: false,
           webPreferences: {
             nodeIntegration: true,
-            devTools: is.development
+            devTools: is.development,
+            preload: resolve(__dirname, "../preload/index.js"),
           },
           height: 0,
           width: 0,
           alwaysOnTop: true,
           resizable: false,
           type: "toolbar",
-          show: false
+          show: false,
         });
         // 开始加载悬浮窗口的静态资源
         const floatWindowUrl = is.development
@@ -263,10 +265,11 @@ export default class ElectronAppService implements IApp {
         parent: this.mainWindow,
         webPreferences: {
           nodeIntegration: true,
-          devTools: false
+          devTools: false,
+          preload: resolve(__dirname, "../preload/index.js"),
         },
         modal: true,
-        show: false
+        show: false,
       });
       const alertWindowUrl = is.development
         ? "http://localhost:3000/alert-window.html"
@@ -288,10 +291,11 @@ export default class ElectronAppService implements IApp {
         parent: this.mainWindow,
         webPreferences: {
           nodeIntegration: true,
-          devTools: false
+          devTools: false,
+          preload: resolve(__dirname, "../preload/index.js"),
         },
         modal: true,
-        show: false
+        show: false,
       });
       const confirmWindowUrl = is.development
         ? "http://localhost:3000/confirm-window.html"
@@ -328,7 +332,7 @@ export default class ElectronAppService implements IApp {
     // |                   开始注册 IPC 通道                          |
     // |                                                            |
     // --------------------------------------------------------------
-    this.registerIpc("update-app", async params => {
+    this.registerIpc("update-app", async (params) => {
       try {
         await this.appChannels.updateApp(params);
         return success(true);
@@ -337,7 +341,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("delete-app", async id => {
+    this.registerIpc("delete-app", async (id) => {
       if (!id) return fail(1, "id 不能为空");
       try {
         await this.appChannels.deleteApp(id);
@@ -354,7 +358,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("init-app", async params => {
+    this.registerIpc("init-app", async (params) => {
       try {
         const appStore = await this.appChannels.initApp(params);
         return success(appStore);
@@ -362,7 +366,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("add-app", async params => {
+    this.registerIpc("add-app", async (params) => {
       try {
         // 开始执行添加 app 方法
         const data = await this.appChannels.addApp(params);
@@ -371,7 +375,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("clear-transfer-done-list", async params => {
+    this.registerIpc("clear-transfer-done-list", async (params) => {
       try {
         await this.appChannels.removeTransfers(params);
         return success(true);
@@ -379,7 +383,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("get-transfer", async params => {
+    this.registerIpc("get-transfer", async (params) => {
       try {
         const transfers = await this.appChannels.getTransfers(params);
         return success(transfers);
@@ -387,7 +391,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("get-buckets", async params => {
+    this.registerIpc("get-buckets", async (params) => {
       try {
         const buckets = await this.appChannels.getBuckets(params);
         return success(buckets);
@@ -403,7 +407,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    this.registerIpc("switch-bucket", async params => {
+    this.registerIpc("switch-bucket", async (params) => {
       const { bucketName } = params;
       if (typeof bucketName !== "string" || bucketName === "")
         return fail(1, "参数错误");
@@ -427,12 +431,12 @@ export default class ElectronAppService implements IApp {
         }
       }
     );
-    this.registerIpc("show-alert", async options => {
+    this.registerIpc("show-alert", async (options) => {
       if (this.alertWindow) {
         this.alertWindow.webContents.send("options", options);
       }
       const getWaitFor = () => {
-        return new Promise(r => {
+        return new Promise((r) => {
           ipcMain.once("close-alert", () => {
             if (this.alertWindow) this.alertWindow.hide();
             r(true);
@@ -442,7 +446,7 @@ export default class ElectronAppService implements IApp {
       await getWaitFor();
       return success(true);
     });
-    this.registerIpc("change-setting", async params => {
+    this.registerIpc("change-setting", async (params) => {
       const { key, value } = params;
       if (typeof key !== "string" || key === "") return fail(1, "参数不能为空");
       switch (key) {
@@ -504,7 +508,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("show-confirm", async options => {
+    this.registerIpc("show-confirm", async (options) => {
       if (this.confirmWindow) {
         // fixme: 提示音
         this.confirmWindow.webContents.send("options", options);
@@ -526,7 +530,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("delete-files", async params => {
+    this.registerIpc("delete-files", async (params) => {
       if (!params?.paths) return fail(1, "参数错误");
       try {
         const { paths } = params;
@@ -538,7 +542,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("download-files", async params => {
+    this.registerIpc("download-files", async (params) => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("fileList" in params)) return fail(1, "参数错误");
       const { fileList } = params;
@@ -554,7 +558,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("upload-files", async params => {
+    this.registerIpc("upload-files", async (params) => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("fileList" in params)) return fail(1, "参数错误");
       const { fileList } = params;
@@ -570,7 +574,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    this.registerIpc("get-url", async key => {
+    this.registerIpc("get-url", async (key) => {
       if (!key) return fail(1, "参数错误");
       try {
         const url = await this.appChannels.getFileUrl(key);
@@ -592,7 +596,7 @@ export default class ElectronAppService implements IApp {
     });
 
     // 处理传输进度
-    emitter.on("transfer-process", progressList => {
+    emitter.on("transfer-process", (progressList) => {
       if (this.mainWindow) {
         this.mainWindow.webContents.send("transfer-progress", progressList);
       }
