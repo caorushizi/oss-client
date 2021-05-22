@@ -19,13 +19,16 @@ export default class TransferStoreService implements IStore<TransferStore> {
 
   find(query: any) {
     return new Promise<TransferStore[]>((resolve, reject) => {
-      this.store.find<TransferStore>(query, (err, documents) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(documents);
+      this.store.find<TransferStore>(
+        query,
+        (err: Error | null, documents: TransferStore[]) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(documents);
+          }
         }
-      });
+      );
     });
   }
 

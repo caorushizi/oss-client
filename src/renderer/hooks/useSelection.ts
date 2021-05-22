@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
-import { Item } from "../../../lib/vdir/types";
+import { Item } from "renderer/lib/vdir/types";
 
 const selection = new Selection({
   class: "selection",
@@ -28,10 +28,12 @@ const useSelection = (items: Item[]) => {
 
   const selectionStart = () => {};
   const selectionMove = ({
-    changed: { removed, added },
-    oe,
+    event,
+    store: {
+      changed: { removed, added },
+    },
   }: SelectionEvent) => {
-    if ((oe as any).button !== 2) {
+    if (event?.button !== 2) {
       added.forEach((el) => {
         const rowKey = el.getAttribute("data-row-key") || "";
         setFileIds((f) => f.concat(rowKey));

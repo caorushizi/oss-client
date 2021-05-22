@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useState } from "react";
 import "./index.scss";
 import { Table } from "antd";
 import { Item } from "renderer/lib/vdir/types";
-import Icon from "../IconFont";
+import Icon from "renderer/helper/iconFont";
 import {
   dateFormatter,
   fileSizeFormatter,

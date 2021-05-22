@@ -13,7 +13,7 @@ export default class AppStoreService implements IStore<AppStore> {
     const filename = path.join(appDir, "secrets");
     this.store = new DataStore({
       filename,
-      autoload: true
+      autoload: true,
     });
   }
 

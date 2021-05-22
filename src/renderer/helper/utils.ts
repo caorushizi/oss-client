@@ -73,7 +73,7 @@ export const taskTypeFormatter = (type: TaskType) =>
   type === TaskType.download ? "下载" : "上传";
 
 // fixme:
-export const getPlatform = () => "windows"; //process.platform;
+export const getPlatform = () => window.electron.platform;
 
 export function getIconName(filename: string): string {
   let iconName: string;

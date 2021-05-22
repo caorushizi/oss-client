@@ -4,7 +4,7 @@ import { Image } from "antd";
 import "./index.scss";
 import VFolder from "renderer/lib/vdir/VFolder";
 import { Item } from "renderer/lib/vdir/types";
-import IconFont from "../IconFont";
+import IconFont from "renderer/helper/iconFont";
 import VFile from "renderer/lib/vdir/VFile";
 import { getIconName, supportedImage } from "renderer/helper/utils";
 

@@ -18,6 +18,7 @@ import {
   switchBucket,
   updateApp,
   uploadFiles,
+  showWindow,
 } from "./ipcChannel";
 
 const apiKey = "electron";
@@ -52,6 +53,8 @@ const api: any = {
   closeAlertWindow: () => {
     ipcRenderer.send("close-alert");
   },
+  platform: process.platform,
+  showWindow,
 };
 
 if (process.env.NODE_ENV !== "production") {

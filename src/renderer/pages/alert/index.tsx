@@ -1,7 +1,6 @@
+import React, { useEffect, useState } from "react";
 import "normalize.css/normalize.css";
 import "./index.scss";
-import reactDom from "react-dom";
-import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import "antd/dist/antd.css";
 
@@ -16,13 +15,16 @@ const App = () => {
     message: "警告",
   });
 
-  const onTest = (event: Electron.IpcRendererEvent, options: Options) => {
+  const onShow = (event: Electron.IpcRendererEvent, options: Options) => {
     setMessage({ ...message, ...options });
-    remote.getCurrentWindow().show();
+    window.electron.showWindow("alert");
   };
 
   useEffect(() => {
-    window.electron.onIpcEvent("options", onTest);
+    window.electron.onIpcEvent("options", onShow);
+    return () => {
+      window.electron.removeIpcEvent("options", onShow);
+    };
   }, []);
 
   return (

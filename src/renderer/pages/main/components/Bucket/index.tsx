@@ -14,8 +14,8 @@ import VFile from "renderer/lib/vdir/VFile";
 import useKeyPress from "renderer/hooks/useKeyPress";
 import useSelection from "renderer/hooks/useSelection";
 import NoResult from "../Empty";
-import store from "main/helper/store";
-import { BucketMeta } from "types/index";
+import store from "renderer/helper/store";
+import { BucketMeta } from "types";
 
 type PropTypes = {
   bucketMeta: BucketMeta;

@@ -8,7 +8,7 @@ import {
   getIconName,
   taskTypeFormatter,
 } from "renderer/helper/utils";
-import Icon from "../IconFont";
+import Icon from "renderer/helper/iconFont";
 import NoResult from "../Empty";
 import { TransferStore } from "types/common";
 import { TransferStatus } from "types/enum";

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { Progress } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import Icon from "../IconFont";
+import Icon from "renderer/helper/iconFont";
 import { fileSizeFormatter, getIconName } from "renderer/helper/utils";
 import NoResult from "../Empty";
 import { TransferStore } from "types/common";

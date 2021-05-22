@@ -313,7 +313,7 @@ export default class ElectronAppService implements IApp {
     // |                   开始注册 IPC 通道                          |
     // |                                                            |
     // --------------------------------------------------------------
-    ipcMain.handle("update-app", async (params) => {
+    ipcMain.handle("update-app", async (event, params) => {
       try {
         await this.appChannels.updateApp(params);
         return success(true);
@@ -322,7 +322,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("delete-app", async (id) => {
+    ipcMain.handle("delete-app", async (event, id) => {
       if (!id) return fail(1, "id 不能为空");
       try {
         await this.appChannels.deleteApp(id);
@@ -331,7 +331,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("get-apps", async () => {
+    ipcMain.handle("get-apps", async (event) => {
       try {
         const apps = await this.appChannels.getApps();
         return success(apps);
@@ -339,7 +339,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("init-app", async (params) => {
+    ipcMain.handle("init-app", async (event, params) => {
       try {
         const appStore = await this.appChannels.initApp(params);
         return success(appStore);
@@ -347,7 +347,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("add-app", async (params) => {
+    ipcMain.handle("add-app", async (event, params) => {
       try {
         // 开始执行添加 app 方法
         const data = await this.appChannels.addApp(params);
@@ -356,7 +356,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("clear-transfer-done-list", async (params) => {
+    ipcMain.handle("clear-transfer-done-list", async (event, params) => {
       try {
         await this.appChannels.removeTransfers(params);
         return success(true);
@@ -364,7 +364,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("get-transfer", async (params) => {
+    ipcMain.handle("get-transfer", async (event, params) => {
       try {
         const transfers = await this.appChannels.getTransfers(params);
         return success(transfers);
@@ -372,7 +372,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("get-buckets", async (params) => {
+    ipcMain.handle("get-buckets", async (event, params) => {
       try {
         const buckets = await this.appChannels.getBuckets(params);
         return success(buckets);
@@ -380,7 +380,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, "获取 buckets 失败，请检查 ak，sk 是否匹配！");
       }
     });
-    ipcMain.handle("get-config", async () => {
+    ipcMain.handle("get-config", async (event) => {
       try {
         const data = await this.appChannels.getConfig();
         return success(data);
@@ -388,7 +388,7 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("switch-bucket", async (params) => {
+    ipcMain.handle("switch-bucket", async (event, params) => {
       const { bucketName } = params;
       if (typeof bucketName !== "string" || bucketName === "")
         return fail(1, "参数错误");
@@ -400,16 +400,19 @@ export default class ElectronAppService implements IApp {
         return fail(1, e.message);
       }
     });
-    ipcMain.handle("refresh-bucket", async ({ force }: { force?: boolean }) => {
-      try {
-        const object = await this.appChannels.refreshBucket(!!force);
-        return success(object);
-      } catch (e) {
-        this.logger.error("刷新 bucket 出错：", e);
-        return fail(1, e.message);
+    ipcMain.handle(
+      "refresh-bucket",
+      async (event, { force }: { force?: boolean }) => {
+        try {
+          const object = await this.appChannels.refreshBucket(!!force);
+          return success(object);
+        } catch (e) {
+          this.logger.error("刷新 bucket 出错：", e);
+          return fail(1, e.message);
+        }
       }
-    });
-    ipcMain.handle("show-alert", async (options) => {
+    );
+    ipcMain.handle("show-alert", async (event, options) => {
       if (this.alertWindow) {
         this.alertWindow.webContents.send("options", options);
       }
@@ -424,8 +427,9 @@ export default class ElectronAppService implements IApp {
       await getWaitFor();
       return success(true);
     });
-    ipcMain.handle("change-setting", async (params) => {
+    ipcMain.handle("change-setting", async (event, params) => {
       const { key, value } = params;
+      console.log(params, "params");
       if (typeof key !== "string" || key === "") return fail(1, "参数不能为空");
       switch (key) {
         case "useHttps":
@@ -486,7 +490,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    ipcMain.handle("show-confirm", async (options) => {
+    ipcMain.handle("show-confirm", async (event, options) => {
       if (this.confirmWindow) {
         // fixme: 提示音
         this.confirmWindow.webContents.send("options", options);
@@ -508,7 +512,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    ipcMain.handle("delete-files", async (params) => {
+    ipcMain.handle("delete-files", async (event, params) => {
       if (!params?.paths) return fail(1, "参数错误");
       try {
         const { paths } = params;
@@ -520,7 +524,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    ipcMain.handle("download-files", async (params) => {
+    ipcMain.handle("download-files", async (event, params) => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("fileList" in params)) return fail(1, "参数错误");
       const { fileList } = params;
@@ -536,7 +540,7 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    ipcMain.handle("upload-files", async (params) => {
+    ipcMain.handle("upload-files", async (event, params) => {
       if (!("remoteDir" in params)) return fail(1, "参数错误");
       if (!("fileList" in params)) return fail(1, "参数错误");
       const { fileList } = params;
@@ -552,13 +556,28 @@ export default class ElectronAppService implements IApp {
       }
     });
 
-    ipcMain.handle("get-url", async (key) => {
+    ipcMain.handle("get-url", async (event, key) => {
       if (!key) return fail(1, "参数错误");
       try {
         const url = await this.appChannels.getFileUrl(key);
         return success(url);
       } catch (e) {
         return fail(1, e.message);
+      }
+    });
+
+    ipcMain.on("show-window", (event, windowName: string) => {
+      switch (windowName) {
+        case "alert":
+          return this.alertWindow?.show();
+        case "confirm":
+          return this.confirmWindow?.show();
+        case "main":
+          return this.mainWindow?.show();
+        case "float":
+          return this.floatWindow?.show();
+        default:
+          return null;
       }
     });
 

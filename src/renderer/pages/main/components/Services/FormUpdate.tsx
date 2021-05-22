@@ -26,7 +26,7 @@ const FormUpdate = ({
     try {
       setLoading(true);
       // 获取当前 app 中的所有 bucket
-      const bucketList = await getBuckets();
+      const bucketList = await window.electron.getBuckets();
       setBuckets(bucketList);
       // 如果“默认上传 bucket”已经存在，则用来获取域名列表
       const { uploadBucket } = activeApp;

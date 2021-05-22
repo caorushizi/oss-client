@@ -67,6 +67,7 @@ export function clearTransferDoneList() {
 }
 
 export function changeSetting(key: string, value: any) {
+  console.log(123123, { key, value });
   return invoke("change-setting", { key, value });
 }
 
@@ -104,3 +105,6 @@ export function downloadFiles(options: {
 export function getFileUrl(key: string) {
   return invoke("get-url", key);
 }
+
+export const showWindow = (windowName: string): void =>
+  ipcRenderer.send("showWindow", windowName);

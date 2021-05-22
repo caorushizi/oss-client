@@ -20,7 +20,7 @@ const App = () => {
       "options",
       (event: Electron.IpcRendererEvent, options: Options) => {
         setMessage({ ...message, ...options });
-        remote.getCurrentWindow().show();
+        window.electron.showWindow("confirm");
       }
     );
   }, [message]);
