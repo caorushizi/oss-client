@@ -1,4 +1,5 @@
-import { contextBridge, app, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from "electron/renderer";
+import remote from "@electron/remote";
 import {
   addApp,
   changeSetting,
@@ -15,13 +16,52 @@ import {
   refreshBucket,
   showAlert,
   showConfirm,
+  showWindow,
   switchBucket,
   updateApp,
   uploadFiles,
-  showWindow,
 } from "./ipcChannel";
 
 const apiKey = "electron";
+
+const buildMenuFromTemplate = (
+  template: Electron.MenuItemConstructorOptions[]
+) => {
+  console.log(remote, "remote");
+  const menu = remote.Menu.buildFromTemplate(template);
+  menu.popup();
+};
+
+const showOpenDialog = (options: Electron.OpenDialogOptions) => {
+  return remote.dialog.showOpenDialog(options);
+};
+
+const appGetPath = (
+  name:
+    | "home"
+    | "appData"
+    | "userData"
+    | "cache"
+    | "temp"
+    | "exe"
+    | "module"
+    | "desktop"
+    | "documents"
+    | "downloads"
+    | "music"
+    | "pictures"
+    | "videos"
+    | "recent"
+    | "logs"
+    | "crashDumps"
+) => {
+  return remote.app.getPath(name);
+};
+
+const showItemInFolder = (fullPath: string) => {
+  remote.shell.showItemInFolder(fullPath);
+};
+
 /**
  * @see https://github.com/electron/electron/issues/21437#issuecomment-573522360
  */
@@ -55,6 +95,10 @@ const api: any = {
   },
   platform: process.platform,
   showWindow,
+  buildMenuFromTemplate,
+  showOpenDialog,
+  appGetPath,
+  showItemInFolder,
 };
 
 if (process.env.NODE_ENV !== "production") {

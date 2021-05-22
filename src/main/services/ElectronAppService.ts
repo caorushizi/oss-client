@@ -9,7 +9,7 @@ import {
   protocol,
   screen,
   Tray,
-} from "electron";
+} from "electron/main";
 import { resolve } from "path";
 import { inject, injectable, named } from "inversify";
 import { is } from "electron-util";
@@ -468,6 +468,12 @@ export default class ElectronAppService implements IApp {
           configStore.set("floatWindowStyle", value);
           if (this.floatWindow) {
             this.floatWindow.webContents.send("switch-shape", value);
+            const currentWindow = this.floatWindow;
+            if (value === FlowWindowStyle.circle) {
+              currentWindow.setContentSize(67, 67);
+            } else {
+              currentWindow.setContentSize(87, 30);
+            }
           }
           return success(true);
         case "showFloatWindow":

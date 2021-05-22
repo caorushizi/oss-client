@@ -126,7 +126,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   };
   const onFileContextMenu = (event: MouseEvent<HTMLElement>, item: VFile) => {
     event.stopPropagation();
-    const menu = remote.Menu.buildFromTemplate([
+    window.electron.buildMenuFromTemplate([
       {
         label: "全选",
         click: async () => {
@@ -158,7 +158,6 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         click: () => handleDelete(item),
       },
     ]);
-    menu.popup();
   };
   const onFolderSelect = (name: string) => {
     vFolder.changeDir(name);
@@ -169,7 +168,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     item: VFolder
   ) => {
     event.stopPropagation();
-    const menu = remote.Menu.buildFromTemplate([
+    window.electron.buildMenuFromTemplate([
       {
         label: "全选",
         click: () => {
@@ -186,11 +185,10 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         click: () => handleDelete(item),
       },
     ]);
-    menu.popup();
   };
 
   const onPanelContextMenu = () => {
-    const menu = remote.Menu.buildFromTemplate([
+    const menu = window.electron.buildMenuFromTemplate([
       {
         label: "刷新",
         click: () => onRefreshBucket(),
@@ -218,7 +216,6 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         click: () => handleDelete(),
       },
     ]);
-    menu.popup();
   };
 
   const onSearchChange = (value: string) => {
@@ -305,8 +302,8 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
       <HeaderButtonGroup
         selectedItems={selection.fileIds}
         fileUpload={async () => {
-          const userPath = remote.app.getPath("documents");
-          const result = await remote.dialog.showOpenDialog({
+          const userPath = window.electron.appGetPath("documents");
+          const result = await window.electron.showOpenDialog({
             defaultPath: userPath,
             properties: ["openFile"],
           });

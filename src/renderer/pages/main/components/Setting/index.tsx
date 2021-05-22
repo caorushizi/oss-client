@@ -39,7 +39,7 @@ const Setting = () => {
         "promptToCreate",
       ],
     };
-    const { canceled, filePaths } = await remote.dialog.showOpenDialog(
+    const { canceled, filePaths } = await window.electron.showOpenDialog(
       dialogOptions
     );
     if (canceled) return;
@@ -55,7 +55,7 @@ const Setting = () => {
     <SelectOutlined
       name="打开文件夹"
       onClick={() => {
-        remote.shell.showItemInFolder(config.downloadDir);
+        window.electron.showItemInFolder(config.downloadDir);
       }}
     />
   );

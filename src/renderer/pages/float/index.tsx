@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import reactDom from "react-dom";
 import "normalize.css/normalize.css";
 import "./index.scss";
 import { FileDrop } from "react-file-drop";
@@ -12,14 +11,7 @@ const App = () => {
     event: Electron.IpcRendererEvent,
     t: FlowWindowStyle
   ) => {
-    const currentWindow = remote.getCurrentWindow();
-    if (t === FlowWindowStyle.circle) {
-      setCircle(true);
-      currentWindow.setContentSize(67, 67);
-    } else {
-      setCircle(false);
-      currentWindow.setContentSize(87, 30);
-    }
+    setCircle(t === FlowWindowStyle.circle);
   };
   const onFileDrop = async (files: FileList | null) => {
     if (!files) return;
@@ -98,8 +90,7 @@ const onContextMenu = async () => {
       checked: true,
     },
   ];
-  const menu = remote.Menu.buildFromTemplate(contextMenuTemplate);
-  menu.popup();
+  window.electron.buildMenuFromTemplate(contextMenuTemplate);
 };
 
 window.addEventListener("mousedown", onMouseDown, false);
