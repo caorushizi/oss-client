@@ -8,7 +8,7 @@ type PropTypes = {
   onDownload: () => void;
   onDelete: () => void;
 };
-const HeaderButtonGroup: React.FC<PropTypes> = params => {
+const HeaderButtonGroup: React.FC<PropTypes> = (params) => {
   return (
     <Space size="middle" className="buttons-wrapper">
       <Button size="small" onClick={params.fileUpload}>

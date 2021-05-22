@@ -8,7 +8,7 @@ import {
 import { message } from "antd";
 import audioSrc from "../../assets/tip.mp3";
 
-import "./App.scss";
+import "./index.scss";
 import TheSidebar from "./components/TheSidebar";
 import TransferList from "./components/TransferList";
 import { Direction, Page, Platform } from "../../helper/enums";
@@ -27,7 +27,7 @@ import { BucketMeta } from "types/index";
 
 const audio = new Audio(audioSrc);
 
-const App: React.FC = () => {
+const Index: React.FC = () => {
   const getWidth = () => document.body.clientWidth - 225;
 
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -107,6 +107,7 @@ const App: React.FC = () => {
     try {
       // 设置活动 oss 配置
       const app = await window.electron.initOss();
+      console.log("testtest：", app);
       setActiveApp(app);
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await window.electron.getBuckets();
@@ -230,4 +231,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Index;

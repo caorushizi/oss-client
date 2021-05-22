@@ -33,7 +33,7 @@ export default class VFolder {
 
   public static from(itemList: BucketItem[]): VFolder {
     const dir = new VFolder("#");
-    itemList.forEach(item => dir.touchFile(item));
+    itemList.forEach((item) => dir.touchFile(item));
     return dir;
   }
 
@@ -48,7 +48,7 @@ export default class VFolder {
   public changeDir(path: string) {
     this.cursor =
       (this.cursor.children.find(
-        item => item.name === path && VFolder.isDir(item)
+        (item) => item.name === path && VFolder.isDir(item)
       ) as VFolder) || this.cursor;
     this.navigator.push(path);
   }
@@ -73,7 +73,7 @@ export default class VFolder {
   }
 
   public getItem(fileId: string): Item | undefined {
-    return this.cursor.children.find(item => item.shortId === fileId);
+    return this.cursor.children.find((item) => item.shortId === fileId);
   }
 
   public getItems() {
@@ -93,7 +93,7 @@ export default class VFolder {
   }
 
   private makeDir(name: string): VFolder {
-    const find = this.children.find(i => i.name === name && VFolder.isDir(i));
+    const find = this.children.find((i) => i.name === name && VFolder.isDir(i));
     if (find) return find as VFolder;
 
     const dir = new VFolder(name, this);

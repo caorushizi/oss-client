@@ -1,19 +1,19 @@
 export enum Platform {
   windows = "win32",
   macos = "darwin",
-  linux = "linux"
+  linux = "linux",
 }
 
 export enum Direction {
   up = "up",
   down = "down",
   left = "left",
-  right = "right"
+  right = "right",
 }
 
 export enum Layout {
   grid,
-  table
+  table,
 }
 
 export enum Page {
@@ -21,9 +21,9 @@ export enum Page {
   transferList,
   transferDone,
   setting,
-  services
+  services,
 }
 
 export enum KeyCode {
-  Escape = "Escape"
+  Escape = "Escape",
 }

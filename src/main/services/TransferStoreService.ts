@@ -13,7 +13,7 @@ export default class TransferStoreService implements IStore<TransferStore> {
     const filename = path.join(appDir, "transfers");
     this.store = new DataStore({
       filename,
-      autoload: true
+      autoload: true,
     });
   }
 
@@ -40,7 +40,7 @@ export default class TransferStoreService implements IStore<TransferStore> {
 
   update(query: any, updateQuery: any, options: any) {
     return new Promise<void>((resolve, reject) => {
-      this.store.update(query, updateQuery, options, err => {
+      this.store.update(query, updateQuery, options, (err) => {
         if (err) {
           reject(err);
         } else {

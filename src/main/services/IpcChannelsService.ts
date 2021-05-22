@@ -1,8 +1,7 @@
 import { inject, injectable, named } from "inversify";
-import { v4 as uuidV4 } from "uuid";
+import { v1 as uuidV1, v4 as uuidV4 } from "uuid";
 import path from "path";
 import * as fs from "fs";
-import { v1 as uuidV1 } from "uuid";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 import { ILogger, IOssService, IStore, ITaskRunner } from "../interface";
 import TAG from "../constants/tags";

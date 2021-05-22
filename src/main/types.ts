@@ -3,7 +3,7 @@ import { FlowWindowStyle, OssType, Theme } from "types/enum";
 export const OssTypeMap = {
   [OssType.qiniu]: "七牛云",
   [OssType.ali]: "阿里云",
-  [OssType.tencent]: "腾讯云"
+  [OssType.tencent]: "腾讯云",
 };
 
 export const initialConfig = {
@@ -18,5 +18,5 @@ export const initialConfig = {
   markdown: true,
   showFloatWindow: true,
   floatWindowStyle: FlowWindowStyle.circle,
-  uploadRename: false
+  uploadRename: false,
 };

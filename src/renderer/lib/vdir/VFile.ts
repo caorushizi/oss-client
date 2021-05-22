@@ -25,7 +25,7 @@ export default class VFile {
     type,
     size,
     lastModified,
-    lastModifiedDate
+    lastModifiedDate,
   }: BucketItem) {
     this.name = name;
     this.type = type;

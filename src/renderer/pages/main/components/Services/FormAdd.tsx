@@ -16,19 +16,19 @@ const FormAdd = ({ onBucketAdd }: PropTypes) => {
         name: shortId(),
         ak: "",
         sk: "",
-        type: OssType.qiniu
+        type: OssType.qiniu,
       }}
       labelAlign="left"
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 12 }}
       className="custom-form"
       hideRequiredMark
-      onFinish={values => {
+      onFinish={(values) => {
         onBucketAdd({
           name: values.name,
           sk: values.sk,
           ak: values.ak,
-          type: values.type
+          type: values.type,
         });
       }}
     >

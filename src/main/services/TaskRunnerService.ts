@@ -31,7 +31,7 @@ export default class TaskRunnerService implements ITaskRunner {
       date: task.date,
       type: task.type,
       size: task.size,
-      status: TransferStatus.default
+      status: TransferStatus.default,
     });
 
     this.queue.push(task);
@@ -39,14 +39,14 @@ export default class TaskRunnerService implements ITaskRunner {
   }
 
   public setProgress(id: string, progress: number) {
-    const activeTask = this.active.find(item => item.id === id);
+    const activeTask = this.active.find((item) => item.id === id);
     if (activeTask) activeTask.progress = progress;
 
     const nowTime = Date.now();
     if (nowTime > this.timeLimiter + 500) {
-      const progressList = this.active.map(item => ({
+      const progressList = this.active.map((item) => ({
         id: item.id,
-        progress: item.progress
+        progress: item.progress,
       }));
       emitter.emit("transfer-process", progressList);
       this.timeLimiter = nowTime;
@@ -80,7 +80,7 @@ export default class TaskRunnerService implements ITaskRunner {
       emitter.emit("transfer-failed", task.id);
     } finally {
       // 处理当前正在活动的任务
-      const doneId = this.active.findIndex(i => i.id === task.id);
+      const doneId = this.active.findIndex((i) => i.id === task.id);
       this.active.splice(doneId, 1);
       // 处理完成的任务
       this.runTask();
@@ -92,9 +92,9 @@ export default class TaskRunnerService implements ITaskRunner {
       // 上传完成
       if (
         // 下载队列中没有上传的项目
-        this.queue.every(i => i.type !== TaskType.upload) &&
+        this.queue.every((i) => i.type !== TaskType.upload) &&
         // 正在下载的队列中没有上传的项目
-        this.active.every(i => i.type !== TaskType.upload)
+        this.active.every((i) => i.type !== TaskType.upload)
       ) {
         emitter.emit("upload-finish");
       }

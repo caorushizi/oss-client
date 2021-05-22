@@ -1,33 +1,14 @@
-import { v1 as uuidV1 } from "uuid";
 import { AppStore, ConfigStore, TransferStore, VFile } from "types/common";
 import { OssType, TransferStatus } from "types/enum";
 import { ipcRenderer } from "electron";
 
-function send(eventName: string, options = {}): any {
-  const data = options;
-  const id = uuidV1();
-  const responseEvent = `${eventName}_res_${id}`;
-  return new Promise<IpcResponse>((resolve, reject) => {
-    ipcRenderer.once(
-      responseEvent,
-      (
-        event: Electron.IpcRendererEvent,
-        response: { code: number; data: any }
-      ) => {
-        if (response.code === 200) {
-          const { code, msg, data: resData } = response.data;
-          if (code !== 0) {
-            reject(new Error(msg));
-          }
-          resolve(resData);
-        } else {
-          reject(response.data);
-        }
-      }
-    );
-    ipcRenderer.send(eventName, { id, data });
-  });
-}
+const invoke = async (eventName: string, args: any = undefined) => {
+  const { code, msg, data } = await ipcRenderer.invoke(eventName, args);
+  if (String(code) !== "0") {
+    throw new Error(msg);
+  }
+  return data;
+};
 
 type BucketMeta = {
   domains: string[];
@@ -36,11 +17,11 @@ type BucketMeta = {
 };
 
 export async function switchBucket(bucketName: string): Promise<BucketMeta> {
-  return send("switch-bucket", { bucketName });
+  return invoke("switch-bucket", { bucketName });
 }
 
 export function refreshBucket(force?: boolean): Promise<BucketMeta> {
-  return send("refresh-bucket", { force });
+  return invoke("refresh-bucket", { force });
 }
 
 export async function getBuckets(config?: {
@@ -48,19 +29,19 @@ export async function getBuckets(config?: {
   ak: string;
   sk: string;
 }): Promise<string[]> {
-  return send("get-buckets", config);
+  return invoke("get-buckets", config);
 }
 
 export async function getAppsChannel(): Promise<AppStore[]> {
-  return send("get-apps");
+  return invoke("get-apps");
 }
 
 export async function initOss(id?: string): Promise<AppStore> {
-  return send("init-app", { id });
+  return invoke("init-app", { id });
 }
 
 export async function getTransfers(query: any): Promise<TransferStore[]> {
-  return send("get-transfer", query);
+  return invoke("get-transfer", query);
 }
 
 export async function addApp(
@@ -70,39 +51,39 @@ export async function addApp(
   sk: string
 ): Promise<AppStore> {
   const app = { name, type, ak, sk };
-  return send("add-app", app);
+  return invoke("add-app", app);
 }
 
 export function updateApp(app: AppStore) {
-  return send("update-app", app);
+  return invoke("update-app", app);
 }
 
 export function deleteApp(id?: string) {
-  return send("delete-app", id);
+  return invoke("delete-app", id);
 }
 
 export function clearTransferDoneList() {
-  return send("clear-transfer-done-list", TransferStatus.done);
+  return invoke("clear-transfer-done-list", TransferStatus.done);
 }
 
 export function changeSetting(key: string, value: any) {
-  return send("change-setting", { key, value });
+  return invoke("change-setting", { key, value });
 }
 
 export function deleteFiles(paths: string[]) {
-  return send("delete-files", { paths });
+  return invoke("delete-files", { paths });
 }
 
 export function getConfig(): Promise<ConfigStore> {
-  return send("get-config");
+  return invoke("get-config");
 }
 
 export function showAlert(options?: { title?: string; message?: string }) {
-  return send("show-alert", options);
+  return invoke("show-alert", options);
 }
 
 export function showConfirm(options?: { title?: string; message?: string }) {
-  return send("show-confirm", options);
+  return invoke("show-confirm", options);
 }
 
 export function uploadFiles(options: {
@@ -110,16 +91,16 @@ export function uploadFiles(options: {
   fileList: string[];
   flag?: boolean; // 是不是悬浮窗上传
 }) {
-  return send("upload-files", options);
+  return invoke("upload-files", options);
 }
 
 export function downloadFiles(options: {
   remoteDir: string;
   fileList: VFile[];
 }) {
-  return send("download-files", options);
+  return invoke("download-files", options);
 }
 
 export function getFileUrl(key: string) {
-  return send("get-url", key);
+  return invoke("get-url", key);
 }

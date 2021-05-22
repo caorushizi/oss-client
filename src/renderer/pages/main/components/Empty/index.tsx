@@ -6,7 +6,7 @@ type PropTypes = {
   subTitle: string;
 };
 
-const NoResult: React.FC<PropTypes> = params => {
+const NoResult: React.FC<PropTypes> = (params) => {
   return (
     <div className="no-result">
       <div className="title">{params.title}</div>
