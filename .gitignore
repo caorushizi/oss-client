@@ -5,3 +5,4 @@ dist-ssr
 *.local
 
 .idea
+yarn-error.log
