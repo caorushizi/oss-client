@@ -17,7 +17,10 @@ require("dotenv").config({
 
 function startMain() {
   return require("esbuild").build({
-    entryPoints: [resolve(__dirname, "../src/main/index.ts")],
+    entryPoints: [
+      resolve(__dirname, "../src/main/index.ts"),
+      resolve(__dirname, "../src/preload/index.ts"),
+    ],
     bundle: true,
     platform: "node",
     sourcemap: true,
@@ -27,7 +30,7 @@ function startMain() {
       // 开发环境中二进制可执行文件的路径
       __bin__: `"${resolve(__dirname, "../.bin").replace(/\\/g, "\\\\")}"`,
     },
-    outdir: resolve(__dirname, "../dist/main"),
+    outdir: resolve(__dirname, "../dist"),
     loader: { ".png": "file" },
     watch: {
       onRebuild(error) {
