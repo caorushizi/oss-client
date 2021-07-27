@@ -29,13 +29,20 @@ app.setAppUserModelId("com.company.AppName");
 
 // Prevent window from being garbage collected
 let mainWindow: Electron.BrowserWindow | undefined;
-
+console.log(1231213);
 const createMainWindow = async () => {
   const win = new BrowserWindow({
-    title: app.name,
+    frame: false,
+    height: 645,
+    width: 1090,
+    minHeight: 350,
+    minWidth: 750,
+    webPreferences: {
+      nodeIntegration: true,
+      devTools: is.development,
+    },
+    titleBarStyle: "hiddenInset",
     show: false,
-    width: 600,
-    height: 400,
   });
 
   win.on("ready-to-show", () => {
@@ -49,7 +56,7 @@ const createMainWindow = async () => {
   });
 
   if (is.development) {
-    await win.loadURL("http://localhost:1337/");
+    await win.loadURL("http://localhost:7789/");
   } else {
     await win.loadFile(path.join(__dirname, "index.html"));
   }
@@ -88,9 +95,4 @@ app.on("activate", async () => {
   await app.whenReady();
   // Menu.setApplicationMenu(menu);
   mainWindow = await createMainWindow();
-
-  const favoriteAnimal = config.get("favoriteAnimal");
-  mainWindow.webContents.executeJavaScript(
-    `document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`
-  );
 })();
