@@ -1,3 +1,5 @@
+"use strict";
+
 const { createServer } = require("vite");
 const chalk = require("chalk");
 const { resolve } = require("path");
@@ -28,7 +30,7 @@ function startMain() {
     outdir: resolve(__dirname, "../dist/main"),
     loader: { ".png": "file" },
     watch: {
-      onRebuild(error, result) {
+      onRebuild(error) {
         if (error) {
           console.error("watch build failed:", error);
         } else {
@@ -51,7 +53,7 @@ function startMain() {
 function startRenderer() {
   return createServer({
     configFile: false,
-    root: __dirname,
+    root: resolve(__dirname, "../"),
     server: {
       port: 7789,
     },

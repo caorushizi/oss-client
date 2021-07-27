@@ -5,8 +5,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import MainPage from "./nodes/main-page";
 import TestPage from "./nodes/test-page";
 
-console.log(window.location.pathname);
-
 const App: FC = () => {
   return (
     <div className="App">
@@ -14,7 +12,7 @@ const App: FC = () => {
         <Routes>
           <Route path="/main" element={<MainPage />} />
           <Route path="/test" element={<TestPage />} />
-          <Navigate to="/test" />
+          <Navigate to="/main" />
         </Routes>
       </Router>
     </div>
