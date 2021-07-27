@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 import { Button } from "@chakra-ui/react";
 
-const main: FC = () => {
+const MainPage: FC = () => {
   return (
     <div>
-      <Button>1231</Button>
+      <Button>你好世界</Button>
     </div>
   );
 };
 
-export default main;
+export default MainPage;
