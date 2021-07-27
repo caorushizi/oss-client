@@ -1,17 +1,28 @@
 import React, { FC } from "react";
-import { Box, Text, Center, Flex, Square } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const MainPage: FC = () => {
+  const location = useLocation();
+
+  console.log(location);
   return (
-    <Flex color="white">
-      <Center w="100px" bg="green.500">
-        <Text>Box 1</Text>
-      </Center>
-      <Square bg="blue.500" size="150px">
-        <Text>Box 2</Text>
-      </Square>
+    <Flex h={"100vh"}>
+      <Box w="225px" bg="green.500">
+        <Link to={"bucket"}>bucket</Link>
+        <br />
+        <Link to={"transfer-list"}>list</Link>
+        <br />
+        <Link to={"transfer-done"}>done</Link>
+        <br />
+        <Link to={"settings"}>settings</Link>
+        <br />
+        <Link to={"apps"}>apps</Link>
+        <br />
+        <Link to={"/"}>/回到首页</Link>
+      </Box>
       <Box flex="1" bg="tomato">
-        <Text>Box 3</Text>
+        <Outlet />
       </Box>
     </Flex>
   );

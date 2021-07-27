@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import "./index.scss";
 import { Button } from "@chakra-ui/react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const TestPage: FC = () => {
   const navigate = useNavigate();

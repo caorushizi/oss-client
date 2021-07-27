@@ -6,7 +6,6 @@ import unhandled from "electron-unhandled";
 import debug from "electron-debug";
 // import contextMenu from "electron-context-menu";
 /// const {autoUpdater} = require('electron-updater');
-import config from "./config";
 // import menu from "./menu.js";
 
 unhandled();
@@ -29,7 +28,7 @@ app.setAppUserModelId("com.company.AppName");
 
 // Prevent window from being garbage collected
 let mainWindow: Electron.BrowserWindow | undefined;
-console.log(1231213);
+
 const createMainWindow = async () => {
   const win = new BrowserWindow({
     frame: false,

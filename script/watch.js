@@ -33,10 +33,11 @@ function startMain() {
     outdir: resolve(__dirname, "../dist"),
     loader: { ".png": "file" },
     watch: {
-      onRebuild(error) {
+      onRebuild(error, result) {
         if (error) {
           console.error("watch build failed:", error);
         } else {
+          console.log("watch build succeed:", result);
           if (electronProcess && electronProcess.kill) {
             manualRestart = true;
             process.kill(electronProcess.pid);
@@ -59,6 +60,12 @@ function startRenderer() {
     root: resolve(__dirname, "../"),
     server: {
       port: 7789,
+    },
+    resolve: {
+      alias: {
+        components: resolve(__dirname, "../src/components"),
+        store: resolve(__dirname, "../src/store"),
+      },
     },
     plugins: [reactRefresh()],
   });
