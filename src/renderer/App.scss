@@ -1,0 +1,61 @@
+@mixin main-wrapper-mixin {
+  position: absolute;
+  left: 225px;
+  right: 0;
+}
+
+.up-enter {
+  @include main-wrapper-mixin;
+  top: 100vh;
+  opacity: 0;
+}
+
+.up-enter-active {
+  @include main-wrapper-mixin;
+  top: 0;
+  opacity: 1;
+  transition: top 300ms, opacity 300ms ease-in-out;
+}
+
+.up-exit {
+  @include main-wrapper-mixin;
+  top: 0;
+  opacity: 1;
+}
+
+.up-exit-active {
+  @include main-wrapper-mixin;
+  top: -100vh;
+  opacity: 0;
+  transition: top 300ms, opacity 300ms ease-in-out;
+}
+
+.down-enter {
+  @include main-wrapper-mixin;
+  top: -100vh;
+  opacity: 0;
+}
+
+.down-enter-active {
+  @include main-wrapper-mixin;
+  top: 0;
+  opacity: 1;
+  transition: top 300ms, opacity 300ms ease-in-out;
+}
+
+.down-exit {
+  @include main-wrapper-mixin;
+  top: 0;
+  opacity: 1;
+}
+
+.down-exit-active {
+  @include main-wrapper-mixin;
+  top: 100vh;
+  opacity: 0;
+  transition: top 300ms, opacity 300ms ease-in-out;
+}
+
+.app-region {
+  -webkit-app-region: drag;
+}

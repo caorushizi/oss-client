@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import "./App.css";
+import "./App.scss";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import MainPage from "./nodes/main-page";
 import TestPage from "./nodes/test-page";

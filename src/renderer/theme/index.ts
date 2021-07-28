@@ -5,6 +5,14 @@ const theme = extendTheme({
   components: {
     Button,
   },
+  styles: {
+    global: {
+      "*": {
+        color: "white",
+        lineHeight: "tall",
+      },
+    },
+  },
 });
 
 export default theme;

@@ -63,8 +63,9 @@ function startRenderer() {
     },
     resolve: {
       alias: {
-        components: resolve(__dirname, "../src/components"),
-        store: resolve(__dirname, "../src/store"),
+        components: resolve(__dirname, "../src/renderer/components"),
+        store: resolve(__dirname, "../src/renderer/store"),
+        hooks: resolve(__dirname, "../src/renderer/hooks"),
       },
     },
     plugins: [reactRefresh()],
