@@ -4,15 +4,16 @@ import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
 import { Provider } from "react-redux";
-import store from "./store";
+import store, { history } from "./store";
+import { ConnectedRouter } from "connected-react-router";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
       <ChakraProvider theme={theme}>
         <App />
       </ChakraProvider>
-    </Provider>
-  </React.StrictMode>,
+    </ConnectedRouter>
+  </Provider>,
   document.getElementById("root")
 );

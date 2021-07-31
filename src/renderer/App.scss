@@ -1,3 +1,5 @@
+$transition-duration: 160ms;
+
 @mixin main-wrapper-mixin {
   position: absolute;
   left: 225px;
@@ -14,7 +16,7 @@
   @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top 300ms, opacity 300ms ease-in-out;
+  transition: top $transition-duration, opacity $transition-duration ease-in-out;
 }
 
 .up-exit {
@@ -27,7 +29,7 @@
   @include main-wrapper-mixin;
   top: -100vh;
   opacity: 0;
-  transition: top 300ms, opacity 300ms ease-in-out;
+  transition: top $transition-duration, opacity $transition-duration ease-in-out;
 }
 
 .down-enter {
@@ -40,7 +42,7 @@
   @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top 300ms, opacity 300ms ease-in-out;
+  transition: top $transition-duration, opacity $transition-duration ease-in-out;
 }
 
 .down-exit {
@@ -53,7 +55,7 @@
   @include main-wrapper-mixin;
   top: 100vh;
   opacity: 0;
-  transition: top 300ms, opacity 300ms ease-in-out;
+  transition: top $transition-duration, opacity $transition-duration ease-in-out;
 }
 
 .app-region {

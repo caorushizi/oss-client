@@ -1,10 +1,8 @@
 import React, { FC } from "react";
-import { useParams } from "react-router-dom";
+import { Box } from "@chakra-ui/react";
 
 const Bucket: FC = () => {
-  const params = useParams();
-  console.log(params, "params");
-  return <div>bucket</div>;
+  return <Box>bucket</Box>;
 };
 
 export default Bucket;
