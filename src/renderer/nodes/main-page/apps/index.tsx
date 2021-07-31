@@ -1,7 +1,8 @@
 import React, { FC } from "react";
+import MainSection from "../elements/MainSection";
 
 const Apps: FC = () => {
-  return <div>apps</div>;
+  return <MainSection>apps</MainSection>;
 };
 
 export default Apps;

@@ -1,8 +1,8 @@
 import React, { FC } from "react";
-import { Box } from "@chakra-ui/react";
+import MainSection from "../elements/MainSection";
 
 const Bucket: FC = () => {
-  return <Box>bucket</Box>;
+  return <MainSection>bucket</MainSection>;
 };
 
 export default Bucket;

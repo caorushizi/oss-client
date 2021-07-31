@@ -6,6 +6,7 @@ import theme from "./theme";
 import { Provider } from "react-redux";
 import store, { history } from "./store";
 import { ConnectedRouter } from "connected-react-router";
+import "./main.scss";
 
 ReactDOM.render(
   <Provider store={store}>

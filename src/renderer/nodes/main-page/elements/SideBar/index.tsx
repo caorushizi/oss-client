@@ -12,16 +12,30 @@ const SideBar: FC<Props> = (props) => {
       <ListItem mb={6}>
         储存空间
         <List>
-          <ListItem onClick={() => jump("/main/bucket")}>bucket</ListItem>
+          <ListItem
+            onClick={() => jump("/main/bucket")}
+            cursor={"pointer"}
+            _hover={{ color: "red" }}
+          >
+            bucket
+          </ListItem>
         </List>
       </ListItem>
       <ListItem mb={6}>
         传输列表
         <List>
-          <ListItem onClick={() => jump("/main/transfer-list")}>
+          <ListItem
+            onClick={() => jump("/main/transfer-list")}
+            cursor={"pointer"}
+            _hover={{ color: "red" }}
+          >
             传输列表
           </ListItem>
-          <ListItem onClick={() => jump("/main/transfer-done")}>
+          <ListItem
+            onClick={() => jump("/main/transfer-done")}
+            cursor={"pointer"}
+            _hover={{ color: "red" }}
+          >
             传输完成
           </ListItem>
         </List>
@@ -29,8 +43,20 @@ const SideBar: FC<Props> = (props) => {
       <ListItem>
         设置
         <List>
-          <ListItem onClick={() => jump("/main/settings")}>设置</ListItem>
-          <ListItem onClick={() => jump("/main/apps")}>apps</ListItem>
+          <ListItem
+            onClick={() => jump("/main/settings")}
+            cursor={"pointer"}
+            _hover={{ color: "red" }}
+          >
+            设置
+          </ListItem>
+          <ListItem
+            onClick={() => jump("/main/apps")}
+            cursor={"pointer"}
+            _hover={{ color: "red" }}
+          >
+            apps
+          </ListItem>
         </List>
       </ListItem>
     </List>

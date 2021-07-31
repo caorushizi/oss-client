@@ -1,8 +1,9 @@
 import React, { FC } from "react";
+import MainSection from "../elements/MainSection";
 
 const TransferDone: FC = () => {
   return (
-    <div>
+    <MainSection>
       <p>TransferDone</p>
       <p>TransferDone</p>
       <p>TransferDone</p>
@@ -20,7 +21,7 @@ const TransferDone: FC = () => {
       <p>TransferDone</p>
       <p>TransferDone</p>
       <p>TransferDone</p>
-    </div>
+    </MainSection>
   );
 };
 

@@ -1,9 +1,9 @@
 import React, { FC } from "react";
-import { Box, Flex, List, ListItem, SlideFade } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import useTheme from "hooks/useTheme";
 import DragArea from "../../components/DragArea";
-import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Bucket from "./bucket";
 import TransferList from "./transfer-done";
 import TransferDone from "./transfer-list";
@@ -11,6 +11,7 @@ import Settings from "./settings";
 import Apps from "./apps";
 import useSwitch from "hooks/useSwitch";
 import SideBar from "./elements/SideBar";
+import "./index.scss";
 
 // 主页面
 const MainPage: FC = () => {
@@ -21,20 +22,17 @@ const MainPage: FC = () => {
   console.log("jumpInfo ", jumpInfo);
 
   return (
-    <Flex h={"100vh"}>
+    <Flex h={"100vh"} className={"main-page"}>
       <DragArea />
       <Box w="225px" bgGradient={sideBg}>
         <SideBar jump={jump} />
       </Box>
-      <Box flex="1" bgGradient={mainBg} overflow={"hidden"}>
-        <SwitchTransition mode={"out-in"}>
+      <Box flex="1" bgGradient={mainBg}>
+        <TransitionGroup className={"main-wrapper"}>
           <CSSTransition
             key={location.key}
             classNames={jumpInfo.direction}
             timeout={jumpInfo.duration}
-            addEndListener={(node, done) =>
-              node.addEventListener("transitionend", done, false)
-            }
             unmountOnExit
           >
             <Switch location={location}>
@@ -45,7 +43,7 @@ const MainPage: FC = () => {
               <Route path="/main/apps" component={Apps} />
             </Switch>
           </CSSTransition>
-        </SwitchTransition>
+        </TransitionGroup>
       </Box>
     </Flex>
   );

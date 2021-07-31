@@ -1,7 +1,8 @@
 import React, { FC } from "react";
+import MainSection from "../elements/MainSection";
 
 const Settings: FC = () => {
-  return <div>Settings</div>;
+  return <MainSection>Settings</MainSection>;
 };
 
 export default Settings;

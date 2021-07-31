@@ -66,6 +66,7 @@ function startRenderer() {
         components: resolve(__dirname, "../src/renderer/components"),
         store: resolve(__dirname, "../src/renderer/store"),
         hooks: resolve(__dirname, "../src/renderer/hooks"),
+        assets: resolve(__dirname, "../src/renderer/assets"),
       },
     },
     plugins: [reactRefresh()],

@@ -1,4 +1,10 @@
-$transition-duration: 160ms;
+$transition-duration: 300ms;
+$transition-delay: cubic-bezier(0.92, 0.55, 0.41, 0.93);
+html,
+body {
+  height: 100vh;
+  overflow: hidden;
+}
 
 @mixin main-wrapper-mixin {
   position: absolute;
@@ -13,10 +19,10 @@ $transition-duration: 160ms;
 }
 
 .up-enter-active {
-  @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top $transition-duration, opacity $transition-duration ease-in-out;
+  transition: top $transition-duration $transition-delay,
+    opacity $transition-duration $transition-delay;
 }
 
 .up-exit {
@@ -26,10 +32,10 @@ $transition-duration: 160ms;
 }
 
 .up-exit-active {
-  @include main-wrapper-mixin;
   top: -100vh;
   opacity: 0;
-  transition: top $transition-duration, opacity $transition-duration ease-in-out;
+  transition: top $transition-duration $transition-delay,
+    opacity $transition-duration $transition-delay;
 }
 
 .down-enter {
@@ -39,10 +45,10 @@ $transition-duration: 160ms;
 }
 
 .down-enter-active {
-  @include main-wrapper-mixin;
   top: 0;
   opacity: 1;
-  transition: top $transition-duration, opacity $transition-duration ease-in-out;
+  transition: top $transition-duration $transition-delay,
+    opacity $transition-duration $transition-delay;
 }
 
 .down-exit {
@@ -52,10 +58,10 @@ $transition-duration: 160ms;
 }
 
 .down-exit-active {
-  @include main-wrapper-mixin;
   top: 100vh;
   opacity: 0;
-  transition: top $transition-duration, opacity $transition-duration ease-in-out;
+  transition: top $transition-duration $transition-delay,
+    opacity $transition-duration $transition-delay;
 }
 
 .app-region {
