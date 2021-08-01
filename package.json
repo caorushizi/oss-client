@@ -21,6 +21,7 @@
     "history": "^5.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-icons": "^4.2.0",
     "react-redux": "^7.2.4",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",

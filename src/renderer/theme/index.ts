@@ -8,7 +8,6 @@ const theme = extendTheme({
   styles: {
     global: {
       "*": {
-        color: "white",
         lineHeight: "tall",
         fontFamily: "Alibaba-PuHuiTi-Regular",
       },

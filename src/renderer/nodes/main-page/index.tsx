@@ -17,9 +17,7 @@ import "./index.scss";
 const MainPage: FC = () => {
   const location = useLocation();
   const [sideBg, mainBg] = useTheme();
-  const [jumpInfo, jump] = useSwitch(location.pathname);
-
-  console.log("jumpInfo ", jumpInfo);
+  const [jumpInfo, jump] = useSwitch();
 
   return (
     <Flex h={"100vh"} className={"main-page"}>
