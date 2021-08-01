@@ -16,7 +16,7 @@ export interface JumpInfo {
   duration: number;
 }
 
-const useSwitch = (): [JumpInfo, (path: string) => void] => {
+const useSwitch = (pathname: string): [JumpInfo, (path: string) => void] => {
   const history = useHistory();
   // 页面跳转时的信息
   const [jumpInfo, setJumpInfo] = useState({
@@ -29,6 +29,9 @@ const useSwitch = (): [JumpInfo, (path: string) => void] => {
 
   // 点击侧边栏链接跳转
   const jump = (to: string) => {
+    if (pathname === to) {
+      return;
+    }
     currentIndex.current = pathList.findIndex((reg) => reg.test(to));
     setJumpInfo({
       to,
