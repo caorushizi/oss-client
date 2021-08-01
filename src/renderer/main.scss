@@ -6,6 +6,31 @@ body {
   overflow: hidden;
 }
 
+@font-face {
+  font-family: Alibaba-PuHuiTi-Bold;
+  src: url("./assets/fonts/Alibaba-PuHuiTi-Bold.ttf");
+}
+
+@font-face {
+  font-family: Alibaba-PuHuiTi-Heavy;
+  src: url("./assets/fonts/Alibaba-PuHuiTi-Heavy.ttf");
+}
+
+@font-face {
+  font-family: Alibaba-PuHuiTi-Bold;
+  src: url("./assets/fonts/Alibaba-PuHuiTi-Light.ttf");
+}
+
+@font-face {
+  font-family: Alibaba-PuHuiTi-Medium;
+  src: url("./assets/fonts/Alibaba-PuHuiTi-Medium.ttf");
+}
+
+@font-face {
+  font-family: Alibaba-PuHuiTi-Regular;
+  src: url("./assets/fonts/Alibaba-PuHuiTi-Regular.ttf");
+}
+
 @mixin main-wrapper-mixin {
   position: absolute;
   left: 225px;

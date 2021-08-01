@@ -10,6 +10,7 @@ const theme = extendTheme({
       "*": {
         color: "white",
         lineHeight: "tall",
+        fontFamily: "Alibaba-PuHuiTi-Regular",
       },
     },
   },
