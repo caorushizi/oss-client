@@ -20,7 +20,7 @@ const useSwitch = (pathname: string): [JumpInfo, (path: string) => void] => {
   const history = useHistory();
   // 页面跳转时的信息
   const [jumpInfo, setJumpInfo] = useState({
-    to: "/main/bucket/1",
+    to: "/main/apps",
     direction: "",
     duration: 0,
   });

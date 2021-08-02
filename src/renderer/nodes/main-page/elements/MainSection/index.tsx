@@ -1,5 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
 import "./index.scss";
+import { Flex, Icon } from "@chakra-ui/react";
+import {
+  AiFillCloseCircle,
+  AiFillMinusCircle,
+  AiFillPlusCircle,
+} from "react-icons/ai";
 
 const MainSection: FC = (props) => {
   const { children } = props;
@@ -18,6 +24,32 @@ const MainSection: FC = (props) => {
         backgroundPosition: bgOffset,
       }}
     >
+      <Flex h={10} px={3.5} alignItems={"center"} justifyContent={"flex-end"}>
+        <Icon
+          ml={3.5}
+          color={"whiteAlpha.600"}
+          as={AiFillMinusCircle}
+          onClick={() => {
+            console.log("最小化");
+          }}
+        />
+        <Icon
+          ml={3.5}
+          color={"whiteAlpha.600"}
+          as={AiFillPlusCircle}
+          onClick={() => {
+            console.log("最大化");
+          }}
+        />
+        <Icon
+          ml={3.5}
+          color={"whiteAlpha.600"}
+          as={AiFillCloseCircle}
+          onClick={() => {
+            console.log("关闭");
+          }}
+        />
+      </Flex>
       {children}
     </div>
   );

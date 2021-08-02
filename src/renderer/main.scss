@@ -1,5 +1,5 @@
 $transition-duration: 160ms;
-$transition-delay: cubic-bezier(0.92, 0.55, 0.41, 0.93);
+$transition-delay: ease;
 html,
 body {
   height: 100vh;
@@ -17,7 +17,7 @@ body {
 }
 
 @font-face {
-  font-family: Alibaba-PuHuiTi-Bold;
+  font-family: Alibaba-PuHuiTi-Light;
   src: url("./assets/fonts/Alibaba-PuHuiTi-Light.ttf");
 }
 

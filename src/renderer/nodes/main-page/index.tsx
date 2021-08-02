@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Box, Flex, Icon } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import useTheme from "hooks/useTheme";
 import DragArea from "../../components/DragArea";
@@ -12,11 +12,6 @@ import Apps from "./apps";
 import useSwitch from "hooks/useSwitch";
 import SideBar from "./elements/SideBar";
 import "./index.scss";
-import {
-  AiFillMinusCircle,
-  AiFillPlusCircle,
-  AiFillCloseCircle,
-} from "react-icons/ai";
 
 // 主页面
 const MainPage: FC = () => {
@@ -31,32 +26,6 @@ const MainPage: FC = () => {
         <SideBar jump={jump} />
       </Box>
       <Box flex="1" bgGradient={mainBg}>
-        <Flex h={10} px={3.5} alignItems={"center"} justifyContent={"flex-end"}>
-          <Icon
-            ml={3.5}
-            color={"whiteAlpha.600"}
-            as={AiFillMinusCircle}
-            onClick={() => {
-              console.log("最小化");
-            }}
-          />
-          <Icon
-            ml={3.5}
-            color={"whiteAlpha.600"}
-            as={AiFillPlusCircle}
-            onClick={() => {
-              console.log("最大化");
-            }}
-          />
-          <Icon
-            ml={3.5}
-            color={"whiteAlpha.600"}
-            as={AiFillCloseCircle}
-            onClick={() => {
-              console.log("关闭");
-            }}
-          />
-        </Flex>
         <TransitionGroup className={"main-wrapper"}>
           <CSSTransition
             key={location.key}
