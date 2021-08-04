@@ -1,17 +1,17 @@
-import { combineReducers } from "redux";
-import productReducer, { ProductState } from "./product.reducer";
+import { combineReducers, Reducer } from "redux";
 import { connectRouter, RouterState } from "connected-react-router";
 import { History } from "history";
+import appReducer from "./app.reducer";
 
 export interface AppState {
   router: RouterState;
-  product: ProductState;
+  app: AppState;
 }
 
 const createRootReducer = (history: History) => {
   return combineReducers({
     router: connectRouter(history),
-    product: productReducer,
+    app: appReducer,
   });
 };
 

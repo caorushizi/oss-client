@@ -36,7 +36,7 @@ const useSwitch = (pathname: string): [JumpInfo, (path: string) => void] => {
     setJumpInfo({
       to,
       direction: currentIndex.current <= lastIndex.current ? "down" : "up",
-      duration: 160,
+      duration: 300,
     });
   };
 
