@@ -1,17 +1,17 @@
-export enum AppType {
+export enum OssType {
   qiniu,
   ali,
   tencent,
 }
 
-export interface App {
-  type: AppType;
+export interface Oss {
+  type: OssType;
   name: string;
   ak: string;
   sk: string;
 }
 
-export enum AppMode {
+export enum OssMode {
   add,
   edit,
   view,

@@ -17,16 +17,18 @@ import { MdCheckCircle } from "react-icons/all";
 import { Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState as ReduxState } from "../../../store/reducers";
-import { AppState } from "../../../store/reducers/app.reducer";
-import { addApp } from "../../../store/actions/app.actions";
-import { App, AppType } from "../../../store/models/app";
+import { OssState } from "../../../store/reducers/oss.reducer";
+import { addOss } from "../../../store/actions/oss.actions";
+import { Oss, OssType } from "../../../store/models/oss";
 import shortId from "shortid";
+import useElectron from "hooks/useElectron";
 
 // app 的列表
 const Apps: FC = () => {
   const dispatch = useDispatch();
-  const app = useSelector<ReduxState, AppState>((state) => state.app);
+  const app = useSelector<ReduxState, OssState>((state) => state.app);
   const activeApp = app.apps.find((i) => i.name === app.active);
+  const electron = useElectron();
 
   // 验证姓名
   function validateName(value: string) {
@@ -42,14 +44,17 @@ const Apps: FC = () => {
   // 点击添加按钮
   const handleAddApp = () => {
     dispatch(
-      addApp({
-        type: AppType.ali,
+      addOss({
+        type: OssType.ali,
         name: shortId(),
         ak: "123123",
         sk: "123123",
       })
     );
   };
+
+  // 切换 app
+  const handleChangeApp = () => {};
 
   return (
     <MainSection>
@@ -74,33 +79,39 @@ const Apps: FC = () => {
           >
             添加
           </Button>
+          <Button
+            onClick={async () => {
+              const buckets = await electron.getBuckets({
+                name: "123123123",
+                ak: "M3mKkBfxbt-N6C_G7Fx9I5_ugiDj5o42VEgrPNRt",
+                sk: "kKycZxU6A-K7J3GqgZhVr5iyufGRhgt3ZqdPHRK1",
+              });
+              console.log("buckets: ", buckets);
+            }}
+          >
+            点击
+          </Button>
           <List spacing={2} mt={4}>
-            {app.apps.map((app) => (
+            {app.apps.map((item) => (
               <ListItem
                 cursor={"pointer"}
                 px={3}
                 borderRadius={10}
                 fontSize={12}
-                color={
-                  location.pathname.startsWith("/main/bucket")
-                    ? "white"
-                    : "whiteAlpha.700"
-                }
-                bg={
-                  location.pathname.startsWith("/main/bucket")
-                    ? "rgba(0, 0, 0, 0.15)"
-                    : ""
-                }
+                color={app.active === item.name ? "white" : "whiteAlpha.700"}
+                bg={app.active === item.name ? "rgba(0, 0, 0, 0.15)" : ""}
                 _hover={{
                   color: "white",
-                  bg: location.pathname.startsWith("/main/bucket")
-                    ? "rgba(0, 0, 0, 0.15)"
-                    : "rgba(0, 0, 0, 0.05)",
+                  bg:
+                    app.active === item.name
+                      ? "rgba(0, 0, 0, 0.15)"
+                      : "rgba(0, 0, 0, 0.05)",
                 }}
+                onClick={handleChangeApp}
               >
                 <Box d={"flex"} alignItems={"center"} h={6}>
                   <ListIcon as={MdCheckCircle} color="green.500" />
-                  {app.name}
+                  {item.name}
                 </Box>
               </ListItem>
             ))}
@@ -109,7 +120,7 @@ const Apps: FC = () => {
         <Box>
           <Heading>编辑</Heading>
           {activeApp && (
-            <Formik<App>
+            <Formik<Oss>
               initialValues={activeApp}
               onSubmit={(values, actions) => {
                 setTimeout(() => {

@@ -20,5 +20,9 @@
       "components/*": ["renderer/components/*"]
     }
   },
+  "files": [
+    "types/electron-api.d.ts",
+    "types/common.d.ts"
+  ],
   "include": ["./src"]
 }

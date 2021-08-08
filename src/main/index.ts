@@ -4,6 +4,7 @@ import { app, BrowserWindow } from "electron";
 import { is } from "electron-util";
 import unhandled from "electron-unhandled";
 import debug from "electron-debug";
+import "./ipc";
 // import contextMenu from "electron-context-menu";
 /// const {autoUpdater} = require('electron-updater');
 // import menu from "./menu.js";
@@ -39,6 +40,7 @@ const createMainWindow = async () => {
     webPreferences: {
       nodeIntegration: true,
       devTools: is.development,
+      preload: path.resolve(__dirname, "../preload"),
     },
     titleBarStyle: "hiddenInset",
     show: false,

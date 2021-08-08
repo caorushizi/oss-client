@@ -1,7 +1,7 @@
-import { combineReducers, Reducer } from "redux";
+import { combineReducers } from "redux";
 import { connectRouter, RouterState } from "connected-react-router";
 import { History } from "history";
-import appReducer from "./app.reducer";
+import ossReducer from "./oss.reducer";
 
 export interface AppState {
   router: RouterState;
@@ -11,7 +11,7 @@ export interface AppState {
 const createRootReducer = (history: History) => {
   return combineReducers({
     router: connectRouter(history),
-    app: appReducer,
+    app: ossReducer,
   });
 };
 
