@@ -1,6 +1,7 @@
 interface ElectronApi {
   readonly versions: Readonly<NodeJS.ProcessVersions>;
-  getBuckets: (item: { name: string; ak: string; sk: string }) => Promise<any>;
+  getQiniuToken: (ak: string, sk: string, url: string) => Promise<string>;
+  request: any;
 }
 
 declare interface Window {

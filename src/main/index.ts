@@ -1,33 +1,16 @@
 import path from "path";
-
 import { app, BrowserWindow } from "electron";
 import { is } from "electron-util";
 import unhandled from "electron-unhandled";
 import debug from "electron-debug";
 import "./ipc";
-// import contextMenu from "electron-context-menu";
-/// const {autoUpdater} = require('electron-updater');
-// import menu from "./menu.js";
+import registerIpc from "./ipc";
 
 unhandled();
 debug();
-// contextMenu();
 
-// Note: Must match `build.appId` in package.json
 app.setAppUserModelId("com.company.AppName");
 
-// Uncomment this before publishing your first version.
-// It's commented out as it throws an error if there are no published versions.
-// if (!is.development) {
-// 	const FOUR_HOURS = 1000 * 60 * 60 * 4;
-// 	setInterval(() => {
-// 		autoUpdater.checkForUpdates();
-// 	}, FOUR_HOURS);
-//
-// 	autoUpdater.checkForUpdates();
-// }
-
-// Prevent window from being garbage collected
 let mainWindow: Electron.BrowserWindow | undefined;
 
 const createMainWindow = async () => {
@@ -51,8 +34,6 @@ const createMainWindow = async () => {
   });
 
   win.on("closed", () => {
-    // Dereference the window
-    // For multiple windows store them in an array
     mainWindow = undefined;
   });
 
@@ -94,6 +75,6 @@ app.on("activate", async () => {
 
 (async () => {
   await app.whenReady();
-  // Menu.setApplicationMenu(menu);
+  registerIpc();
   mainWindow = await createMainWindow();
 })();

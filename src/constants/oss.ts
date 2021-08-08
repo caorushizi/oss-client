@@ -1,1 +1,1 @@
-export const GET_BUCKETS = "GET_BUCKETS";
+export const GET_QINIU_TOKEN = "GET_QINIU_TOKEN";

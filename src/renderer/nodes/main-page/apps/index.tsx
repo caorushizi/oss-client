@@ -81,12 +81,24 @@ const Apps: FC = () => {
           </Button>
           <Button
             onClick={async () => {
-              const buckets = await electron.getBuckets({
-                name: "123123123",
-                ak: "M3mKkBfxbt-N6C_G7Fx9I5_ugiDj5o42VEgrPNRt",
-                sk: "kKycZxU6A-K7J3GqgZhVr5iyufGRhgt3ZqdPHRK1",
+              const url = "https://rs.qbox.me/buckets";
+              const token = await electron.getQiniuToken(
+                "M3mKkBfxbt-N6C_G7Fx9I5_ugiDj5o42VEgrPNRt",
+                "kKycZxU6A-K7J3GqgZhVr5iyufGRhgt3ZqdPHRK1",
+                url
+              );
+
+              console.log("electron.request", electron.request);
+
+              const resp = await electron.request({
+                methods: "GET",
+                url,
+                headers: {
+                  Authorization: token,
+                },
               });
-              console.log("buckets: ", buckets);
+
+              console.log("buckets: ", resp);
             }}
           >
             点击
