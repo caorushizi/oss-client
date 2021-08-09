@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
 import { connectRouter, RouterState } from "connected-react-router";
 import { History } from "history";
-import ossReducer from "./oss.reducer";
+import ossReducer, { OssState } from "./oss.reducer";
 
 export interface AppState {
   router: RouterState;
-  app: AppState;
+  app: OssState;
 }
 
 const createRootReducer = (history: History) => {

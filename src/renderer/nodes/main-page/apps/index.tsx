@@ -8,25 +8,28 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  HStack,
   Input,
   List,
   ListIcon,
   ListItem,
+  Select,
 } from "@chakra-ui/react";
 import { MdCheckCircle } from "react-icons/all";
 import { Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState as ReduxState } from "../../../store/reducers";
+import { AppState } from "../../../store/reducers";
 import { OssState } from "../../../store/reducers/oss.reducer";
 import { addOss } from "../../../store/actions/oss.actions";
 import { Oss, OssType } from "../../../store/models/oss";
 import shortId from "shortid";
 import useElectron from "hooks/useElectron";
+import { FieldProps } from "formik/dist/Field";
 
 // app 的列表
 const Apps: FC = () => {
   const dispatch = useDispatch();
-  const app = useSelector<ReduxState, OssState>((state) => state.app);
+  const app = useSelector<AppState, OssState>((state) => state.app);
   const activeApp = app.apps.find((i) => i.name === app.active);
   const electron = useElectron();
 
@@ -52,9 +55,6 @@ const Apps: FC = () => {
       })
     );
   };
-
-  // 切换 app
-  const handleChangeApp = () => {};
 
   return (
     <MainSection>
@@ -82,16 +82,9 @@ const Apps: FC = () => {
           <Button
             onClick={async () => {
               const url = "https://rs.qbox.me/buckets";
-              const token = await electron.getQiniuToken(
-                "M3mKkBfxbt-N6C_G7Fx9I5_ugiDj5o42VEgrPNRt",
-                "kKycZxU6A-K7J3GqgZhVr5iyufGRhgt3ZqdPHRK1",
-                url
-              );
-
-              console.log("electron.request", electron.request);
+              const token = await electron.getQiniuToken("", "", url);
 
               const resp = await electron.request({
-                methods: "GET",
                 url,
                 headers: {
                   Authorization: token,
@@ -119,7 +112,6 @@ const Apps: FC = () => {
                       ? "rgba(0, 0, 0, 0.15)"
                       : "rgba(0, 0, 0, 0.05)",
                 }}
-                onClick={handleChangeApp}
               >
                 <Box d={"flex"} alignItems={"center"} h={6}>
                   <ListIcon as={MdCheckCircle} color="green.500" />
@@ -144,34 +136,57 @@ const Apps: FC = () => {
               {(props) => (
                 <Form>
                   <Field name="name" validate={validateName}>
-                    {({ field, form }) => (
+                    {({ field, form }: FieldProps) => (
                       <FormControl
-                        isInvalid={form.errors.name && form.touched.name}
+                        isInvalid={!!(form.errors.name && form.touched.name)}
                       >
-                        <FormLabel htmlFor="name">First name</FormLabel>
-                        <Input {...field} id="name" placeholder="name" />
+                        <HStack>
+                          <FormLabel htmlFor="name">名称</FormLabel>
+                          <Input {...field} id="name" placeholder="name" />
+                        </HStack>
+                        <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="name" validate={validateName}>
+                    {({ field, form }: FieldProps) => (
+                      <FormControl
+                        isInvalid={!!(form.errors.name && form.touched.name)}
+                      >
+                        <HStack>
+                          <FormLabel htmlFor="name">类型</FormLabel>
+                          <Select {...field} placeholder="Select option">
+                            <option value={OssType.qiniu}>七牛云</option>
+                            <option value={OssType.ali}>阿里云</option>
+                            <option value={OssType.tencent}>腾讯云</option>
+                          </Select>
+                        </HStack>
                         <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
                   <Field name="ak" validate={validateName}>
-                    {({ field, form }) => (
+                    {({ field, form }: FieldProps) => (
                       <FormControl
-                        isInvalid={form.errors.name && form.touched.name}
+                        isInvalid={!!(form.errors.name && form.touched.name)}
                       >
-                        <FormLabel htmlFor="name">First name</FormLabel>
-                        <Input {...field} id="name" placeholder="name" />
+                        <HStack>
+                          <FormLabel htmlFor="name">ak</FormLabel>
+                          <Input {...field} id="name" placeholder="name" />
+                        </HStack>
                         <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                       </FormControl>
                     )}
                   </Field>
                   <Field name="sk" validate={validateName}>
-                    {({ field, form }) => (
+                    {({ field, form }: FieldProps) => (
                       <FormControl
-                        isInvalid={form.errors.name && form.touched.name}
+                        isInvalid={!!(form.errors.name && form.touched.name)}
                       >
-                        <FormLabel htmlFor="name">First name</FormLabel>
-                        <Input {...field} id="name" placeholder="name" />
+                        <HStack>
+                          <FormLabel htmlFor="name">sk</FormLabel>
+                          <Input {...field} id="name" placeholder="name" />
+                        </HStack>
                         <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                       </FormControl>
                     )}

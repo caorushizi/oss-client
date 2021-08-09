@@ -1,7 +1,6 @@
 import { contextBridge } from "electron";
-import axios from "axios";
 import { ipcRenderer } from "electron";
-import { GET_QINIU_TOKEN } from "../constants/oss";
+import { GET_QINIU_TOKEN, REQUEST } from "../constants/oss";
 
 export function getQiniuToken(
   ak: string,
@@ -11,11 +10,15 @@ export function getQiniuToken(
   return ipcRenderer.invoke(GET_QINIU_TOKEN, ak, sk, url);
 }
 
+function request(options: RequestOptions) {
+  return ipcRenderer.invoke(REQUEST, options);
+}
+
 const apiKey = "electron";
 const api: ElectronApi = {
   versions: process.versions,
   getQiniuToken,
-  request: axios,
+  request,
 };
 
 contextBridge.exposeInMainWorld(apiKey, api);
