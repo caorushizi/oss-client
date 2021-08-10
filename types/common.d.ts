@@ -22,3 +22,9 @@ declare interface RequestOptions {
   data?: any;
   params?: any;
 }
+
+declare interface RequestResponse<T> {
+  statusCode: number;
+  data: T;
+  headers: Record<string, string | string[]>;
+}

@@ -12,18 +12,12 @@ const initialState: OssState = {
     {
       type: OssType.qiniu,
       name: "七牛云1",
-      ak: "123123123123",
-      sk: "123123123123",
-    },
-    {
-      type: OssType.qiniu,
-      name: "七牛云2",
-      ak: "123123123123",
-      sk: "123123123123",
+      ak: "WFZv3lqgv3HfybOCLlilvaJAcdUcrUMgPTu4ef_l",
+      sk: "cpETDVrg9ZDuN-accUZWdzsseyRTByrmyAne0uih",
     },
   ],
   mode: OssMode.view,
-  active: "123123",
+  active: "七牛云1",
 };
 
 export default function ossReducer(

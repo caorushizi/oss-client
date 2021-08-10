@@ -1,7 +1,7 @@
 import { net } from "electron";
 import { stringify } from "qs";
 
-const request = (options: RequestOptions): Promise<any> => {
+function request<T>(options: RequestOptions): Promise<RequestResponse<T>> {
   const { url, data, headers = {} } = options;
 
   return new Promise((resolve, reject) => {
@@ -18,19 +18,28 @@ const request = (options: RequestOptions): Promise<any> => {
     }
 
     request.on("response", (response) => {
-      let result = "";
+      const resp: RequestResponse<T> = {
+        statusCode: response.statusCode,
+        headers: response.headers,
+        data: {} as T,
+      };
 
+      resp.statusCode = response.statusCode;
+      resp.headers = response.headers;
+
+      let data = "";
       if (response.statusCode >= 200 && response.statusCode < 500) {
         response.on("data", (chunk) => {
-          result += chunk;
+          data += chunk;
         });
         response.on("end", () => {
           try {
-            result = JSON.parse(result);
+            data = JSON.parse(data);
           } catch (e) {
             // empty
           }
-          resolve(result);
+          resp.data = data as any;
+          resolve(resp);
         });
       } else {
         reject(new Error(`error code: ${response.statusCode}`));
@@ -43,6 +52,6 @@ const request = (options: RequestOptions): Promise<any> => {
 
     request.end();
   });
-};
+}
 
 export default request;

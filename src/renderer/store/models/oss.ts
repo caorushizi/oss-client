@@ -9,6 +9,8 @@ export interface Oss {
   name: string;
   ak: string;
   sk: string;
+  buckets?: string[];
+  domains?: string[];
 }
 
 export enum OssMode {
