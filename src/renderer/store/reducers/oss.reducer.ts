@@ -1,4 +1,4 @@
-import { Oss, OssMode, OssType } from "../models/oss";
+import { Oss, OssMode } from "../models/oss";
 import { ADD_OSS, AppUnionType } from "../actions/oss.actions";
 
 export interface OssState {
@@ -8,16 +8,9 @@ export interface OssState {
 }
 
 const initialState: OssState = {
-  apps: [
-    {
-      type: OssType.qiniu,
-      name: "七牛云1",
-      ak: "WFZv3lqgv3HfybOCLlilvaJAcdUcrUMgPTu4ef_l",
-      sk: "cpETDVrg9ZDuN-accUZWdzsseyRTByrmyAne0uih",
-    },
-  ],
+  apps: [],
   mode: OssMode.view,
-  active: "七牛云1",
+  active: "",
 };
 
 export default function ossReducer(

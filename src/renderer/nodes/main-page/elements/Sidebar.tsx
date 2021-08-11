@@ -8,6 +8,7 @@ import {
   Box,
   Flex,
   CircularProgress,
+  useStyleConfig,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import {
@@ -23,8 +24,10 @@ type Props = {
 };
 
 const SideBar: FC<Props> = (props) => {
-  const location = useLocation();
+  const { pathname } = useLocation();
+  const styles = useStyleConfig("List");
   const { jump } = props;
+
   return (
     <Box>
       <Flex
@@ -35,35 +38,25 @@ const SideBar: FC<Props> = (props) => {
         color={"rgba(255, 255, 255, 0.65)"}
       >
         <Text>OSS Client</Text>
-      </Flex>{" "}
+      </Flex>
       <List spacing={6}>
         <ListItem>
           <Text fontSize={14} px={3} color={"whiteAlpha.700"} mb={2.5}>
             储存空间
           </Text>
-          <List spacing={0.5}>
+          <List spacing={0.5} variant={"sidebar"}>
             <ListItem
               onClick={() => jump("/main/bucket/1")}
-              cursor={"pointer"}
-              mx={2}
-              px={3}
-              borderRadius={10}
-              fontSize={12}
-              color={
-                location.pathname.startsWith("/main/bucket")
-                  ? "white"
-                  : "whiteAlpha.700"
-              }
+              color={pathname.startsWith("/main/bucket") ? "white" : undefined}
               bg={
-                location.pathname.startsWith("/main/bucket")
+                pathname.startsWith("/main/bucket")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : ""
+                  : undefined
               }
               _hover={{
-                color: "white",
-                bg: location.pathname.startsWith("/main/bucket")
+                bg: pathname.startsWith("/main/bucket")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : "rgba(0, 0, 0, 0.05)",
+                  : undefined,
               }}
             >
               <Box d={"flex"} alignItems={"center"} h={6}>
@@ -85,31 +78,21 @@ const SideBar: FC<Props> = (props) => {
               thickness={20}
             />
           </HStack>
-          <List spacing={0.5}>
+          <List spacing={0.5} variant={"sidebar"}>
             <ListItem
               onClick={() => jump("/main/transfer-list")}
-              cursor={"pointer"}
-              mx={2}
-              px={3}
-              h={6}
-              lineHeight={6}
-              borderRadius={10}
-              fontSize={12}
               color={
-                location.pathname.startsWith("/main/transfer-list")
-                  ? "white"
-                  : "whiteAlpha.700"
+                pathname.startsWith("/main/transfer-list") ? "white" : undefined
               }
               bg={
-                location.pathname.startsWith("/main/transfer-list")
+                pathname.startsWith("/main/transfer-list")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : ""
+                  : undefined
               }
               _hover={{
-                color: "white",
-                bg: location.pathname.startsWith("/main/transfer-list")
+                bg: pathname.startsWith("/main/transfer-list")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : "rgba(0, 0, 0, 0.05)",
+                  : undefined,
               }}
             >
               <Box d={"flex"} alignItems={"center"} h={6}>
@@ -119,28 +102,18 @@ const SideBar: FC<Props> = (props) => {
             </ListItem>
             <ListItem
               onClick={() => jump("/main/transfer-done")}
-              cursor={"pointer"}
-              mx={2}
-              px={3}
-              h={6}
-              lineHeight={6}
-              borderRadius={10}
-              fontSize={12}
               color={
-                location.pathname.startsWith("/main/transfer-done")
-                  ? "white"
-                  : "whiteAlpha.700"
+                pathname.startsWith("/main/transfer-done") ? "white" : undefined
               }
               bg={
-                location.pathname.startsWith("/main/transfer-done")
+                pathname.startsWith("/main/transfer-done")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : ""
+                  : undefined
               }
               _hover={{
-                color: "white",
-                bg: location.pathname.startsWith("/main/transfer-done")
+                bg: pathname.startsWith("/main/transfer-done")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : "rgba(0, 0, 0, 0.05)",
+                  : undefined,
               }}
             >
               <Box d={"flex"} alignItems={"center"} h={6}>
@@ -154,32 +127,21 @@ const SideBar: FC<Props> = (props) => {
           <HStack fontSize={14} px={3} mb={2.5}>
             <Text color={"whiteAlpha.700"}>设置</Text>
           </HStack>
-          <List spacing={0.5}>
+          <List spacing={0.5} variant={"sidebar"}>
             <ListItem
               onClick={() => jump("/main/settings")}
-              cursor={"pointer"}
-              mx={2}
-              px={3}
-              h={6}
-              mb={0.5}
-              lineHeight={6}
-              borderRadius={10}
-              fontSize={12}
               color={
-                location.pathname.startsWith("/main/settings")
-                  ? "white"
-                  : "whiteAlpha.700"
+                pathname.startsWith("/main/settings") ? "white" : undefined
               }
               bg={
-                location.pathname.startsWith("/main/settings")
+                pathname.startsWith("/main/settings")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : ""
+                  : undefined
               }
               _hover={{
-                color: "white",
-                bg: location.pathname.startsWith("/main/settings")
+                bg: pathname.startsWith("/main/settings")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : "rgba(0, 0, 0, 0.05)",
+                  : undefined,
               }}
             >
               <Box d={"flex"} alignItems={"center"} h={6}>
@@ -189,28 +151,16 @@ const SideBar: FC<Props> = (props) => {
             </ListItem>
             <ListItem
               onClick={() => jump("/main/apps")}
-              cursor={"pointer"}
-              mx={2}
-              px={3}
-              h={6}
-              lineHeight={6}
-              borderRadius={10}
-              fontSize={12}
-              color={
-                location.pathname.startsWith("/main/apps")
-                  ? "white"
-                  : "whiteAlpha.700"
-              }
+              color={pathname.startsWith("/main/apps") ? "white" : undefined}
               bg={
-                location.pathname.startsWith("/main/apps")
+                pathname.startsWith("/main/apps")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : ""
+                  : undefined
               }
               _hover={{
-                color: "white",
-                bg: location.pathname.startsWith("/main/apps")
+                bg: pathname.startsWith("/main/apps")
                   ? "rgba(0, 0, 0, 0.15)"
-                  : "rgba(0, 0, 0, 0.05)",
+                  : undefined,
               }}
             >
               <Box d={"flex"} alignItems={"center"} h={6}>

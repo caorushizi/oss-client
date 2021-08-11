@@ -1,13 +1,14 @@
-import React, { FC } from "react";
-import { Center, Text, VStack } from "@chakra-ui/react";
+import React, { FC, ReactNode } from "react";
+import { Box, Center, Text, VStack } from "@chakra-ui/react";
 
 interface Props {
   title?: string;
   subTitle?: string;
+  extra?: string | ReactNode;
 }
 
 const Empty: FC<Props> = (props) => {
-  const { title, subTitle } = props;
+  const { title, subTitle, extra } = props;
   return (
     <Center h={"100%"}>
       <VStack>
@@ -17,6 +18,7 @@ const Empty: FC<Props> = (props) => {
         <Text fontSize={15} color={"whiteAlpha.500"}>
           {subTitle}
         </Text>
+        {extra && <Box>{extra}</Box>}
       </VStack>
     </Center>
   );

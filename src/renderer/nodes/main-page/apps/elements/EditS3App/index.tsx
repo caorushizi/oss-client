@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Oss, OssType } from "../../../../../store/models/oss";
 import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
 import { FieldProps } from "formik/dist/Field";
 import {
   Box,
@@ -21,13 +22,6 @@ interface Props {
 const EditS3App: FC<Props> = ({ app }) => {
   const electron = useElectron();
 
-  // 验证姓名
-  function validateName(value: string) {
-    let error;
-    if (value == null || value === "") error = "Name is required";
-    return error;
-  }
-
   return (
     <Formik<Oss>
       initialValues={app}
@@ -45,16 +39,22 @@ const EditS3App: FC<Props> = ({ app }) => {
         console.log("buckets: ", resp);
         actions.setSubmitting(false);
       }}
+      validationSchema={Yup.object({
+        name: Yup.string().max(15, "").required(),
+        type: Yup.string().oneOf(["0", "1", "2"]).required(),
+        ak: Yup.string().required(),
+        sk: Yup.string().required(),
+      })}
     >
       {(props) => (
         <Form>
-          <Field name="name" validate={validateName}>
+          <Field name="name">
             {({ field, form }: FieldProps) => (
               <FormControl
                 isInvalid={!!(form.errors.name && form.touched.name)}
               >
                 <HStack alignItems={"flex-start"}>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="name">名称</FormLabel>
                   </Box>
                   <Box flex={1}>
@@ -65,13 +65,13 @@ const EditS3App: FC<Props> = ({ app }) => {
               </FormControl>
             )}
           </Field>
-          <Field name="type" validate={validateName}>
+          <Field name="type">
             {({ field, form }: FieldProps) => (
               <FormControl
-                isInvalid={!!(form.errors.name && form.touched.name)}
+                isInvalid={!!(form.errors.type && form.touched.type)}
               >
                 <HStack alignItems={"flex-start"}>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="type">类型</FormLabel>
                   </Box>
                   <Box flex={1}>
@@ -80,75 +80,71 @@ const EditS3App: FC<Props> = ({ app }) => {
                       <option value={OssType.ali}>阿里云</option>
                       <option value={OssType.tencent}>腾讯云</option>
                     </Select>
-                    <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    <FormErrorMessage>{form.errors.type}</FormErrorMessage>
                   </Box>
                 </HStack>
               </FormControl>
             )}
           </Field>
-          <Field name="ak" validate={validateName}>
+          <Field name="ak">
             {({ field, form }: FieldProps) => (
-              <FormControl
-                isInvalid={!!(form.errors.name && form.touched.name)}
-              >
+              <FormControl isInvalid={!!(form.errors.ak && form.touched.ak)}>
                 <HStack>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="ak">ak</FormLabel>
                   </Box>
                   <Box flex={1}>
                     <Input {...field} id="ak" placeholder="name" />
-                    <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    <FormErrorMessage>{form.errors.ak}</FormErrorMessage>
                   </Box>
                 </HStack>
               </FormControl>
             )}
           </Field>
-          <Field name="sk" validate={validateName}>
+          <Field name="sk">
             {({ field, form }: FieldProps) => (
-              <FormControl
-                isInvalid={!!(form.errors.name && form.touched.name)}
-              >
+              <FormControl isInvalid={!!(form.errors.sk && form.touched.sk)}>
                 <HStack>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="sk">sk</FormLabel>
                   </Box>
                   <Box flex={1}>
                     <Input {...field} id="sk" placeholder="name" />
-                    <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    <FormErrorMessage>{form.errors.sk}</FormErrorMessage>
                   </Box>
                 </HStack>
               </FormControl>
             )}
           </Field>
-          <Field name="buckets" validate={validateName}>
+          <Field name="buckets">
             {({ field, form }: FieldProps) => (
               <FormControl
-                isInvalid={!!(form.errors.name && form.touched.name)}
+                isInvalid={!!(form.errors.buckets && form.touched.buckets)}
               >
                 <HStack>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="buckets">buckets</FormLabel>
                   </Box>
                   <Box flex={1}>
                     <Input {...field} id="buckets" placeholder="name" />
-                    <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                   </Box>
+                  <FormErrorMessage>{form.errors.buckets}</FormErrorMessage>
                 </HStack>
               </FormControl>
             )}
           </Field>
-          <Field name="domains" validate={validateName}>
+          <Field name="domains">
             {({ field, form }: FieldProps) => (
               <FormControl
-                isInvalid={!!(form.errors.name && form.touched.name)}
+                isInvalid={!!(form.errors.domains && form.touched.domains)}
               >
                 <HStack>
-                  <Box width={"4em"}>
+                  <Box width={"6em"}>
                     <FormLabel htmlFor="domains">domains</FormLabel>
                   </Box>
                   <Box flex={1}>
                     <Input {...field} id="domains" placeholder="name" />
-                    <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    <FormErrorMessage>{form.errors.domains}</FormErrorMessage>
                   </Box>
                 </HStack>
               </FormControl>

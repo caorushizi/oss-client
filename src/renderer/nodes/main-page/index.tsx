@@ -10,7 +10,7 @@ import TransferDone from "./transfer-list";
 import Settings from "./settings";
 import Apps from "./apps";
 import useSwitch from "hooks/useSwitch";
-import SideBar from "./elements/SideBar";
+import SideBar from "./elements/Sidebar";
 import "./index.scss";
 
 // 主页面
