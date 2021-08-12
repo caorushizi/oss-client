@@ -53,7 +53,11 @@ const EditS3App: FC<Props> = ({ app }) => {
         <FormLabel width={"6em"} htmlFor="name">
           名称
         </FormLabel>
-        <Input {...formik.getFieldProps("name")} id="name" placeholder="name" />
+        <Input
+          {...formik.getFieldProps("name")}
+          id="name"
+          placeholder="请输入名称"
+        />
         <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
       </FormControl>
       <FormControl isInvalid={!!(formik.errors.type && formik.touched.type)}>
@@ -63,7 +67,7 @@ const EditS3App: FC<Props> = ({ app }) => {
         <Select
           {...formik.getFieldProps("type")}
           id="type"
-          placeholder="Select option"
+          placeholder="请选择云存储类型"
         >
           <option value={OssType.qiniu}>七牛云</option>
           <option value={OssType.ali}>阿里云</option>
@@ -75,7 +79,11 @@ const EditS3App: FC<Props> = ({ app }) => {
         <FormLabel width={"6em"} htmlFor="ak">
           ak
         </FormLabel>
-        <Input {...formik.getFieldProps("ak")} id="ak" placeholder="name" />
+        <Input
+          {...formik.getFieldProps("ak")}
+          id="ak"
+          placeholder="请输入 ak"
+        />
         <FormErrorMessage>{formik.errors.ak}</FormErrorMessage>
       </FormControl>
       <FormControl isInvalid={!!(formik.errors.sk && formik.touched.sk)}>
@@ -86,7 +94,7 @@ const EditS3App: FC<Props> = ({ app }) => {
           {...formik.getFieldProps("sk")}
           type={"password"}
           id="sk"
-          placeholder="name"
+          placeholder="请输入 sk"
         />
         <FormErrorMessage>{formik.errors.sk}</FormErrorMessage>
       </FormControl>
@@ -99,7 +107,7 @@ const EditS3App: FC<Props> = ({ app }) => {
         <Input
           {...formik.getFieldProps("buckets")}
           id="buckets"
-          placeholder="name"
+          placeholder="请选择默认储存桶"
         />
         <FormErrorMessage>{formik.errors.buckets}</FormErrorMessage>
       </FormControl>
@@ -112,7 +120,7 @@ const EditS3App: FC<Props> = ({ app }) => {
         <Input
           {...formik.getFieldProps("domains")}
           id="domains"
-          placeholder="name"
+          placeholder="请选择默认域名"
         />
         <FormErrorMessage>{formik.errors.domains}</FormErrorMessage>
       </FormControl>

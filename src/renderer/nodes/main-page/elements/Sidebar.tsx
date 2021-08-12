@@ -8,7 +8,6 @@ import {
   Box,
   Flex,
   CircularProgress,
-  useStyleConfig,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import {
@@ -25,7 +24,6 @@ type Props = {
 
 const SideBar: FC<Props> = (props) => {
   const { pathname } = useLocation();
-  const styles = useStyleConfig("List");
   const { jump } = props;
 
   return (
