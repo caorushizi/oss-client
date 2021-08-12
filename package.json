@@ -18,6 +18,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "history": "^5.0.0",
+    "localforage": "^1.9.0",
     "qiniu": "^7.4.0",
     "qs": "^6.10.1",
     "react": "^17.0.0",

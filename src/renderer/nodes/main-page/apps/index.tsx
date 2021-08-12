@@ -9,30 +9,30 @@ import {
   ListIcon,
   ListItem,
   useDisclosure,
-  useStyleConfig,
 } from "@chakra-ui/react";
 import { MdCheckCircle } from "react-icons/all";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../store/reducers";
 import { OssState } from "../../../store/reducers/oss.reducer";
 import AddS3App from "./elements/AddS3App";
 import EditS3App from "./elements/EditS3App";
 import Empty from "components/Empty";
+import { setActiveS3 } from "../../../store/actions/oss.actions";
 
 // app 的列表
 const Apps: FC = () => {
   const app = useSelector<AppState, OssState>((state) => state.app);
   const activeApp = app.apps.find((i) => i.name === app.active);
+  console.log("activeApp", activeApp);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const styles = useStyleConfig("SidebarItem");
-  console.log("styles", styles);
+  const dispatch = useDispatch();
 
   return (
     <MainSection>
       {app.apps.length > 0 ? (
         <Flex>
-          <Box w={56} px={3}>
-            <Button size={"xs"} fontSize={12} onClick={onOpen}>
+          <Box w={56}>
+            <Button mx={3} size={"xs"} fontSize={12} onClick={onOpen}>
               添加
             </Button>
             <List spacing={2} mt={4} variant={"sidebar"}>
@@ -48,6 +48,9 @@ const Apps: FC = () => {
                       item.name === app.active
                         ? "rgba(0, 0, 0, 0.15)"
                         : undefined,
+                  }}
+                  onClick={() => {
+                    dispatch(setActiveS3(item.name));
                   }}
                 >
                   <Box d={"flex"} alignItems={"center"} h={6}>

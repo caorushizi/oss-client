@@ -1,5 +1,10 @@
-import { Oss, OssMode } from "../models/oss";
-import { ADD_OSS, AppUnionType } from "../actions/oss.actions";
+import { OssMode } from "../models/oss";
+import {
+  ADD_OSS,
+  AppUnionType,
+  SET_ACTIVE_S3,
+  SET_APPS,
+} from "../actions/oss.actions";
 
 export interface OssState {
   apps: Oss[];
@@ -24,6 +29,19 @@ export default function ossReducer(
         apps: [...state.apps, oss],
         mode: OssMode.add,
         active: oss.name,
+      };
+    case SET_APPS:
+      const apps = action.payload;
+      const active = apps[0].name;
+      return {
+        ...state,
+        apps,
+        active,
+      };
+    case SET_ACTIVE_S3:
+      return {
+        ...state,
+        active: action.payload,
       };
     default:
       return state;
