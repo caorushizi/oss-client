@@ -32,7 +32,7 @@ export default function ossReducer(
       };
     case SET_APPS:
       const apps = action.payload;
-      const active = apps[0].name;
+      const active = apps[0]?.name;
       return {
         ...state,
         apps,
