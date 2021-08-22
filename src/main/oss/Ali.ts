@@ -32,10 +32,10 @@ export default class Ali implements IOSS {
       region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
-      bucket: this.bucket
+      bucket: this.bucket,
     });
     const url = store.signatureUrl(remotePath);
-    return download(url, localPath, p => cb(id, p));
+    return download(url, localPath, (p) => cb(id, p));
   }
 
   public async uploadFile(
@@ -48,7 +48,7 @@ export default class Ali implements IOSS {
       region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
-      bucket: this.bucket
+      bucket: this.bucket,
     });
     const fileSize = fs.statSync(localPath).size;
     const reader: ReadStream = fs.createReadStream(localPath);
@@ -69,7 +69,7 @@ export default class Ali implements IOSS {
       region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
-      bucket: this.bucket
+      bucket: this.bucket,
     });
     return store.delete(remotePath);
   }
@@ -84,7 +84,7 @@ export default class Ali implements IOSS {
       region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
-      bucket: this.bucket
+      bucket: this.bucket,
     });
     const result = await store.list(null, { timeout: 1000 });
     return result.objects ? result.objects.map(this.itemAdapter) : [];
@@ -93,7 +93,7 @@ export default class Ali implements IOSS {
   public async getBucketList(): Promise<string[]> {
     const store = new OSS({
       accessKeyId: this.accessKey,
-      accessKeySecret: this.secretKey
+      accessKeySecret: this.secretKey,
     });
     const result = (await store.listBuckets({})) as any;
     return result.buckets.map((item: any) => item.name);
@@ -108,7 +108,7 @@ export default class Ali implements IOSS {
       region: this.region,
       accessKeyId: this.accessKey,
       accessKeySecret: this.secretKey,
-      bucket: this.bucket
+      bucket: this.bucket,
     });
     return client.signatureUrl(remotePath);
   }
@@ -123,7 +123,7 @@ export default class Ali implements IOSS {
       meta: item,
       size: item.size,
       type: mime.getType(item.name) || "",
-      lastModifiedDate: new Date(item.lastModified)
+      lastModifiedDate: new Date(item.lastModified),
     };
   };
 }

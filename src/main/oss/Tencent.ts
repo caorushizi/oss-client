@@ -24,7 +24,7 @@ export default class Tencent implements IOSS {
     this.secretKey = secretKey;
     this.cos = new COS({
       SecretId: this.accessKey,
-      SecretKey: this.secretKey
+      SecretKey: this.secretKey,
     });
   }
 
@@ -38,13 +38,13 @@ export default class Tencent implements IOSS {
       {
         Bucket: this.bucket,
         Region: this.region,
-        Key: remotePath
+        Key: remotePath,
       },
       // @ts-ignore
       {}
     );
 
-    return download(url, localPath, p => cb(id, p));
+    return download(url, localPath, (p) => cb(id, p));
   }
 
   public async uploadFile(
@@ -67,7 +67,7 @@ export default class Tencent implements IOSS {
           Bucket: this.bucket /* 必须 */,
           Region: this.region /* 必须 */,
           Key: remotePath /* 必须 */,
-          Body: reader // 上传文件对象
+          Body: reader, // 上传文件对象
         },
         (err: any, data: any) => {
           if (err) reject(err);
@@ -85,7 +85,7 @@ export default class Tencent implements IOSS {
         {
           Bucket: "examplebucket-1250000000" /* 必须 */,
           Region: "COS_REGION" /* 必须 */,
-          Key: "exampleobject" /* 必须 */
+          Key: "exampleobject" /* 必须 */,
         },
         (err: any, data: any) => {
           if (err) reject(err);
@@ -105,7 +105,7 @@ export default class Tencent implements IOSS {
       this.cos.getBucket(
         {
           Bucket: this.bucket,
-          Region: this.region
+          Region: this.region,
         },
         (err: any, data: any) => {
           if (err) reject(err);
@@ -134,7 +134,7 @@ export default class Tencent implements IOSS {
     return this.cos.getObjectUrl({
       Bucket: this.bucket,
       Region: this.region,
-      Key: remotePath
+      Key: remotePath,
     });
   }
 
@@ -149,7 +149,7 @@ export default class Tencent implements IOSS {
       meta: item,
       size: item.Size,
       type: mime.getType(name) || "",
-      lastModifiedDate: new Date(item.lastModified)
+      lastModifiedDate: new Date(item.lastModified),
     };
   };
 }

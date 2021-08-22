@@ -1,26 +1,26 @@
 export enum OssType {
   qiniu,
   ali,
-  tencent
+  tencent,
 }
 
 export enum TaskType {
   download,
-  upload
+  upload,
 }
 
 export enum TransferStatus {
   default,
   done,
-  failed
+  failed,
 }
 
 export enum Theme {
   simple,
-  colorful
+  colorful,
 }
 
 export enum FlowWindowStyle {
   circle,
-  oval
+  oval,
 }

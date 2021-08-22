@@ -2,7 +2,6 @@ import klawSync from "klaw-sync";
 import fs, { Stats } from "fs";
 import EventEmitter from "events";
 import axios from "axios";
-import { IpcResponse } from "types/renderer";
 
 export function pathStatsSync(path: string): Stats {
   return fs.statSync(path);
@@ -17,8 +16,8 @@ export function fattenFileList(fileList: string[]): string[] {
         nodir: true,
         filter(f) {
           return !/\.(DS_Store)$/.test(f.path);
-        }
-      }).map(i => i.path);
+        },
+      }).map((i) => i.path);
       return [...prev, ...paths];
     }
     return prev;
@@ -35,7 +34,9 @@ export function checkDirExist(path: string): Promise<boolean> {
 
 export function mkdir(path: string): Promise<undefined> {
   return new Promise((resolve, reject) => {
-    fs.mkdir(path, { recursive: true }, err => (err ? reject(err) : resolve()));
+    fs.mkdir(path, { recursive: true }, (err) =>
+      err ? reject(err) : resolve()
+    );
   });
 }
 
@@ -58,7 +59,7 @@ export async function download(
 ) {
   const { data, headers } = await axios.get(url, {
     responseType: "stream",
-    headers: { "Cache-Control": "no-cache" }
+    headers: { "Cache-Control": "no-cache" },
   });
   return new Promise((resolve, reject) => {
     const writer = fs.createWriteStream(localPath);

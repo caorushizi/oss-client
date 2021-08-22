@@ -11,5 +11,5 @@ export {
   IpcChannelsService,
   AppStoreService,
   LoggerService,
-  TransferStoreService
+  TransferStoreService,
 };

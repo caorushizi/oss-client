@@ -1,6 +1,6 @@
 import Store from "electron-store";
 import path from "path";
-import { app } from "electron";
+import { app } from "electron/main";
 import { initialConfig } from "../types";
 import { ConfigStore } from "types/common";
 
@@ -11,5 +11,5 @@ export const configStore = new Store<ConfigStore>({
   name: "config",
   cwd: appDir,
   fileExtension: "json",
-  defaults: { ...initialConfig, downloadDir }
+  defaults: { ...initialConfig, downloadDir },
 });

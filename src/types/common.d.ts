@@ -3,7 +3,7 @@ import {
   OssType,
   TaskType,
   Theme,
-  TransferStatus
+  TransferStatus,
 } from "./enum";
 
 declare class VFile {

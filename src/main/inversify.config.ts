@@ -7,7 +7,7 @@ import {
   IpcChannelsService,
   LoggerService,
   TaskRunnerService,
-  TransferStoreService
+  TransferStoreService,
 } from "./services";
 import TAG from "./constants/tags";
 import OssService from "./services/OssService";
@@ -45,7 +45,6 @@ container
 container
   .bind<IOssService>(SERVICE_IDENTIFIER.OSS)
   .to(OssService)
-
   .inSingletonScope();
 
 export { container };
