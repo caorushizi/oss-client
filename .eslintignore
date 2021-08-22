@@ -1,8 +1,9 @@
-/node_modules/*/*
-/.webpack/*
-.eslintrc.js
+# don't ever lint node_modules
+node_modules
+# don't lint build output (make sure it's set to your correct build folder name)
+dist
+# don't lint nyc coverage output
+coverage
+
 esbuild.config.js
-babel.config.js
-webpack.config.js
-script/dev-server.js
-vite.config.ts
+script/**/*
