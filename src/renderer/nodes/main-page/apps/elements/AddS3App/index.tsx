@@ -1,9 +1,11 @@
 import React, { FC, useRef } from "react";
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -14,8 +16,8 @@ import {
   ModalOverlay,
   Select,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
-import { Oss, OssType } from "../../../../../store/models/oss";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import shortid from "shortid";
@@ -39,7 +41,7 @@ const AddS3App: FC<Props> = ({ isOpen, onClose }) => {
       name: shortid(),
       ak: "",
       sk: "",
-      type: OssType.qiniu,
+      type: 0,
     },
     onSubmit: async (values, actions) => {
       try {
@@ -104,70 +106,99 @@ const AddS3App: FC<Props> = ({ isOpen, onClose }) => {
             isInvalid={!!(formik.errors.name && formik.touched.name)}
             isRequired
           >
-            <FormLabel w={"6em"} color={"white"} fontSize={12} htmlFor="name">
-              名称
-            </FormLabel>
-            <Input
-              {...formik.getFieldProps("name")}
-              id="name"
-              placeholder="请输入云存储名称"
-            />
-            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+            <HStack>
+              <Box w={"6em"}>
+                <FormLabel color={"white"} fontSize={12} htmlFor="name">
+                  名称
+                </FormLabel>
+              </Box>
+              <Box flex={1}>
+                <Input
+                  {...formik.getFieldProps("name")}
+                  id="name"
+                  placeholder="请输入云存储名称"
+                />
+                <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+              </Box>
+            </HStack>
           </FormControl>
           <FormControl
             isInvalid={!!(formik.errors.type && formik.touched.type)}
             isRequired
           >
-            <FormLabel w={"6em"} color={"white"} fontSize={12} htmlFor="type">
-              类型
-            </FormLabel>
-            <Select
-              {...formik.getFieldProps("type")}
-              id="type"
-              placeholder="请选择云存储类型"
-              h={6}
-              fontSize={12}
-              color={"white"}
-            >
-              <option value={OssType.qiniu}>七牛云</option>
-              <option value={OssType.ali}>阿里云</option>
-              <option value={OssType.tencent}>腾讯云</option>
-            </Select>
-            <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
+            <HStack>
+              <Box w={"6em"}>
+                <FormLabel
+                  w={"6em"}
+                  color={"white"}
+                  fontSize={12}
+                  htmlFor="type"
+                >
+                  类型
+                </FormLabel>
+              </Box>
+              <Box flex={1}>
+                <Select
+                  {...formik.getFieldProps("type")}
+                  id="type"
+                  placeholder="请选择云存储类型"
+                  h={6}
+                  fontSize={12}
+                  color={"white"}
+                >
+                  <option value={0}>七牛云</option>
+                  <option value={1}>阿里云</option>
+                  <option value={2}>腾讯云</option>
+                </Select>
+                <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
+              </Box>
+            </HStack>
           </FormControl>
           <FormControl
             isInvalid={!!(formik.errors.ak && formik.touched.ak)}
             isRequired
           >
-            <FormLabel w={"6em"} color={"white"} fontSize={12} htmlFor="ak">
-              ak
-            </FormLabel>
-            <Input
-              {...formik.getFieldProps("ak")}
-              h={6}
-              fontSize={12}
-              color={"white"}
-              id="ak"
-              placeholder="请输入云存储 ak"
-            />
-            <FormErrorMessage>{formik.errors.ak}</FormErrorMessage>
+            <HStack>
+              <Box w={"6em"}>
+                <FormLabel color={"white"} fontSize={12} htmlFor="ak">
+                  ak
+                </FormLabel>
+              </Box>
+              <Box flex={1}>
+                <Input
+                  {...formik.getFieldProps("ak")}
+                  h={6}
+                  fontSize={12}
+                  color={"white"}
+                  id="ak"
+                  placeholder="请输入云存储 ak"
+                />
+                <FormErrorMessage>{formik.errors.ak}</FormErrorMessage>
+              </Box>
+            </HStack>
           </FormControl>
           <FormControl
             isInvalid={!!(formik.errors.sk && formik.touched.sk)}
             isRequired
           >
-            <FormLabel w={"6em"} color={"white"} fontSize={12} htmlFor="sk">
-              sk
-            </FormLabel>
-            <Input
-              {...formik.getFieldProps("sk")}
-              h={6}
-              fontSize={12}
-              color={"white"}
-              id="sk"
-              placeholder="请输入云存储 sk"
-            />
-            <FormErrorMessage>{formik.errors.sk}</FormErrorMessage>
+            <HStack>
+              <Box w={"6em"}>
+                <FormLabel color={"white"} fontSize={12} htmlFor="sk">
+                  sk
+                </FormLabel>
+              </Box>
+              <Box flex={1}>
+                <Input
+                  {...formik.getFieldProps("sk")}
+                  h={6}
+                  fontSize={12}
+                  color={"white"}
+                  id="sk"
+                  placeholder="请输入云存储 sk"
+                />
+                <FormErrorMessage>{formik.errors.sk}</FormErrorMessage>
+              </Box>
+            </HStack>
           </FormControl>
         </ModalBody>
 
