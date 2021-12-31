@@ -1,7 +1,14 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [
+      "vite/client"
+    ],
     "allowJs": false,
     "skipLibCheck": false,
     "esModuleInterop": false,
@@ -12,17 +19,29 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
     "noEmit": true,
     "jsx": "react",
     "baseUrl": "./src",
     "paths": {
-      "hooks/*": ["renderer/hooks/*"],
-      "components/*": ["renderer/components/*"]
+      "main/*": [
+        "main/*"
+      ],
+      "renderer/*": [
+        "renderer/*"
+      ],
+      "types/*": [
+        "types/*"
+      ]
     }
   },
-  "files": [
-    "types/electron-api.d.ts",
-    "types/common.d.ts"
-  ],
-  "include": ["./src"]
+  "include": [
+    "src"
+  ]
 }
