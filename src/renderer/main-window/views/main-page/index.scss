@@ -1,4 +1,4 @@
-@import "variable";
+@import "renderer/main-window/variable";
 
 .App {
   height: 100vh;
@@ -43,7 +43,7 @@
     box-sizing: border-box;
     padding-top: 40px;
     @include main-wrapper-mixin;
-    background: url("./assets/images/global.png") no-repeat;
+    background: url("../../assets/images/global.png") no-repeat;
   }
 }
 

@@ -63,7 +63,7 @@ const TheSidebar: React.FC<PropTypes> = params => {
       <section className="title-bar">
         <span>OSS Client</span>
       </section>
-      <section className="container">
+      <section className="sidebar-container">
         <div className="title">
           <div className="text">储存空间</div>
           <Spin
@@ -95,7 +95,7 @@ const TheSidebar: React.FC<PropTypes> = params => {
           )}
         </ul>
       </section>
-      <section className="container">
+      <section className="sidebar-container">
         <div className="title">
           <div className="text">传输列表</div>
           {showProgress && (
@@ -128,7 +128,7 @@ const TheSidebar: React.FC<PropTypes> = params => {
           </div>
         </div>
       </section>
-      <section className="container">
+      <section className="sidebar-container">
         <div className="title">
           <div className="text">设置</div>
         </div>

@@ -195,7 +195,7 @@ export default class ElectronAppService implements IApp {
         show: false
       });
       const mainWindowUrl = is.development
-        ? "http://localhost:3000/main-window.html"
+        ? "http://localhost:3000/main"
         : "oss-client://electron/main-window.html";
       this.mainWindow.loadURL(mainWindowUrl).then(r => r);
       this.mainWindow.on("closed", () => {
@@ -227,7 +227,7 @@ export default class ElectronAppService implements IApp {
         });
         // 开始加载悬浮窗口的静态资源
         const floatWindowUrl = is.development
-          ? "http://localhost:3000/float-window.html"
+          ? "http://localhost:3000/float"
           : "oss-client://electron/float-window.html";
         await this.floatWindow.loadURL(floatWindowUrl);
         // 设置悬浮窗的样式
@@ -269,7 +269,7 @@ export default class ElectronAppService implements IApp {
         show: false
       });
       const alertWindowUrl = is.development
-        ? "http://localhost:3000/alert-window.html"
+        ? "http://localhost:3000/alert"
         : "oss-client://electron/alert-window.html";
       await this.alertWindow.loadURL(alertWindowUrl);
       this.alertWindow.on("closed", () => {
@@ -294,7 +294,7 @@ export default class ElectronAppService implements IApp {
         show: false
       });
       const confirmWindowUrl = is.development
-        ? "http://localhost:3000/confirm-window.html"
+        ? "http://localhost:3000/confirm"
         : "oss-client://electron/confirm-window.html";
       await this.confirmWindow.loadURL(confirmWindowUrl);
       this.confirmWindow.on("closed", () => {

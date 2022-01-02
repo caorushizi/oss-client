@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Selection, { SelectionEvent } from "@simonwep/selection-js";
-import { Item } from "../../../lib/vdir/types";
+import { Item } from "../lib/vdir/types";
 
 const selection = Selection.create({
   class: "selection",

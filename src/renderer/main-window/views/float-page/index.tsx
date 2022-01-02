@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
-import reactDom from "react-dom";
-import "normalize.css/normalize.css";
 import "./index.scss";
 import { FileDrop } from "react-file-drop";
 import classNames from "classnames";
-import {
-  getConfig,
-  getTransfers,
-  uploadFiles
-} from "../main-window/helper/ipc";
+import { getConfig, getTransfers, uploadFiles } from "../../helper/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "types/enum";
-import { ipcRenderer, remote } from "../common/script/electron";
+import { ipcRenderer, remote } from "../../../common/script/electron";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("contextmenu", onContextMenu);
+
+    return () => {
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("contextmenu", onContextMenu);
+    };
+  }, []);
+
   const onSwitchShape = (
     event: Electron.IpcRendererEvent,
     t: FlowWindowStyle
@@ -105,9 +114,4 @@ const onContextMenu = async () => {
   menu.popup();
 };
 
-window.addEventListener("mousedown", onMouseDown, false);
-window.addEventListener("mousemove", onMouseMove, false);
-window.addEventListener("mouseup", onMouseUp, false);
-window.addEventListener("contextmenu", onContextMenu, false);
-
-reactDom.render(<App />, document.getElementById("root"));
+export default App;

@@ -6,30 +6,30 @@ import {
   PlusCircleFilled
 } from "@ant-design/icons";
 import { message } from "antd";
-import audioSrc from "./assets/tip.mp3";
+import audioSrc from "../../assets/tip.mp3";
 
-import "./App.scss";
-import TheSidebar from "./components/TheSidebar";
-import TransferList from "./components/TransferList";
-import { Direction, Page, Platform } from "./helper/enums";
-import Bucket from "./components/Bucket";
-import TransferDone from "./components/TransferDone";
-import Setting from "./components/Setting";
+import "./index.scss";
+import TheSidebar from "../../components/TheSidebar";
+import TransferList from "../../components/TransferList";
+import { Direction, Page, Platform } from "../../helper/enums";
+import Bucket from "../../components/Bucket";
+import TransferDone from "../../components/TransferDone";
+import Setting from "../../components/Setting";
 import {
   getBgOffset,
   getPlatform,
   getThemeColor,
   ThemeColor
-} from "./helper/utils";
-import Services from "./components/Services";
-import { getBuckets, initOss, switchBucket } from "./helper/ipc";
-import { ipcRenderer, remote } from "../common/script/electron";
+} from "../../helper/utils";
+import Services from "../../components/Services";
+import { getBuckets, initOss, switchBucket } from "../../helper/ipc";
+import { ipcRenderer, remote } from "../../../common/script/electron";
 import { AppStore } from "types/common";
 import { BucketMeta } from "types/index";
 
 const audio = new Audio(audioSrc);
 
-const App: React.FC = () => {
+const Index: React.FC = () => {
   const getWidth = () => document.body.clientWidth - 225;
 
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -232,4 +232,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Index;

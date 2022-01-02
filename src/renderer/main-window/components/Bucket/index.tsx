@@ -21,7 +21,7 @@ import {
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
-import useSelection from "./hooks/useSelection";
+import useSelection from "../../hooks/useSelection";
 import NoResult from "../NoResult";
 import store from "../../../../main/helper/store";
 import {

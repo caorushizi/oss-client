@@ -1,17 +1,14 @@
-import "normalize.css/normalize.css";
 import "./index.scss";
-import reactDom from "react-dom";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button } from "antd";
-import "antd/dist/antd.css";
-import { ipcRenderer, remote } from "../common/script/electron";
+import { ipcRenderer, remote } from "../../../common/script/electron";
 
 type Options = {
   title: string;
   message: string;
 };
 
-const App = () => {
+const AlertPage: FC = () => {
   const [message, setMessage] = useState<Options>({
     title: "警告",
     message: "警告"
@@ -43,4 +40,4 @@ const App = () => {
   );
 };
 
-reactDom.render(<App />, document.getElementById("root"));
+export default AlertPage;
