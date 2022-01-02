@@ -23,12 +23,8 @@ import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "../../hooks/useSelection";
 import NoResult from "../NoResult";
-import store from "../../../../main/helper/store";
-import {
-  clipboard,
-  ipcRenderer,
-  remote
-} from "../../../common/script/electron";
+import store from "main/helper/store";
+import { clipboard, ipcRenderer, remote } from "../../lib/electron";
 import { BucketMeta } from "types/index";
 
 type PropTypes = {

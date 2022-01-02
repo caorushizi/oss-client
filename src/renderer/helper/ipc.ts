@@ -1,5 +1,5 @@
 import uuidV1 from "uuid/v1";
-import { ipcRenderer } from "../../common/script/electron";
+import { ipcRenderer } from "../lib/electron";
 import { IpcResponse } from "types/renderer";
 import { AppStore, ConfigStore, TransferStore, VFile } from "types/common";
 import { OssType, TransferStatus } from "types/enum";

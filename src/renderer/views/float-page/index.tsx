@@ -4,7 +4,7 @@ import { FileDrop } from "react-file-drop";
 import classNames from "classnames";
 import { getConfig, getTransfers, uploadFiles } from "../../helper/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "types/enum";
-import { ipcRenderer, remote } from "../../../common/script/electron";
+import { ipcRenderer, remote } from "../../lib/electron";
 
 const App = () => {
   const [circle, setCircle] = useState<boolean>(false);

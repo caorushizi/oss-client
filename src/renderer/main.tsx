@@ -3,7 +3,7 @@ import reactDom from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "normalize.css/normalize.css";
 import "antd/dist/antd.css";
-import "./index.scss";
+import "./main.scss";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import MainPage from "./views/main-page";
@@ -17,8 +17,6 @@ Spin.setDefaultIndicator(
   <LoadingOutlined style={{ fontSize: 25, color: "#fff" }} />
 );
 
-console.log(window.location.pathname);
-console.log(window.location.hash);
 reactDom.render(
   <Provider store={store}>
     <BrowserRouter>

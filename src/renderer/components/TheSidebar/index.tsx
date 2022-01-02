@@ -9,7 +9,7 @@ import SettingIcon from "../../assets/images/setting.png";
 import DoneIcon from "../../assets/images/done.png";
 import DownloadIcon from "../../assets/images/download.png";
 import AppsIcon from "../../assets/images/apps.png";
-import { ipcRenderer } from "../../../common/script/electron";
+import { ipcRenderer } from "../../lib/electron";
 
 const antIcon = <LoadingOutlined style={{ fontSize: 12 }} spin />;
 

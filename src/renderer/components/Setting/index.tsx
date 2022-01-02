@@ -6,7 +6,7 @@ import { Platform } from "../../helper/enums";
 import { getPlatform } from "../../helper/utils";
 import { changeSetting, getConfig } from "../../helper/ipc";
 import { initialConfig } from "main/types";
-import { remote } from "../../../common/script/electron";
+import { remote } from "../../lib/electron";
 import { ConfigStore } from "types/common";
 
 enum FlowWindowStyle {

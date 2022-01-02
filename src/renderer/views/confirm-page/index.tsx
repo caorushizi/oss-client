@@ -1,7 +1,7 @@
 import "./index.scss";
 import React, { useEffect, useState } from "react";
 import { Button, Space } from "antd";
-import { ipcRenderer, remote } from "../../../common/script/electron";
+import { ipcRenderer, remote } from "../../lib/electron";
 
 type Options = {
   title: string;

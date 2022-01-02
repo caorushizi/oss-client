@@ -23,7 +23,7 @@ import {
 } from "../../helper/utils";
 import Services from "../../components/Services";
 import { getBuckets, initOss, switchBucket } from "../../helper/ipc";
-import { ipcRenderer, remote } from "../../../common/script/electron";
+import { ipcRenderer, remote } from "../../lib/electron";
 import { AppStore } from "types/common";
 import { BucketMeta } from "types/index";
 
