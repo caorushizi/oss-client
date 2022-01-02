@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { FileDrop } from "react-file-drop";
 import classNames from "classnames";
-import { getConfig, getTransfers, uploadFiles } from "../../helper/ipc";
+import { getConfig, getTransfers, uploadFiles } from "../../lib/ipc";
 import { FlowWindowStyle, TaskType, TransferStatus } from "types/enum";
 import { ipcRenderer, remote } from "../../lib/electron";
 
@@ -97,7 +97,9 @@ const onContextMenu = async () => {
             /^(.{5}).*(.{6})$/,
             (_: any, $1: any, $2: any) => `${$1}……${$2}`
           ),
-          click: () => {}
+          click: () => {
+            // empty
+          }
         }))
       : [{ label: "暂无最近记录", enabled: false }];
   const contextMenuTemplate: Electron.MenuItemConstructorOptions[] = [

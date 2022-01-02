@@ -4,7 +4,7 @@ import "./index.scss";
 import { message, Spin } from "antd";
 import HeaderToolbar from "./HeaderToolbar";
 import BodyTable from "./BodyTable";
-import { KeyCode, Layout } from "../../helper/enums";
+import { KeyCode, Layout } from "../../lib/enums";
 import BodyGrid from "./BodyGrid";
 import Footer from "./Footer";
 import HeaderButtonGroup from "./HeaderButtonGroup";
@@ -17,12 +17,12 @@ import {
   refreshBucket,
   showConfirm,
   uploadFiles
-} from "../../helper/ipc";
+} from "../../lib/ipc";
 import { Item } from "../../lib/vdir/types";
 import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "../../hooks/useSelection";
-import NoResult from "../NoResult";
+import Empty from "../Empty";
 import store from "main/helper/store";
 import { clipboard, ipcRenderer, remote } from "../../lib/electron";
 import { BucketMeta } from "types/index";
@@ -276,10 +276,10 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
   const renderMainPanel = () => {
     if (!bucketMeta.name) {
-      return <NoResult title="没有 Bucket" subTitle="当前没有选中的存储桶" />;
+      return <Empty title="没有 Bucket" subTitle="当前没有选中的存储桶" />;
     }
     if (items.length <= 0) {
-      return <NoResult title="没有文件" subTitle="当前 bucket 中没有文件" />;
+      return <Empty title="没有文件" subTitle="当前 bucket 中没有文件" />;
     }
     return Layout.grid === layout ? (
       <BodyGrid

@@ -3,7 +3,7 @@ import "./index.scss";
 import classNames from "classnames";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Progress, Spin } from "antd";
-import { Page } from "../../helper/enums";
+import { Page } from "../../lib/enums";
 import FileIcon from "../../assets/images/file.png";
 import SettingIcon from "../../assets/images/setting.png";
 import DoneIcon from "../../assets/images/done.png";

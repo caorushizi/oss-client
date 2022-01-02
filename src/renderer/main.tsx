@@ -1,6 +1,6 @@
 import React from "react";
 import reactDom from "react-dom";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "normalize.css/normalize.css";
 import "antd/dist/antd.css";
 import "./main.scss";

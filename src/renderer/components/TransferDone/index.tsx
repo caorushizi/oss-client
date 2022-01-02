@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import { Button } from "antd";
 
 import "./index.scss";
@@ -7,10 +8,10 @@ import {
   fileSizeFormatter,
   getIconName,
   taskTypeFormatter
-} from "../../helper/utils";
+} from "../../lib/utils";
 import Icon from "../IconFont";
-import NoResult from "../NoResult";
-import { clearTransferDoneList, getTransfers } from "../../helper/ipc";
+import Empty from "../Empty";
+import { clearTransferDoneList, getTransfers } from "../../lib/ipc";
 import { TransferStore } from "types/common";
 import { TransferStatus } from "types/enum";
 
@@ -68,7 +69,7 @@ const TransferDone = () => {
           </section>
         </>
       ) : (
-        <NoResult title="没有文件" subTitle="没有找到传输列表" />
+        <Empty title="没有文件" subTitle="没有找到传输列表" />
       )}
     </div>
   );

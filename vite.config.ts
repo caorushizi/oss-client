@@ -15,9 +15,6 @@ export default defineConfig({
     },
     reactRefresh()
   ],
-  server: {
-    force: true
-  },
   build: {
     target: "es2015",
     rollupOptions: {

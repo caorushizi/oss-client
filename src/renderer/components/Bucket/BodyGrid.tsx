@@ -6,7 +6,7 @@ import VFolder from "../../lib/vdir/VFolder";
 import { Item } from "../../lib/vdir/types";
 import IconFont from "../IconFont";
 import VFile from "../../lib/vdir/VFile";
-import { getIconName, supportedImage } from "../../helper/utils";
+import { getIconName, supportedImage } from "../../lib/utils";
 
 type PropTypes = {
   items: Item[];

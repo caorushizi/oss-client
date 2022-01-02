@@ -1,5 +1,4 @@
 import shortId from "shortid";
-import { BucketItem } from "types/renderer";
 
 export default class VFile {
   name: string;

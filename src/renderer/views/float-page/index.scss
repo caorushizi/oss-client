@@ -6,7 +6,7 @@
   align-items: center;
 
   &.circle {
-    background-image: url("circle-bg.png");
+    background-image: url("renderer/assets/images/circle-bg.png");
     background-repeat: no-repeat;
 
     &::after {
@@ -39,7 +39,7 @@
   }
 
   &.oval {
-    background-image: url("oval-bg.png");
+    background-image: url("renderer/assets/images/oval-bg.png");
     background-position: center;
     background-repeat: no-repeat;
 

@@ -1,14 +1,5 @@
-import { applyMiddleware, createStore } from "redux";
-import { routerMiddleware } from "connected-react-router";
-import { composeWithDevTools } from "redux-devtools-extension";
-import { createHashHistory } from "history";
-import createRootReducer from "./reducers";
+import { combineReducers, createStore } from "redux";
 
-export const history = createHashHistory();
-
-const store = createStore(
-  createRootReducer(history),
-  composeWithDevTools(applyMiddleware(routerMiddleware(history)))
-);
+const store = createStore(combineReducers({}));
 
 export default store;

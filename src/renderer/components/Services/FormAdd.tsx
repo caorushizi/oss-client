@@ -3,7 +3,6 @@ import { Button, Form, Input, Select } from "antd";
 import "./index.scss";
 import shortId from "shortid";
 import { OssType } from "types/enum";
-import { AddForm } from "types/renderer";
 
 type PropTypes = {
   onBucketAdd: (values: AddForm) => void;

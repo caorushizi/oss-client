@@ -3,9 +3,9 @@ import "./index.scss";
 import { Progress } from "antd";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import Icon from "../IconFont";
-import { fileSizeFormatter, getIconName } from "../../helper/utils";
-import { getTransfers } from "../../helper/ipc";
-import NoResult from "../NoResult";
+import { fileSizeFormatter, getIconName } from "../../lib/utils";
+import { getTransfers } from "../../lib/ipc";
+import Empty from "../Empty";
 import { ipcRenderer } from "../../lib/electron";
 import { TransferStore } from "types/common";
 
@@ -123,7 +123,7 @@ const TransferList = () => {
           </section>
         </>
       ) : (
-        <NoResult title="没有文件" subTitle="没有找到传输列表" />
+        <Empty title="没有文件" subTitle="没有找到传输列表" />
       )}
     </div>
   );

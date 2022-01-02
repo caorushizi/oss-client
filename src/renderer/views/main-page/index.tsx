@@ -6,12 +6,12 @@ import {
   PlusCircleFilled
 } from "@ant-design/icons";
 import { message } from "antd";
-import audioSrc from "../../assets/tip.mp3";
+import audioSrc from "../../assets/audios/tip.mp3";
 
 import "./index.scss";
 import TheSidebar from "../../components/TheSidebar";
 import TransferList from "../../components/TransferList";
-import { Direction, Page, Platform } from "../../helper/enums";
+import { Direction, Page, Platform } from "../../lib/enums";
 import Bucket from "../../components/Bucket";
 import TransferDone from "../../components/TransferDone";
 import Setting from "../../components/Setting";
@@ -20,9 +20,9 @@ import {
   getPlatform,
   getThemeColor,
   ThemeColor
-} from "../../helper/utils";
+} from "../../lib/utils";
 import Services from "../../components/Services";
-import { getBuckets, initOss, switchBucket } from "../../helper/ipc";
+import { getBuckets, initOss, switchBucket } from "../../lib/ipc";
 import { ipcRenderer, remote } from "../../lib/electron";
 import { AppStore } from "types/common";
 import { BucketMeta } from "types/index";

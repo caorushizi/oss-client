@@ -12,15 +12,14 @@ import {
   getBuckets,
   showConfirm,
   updateApp
-} from "../../helper/ipc";
+} from "../../lib/ipc";
 import FormAdd from "./FormAdd";
 import FormUpdate from "./FormUpdate";
-import { Direction } from "../../helper/enums";
-import { hiddenTextFilter } from "../../helper/filters";
-import { debounce, deepEqual } from "../../helper/utils";
-import NoResult from "../NoResult";
+import { Direction } from "../../lib/enums";
+import { hiddenTextFilter } from "../../lib/filters";
+import { debounce, deepEqual } from "../../lib/utils";
+import Empty from "../Empty";
 import { AppStore } from "types/common";
-import { AddForm } from "types/renderer";
 
 enum OssType {
   qiniu,
@@ -317,11 +316,11 @@ const Services = ({ activeApp, onAppSwitch }: PropTypes) => {
           </Row>
         ) : (
           <section className="apps-main-wrapper">
-            <NoResult title="没有 Apps" subTitle="暂时没有搜索到 apps">
+            <Empty title="没有 Apps" subTitle="暂时没有搜索到 apps">
               <Button size="small" onClick={_toAddPage}>
                 添加
               </Button>
-            </NoResult>
+            </Empty>
           </section>
         );
       case ServicesPage.add:

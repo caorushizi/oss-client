@@ -3,11 +3,7 @@ import "./index.scss";
 import { Table } from "antd";
 import { Item } from "../../lib/vdir/types";
 import Icon from "../IconFont";
-import {
-  dateFormatter,
-  fileSizeFormatter,
-  getIconName
-} from "../../helper/utils";
+import { dateFormatter, fileSizeFormatter, getIconName } from "../../lib/utils";
 import VFolder from "../../lib/vdir/VFolder";
 import VFile from "../../lib/vdir/VFile";
 

@@ -9,7 +9,7 @@ import SearchIcon from "../../assets/images/search.png";
 import GridIcon from "../../assets/images/grid.png";
 import TableIcon from "../../assets/images/table.png";
 
-import { Layout } from "../../helper/enums";
+import { Layout } from "../../lib/enums";
 
 type PropTypes = {
   backspace: () => void;
