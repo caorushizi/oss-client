@@ -5,7 +5,7 @@ require("dotenv").config({
 });
 
 require("esbuild").buildSync({
-  entryPoints: [resolve(__dirname, "./src/main/index.ts")],
+  entryPoints: [resolve(__dirname, "./src/index.ts")],
   bundle: true,
   platform: "node",
   sourcemap: true,

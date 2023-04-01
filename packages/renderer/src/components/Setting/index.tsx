@@ -5,7 +5,7 @@ import { SelectOutlined } from "@ant-design/icons/lib";
 import { Platform } from "../../lib/enums";
 import { getPlatform } from "../../lib/utils";
 import { changeSetting, getConfig } from "../../lib/ipc";
-import { initialConfig } from "main/types";
+import { initialConfig } from "types";
 import { remote } from "../../lib/electron";
 import { ConfigStore } from "types/common";
 

@@ -5,16 +5,7 @@ import eslint from "@rollup/plugin-eslint";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    {
-      ...eslint({
-        include: "**/*.+(js|jsx|ts|tsx)"
-      }),
-      enforce: "pre",
-      apply: "serve"
-    },
-    reactRefresh()
-  ],
+  plugins: [reactRefresh()],
   build: {
     target: "es2015",
     rollupOptions: {

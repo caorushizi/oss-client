@@ -23,7 +23,7 @@ import VFile from "../../lib/vdir/VFile";
 import useKeyPress from "../../hooks/useKeyPress";
 import useSelection from "../../hooks/useSelection";
 import Empty from "../Empty";
-import store from "main/helper/store";
+import store from "../../helper/store";
 import { clipboard, ipcRenderer, remote } from "../../lib/electron";
 import { BucketMeta } from "types/index";
 
