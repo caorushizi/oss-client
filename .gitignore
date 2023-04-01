@@ -91,7 +91,6 @@ out/
 .idea/
 
 dist/
-package.json
 yarn.lock
 build
 .yarn
