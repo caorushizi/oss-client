@@ -29,7 +29,7 @@
     "concurrently": "6.0.1",
     "cross-env": "7.0.3",
     "dotenv": "8.2.0",
-    "electron": "9.4.0",
+    "electron": "22.3.25",
     "electron-builder": "^22.10.5",
     "electron-debug": "3.0.1",
     "esbuild": "0.9.7",
