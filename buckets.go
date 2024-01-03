@@ -4,41 +4,42 @@ import (
 	"fmt"
 
 	"caorushizi.cn/buckets/internal/api/qiniu"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 type PingForm struct {
-	ak string `form:"ak" json:"ak" xml:"ak"  binding:"required"`
-	sk string `form:"sk" json:"sk" xml:"sk"  binding:"required"`
+	AK string `json:"ak" binding:"required"`
+	SK string `json:"sk" binding:"required"`
 }
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 
-		if err := c.ShouldBind("ak"); err != nil {
+	r.POST("/api/getBuckets", func(c *gin.Context) {
+
+		getBucketsForm := PingForm{}
+		if err := c.ShouldBindJSON(&getBucketsForm); err != nil {
 			c.JSON(200, gin.H{
 				"error": err.Error(),
 			})
 			return
 		}
-		if err := c.ShouldBind("sk"); err != nil {
-			c.JSON(200, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
 
-		buckets, err := qiniu.GetBuckets("", "")
-		fmt.Println(buckets)
-
+		buckets, err := qiniu.GetBuckets(getBucketsForm.AK, getBucketsForm.SK)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		c.JSON(200, buckets)
 	})
+
 	r.Run() // 监听并在 0.0.0.0:8080 上启动服务
 }
