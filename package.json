@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -20,14 +19,16 @@
     "@typescript-eslint/parser": "^6.17.0",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.56.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "sass": "^1.69.7",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "3.1.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
+    "antd": "^5.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
