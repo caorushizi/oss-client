@@ -1,30 +1,18 @@
-import { createStyles, css } from "antd-style";
+import { createStyles } from "antd-style";
 
-export default createStyles({
+export default createStyles(({ token, css }) => ({
   container: css`
     height: 100vh;
 
-    @mixin main-wrapper-mixin {
-      height: 100%;
-      background-color: blue;
-      position: absolute;
-      left: 225px;
-      right: 0;
-    }
-
     .up,
     .down {
-      height: 100%;
-      background-color: blue;
     }
     .up-enter {
-      @include main-wrapper-mixin;
       top: 100vh;
       opacity: 0;
     }
 
     .up-enter-active {
-      @include main-wrapper-mixin;
       top: 0;
       opacity: 1;
       transition:
@@ -33,13 +21,11 @@ export default createStyles({
     }
 
     .up-exit {
-      @include main-wrapper-mixin;
       top: 0;
       opacity: 1;
     }
 
     .up-exit-active {
-      @include main-wrapper-mixin;
       top: -100vh;
       opacity: 0;
       transition:
@@ -48,13 +34,11 @@ export default createStyles({
     }
 
     .down-enter {
-      @include main-wrapper-mixin;
       top: -100vh;
       opacity: 0;
     }
 
     .down-enter-active {
-      @include main-wrapper-mixin;
       top: 0;
       opacity: 1;
       transition:
@@ -63,13 +47,11 @@ export default createStyles({
     }
 
     .down-exit {
-      @include main-wrapper-mixin;
       top: 0;
       opacity: 1;
     }
 
     .down-exit-active {
-      @include main-wrapper-mixin;
       top: 100vh;
       opacity: 0;
       transition:
@@ -79,5 +61,25 @@ export default createStyles({
   `,
   sider: css`
     width: 225px;
+    height: 100vh;
+    overflow: auto;
   `,
-});
+  siderAppName: css`
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    text-align: right;
+    color: ${token.colorText};
+    padding-right: 10px;
+  `,
+  contentInner: css`
+    height: 100%;
+    position: absolute;
+    left: 225px;
+    right: 0;
+  `,
+  contentWrapper: css`
+    height: 100vh;
+    overflow: hidden;
+  `,
+}));

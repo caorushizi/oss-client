@@ -23,7 +23,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/api/getBuckets", func(c *gin.Context) {
+	r.POST("/api/buckets", func(c *gin.Context) {
 
 		getBucketsForm := PingForm{}
 		if err := c.ShouldBindJSON(&getBucketsForm); err != nil {

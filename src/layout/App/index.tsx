@@ -2,12 +2,21 @@ import { Layout } from "antd";
 import useStyle from "./style";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-import { Link, useLocation, useOutlet } from "react-router-dom";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { routes } from "../../router";
-import { useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  AppstoreFilled,
+  CheckSquareFilled,
+  FolderFilled,
+  RetweetOutlined,
+  SettingFilled,
+} from "@ant-design/icons";
+import { getBuckets } from "../../api";
+import { useRequest } from "ahooks";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -27,90 +36,162 @@ function getItem(
   };
 }
 
-const items: MenuProps["items"] = [
-  getItem(
-    "Buckets",
-    "Buckets",
-    null,
-    [
-      getItem(<Link to={"/bucket1"}>Buckets1</Link>, "1"),
-      getItem(<Link to={"/bucket2"}>Buckets2</Link>, "2"),
-    ],
-    "group",
-  ),
-  getItem(
-    "传输列表",
-    "transfer",
-    null,
-    [
-      getItem(<Link to={"/transfer-list"}>传输列表</Link>, "3"),
-      getItem(<Link to={"/transfer-done"}>传输完成</Link>, "4"),
-    ],
-    "group",
-  ),
-  getItem(
-    "设置",
-    "stg",
-    null,
-    [
-      getItem(<Link to={"/settings"}>设置</Link>, "5"),
-      getItem(<Link to={"/apps"}>apps</Link>, "6"),
-    ],
-    "group",
-  ),
+const styles = [
+  {
+    content: "linear-gradient(#8B5C68, #37394E)",
+    sider: "linear-gradient(#8B5C68, #484B58)",
+  },
+  {
+    content: "linear-gradient(#875D56, #3A3B4E)",
+    sider: "linear-gradient(#875D56, #484B58)",
+  },
+  {
+    content: "linear-gradient(#546F67, #333B4E)",
+    sider: "linear-gradient(#546F67, #484B58)",
+  },
+  {
+    content: "linear-gradient(#7D5A86, #39394E)",
+    sider: "linear-gradient(#7D5A86, #484B58)",
+  },
+  {
+    content: "linear-gradient(#80865A, #39394E)",
+    sider: "linear-gradient(#80865A, #484B58)",
+  },
+  {
+    content: "linear-gradient(#8B5C68, #37394E)",
+    sider: "linear-gradient(#8B5C68, #484B58)",
+  },
 ];
 
+export const getThemeColor = () =>
+  styles[Math.floor(Math.random() * styles.length)];
+
+const bucketItems = (items: string[]) => {
+  const buckets = items.map((item) => ({
+    key: `/${item}`,
+    label: item,
+    icon: <FolderFilled />,
+  }));
+  return getItem("存储空间", "Buckets", null, buckets, "group");
+};
+
+const transferItems = getItem(
+  "传输列表",
+  "transfer",
+  null,
+  [
+    getItem("传输列表", "/transfer-list", <RetweetOutlined />),
+    getItem("传输完成", "/transfer-done", <CheckSquareFilled />),
+  ],
+  "group",
+);
+
+const settingItems = getItem(
+  "设置",
+  "stg",
+  null,
+  [
+    getItem("设置", "/settings", <SettingFilled />),
+    getItem("apps", "/apps", <AppstoreFilled />),
+  ],
+  "group",
+);
+
+const getNavs = (data: string[]) => {
+  return {
+    navs: [bucketItems(data), transferItems, settingItems],
+    navsIndex: [
+      ...data.map((i) => `/${i}`),
+      "/transfer-list",
+      "/transfer-done",
+      "/settings",
+      "/apps",
+    ],
+  };
+};
+
+function findIndex(key: React.Key, keys: React.Key[]) {
+  return keys.findIndex((i) => i === key);
+}
+
+interface Direction {
+  direction: "up" | "down";
+  key: React.Key;
+}
+
+function findPath(path: string) {
+  return routes.find((r) => r.path === path);
+}
+
 function App() {
-  const [direction, setDirection] = useState<"up" | "down">("down");
-  const prevMenu = useRef<MenuItem>();
+  const [color, setColor] = useState(getThemeColor());
   const { styles } = useStyle();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const currentOutlet = useOutlet();
-  const { nodeRef } = routes.find((r) => r.path === pathname) ?? {};
+  const { nodeRef } = findPath(pathname) ?? {};
+  const { data } = useRequest(getBuckets);
+  const { navs, navsIndex } = useMemo(() => {
+    return getNavs(data ?? []);
+  }, [data]);
+  const [direction, setDirection] = useState<Direction>({
+    direction: "down",
+    key: navsIndex[0],
+  });
 
   return (
     <Layout className={styles.container}>
-      <Sider width="225">
+      <Sider
+        width="225"
+        className={styles.sider}
+        style={{
+          backgroundImage: color.sider,
+        }}
+      >
+        <div className={styles.siderAppName}>OSS Client</div>
         <Menu
-          className={styles.sider}
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
+          defaultSelectedKeys={[pathname]}
           mode="inline"
-          items={items}
+          items={navs}
           onSelect={(e) => {
-            console.log(e);
-            const currKey = Number(e.key);
-            const prevKey = Number(prevMenu.current?.key || 0);
-            console.log(currKey, prevKey);
-            setDirection(() => {
-              return currKey < prevKey ? "up" : "down";
+            setDirection((prev) => {
+              const prevKey = findIndex(prev.key, navsIndex);
+              const currKey = findIndex(e.key, navsIndex);
+              const direction = currKey < prevKey ? "up" : "down";
+              return {
+                direction,
+                key: e.key,
+              };
             });
-            prevMenu.current = e;
-            console.log(prevMenu.current);
+
+            setTimeout(() => {
+              navigate(e.key);
+              setColor(getThemeColor());
+            }, 100);
           }}
         />
       </Sider>
       <Layout>
-        <Header>Header</Header>
-        <Content style={{ background: "red" }}>
-          <SwitchTransition>
+        <Content
+          className={styles.contentWrapper}
+          style={{
+            backgroundImage: color.content,
+          }}
+        >
+          <SwitchTransition mode="out-in">
             <CSSTransition
               key={pathname}
               nodeRef={nodeRef}
               timeout={300}
-              classNames={direction}
+              classNames={direction.direction}
               unmountOnExit
             >
-              {() => (
-                <div ref={nodeRef} className={direction}>
-                  {currentOutlet}
-                  {direction}
-                </div>
-              )}
+              <div ref={nodeRef} className={styles.contentInner}>
+                {currentOutlet}
+              </div>
             </CSSTransition>
           </SwitchTransition>
         </Content>
-        <Footer>Footer</Footer>
       </Layout>
     </Layout>
   );
