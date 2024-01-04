@@ -18,7 +18,7 @@ Spin.setDefaultIndicator(
 reactDom.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/main" element={<MainPage />} />
+      <Route path="/" element={<MainPage />} />
       <Route path="/alert" element={<AlertPage />} />
       <Route path="/confirm" element={<ConfirmPage />} />
       <Route path="/float" element={<FloatPage />} />
