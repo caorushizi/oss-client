@@ -1,0 +1,21 @@
+diff --git a/es/input/style/index.js b/es/input/style/index.js
+index abd06dfa16372761dc1aef9772a37719079a790e..cc455b88578f0e345cb856f2035b13bd29dd71b0 100644
+--- a/es/input/style/index.js
++++ b/es/input/style/index.js
+@@ -104,7 +104,7 @@ export const genBasicInputStyle = token => Object.assign(Object.assign({
+   color: token.colorText,
+   fontSize: token.fontSize,
+   lineHeight: token.lineHeight,
+-  backgroundColor: token.colorBgContainer,
++  backgroundColor: 'transparent',
+   backgroundImage: 'none',
+   borderWidth: token.lineWidth,
+   borderStyle: token.lineType,
+@@ -466,6 +466,7 @@ const genAffixStyle = token => {
+   return {
+     [`${componentCls}-affix-wrapper`]: Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, genBasicInputStyle(token)), {
+       display: 'inline-flex',
++      backgroundColor: token.colorBgContainer,
+       [`&:not(${componentCls}-affix-wrapper-disabled):hover`]: {
+         zIndex: 1,
+         [`${componentCls}-search-with-button &`]: {

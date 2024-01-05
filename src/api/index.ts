@@ -6,7 +6,13 @@ const instance = axios.create({
 
 instance.interceptors.response.use(
   (response) => {
-    return response.data;
+    const { data } = response;
+
+    if (data.code !== 0) {
+      return Promise.reject(new Error(data.message));
+    }
+
+    return data.data;
   },
   (error) => {
     return Promise.reject(error);
@@ -18,4 +24,14 @@ export function getBuckets(): Promise<string[]> {
     ak: import.meta.env.VITE_API_KEY,
     sk: import.meta.env.VITE_API_SECRET,
   });
+}
+
+export interface AppForm {
+  type: string;
+  name: string;
+  ak: string;
+  sk: string;
+}
+export function addApp(app: AppForm): Promise<string> {
+  return instance.post("/api/apps", app);
 }

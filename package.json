@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "server": "go run ./internal/server/main.go"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.9",
@@ -24,11 +25,13 @@
     "eslint-plugin-prettier": "^5.1.2",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "3.1.1",
+    "sass": "^1.69.7",
     "typescript": "^5.3.3",
     "vite": "^5.0.10"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@ant-design/pro-components": "^2.6.43",
     "@tauri-apps/api": "^1.5.3",
     "ahooks": "^3.7.8",
     "antd": "^5.12.7",
@@ -41,5 +44,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "pnpm": {
+    "patchedDependencies": {
+      "antd@5.12.8": "patches/antd@5.12.8.patch"
+    }
+  }
 }

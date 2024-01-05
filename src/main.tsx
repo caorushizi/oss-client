@@ -29,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         token: {
           fontSize: 12,
           colorText: "rgba(255, 255, 255, 0.75)",
+          colorBgContainer: "rgba(225, 255, 255, 0.2)",
         },
         components: {
           Menu: {
@@ -42,6 +43,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             itemBg: "transparent",
             groupTitleFontSize: 14,
           },
+          Button: {
+            defaultBg: "rgba(255, 255, 255, 0.15)",
+          },
+          Input: {},
         },
       }}
     >
