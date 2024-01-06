@@ -37,6 +37,7 @@ const (
 	UNKNOWN_ERROR   = 1002 // 未知错误
 	PARAMETER_ERROR = 1003 // 参数错误
 	AUTH_ERROR      = 1004 // 错误
+	OTHER_ERROR     = 1005 // 其他错误
 )
 
 // 500 错误处理
@@ -47,6 +48,11 @@ func ServerError() *APIException {
 // 404 错误
 func NotFound() *APIException {
 	return newAPIException(NOT_FOUND, http.StatusText(http.StatusNotFound))
+}
+
+// 业务错误
+func BizError(code int, message string) *APIException {
+	return newAPIException(code, message)
 }
 
 // 未知错误

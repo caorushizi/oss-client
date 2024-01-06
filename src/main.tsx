@@ -3,15 +3,16 @@ import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { routes } from "./router";
-import App from "./layout/App";
+import Layout from "./layout/App";
 import zhCN from "antd/locale/zh_CN";
 import "antd/dist/reset.css";
 import "./main.scss";
+import { App } from "antd";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Layout />,
     children: routes.map((route) => ({
       index: route.path === "/",
       path: route.path === "/" ? undefined : route.path,
@@ -47,10 +48,15 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             defaultBg: "rgba(255, 255, 255, 0.15)",
           },
           Input: {},
+          Message: {
+            contentBg: "rgba(0, 0, 0, 0.15)",
+          },
         },
       }}
     >
-      <RouterProvider router={router} />
+      <App>
+        <RouterProvider router={router} />
+      </App>
     </ConfigProvider>
   </StrictMode>,
 );

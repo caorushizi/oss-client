@@ -1,23 +1,14 @@
-import { Col, Row, Space, message } from "antd";
+import { App, Col, Row, Space, Flex } from "antd";
 import Header from "components/Header";
 import { Button } from "antd";
-import { useRef, useState } from "react";
-import {
-  ProForm,
-  ProFormText,
-  ProFormInstance,
-} from "@ant-design/pro-components";
-import { addApp } from "../../api";
+import { useState } from "react";
+import { ProForm, ProFormText } from "@ant-design/pro-components";
+import { addApp, getApps } from "../../api";
+import { useRequest } from "ahooks";
+import useStyle from "./style";
 
 type PageStatus = "add" | "list";
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
+type formStatus = "view" | "edit";
 
 interface AddFormProps {
   name: string;
@@ -27,8 +18,12 @@ interface AddFormProps {
 }
 
 const Apps = () => {
-  const formRef = useRef<ProFormInstance>();
-  const [status, setStatus] = useState<PageStatus>("add");
+  const { message } = App.useApp();
+  const [status, setStatus] = useState<PageStatus>("list");
+  const [formStatus, setFormStatus] = useState<formStatus>("view");
+  const { styles } = useStyle();
+  const { data } = useRequest(getApps);
+  const [form] = ProForm.useForm<AddFormProps>();
 
   const renderAdd = () => {
     return (
@@ -36,7 +31,6 @@ const Apps = () => {
         <Button onClick={() => setStatus("list")}>返回</Button>
 
         <ProForm<AddFormProps>
-          formRef={formRef}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 14 }}
           layout="horizontal"
@@ -52,14 +46,15 @@ const Apps = () => {
             },
           }}
           onFinish={async (values) => {
-            await formRef.current?.validateFields();
+            try {
+              const app = await addApp(values);
+              console.log(app);
 
-            const app = await addApp(values);
-            console.log(app);
-
-            await waitTime(2000);
-            console.log(values);
-            message.success("提交成功");
+              message.success("提交成功");
+            } catch (error: any) {
+              console.log(error.message);
+              message.error(error.message);
+            }
           }}
         >
           <ProFormText
@@ -89,18 +84,112 @@ const Apps = () => {
             <Button onClick={() => setStatus("add")}>添加</Button>
           </div>
           <div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
+            {data?.map((app) => {
+              return (
+                <Flex
+                  justify="space-between"
+                  className={styles.appItem}
+                  key={app.name}
+                  onClick={() => {
+                    setFormStatus("view");
+                    form.setFieldsValue(app);
+                  }}
+                >
+                  {app.name}
+                  <Button type="text">设为默认</Button>
+                </Flex>
+              );
+            })}
           </div>
         </Col>
-        <Col span={16}>col-8</Col>
+        <Col span={16}>
+          <ProForm<AddFormProps>
+            form={form}
+            readonly={formStatus === "view"}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 14 }}
+            grid={true}
+            layout="horizontal"
+            onFinish={async (values) => {
+              console.log(values);
+            }}
+            submitter={{
+              render: (_, doms) => {
+                return (
+                  <Row>
+                    <Col span={14} offset={4}>
+                      <Space>
+                        {formStatus === "view" ? (
+                          <Button onClick={() => setFormStatus("edit")}>
+                            编辑
+                          </Button>
+                        ) : (
+                          <Button onClick={() => setFormStatus("view")}>
+                            取消
+                          </Button>
+                        )}
+                        {doms}
+                      </Space>
+                    </Col>
+                  </Row>
+                );
+              },
+            }}
+          >
+            <ProForm.Group title="基础信息">
+              <ProFormText
+                name="name"
+                label="名称"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+              <ProFormText
+                name="type"
+                label="云服务厂商"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+              <ProFormText
+                name="ak"
+                label="AK"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+              <ProFormText
+                name="sk"
+                label="SK"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+            </ProForm.Group>
+            <ProForm.Group title="软件配置">
+              <ProFormText
+                name="uploadPath"
+                label="上传路径"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+              <ProFormText
+                name="uploadPrefix"
+                label="上传前缀"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+              <ProFormText
+                name="defaultDomain"
+                label="默认域名"
+                rules={[{ required: true }]}
+                placeholder="请输入名称"
+              />
+            </ProForm.Group>
+          </ProForm>
+        </Col>
       </Row>
     );
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <Header />
       {status === "add" ? renderAdd() : renderList()}
     </div>

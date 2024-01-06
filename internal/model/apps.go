@@ -1,18 +1,8 @@
 package model
 
-import (
-	"time"
-
-	"gorm.io/gorm"
-)
-
 type App struct {
-	ID        uint `gorm:"primaryKey"`
-	Name      string
-	Type      string
-	AK        string
-	SK        string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name string `json:"name" binding:"required"`
+	Type string `json:"type" binding:"required"`
+	AK   string `json:"ak" binding:"required"`
+	SK   string `json:"sk" binding:"required"`
 }

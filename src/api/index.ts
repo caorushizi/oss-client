@@ -9,7 +9,7 @@ instance.interceptors.response.use(
     const { data } = response;
 
     if (data.code !== 0) {
-      return Promise.reject(new Error(data.message));
+      return Promise.reject(new Error(data.msg));
     }
 
     return data.data;
@@ -34,4 +34,9 @@ export interface AppForm {
 }
 export function addApp(app: AppForm): Promise<string> {
   return instance.post("/api/apps", app);
+}
+
+export function getApps(): Promise<AppForm[]> {
+  console.log(import.meta.env.VITE_API_URL, "123123");
+  return instance.get("/api/apps");
 }
