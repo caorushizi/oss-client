@@ -13,8 +13,8 @@ import {
   RetweetOutlined,
   SettingFilled,
 } from "@ant-design/icons";
-import { getBuckets } from "../../api";
-import { useRequest } from "ahooks";
+import { useGetBucketsQuery } from "../../api";
+import { useAppSelector } from "../../hooks";
 
 const { Sider, Content } = Layout;
 
@@ -130,7 +130,8 @@ function App() {
   const navigate = useNavigate();
   const currentOutlet = useOutlet();
   const { nodeRef } = findPath(pathname) ?? {};
-  const { data } = useRequest(getBuckets);
+  const currApp = useAppSelector((state) => state.app.currApp);
+  const { data } = useGetBucketsQuery(currApp);
   const { navs, navsIndex } = useMemo(() => {
     return getNavs(data ?? []);
   }, [data]);

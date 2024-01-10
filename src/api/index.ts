@@ -1,30 +1,5 @@
-import axios from "axios";
-
-const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-instance.interceptors.response.use(
-  (response) => {
-    const { data } = response;
-
-    if (data.code !== 0) {
-      return Promise.reject(new Error(data.msg));
-    }
-
-    return data.data;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-export function getBuckets(): Promise<string[]> {
-  return instance.post("/api/buckets", {
-    ak: import.meta.env.VITE_API_KEY,
-    sk: import.meta.env.VITE_API_SECRET,
-  });
-}
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { axiosBaseQuery } from "../helper";
 
 export interface AppForm {
   type: string;
@@ -32,11 +7,33 @@ export interface AppForm {
   ak: string;
   sk: string;
 }
-export function addApp(app: AppForm): Promise<string> {
-  return instance.post("/api/apps", app);
-}
 
-export function getApps(): Promise<AppForm[]> {
-  console.log(import.meta.env.VITE_API_URL, "123123");
-  return instance.get("/api/apps");
-}
+export const appApi = createApi({
+  reducerPath: "appApi",
+  baseQuery: axiosBaseQuery(),
+  tagTypes: ["Buckets"],
+  endpoints: (builder) => ({
+    getApps: builder.query({
+      query: () => ({ url: "/api/apps", method: "get" }),
+      providesTags: ["Buckets"],
+    }),
+    addApp: builder.mutation({
+      query: (app: AppForm) => ({
+        url: "/api/apps",
+        method: "post",
+        data: app,
+      }),
+      invalidatesTags: ["Buckets"],
+    }),
+    getBuckets: builder.query({
+      query: (name: string) => ({
+        url: "/api/buckets",
+        method: "post",
+        data: { name },
+      }),
+    }),
+  }),
+});
+
+export const { useGetAppsQuery, useAddAppMutation, useGetBucketsQuery } =
+  appApi;

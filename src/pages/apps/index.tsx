@@ -3,9 +3,10 @@ import Header from "components/Header";
 import { Button } from "antd";
 import { useState } from "react";
 import { ProForm, ProFormText } from "@ant-design/pro-components";
-import { addApp, getApps } from "../../api";
-import { useRequest } from "ahooks";
+import { useAddAppMutation, useGetAppsQuery } from "../../api";
 import useStyle from "./style";
+import { useAppDispatch } from "../../hooks";
+import { setCurrApp } from "../../store/appSlice";
 
 type PageStatus = "add" | "list";
 type formStatus = "view" | "edit";
@@ -22,8 +23,10 @@ const Apps = () => {
   const [status, setStatus] = useState<PageStatus>("list");
   const [formStatus, setFormStatus] = useState<formStatus>("view");
   const { styles } = useStyle();
-  const { data } = useRequest(getApps);
+  const dispatch = useAppDispatch();
   const [form] = ProForm.useForm<AddFormProps>();
+  const { data } = useGetAppsQuery("name");
+  const [addApp] = useAddAppMutation();
 
   const renderAdd = () => {
     return (
@@ -84,7 +87,7 @@ const Apps = () => {
             <Button onClick={() => setStatus("add")}>添加</Button>
           </div>
           <div>
-            {data?.map((app) => {
+            {data?.map((app: any) => {
               return (
                 <Flex
                   justify="space-between"
@@ -96,7 +99,14 @@ const Apps = () => {
                   }}
                 >
                   {app.name}
-                  <Button type="text">设为默认</Button>
+                  <Button
+                    type="text"
+                    onClick={() => {
+                      dispatch(setCurrApp(app.name));
+                    }}
+                  >
+                    设为默认
+                  </Button>
                 </Flex>
               );
             })}

@@ -9,18 +9,26 @@ import (
 	"gorm.io/gorm"
 )
 
-type PingForm struct {
-	AK string `json:"ak" binding:"required"`
-	SK string `json:"sk" binding:"required"`
+type GetBucketsForm struct {
+	Name string `json:"name" binding:"required"`
 }
 
 func GetBuckets(c *gin.Context) (interface{}, error) {
-	getBucketsForm := PingForm{}
+	getBucketsForm := GetBucketsForm{}
 	if err := c.ShouldBindJSON(&getBucketsForm); err != nil {
 		return nil, utils.ParameterError(err.Error())
 	}
 
-	buckets, err := qiniu.GetBuckets(getBucketsForm.AK, getBucketsForm.SK)
+	var app model.App
+	result := db.DB.Take(&app, "name = ?", getBucketsForm.Name)
+	if result.Error != nil {
+		return nil, utils.UnknownError(result.Error.Error())
+	}
+	if result.RowsAffected == 0 {
+		return nil, utils.UnknownError("app 不存在")
+	}
+
+	buckets, err := qiniu.GetBuckets(app.AK, app.SK)
 	if err != nil {
 		return nil, utils.UnknownError(err.Error())
 	}
