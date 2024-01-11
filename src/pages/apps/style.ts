@@ -11,5 +11,8 @@ export default createStyles(({ css }) => ({
     &:hover {
       background-color: rgba(0, 0, 0, 0.2);
     }
+    &.active {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
   `,
 }));

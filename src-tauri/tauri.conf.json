@@ -15,6 +15,42 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": false,
+        "center": false,
+        "close": false,
+        "create": false,
+        "hide": false,
+        "maximize": false,
+        "minimize": false,
+        "print": false,
+        "requestUserAttention": false,
+        "setAlwaysOnTop": false,
+        "setClosable": false,
+        "setContentProtected": false,
+        "setCursorGrab": false,
+        "setCursorIcon": false,
+        "setCursorPosition": false,
+        "setCursorVisible": false,
+        "setDecorations": false,
+        "setFocus": false,
+        "setFullscreen": false,
+        "setIcon": false,
+        "setIgnoreCursorEvents": false,
+        "setMaxSize": false,
+        "setMaximizable": false,
+        "setMinSize": false,
+        "setMinimizable": false,
+        "setPosition": false,
+        "setResizable": false,
+        "setSize": false,
+        "setSkipTaskbar": false,
+        "setTitle": false,
+        "show": false,
+        "startDragging": true,
+        "unmaximize": false,
+        "unminimize": false
       }
     },
     "bundle": {
@@ -38,7 +74,8 @@
         "resizable": true,
         "title": "buckets",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "decorations": false
       }
     ]
   }

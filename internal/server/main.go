@@ -58,6 +58,7 @@ func main() {
 	r.POST("/api/buckets", wrapper(routes.GetBuckets))
 	r.POST("/api/apps", wrapper(routes.AddApp))
 	r.GET("/api/apps", wrapper(routes.GetApps))
+	r.DELETE("/api/apps", wrapper(routes.DeleteApp))
 
 	r.Run("127.0.0.1:7790")
 }

@@ -41,8 +41,10 @@ export const axiosBaseQuery =
         params,
         headers,
       });
+      console.log("reuslt", result);
       return { data: result };
     } catch (axiosError) {
+      console.log("axiosError", axiosError);
       const err = axiosError as AxiosError;
       return {
         error: {

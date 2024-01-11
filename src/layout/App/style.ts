@@ -1,4 +1,5 @@
 import { createStyles } from "antd-style";
+import backgroundImage from "../../assets/image/global.png";
 
 export default createStyles(({ token, css }) => ({
   container: css`
@@ -22,6 +23,7 @@ export default createStyles(({ token, css }) => ({
     position: absolute;
     left: 225px;
     right: 0;
+    background: url(${backgroundImage}) no-repeat;
   `,
   contentWrapper: css`
     height: 100vh;

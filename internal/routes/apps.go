@@ -90,3 +90,22 @@ func GetApps(c *gin.Context) (interface{}, error) {
 
 	return apps, nil
 }
+
+type DeleteAppForm struct {
+	Name string `json:"name" binding:"required"`
+}
+
+func DeleteApp(c *gin.Context) (interface{}, error) {
+	deleteAppForm := DeleteAppForm{}
+	if err := c.ShouldBindJSON(&deleteAppForm); err != nil {
+		return nil, utils.ParameterError(err.Error())
+	}
+
+	var result *gorm.DB
+	result = db.DB.Delete(&model.App{}, "name = ?", deleteAppForm.Name)
+	if result.Error != nil {
+		return nil, utils.UnknownError(result.Error.Error())
+	}
+
+	return result.RowsAffected, nil
+}

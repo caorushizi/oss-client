@@ -5,7 +5,7 @@ import { Menu } from "antd";
 import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { routes } from "../../router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AppstoreFilled,
   CheckSquareFilled,
@@ -13,8 +13,9 @@ import {
   RetweetOutlined,
   SettingFilled,
 } from "@ant-design/icons";
-import { useGetBucketsQuery } from "../../api";
-import { useAppSelector } from "../../hooks";
+import { useGetAppsQuery, useGetBucketsQuery } from "../../api";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { setCurrApp } from "../../store/appSlice";
 
 const { Sider, Content } = Layout;
 
@@ -65,6 +66,12 @@ const styles = [
 
 export const getThemeColor = () =>
   styles[Math.floor(Math.random() * styles.length)];
+
+export const getBgOffset: () => string = () => {
+  const bgOffsetX = Math.ceil((Math.random() - 0.5) * 800);
+  const bgOffsetY = Math.ceil((Math.random() - 0.5) * 600);
+  return `${bgOffsetX}px, ${bgOffsetY}px`;
+};
 
 const bucketItems = (items: string[]) => {
   const buckets = items.map((item) => ({
@@ -125,6 +132,7 @@ function findPath(path: string) {
 
 function App() {
   const [color, setColor] = useState(getThemeColor());
+  const [bgOffset, setBgOffset] = useState(getBgOffset());
   const { styles } = useStyle();
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -132,6 +140,10 @@ function App() {
   const { nodeRef } = findPath(pathname) ?? {};
   const currApp = useAppSelector((state) => state.app.currApp);
   const { data } = useGetBucketsQuery(currApp);
+  const { data: apps } = useGetAppsQuery();
+  const dispatch = useAppDispatch();
+
+  console.log("currAppcurrAppcurrApp", currApp, data);
   const { navs, navsIndex } = useMemo(() => {
     return getNavs(data ?? []);
   }, [data]);
@@ -139,6 +151,14 @@ function App() {
     direction: "down",
     key: navsIndex[0],
   });
+
+  useEffect(() => {
+    console.log("apps", apps);
+    console.log("currApp", currApp);
+    if (!currApp && apps) {
+      dispatch(setCurrApp(apps[0].name));
+    }
+  }, [currApp, apps]);
 
   return (
     <Layout className={styles.container}>
@@ -149,7 +169,9 @@ function App() {
           backgroundImage: color.sider,
         }}
       >
-        <div className={styles.siderAppName}>OSS Client</div>
+        <div className={styles.siderAppName} data-tauri-drag-region>
+          OSS Client
+        </div>
         <Menu
           defaultSelectedKeys={[pathname]}
           mode="inline"
@@ -168,6 +190,7 @@ function App() {
             setTimeout(() => {
               navigate(e.key);
               setColor(getThemeColor());
+              setBgOffset(getBgOffset());
             }, 100);
           }}
         />
@@ -187,7 +210,13 @@ function App() {
               classNames={direction.direction}
               unmountOnExit
             >
-              <div ref={nodeRef} className={styles.contentInner}>
+              <div
+                style={{
+                  backgroundPosition: bgOffset,
+                }}
+                ref={nodeRef}
+                className={styles.contentInner}
+              >
                 {currentOutlet}
               </div>
             </CSSTransition>

@@ -1,5 +1,13 @@
+import { Empty } from "antd";
+import Header from "components/Header";
+
 const Transfer = () => {
-  return <div>Transfer</div>;
+  return (
+    <div>
+      <Header />
+      <Empty />
+    </div>
+  );
 };
 
 export default Transfer;

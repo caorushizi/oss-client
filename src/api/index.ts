@@ -11,11 +11,11 @@ export interface AppForm {
 export const appApi = createApi({
   reducerPath: "appApi",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Buckets"],
+  tagTypes: ["Apps"],
   endpoints: (builder) => ({
-    getApps: builder.query({
+    getApps: builder.query<AppForm[], void>({
       query: () => ({ url: "/api/apps", method: "get" }),
-      providesTags: ["Buckets"],
+      providesTags: ["Apps"],
     }),
     addApp: builder.mutation({
       query: (app: AppForm) => ({
@@ -23,9 +23,17 @@ export const appApi = createApi({
         method: "post",
         data: app,
       }),
-      invalidatesTags: ["Buckets"],
+      invalidatesTags: ["Apps"],
     }),
-    getBuckets: builder.query({
+    deleteApp: builder.mutation<number, string>({
+      query: (name: string) => ({
+        url: "/api/apps",
+        method: "delete",
+        data: { name },
+      }),
+      invalidatesTags: ["Apps"],
+    }),
+    getBuckets: builder.query<string[], string>({
       query: (name: string) => ({
         url: "/api/buckets",
         method: "post",
@@ -35,5 +43,9 @@ export const appApi = createApi({
   }),
 });
 
-export const { useGetAppsQuery, useAddAppMutation, useGetBucketsQuery } =
-  appApi;
+export const {
+  useGetAppsQuery,
+  useAddAppMutation,
+  useGetBucketsQuery,
+  useDeleteAppMutation,
+} = appApi;

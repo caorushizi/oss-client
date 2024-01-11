@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const counterSlice = createSlice({
   name: "counter",
   initialState: {
-    currApp: "123",
+    currApp: "",
   },
   reducers: {
     setCurrApp: (state, action) => {
