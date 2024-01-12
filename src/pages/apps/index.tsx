@@ -30,7 +30,6 @@ const Apps = () => {
   const [deleteApp] = useDeleteAppMutation();
   const currApp = useAppSelector((state) => state.app.currApp);
   const [currFormApp, setCurrFormApp] = useState<string>("");
-  console.log("1231223213", currApp);
 
   useEffect(() => {
     if (!currFormApp && currApp) {
@@ -64,12 +63,10 @@ const Apps = () => {
           }}
           onFinish={async (values) => {
             try {
-              const app = await addApp(values);
-              console.log(app);
+              await addApp(values);
 
               message.success("提交成功");
             } catch (error: any) {
-              console.log(error.message);
               message.error(error.message);
             }
           }}
@@ -92,8 +89,6 @@ const Apps = () => {
       </div>
     );
   };
-
-  console.log("currApp", currApp);
 
   const renderList = () => {
     return (

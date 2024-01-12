@@ -2,9 +2,21 @@ import { Breadcrumb, Button, Flex, Input, Space } from "antd";
 import Header from "../../components/Header";
 import useStyle from "./style";
 import { LeftOutlined, ReloadOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useGetFilesQuery } from "../../api";
+import { useAppSelector } from "../../hooks";
 
 const Buckets = () => {
   const { styles } = useStyle();
+  const { bucket } = useParams();
+  const currApp = useAppSelector((state) => state.app.currApp);
+  const { data } = useGetFilesQuery({ bucket: bucket || "", appName: currApp });
+
+  useEffect(() => {
+    console.log(data);
+  }, []);
+
   const renderActionBar = () => {
     return (
       <div className={styles.actionBar}>

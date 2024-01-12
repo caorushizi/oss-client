@@ -50,7 +50,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   };
   const _getFiles = (itemArr: Item[]) => {
     let files: VFile[] = [];
-    itemArr.forEach(item => {
+    itemArr.forEach((item) => {
       if (item instanceof VFile) {
         files.push(item);
       } else {
@@ -72,7 +72,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     if (selection.fileIds.length > 0) {
       // 如果选中区域有文件的话，那么下载选中区域的文件
       const itemsArr: Item[] = [];
-      selection.fileIds.forEach(fileId => {
+      selection.fileIds.forEach((fileId) => {
         const item = vFolder.getItem(fileId);
         if (item) itemsArr.push(item);
       });
@@ -133,18 +133,17 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   };
   const onFolderContextMenu = (
     event: MouseEvent<HTMLElement>,
-    item: VFolder
+    item: VFolder,
   ) => {
     event.stopPropagation();
   };
 
-  const onPanelContextMenu = () => {
-  };
+  const onPanelContextMenu = () => {};
 
   const onSearchChange = (value: string) => {
     selection.clear();
     setSearchValue(value);
-    const it = vFolder.listFiles().filter(i => i.name.includes(value));
+    const it = vFolder.listFiles().filter((i) => i.name.includes(value));
     setSearchedItem(it);
   };
   const onChangeLayout = async () => {
@@ -169,7 +168,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
   }, [keypress]);
 
   useEffect(() => {
-    store.getItem<Layout>("layout").then(value => {
+    store.getItem<Layout>("layout").then((value) => {
       if (value) {
         setLayout(value);
       }
@@ -197,9 +196,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         domains={domains}
         onFolderSelect={onFolderSelect}
         onFolderContextMenu={onFolderContextMenu}
-        onFileSelect={() => {
-          console.log();
-        }}
+        onFileSelect={() => {}}
         onFileContextMenu={onFileContextMenu}
         onPanelContextMenu={onPanelContextMenu}
         onPanelMouseDown={onPanelMouseDown}
@@ -210,9 +207,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
         selectedItems={selection.fileIds}
         onFolderSelect={onFolderSelect}
         onFolderContextMenu={onFolderContextMenu}
-        onFileSelect={() => {
-          console.log();
-        }}
+        onFileSelect={() => {}}
         onFileContextMenu={onFileContextMenu}
         onPanelContextMenu={onPanelContextMenu}
         onPanelMouseDown={onPanelMouseDown}
@@ -224,8 +219,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
     <div className="bucket-wrapper">
       <HeaderButtonGroup
         selectedItems={selection.fileIds}
-        fileUpload={async () => {
-        }}
+        fileUpload={async () => {}}
         onDownload={() => handleDownload()}
         onDelete={() => handleDelete()}
       />
@@ -240,7 +234,7 @@ const Bucket: React.FC<PropTypes> = ({ bucketMeta }) => {
 
       <Spin spinning={loading} wrapperClassName="loading-wrapper">
         <FileDrop
-          onDrop={async files => {
+          onDrop={async (files) => {
             if (files) {
               const filePaths: string[] = [];
               for (let i = 0; i < files.length; i += 1) {

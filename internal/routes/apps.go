@@ -10,7 +10,7 @@ import (
 )
 
 type GetBucketsForm struct {
-	Name string `json:"name" binding:"required"`
+	AppName string `json:"appName" binding:"required"`
 }
 
 func GetBuckets(c *gin.Context) (interface{}, error) {
@@ -20,7 +20,7 @@ func GetBuckets(c *gin.Context) (interface{}, error) {
 	}
 
 	var app model.App
-	result := db.DB.Take(&app, "name = ?", getBucketsForm.Name)
+	result := db.DB.Take(&app, "name = ?", getBucketsForm.AppName)
 	if result.Error != nil {
 		return nil, utils.UnknownError(result.Error.Error())
 	}
@@ -108,4 +108,29 @@ func DeleteApp(c *gin.Context) (interface{}, error) {
 	}
 
 	return result.RowsAffected, nil
+}
+
+type GetFilesForm struct {
+	AppName string `json:"appName" binding:"required"`
+	Bucket  string `json:"bucket" binding:"required"`
+}
+
+func GetFiles(c *gin.Context) (interface{}, error) {
+	getFilesForm := GetFilesForm{}
+	if err := c.ShouldBindJSON(&getFilesForm); err != nil {
+		return nil, utils.ParameterError(err.Error())
+	}
+
+	var app model.App
+	result := db.DB.Take(&app, "name = ?", getFilesForm.AppName)
+	if result.Error != nil {
+		return nil, utils.UnknownError(result.Error.Error())
+	}
+	if result.RowsAffected == 0 {
+		return nil, utils.UnknownError("app 不存在")
+	}
+
+	files := qiniu.GetFiles(app.AK, app.SK, getFilesForm.Bucket)
+
+	return files, nil
 }

@@ -143,7 +143,6 @@ function App() {
   const { data: apps } = useGetAppsQuery();
   const dispatch = useAppDispatch();
 
-  console.log("currAppcurrAppcurrApp", currApp, data);
   const { navs, navsIndex } = useMemo(() => {
     return getNavs(data ?? []);
   }, [data]);
@@ -153,9 +152,7 @@ function App() {
   });
 
   useEffect(() => {
-    console.log("apps", apps);
-    console.log("currApp", currApp);
-    if (!currApp && apps) {
+    if (!currApp && apps && apps.length) {
       dispatch(setCurrApp(apps[0].name));
     }
   }, [currApp, apps]);

@@ -8,11 +8,17 @@ export interface AppForm {
   sk: string;
 }
 
+export interface GetFilesForm {
+  appName: string;
+  bucket: string;
+}
+
 export const appApi = createApi({
   reducerPath: "appApi",
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Apps"],
   endpoints: (builder) => ({
+    // appApi endpoints
     getApps: builder.query<AppForm[], void>({
       query: () => ({ url: "/api/apps", method: "get" }),
       providesTags: ["Apps"],
@@ -33,11 +39,20 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Apps"],
     }),
+    // bucketApi endpoints
     getBuckets: builder.query<string[], string>({
-      query: (name: string) => ({
+      query: (appName: string) => ({
         url: "/api/buckets",
         method: "post",
-        data: { name },
+        data: { appName },
+      }),
+    }),
+    // fileApi endpoints
+    getFiles: builder.query<string[], GetFilesForm>({
+      query: ({ appName, bucket }) => ({
+        url: "/api/files",
+        method: "post",
+        data: { appName, bucket },
       }),
     }),
   }),
@@ -48,4 +63,5 @@ export const {
   useAddAppMutation,
   useGetBucketsQuery,
   useDeleteAppMutation,
+  useGetFilesQuery,
 } = appApi;

@@ -55,10 +55,22 @@ func main() {
 	r.NoMethod(utils.HandleNotFound)
 	r.NoRoute(utils.HandleNotFound)
 
-	r.POST("/api/buckets", wrapper(routes.GetBuckets))
+	/**
+	 * app 相关的路由
+	 */
 	r.POST("/api/apps", wrapper(routes.AddApp))
 	r.GET("/api/apps", wrapper(routes.GetApps))
 	r.DELETE("/api/apps", wrapper(routes.DeleteApp))
+
+	/**
+	 * bucket 相关的路由
+	 */
+	r.POST("/api/buckets", wrapper(routes.GetBuckets))
+
+	/**
+	 * file 相关的路由
+	 */
+	r.POST("/api/files", wrapper(routes.GetFiles))
 
 	r.Run("127.0.0.1:7790")
 }

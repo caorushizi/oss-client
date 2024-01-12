@@ -3,7 +3,7 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import {
   CloseCircleFilled,
   MinusCircleFilled,
-  PlusCircleFilled
+  PlusCircleFilled,
 } from "@ant-design/icons";
 import { message } from "antd";
 import audioSrc from "../../assets/audios/tip.mp3";
@@ -19,7 +19,7 @@ import {
   getBgOffset,
   getPlatform,
   getThemeColor,
-  ThemeColor
+  ThemeColor,
 } from "../../lib/utils";
 import Services from "../../components/Services";
 import { AppStore } from "../../types/common";
@@ -31,7 +31,7 @@ const audio = new Audio(audioSrc);
 
 const Index: React.FC = () => {
   const { runAsync } = useRequest(getBuckets, {
-    manual: true
+    manual: true,
   });
   const getWidth = () => document.body.clientWidth - 225;
   const [themeColor, setThemeColor] = useState<ThemeColor>(getThemeColor());
@@ -111,7 +111,6 @@ const Index: React.FC = () => {
       // setActiveApp(app);
       // 获取 oss 中 bucket 列表，并选中活动项
       const buckets = await runAsync();
-      console.log("buckets", buckets);
       setBucketList(buckets);
       if (buckets.length > 0) {
         await tabChange(Page.bucket, buckets[0]);
@@ -130,7 +129,7 @@ const Index: React.FC = () => {
 
   // 相当于初始化流程
   useEffect(() => {
-    initState().then(r => r);
+    initState().then((r) => r);
 
     // fixme： resize 变化是窗口尺寸变化
     window.onresize = () => {
@@ -169,27 +168,15 @@ const Index: React.FC = () => {
     <div
       className="App"
       style={{
-        background: themeColor.appColor
+        background: themeColor.appColor,
       }}
     >
       <div className="drag-area" />
       {getPlatform() === Platform.windows && (
         <div className="app-button">
-          <MinusCircleFilled
-            className="icon"
-            onClick={() => {
-            }}
-          />
-          <PlusCircleFilled
-            className="icon"
-            onClick={() => {
-            }}
-          />
-          <CloseCircleFilled
-            className="icon"
-            onClick={() => {
-            }}
-          />
+          <MinusCircleFilled className="icon" onClick={() => {}} />
+          <PlusCircleFilled className="icon" onClick={() => {}} />
+          <CloseCircleFilled className="icon" onClick={() => {}} />
         </div>
       )}
       <TheSidebar
@@ -213,7 +200,7 @@ const Index: React.FC = () => {
             style={{
               backgroundPosition: bgOffset,
               width: mainWrapperWidth,
-              maxWidth: mainWrapperWidth
+              maxWidth: mainWrapperWidth,
             }}
           >
             {renderPage(activePage)}

@@ -23,7 +23,7 @@ const App = () => {
 
   const onSwitchShape = (
     event: Electron.IpcRendererEvent,
-    t: FlowWindowStyle
+    t: FlowWindowStyle,
   ) => {
     const currentWindow = remote.getCurrentWindow();
     if (t === FlowWindowStyle.circle) {
@@ -36,7 +36,7 @@ const App = () => {
   };
   const onFileDrop = async (files: FileList | null) => {
     if (!files) return;
-    const fileList = Array.from(files).map(file => file.path);
+    const fileList = Array.from(files).map((file) => file.path);
     await uploadFiles({ remoteDir: "拖拽上传", fileList, flag: true });
   };
 
@@ -63,7 +63,7 @@ const App = () => {
 const state = {
   dragging: false,
   pageX: 0,
-  pageY: 0
+  pageY: 0,
 };
 const onMouseDown = (e: MouseEvent) => {
   state.dragging = true;
@@ -83,22 +83,21 @@ const onMouseUp = () => {
   state.dragging = false;
 };
 const onContextMenu = async () => {
-  console.log(TaskType.upload);
   const recentList = await getTransfers({
     type: TaskType.upload,
-    status: TransferStatus.done
+    status: TransferStatus.done,
   });
   const recentMenu: Electron.MenuItemConstructorOptions[] =
     recentList.length > 0
-      ? recentList.splice(0, 5).map(i => ({
-        label: i.name.replace(
-          /^(.{5}).*(.{6})$/,
-          (_: any, $1: any, $2: any) => `${$1}……${$2}`
-        ),
-        click: () => {
-          // empty
-        }
-      }))
+      ? recentList.splice(0, 5).map((i) => ({
+          label: i.name.replace(
+            /^(.{5}).*(.{6})$/,
+            (_: any, $1: any, $2: any) => `${$1}……${$2}`,
+          ),
+          click: () => {
+            // empty
+          },
+        }))
       : [{ label: "暂无最近记录", enabled: false }];
   const contextMenuTemplate: Electron.MenuItemConstructorOptions[] = [
     ...recentMenu,
@@ -107,8 +106,8 @@ const onContextMenu = async () => {
     {
       label: "markdown 格式",
       type: "checkbox",
-      checked: true
-    }
+      checked: true,
+    },
   ];
   const menu = remote.Menu.buildFromTemplate(contextMenuTemplate);
   menu.popup();
