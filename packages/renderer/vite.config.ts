@@ -13,7 +13,7 @@ export default defineConfig({
         index: resolve(__dirname, "index.html")
       }
     },
-    outDir: resolve(__dirname, "dist/electron")
+    outDir: resolve(__dirname, "../main/build/electron")
   },
   resolve: {
     alias: {

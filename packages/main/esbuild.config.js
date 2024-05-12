@@ -11,7 +11,10 @@ require("esbuild").buildSync({
   sourcemap: true,
   target: ["node10.4"],
   external: ["electron"],
-  define: {},
-  outdir: resolve(__dirname, "./dist/main"),
+  define: {
+    "process.env.NODE_ENV":
+      process.env.NODE_ENV === "production" ? '"production"' : '"development"'
+  },
+  outdir: resolve(__dirname, "./build/main"),
   loader: { ".png": "file" }
 });

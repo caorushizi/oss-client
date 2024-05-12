@@ -6,60 +6,15 @@
   "repository": "https://github.com/caorushizi/oss-client",
   "main": "dist/main/index.js",
   "scripts": {
-    "dev": "pnpm -r --parallel -F main -F renderer run dev",
-    "build": "pnpm -r --parallel -F main -F renderer run build",
-    "pack": "pnpm -F main run pack",
-    "release": "pnpm run build && pnpm -F main run release"
+    "dev": "pnpm -r --parallel -F oss-client -F renderer run dev",
+    "build": "pnpm -F renderer run build && pnpm -F oss-client run build",
+    "pack": "pnpm -F oss-client run pack",
+    "release": "pnpm run build && pnpm -F oss-client run release"
   },
   "keywords": [],
   "author": {
     "name": "caorushizi",
     "email": "84996057@qq.com"
   },
-  "license": "MIT",
-  "build": {
-    "productName": "云存储客户端",
-    "appId": "oss-client.ziying.site",
-    "copyright": "caorushizi",
-    "directories": {
-      "output": "build"
-    },
-    "files": [
-      "dist/**/*",
-      "package.json"
-    ],
-    "extraResources": [
-      ".bin/**"
-    ],
-    "win": {
-      "icon": "assets/icon.ico",
-      "target": [
-        {
-          "target": "nsis"
-        }
-      ]
-    },
-    "dmg": {
-      "contents": []
-    },
-    "mac": {
-      "icon": "build/icons/icon.icns"
-    },
-    "linux": {
-      "icon": "build/icons"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowElevation": true,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "",
-      "uninstallerIcon": "",
-      "installerHeaderIcon": "",
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "",
-      "include": "",
-      "script": ""
-    }
-  }
+  "license": "MIT"
 }

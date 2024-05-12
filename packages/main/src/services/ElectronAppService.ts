@@ -85,7 +85,8 @@ export default class ElectronAppService implements IApp {
     app.on("ready", async () => {
       protocol.registerFileProtocol("oss-client", (request, callback) => {
         const url = request.url.substr(13);
-        callback({ path: resolve(__dirname, "../", url) });
+        console.log(resolve(__dirname, "../", url));
+        callback(resolve(__dirname, "../", url));
       });
 
       // 检查下载目录
@@ -189,14 +190,15 @@ export default class ElectronAppService implements IApp {
         minWidth: 750,
         webPreferences: {
           nodeIntegration: true,
-          devTools: process.env.NODE_ENV === "development"
+          devTools: is.development
         },
         titleBarStyle: "hiddenInset",
         show: false
       });
-      const mainWindowUrl = is.development
-        ? "http://localhost:3000/main"
-        : "oss-client://electron/main-window.html";
+      const mainWindowUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : "oss-client://electron/index.html";
       this.mainWindow.loadURL(mainWindowUrl).then(r => r);
       this.mainWindow.on("closed", () => {
         if (this.mainWindow) this.mainWindow = null;
@@ -228,7 +230,7 @@ export default class ElectronAppService implements IApp {
         // 开始加载悬浮窗口的静态资源
         const floatWindowUrl = is.development
           ? "http://localhost:3000/float"
-          : "oss-client://electron/float-window.html";
+          : "oss-client://electron/index.html";
         await this.floatWindow.loadURL(floatWindowUrl);
         // 设置悬浮窗的样式
         const style = configStore.get("floatWindowStyle");
@@ -263,14 +265,14 @@ export default class ElectronAppService implements IApp {
         parent: this.mainWindow,
         webPreferences: {
           nodeIntegration: true,
-          devTools: false
+          devTools: is.development
         },
         modal: true,
         show: false
       });
       const alertWindowUrl = is.development
         ? "http://localhost:3000/alert"
-        : "oss-client://electron/alert-window.html";
+        : "oss-client://electron/index.html";
       await this.alertWindow.loadURL(alertWindowUrl);
       this.alertWindow.on("closed", () => {
         if (this.alertWindow) this.alertWindow = null;
@@ -288,14 +290,14 @@ export default class ElectronAppService implements IApp {
         parent: this.mainWindow,
         webPreferences: {
           nodeIntegration: true,
-          devTools: false
+          devTools: is.development
         },
         modal: true,
         show: false
       });
       const confirmWindowUrl = is.development
         ? "http://localhost:3000/confirm"
-        : "oss-client://electron/confirm-window.html";
+        : "oss-client://electron/index.html";
       await this.confirmWindow.loadURL(confirmWindowUrl);
       this.confirmWindow.on("closed", () => {
         if (this.confirmWindow) this.confirmWindow = null;

@@ -1,11 +1,11 @@
 {
-  "name": "main",
+  "name": "oss-client",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/main/index.js",
   "scripts": {
-    "dev": "node esbuild.config.js && electron dist/main/index.js",
-    "build": "electron-builder",
+    "dev": "cross-env NODE_ENV=development node esbuild.config.js && electron build/main/index.js",
+    "build": "cross-env NODE_ENV=production node esbuild.config.js && electron-builder",
     "pack": "electron-builder --dir"
   },
   "devDependencies": {
@@ -43,6 +43,7 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
     "prettier": "1.19.1",
+    "proxy-agent": "^6.4.0",
     "rimraf": "3.0.2",
     "sass": "1.32.8",
     "typescript": "3.9.2",
@@ -82,5 +83,51 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "build": {
+    "productName": "云存储客户端",
+    "appId": "oss-client.ziying.site",
+    "copyright": "caorushizi",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      ".bin/**"
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
+    },
+    "dmg": {
+      "contents": []
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "linux": {
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "",
+      "uninstallerIcon": "",
+      "installerHeaderIcon": "",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "",
+      "include": "",
+      "script": ""
+    },
+    "publish": null
+  }
 }
