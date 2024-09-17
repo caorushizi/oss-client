@@ -30,7 +30,7 @@
     "prettier": "3.1.1",
     "sass": "^1.69.7",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.2.14"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
