@@ -1,0 +1,674 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: SemVer component to increment
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Prepare release version
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      release_tag: ${{ steps.release.outputs.release_tag }}
+      release_version: ${{ steps.release.outputs.release_version }}
+      release_sha: ${{ steps.release.outputs.release_sha }}
+
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.repository.default_branch || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+
+      - name: Resolve existing tag release
+        if: github.event_name == 'push'
+        id: tag-release
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_tag="$GITHUB_REF_NAME"
+          pnpm release:check-version -- --tag "$release_tag"
+          printf 'tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
+          printf 'version=%s\n' "${release_tag#v}" >> "$GITHUB_OUTPUT"
+          printf 'sha=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve manual release state
+        if: github.event_name == 'workflow_dispatch'
+        id: manual-release
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DISPATCH_SHA: ${{ github.sha }}
+          RELEASE_RUN_ID: ${{ github.run_id }}
+          REQUESTED_BUMP: ${{ inputs.bump }}
+        run: |
+          set -euo pipefail
+          case "$REQUESTED_BUMP" in
+            patch|minor|major) ;;
+            *)
+              echo "::error title=Invalid bump::Expected patch, minor, or major"
+              exit 1
+              ;;
+          esac
+          if [ "$GITHUB_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
+            echo "::error title=Invalid release ref::Manual releases must run from $DEFAULT_BRANCH"
+            exit 1
+          fi
+          if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+            echo "::error title=Dirty checkout::Refusing to bump a non-clean checkout"
+            git status --short
+            exit 1
+          fi
+
+          expected=(
+            package.json
+            apps/desktop/package.json
+            apps/desktop/src-tauri/tauri.conf.json
+            apps/desktop/src-tauri/Cargo.toml
+            apps/desktop/src-tauri/Cargo.lock
+            services/oss-sidecar/cmd/oss-sidecar/main.go
+          )
+          head_sha="$(git rev-parse HEAD)"
+          if [ "$head_sha" = "$DISPATCH_SHA" ]; then
+            printf 'action=bump\n' >> "$GITHUB_OUTPUT"
+            printf 'base_sha=%s\n' "$DISPATCH_SHA" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mapfile -t parents < <(git rev-list --parents -n 1 HEAD)
+          read -r -a parent_fields <<< "${parents[0]}"
+          if [ "${#parent_fields[@]}" -ne 2 ] || [ "${parent_fields[1]}" != "$DISPATCH_SHA" ]; then
+            echo "::error title=Default branch advanced::HEAD is not the release commit created from this dispatch"
+            exit 1
+          fi
+
+          subject="$(git log -1 --format=%s HEAD)"
+          if [[ ! "$subject" =~ ^chore\(release\):\ (v[0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "::error title=Invalid reusable release::HEAD is not a stable release commit"
+            exit 1
+          fi
+          release_tag="${BASH_REMATCH[1]}"
+
+          commit_run_id="$(git log -1 --format='%(trailers:key=Release-Run-Id,valueonly)' HEAD)"
+          commit_bump="$(git log -1 --format='%(trailers:key=Release-Bump,valueonly)' HEAD)"
+          if [ "$commit_run_id" != "$RELEASE_RUN_ID" ] || [ "$commit_bump" != "$REQUESTED_BUMP" ]; then
+            echo "::error title=Invalid reusable release::Release commit belongs to a different workflow run or bump request"
+            exit 1
+          fi
+
+          mapfile -t changed < <(git diff-tree --no-commit-id --name-only -r HEAD)
+          if [ "${#changed[@]}" -ne "${#expected[@]}" ]; then
+            echo "::error title=Invalid reusable release::Release commit changed unexpected files"
+            exit 1
+          fi
+          for path in "${expected[@]}"; do
+            if ! printf '%s\n' "${changed[@]}" | grep -Fqx "$path"; then
+              echo "::error title=Invalid reusable release::$path is missing from the release commit"
+              exit 1
+            fi
+          done
+
+          if [ "$(git cat-file -t "refs/tags/$release_tag" 2>/dev/null || true)" != "tag" ]; then
+            echo "::error title=Invalid reusable release::$release_tag is missing or is not annotated"
+            exit 1
+          fi
+          if [ "$(git rev-parse "$release_tag^{}")" != "$head_sha" ]; then
+            echo "::error title=Invalid reusable release::$release_tag does not point to HEAD"
+            exit 1
+          fi
+          pnpm release:check-version -- --tag "$release_tag"
+
+          printf 'action=reuse\n' >> "$GITHUB_OUTPUT"
+          printf 'tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
+          printf 'version=%s\n' "${release_tag#v}" >> "$GITHUB_OUTPUT"
+          printf 'sha=%s\n' "$head_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Bump release version
+        if: >-
+          github.event_name == 'workflow_dispatch' &&
+          steps.manual-release.outputs.action == 'bump'
+        id: bump-release
+        shell: bash
+        env:
+          REQUESTED_BUMP: ${{ inputs.bump }}
+        run: |
+          case "$REQUESTED_BUMP" in
+            patch|minor|major) ;;
+            *)
+              echo "::error title=Invalid bump::Expected patch, minor, or major"
+              exit 1
+              ;;
+          esac
+          pnpm release:bump -- --bump "$REQUESTED_BUMP"
+
+      - name: Commit, tag, and atomically push release version
+        if: >-
+          github.event_name == 'workflow_dispatch' &&
+          steps.manual-release.outputs.action == 'bump'
+        id: push-release
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          BASE_SHA: ${{ steps.manual-release.outputs.base_sha }}
+          RELEASE_TAG: ${{ steps.bump-release.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.bump-release.outputs.version }}
+          RELEASE_RUN_ID: ${{ github.run_id }}
+          REQUESTED_BUMP: ${{ inputs.bump }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          case "$REQUESTED_BUMP" in
+            patch|minor|major) ;;
+            *)
+              echo "::error title=Invalid bump::Expected patch, minor, or major"
+              exit 1
+              ;;
+          esac
+
+          expected=(
+            package.json
+            apps/desktop/package.json
+            apps/desktop/src-tauri/tauri.conf.json
+            apps/desktop/src-tauri/Cargo.toml
+            apps/desktop/src-tauri/Cargo.lock
+            services/oss-sidecar/cmd/oss-sidecar/main.go
+          )
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMRTUXB)
+          mapfile -t untracked < <(git ls-files --others --exclude-standard)
+          if [ "${#untracked[@]}" -ne 0 ] || [ "${#changed[@]}" -ne "${#expected[@]}" ]; then
+            echo "::error title=Unexpected release changes::Only release version files may be committed"
+            git status --short
+            exit 1
+          fi
+          for path in "${expected[@]}"; do
+            if ! printf '%s\n' "${changed[@]}" | grep -Fqx "$path"; then
+              echo "::error title=Missing release change::$path was not updated"
+              exit 1
+            fi
+          done
+
+          git diff --check
+          pnpm release:check-version -- --tag "$RELEASE_TAG"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${expected[@]}"
+          release_trailers="$(printf 'Release-Run-Id: %s\nRelease-Bump: %s' \
+            "$RELEASE_RUN_ID" "$REQUESTED_BUMP")"
+          git commit -m "chore(release): $RELEASE_TAG" -m "$release_trailers"
+          git tag -a "$RELEASE_TAG" -m "OSS Client $RELEASE_TAG"
+
+          auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          printf '::add-mask::%s\n' "$auth_header"
+          git_auth=(-c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth_header")
+
+          remote_tag="$(git "${git_auth[@]}" ls-remote --tags origin \
+            "refs/tags/$RELEASE_TAG" "refs/tags/$RELEASE_TAG^{}")"
+          if [ -n "$remote_tag" ]; then
+            echo "::error title=Release tag exists::$RELEASE_TAG already exists on origin"
+            exit 1
+          fi
+
+          remote_branch="$(git "${git_auth[@]}" ls-remote --heads origin \
+            "refs/heads/$DEFAULT_BRANCH")"
+          remote_sha="${remote_branch%%$'\t'*}"
+          if [ -z "$remote_sha" ] || [ "$remote_sha" != "$BASE_SHA" ]; then
+            echo "::error title=Default branch advanced::$DEFAULT_BRANCH changed during release preparation"
+            exit 1
+          fi
+
+          git "${git_auth[@]}" push --atomic origin \
+            "HEAD:refs/heads/$DEFAULT_BRANCH" \
+            "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+          printf 'sha=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Expose release coordinates
+        id: release
+        shell: bash
+        env:
+          TAG_RELEASE_TAG: ${{ steps.tag-release.outputs.tag }}
+          TAG_RELEASE_VERSION: ${{ steps.tag-release.outputs.version }}
+          TAG_RELEASE_SHA: ${{ steps.tag-release.outputs.sha }}
+          BUMP_RELEASE_TAG: ${{ steps.bump-release.outputs.tag }}
+          BUMP_RELEASE_VERSION: ${{ steps.bump-release.outputs.version }}
+          BUMP_RELEASE_SHA: ${{ steps.push-release.outputs.sha }}
+          MANUAL_ACTION: ${{ steps.manual-release.outputs.action }}
+          REUSED_RELEASE_TAG: ${{ steps.manual-release.outputs.tag }}
+          REUSED_RELEASE_VERSION: ${{ steps.manual-release.outputs.version }}
+          REUSED_RELEASE_SHA: ${{ steps.manual-release.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            release_tag="$TAG_RELEASE_TAG"
+            release_version="$TAG_RELEASE_VERSION"
+            release_sha="$TAG_RELEASE_SHA"
+          elif [ "$MANUAL_ACTION" = "reuse" ]; then
+            release_tag="$REUSED_RELEASE_TAG"
+            release_version="$REUSED_RELEASE_VERSION"
+            release_sha="$REUSED_RELEASE_SHA"
+          else
+            release_tag="$BUMP_RELEASE_TAG"
+            release_version="$BUMP_RELEASE_VERSION"
+            release_sha="$BUMP_RELEASE_SHA"
+          fi
+          if [ -z "$release_tag" ] || [ -z "$release_version" ] || [ -z "$release_sha" ]; then
+            echo "::error title=Missing release output::Release coordinates were not produced"
+            exit 1
+          fi
+          printf 'release_tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
+          printf 'release_version=%s\n' "$release_version" >> "$GITHUB_OUTPUT"
+          printf 'release_sha=%s\n' "$release_sha" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build ${{ matrix.label }}
+    needs: prepare
+    runs-on: ${{ matrix.runner }}
+    environment: ${{ matrix.environment || null }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Windows x64
+            runner: windows-2025
+            target: x86_64-pc-windows-msvc
+            bundles: nsis,msi
+            platform: windows
+            artifact: oss-client-windows-x64
+          - label: macOS arm64
+            runner: macos-15
+            environment: release-signing
+            target: aarch64-apple-darwin
+            bundles: app,dmg
+            platform: macos
+            artifact: oss-client-macos-arm64
+          - label: macOS Intel
+            runner: macos-15-intel
+            environment: release-signing
+            target: x86_64-apple-darwin
+            bundles: app,dmg
+            platform: macos
+            artifact: oss-client-macos-x64
+          - label: Linux x64
+            runner: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,appimage
+            platform: linux
+            artifact: oss-client-linux-x64
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.prepare.outputs.release_sha }}
+          persist-credentials: false
+
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libfuse2 \
+            file
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+
+      - name: Resolve pnpm store
+        id: pnpm-store
+        shell: bash
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '1.25.x'
+          check-latest: false
+          cache: true
+          cache-dependency-path: services/oss-sidecar/go.sum
+
+      - name: Install Rust toolchain
+        shell: bash
+        run: |
+          rustup set profile minimal
+          rustup toolchain install 1.91.1 \
+            --component rustfmt \
+            --target "${{ matrix.target }}"
+          rustup default 1.91.1
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            apps/desktop/src-tauri/target/
+          key: rust-release-${{ matrix.target }}-${{ hashFiles('apps/desktop/src-tauri/Cargo.lock') }}
+          restore-keys: |
+            rust-release-${{ matrix.target }}-
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify release versions
+        run: pnpm release:check-version -- --tag "${{ needs.prepare.outputs.release_tag }}"
+
+      - name: Verify Cargo lockfile
+        shell: bash
+        run: cargo metadata --locked --no-deps --format-version 1 --manifest-path apps/desktop/src-tauri/Cargo.toml > /dev/null
+
+      # Configure these five values only as protected `release-signing`
+      # Environment secrets, never as repository-level secrets.
+      - name: Require macOS signing and notarization secrets
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          missing=0
+          for name in \
+            APPLE_TEAM_ID \
+            APPLE_ID \
+            APPLE_PASSWORD \
+            APPLE_CERTIFICATE \
+            APPLE_CERTIFICATE_PASSWORD
+          do
+            if [ -z "${!name}" ]; then
+              echo "::error title=Missing release-signing Environment secret::$name is required"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Generate temporary keychain password
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          keychain_password="$(openssl rand -hex 32)"
+          if [ -z "$keychain_password" ]; then
+            echo "::error title=Keychain setup failed::Could not generate a temporary password"
+            exit 1
+          fi
+          printf '::add-mask::%s\n' "$keychain_password"
+          printf 'MACOS_KEYCHAIN_PASSWORD=%s\n' "$keychain_password" >> "$GITHUB_ENV"
+
+      - name: Import Developer ID certificate
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          : "${MACOS_KEYCHAIN_PASSWORD:?Temporary keychain password was not generated}"
+          certificate_path="$RUNNER_TEMP/oss-client-developer-id.p12"
+          keychain_path="$RUNNER_TEMP/oss-client-signing.keychain-db"
+
+          printf '%s' "$APPLE_CERTIFICATE" |
+            openssl base64 -d -A -out "$certificate_path"
+          security create-keychain -p "$MACOS_KEYCHAIN_PASSWORD" "$keychain_path"
+          security set-keychain-settings -lut 21600 "$keychain_path"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PASSWORD" "$keychain_path"
+          security list-keychains -d user -s "$keychain_path"
+          security import "$certificate_path" \
+            -k "$keychain_path" \
+            -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A \
+            -t cert \
+            -f pkcs12
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s \
+            -k "$MACOS_KEYCHAIN_PASSWORD" \
+            "$keychain_path"
+
+          identity="$(security find-identity -v -p codesigning "$keychain_path" |
+            awk -F '"' '/Developer ID Application/ { print $2; exit }')"
+          if [ -z "$identity" ]; then
+            echo "::error title=Invalid signing certificate::No Developer ID Application identity was found"
+            exit 1
+          fi
+
+          echo "APPLE_SIGNING_IDENTITY=$identity" >> "$GITHUB_ENV"
+          echo "MACOS_KEYCHAIN_PATH=$keychain_path" >> "$GITHUB_ENV"
+
+      # The root build command cannot express a target or a per-OS bundle list,
+      # so release jobs invoke its same two stages explicitly.
+      - name: Build bundles
+        if: runner.os != 'macOS'
+        shell: bash
+        run: |
+          pnpm sidecar:build -- --target "${{ matrix.target }}"
+          pnpm --filter @oss-client/desktop tauri build \
+            --target "${{ matrix.target }}" \
+            --bundles "${{ matrix.bundles }}" \
+            --ci \
+            -- \
+            --locked
+
+      - name: Build signed and notarized macOS bundles
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: |
+          pnpm sidecar:build -- --target "${{ matrix.target }}"
+          pnpm --filter @oss-client/desktop tauri build \
+            --target "${{ matrix.target }}" \
+            --bundles "${{ matrix.bundles }}" \
+            --ci \
+            -- \
+            --locked
+
+      - name: Verify macOS signing and notarization
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: |
+          bundle_root="apps/desktop/src-tauri/target/${{ matrix.target }}/release/bundle"
+          app_path="$(find "$bundle_root/macos" -maxdepth 1 -type d -name '*.app' -print -quit)"
+          dmg_path="$(find "$bundle_root/dmg" -maxdepth 1 -type f -name '*.dmg' -print -quit)"
+          sidecar_path="$(find "$app_path/Contents/MacOS" -maxdepth 1 -type f -name 'oss-sidecar*' -print -quit)"
+
+          if [ -z "$app_path" ] || [ -z "$dmg_path" ] || [ -z "$sidecar_path" ]; then
+            echo "::error title=Missing signed bundle::macOS app, DMG, or sidecar was not produced"
+            exit 1
+          fi
+
+          codesign --verify --strict --verbose=4 "$sidecar_path"
+          codesign --verify --deep --strict --verbose=4 "$app_path"
+          spctl --assess --type execute --verbose=4 "$app_path"
+          xcrun stapler validate "$app_path"
+
+          # Tauri may already notarize and staple during bundling. Submitting the
+          # final outer DMG again is intentional: this validates the exact asset
+          # that is uploaded, and accepted payloads are safe to staple again.
+          xcrun notarytool submit "$dmg_path" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait
+          xcrun stapler staple "$dmg_path"
+          xcrun stapler validate "$dmg_path"
+          codesign --verify --strict --verbose=4 "$dmg_path"
+          hdiutil verify "$dmg_path"
+          spctl --assess \
+            --type open \
+            --context context:primary-signature \
+            --verbose=4 \
+            "$dmg_path"
+
+      - name: Collect release assets
+        shell: bash
+        run: |
+          bundle_root="apps/desktop/src-tauri/target/${{ matrix.target }}/release/bundle"
+          output_dir="$RUNNER_TEMP/release-assets"
+          mkdir -p "$output_dir"
+
+          case "${{ matrix.platform }}" in
+            windows)
+              while IFS= read -r -d '' file; do
+                cp "$file" "$output_dir/${{ matrix.artifact }}-$(basename "$file")"
+              done < <(find "$bundle_root" -type f \( -name '*.msi' -o -name '*.exe' \) -print0)
+              ;;
+            macos)
+              app_path="$(find "$bundle_root/macos" -maxdepth 1 -type d -name '*.app' -print -quit)"
+              dmg_path="$(find "$bundle_root/dmg" -maxdepth 1 -type f -name '*.dmg' -print -quit)"
+              ditto -c -k --sequesterRsrc --keepParent \
+                "$app_path" \
+                "$output_dir/${{ matrix.artifact }}-OSS-Client.app.zip"
+              cp "$dmg_path" "$output_dir/${{ matrix.artifact }}-$(basename "$dmg_path")"
+              ;;
+            linux)
+              while IFS= read -r -d '' file; do
+                cp "$file" "$output_dir/${{ matrix.artifact }}-$(basename "$file")"
+              done < <(find "$bundle_root" -type f \( -name '*.deb' -o -name '*.AppImage' \) -print0)
+              ;;
+          esac
+
+          asset_count="$(find "$output_dir" -maxdepth 1 -type f | wc -l | tr -d ' ')"
+          if [ "$asset_count" -eq 0 ]; then
+            echo "::error title=Missing release assets::No ${{ matrix.platform }} bundles were collected"
+            exit 1
+          fi
+
+          checksum_file="$RUNNER_TEMP/${{ matrix.artifact }}-SHA256SUMS.txt"
+          (
+            cd "$output_dir"
+            if command -v sha256sum >/dev/null 2>&1; then
+              sha256sum *
+            else
+              shasum -a 256 *
+            fi
+          ) > "$checksum_file"
+          mv "$checksum_file" "$output_dir/"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ runner.temp }}/release-assets/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      - name: Clean up macOS signing material
+        if: always() && runner.os == 'macOS'
+        shell: bash
+        run: |
+          security delete-keychain "$RUNNER_TEMP/oss-client-signing.keychain-db" 2>/dev/null || true
+          rm -f "$RUNNER_TEMP/oss-client-developer-id.p12"
+
+  publish:
+    name: Create draft GitHub Release
+    needs: [prepare, build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: oss-client-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Create combined checksums
+        shell: bash
+        run: |
+          find release-assets -maxdepth 1 -type f -name '*-SHA256SUMS.txt' -print0 |
+            sort -z |
+            xargs -0 cat > release-assets/SHA256SUMS.txt
+
+      - name: Create or update draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.release_tag }}
+        run: |
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            is_draft="$(gh release view "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json isDraft \
+              --jq '.isDraft')"
+            if [ "$is_draft" != "true" ]; then
+              echo "::error title=Published release exists::Refusing to replace assets on a published release"
+              exit 1
+            fi
+            gh release upload "$RELEASE_TAG" release-assets/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$RELEASE_TAG" release-assets/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --draft \
+              --generate-notes \
+              --title "OSS Client $RELEASE_TAG"
+          fi
