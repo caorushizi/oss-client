@@ -1,0 +1,15 @@
+{
+  "name": "@oss-client/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "files": [
+    "openapi"
+  ],
+  "scripts": {
+    "generate": "openapi-typescript ./openapi/oss-api.yaml -o ../../apps/desktop/src/generated/api.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}

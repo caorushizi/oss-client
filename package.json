@@ -1,62 +1,33 @@
 {
-  "name": "buckets",
-  "private": true,
+  "name": "oss-client",
   "version": "0.1.0",
-  "description": "",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri",
-    "server": "go run ./internal/server/main.go",
-    "prepare": "husky install"
+    "dev": "pnpm sidecar:build && pnpm --filter @oss-client/desktop tauri dev",
+    "dev:web": "pnpm --filter @oss-client/desktop dev",
+    "build": "pnpm sidecar:build && pnpm --filter @oss-client/desktop tauri build",
+    "build:web": "pnpm --filter @oss-client/desktop build",
+    "sidecar:dev": "go -C ./services/oss-sidecar run ./cmd/oss-sidecar",
+    "sidecar:build": "node ./scripts/build-sidecar.mjs",
+    "contracts:generate": "pnpm --filter @oss-client/contracts generate",
+    "check": "pnpm check:frontend && pnpm check:go && pnpm check:rust",
+    "check:frontend": "pnpm --filter @oss-client/desktop check",
+    "check:go": "go -C ./services/oss-sidecar test ./...",
+    "check:rust": "cargo fmt --manifest-path ./apps/desktop/src-tauri/Cargo.toml --check && cargo check --manifest-path ./apps/desktop/src-tauri/Cargo.toml",
+    "lint": "oxlint --type-aware ./apps/desktop/src ./apps/desktop/vite.config.ts",
+    "format": "oxfmt .",
+    "deps:check": "taze --recursive --silent --fail-on-outdated"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.5.9",
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
-    "@types/react-dom": "^18.2.18",
-    "@types/react-transition-group": "^4.4.10",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.2",
-    "eslint-plugin-react": "^7.33.2",
-    "husky": "^8.0.0",
-    "lint-staged": "^15.2.0",
-    "prettier": "3.1.1",
-    "sass": "^1.69.7",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "oxfmt": "0.65.0",
+    "oxlint": "1.80.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "taze": "21.1.0"
   },
-  "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "@ant-design/pro-components": "^2.6.43",
-    "@reduxjs/toolkit": "^2.0.1",
-    "@tauri-apps/api": "^1.5.3",
-    "ahooks": "^3.7.8",
-    "antd": "^5.12.7",
-    "antd-style": "^3.6.1",
-    "axios": "^1.6.4",
-    "clsx": "^2.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^9.0.4",
-    "react-router-dom": "^6.21.1",
-    "react-transition-group": "^4.4.5"
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "pnpm": {
-    "patchedDependencies": {
-      "antd@5.12.8": "patches/antd@5.12.8.patch"
-    }
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": "eslint --cache --fix"
-  }
+  "packageManager": "pnpm@11.25.0"
 }

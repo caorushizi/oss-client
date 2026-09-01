@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "workspace": {
+    "name": "oss-client"
+  },
+  "projects": [
+    {
+      "name": "desktop",
+      "relativeDir": "apps/desktop",
+      "type": "app"
+    },
+    {
+      "name": "oss-sidecar",
+      "relativeDir": "services/oss-sidecar",
+      "type": "service"
+    },
+    {
+      "name": "contracts",
+      "relativeDir": "packages/contracts",
+      "type": "package"
+    }
+  ]
+}

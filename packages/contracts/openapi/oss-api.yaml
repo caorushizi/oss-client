@@ -1,0 +1,545 @@
+openapi: 3.1.0
+info:
+  title: OSS Client Local API
+  version: 0.1.0
+  description: React desktop frontend 与 Go sidecar 之间的本地 HTTP API。
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      responses:
+        "200":
+          description: Sidecar health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthEnvelope"
+  /profiles:
+    get:
+      operationId: listProfiles
+      responses:
+        "200":
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileListEnvelope"
+    post:
+      operationId: createProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProfileRequest"
+      responses:
+        "201":
+          description: Created profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileEnvelope"
+  /profiles/{profileId}:
+    patch:
+      operationId: updateProfile
+      parameters:
+        - $ref: "#/components/parameters/ProfileId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileEnvelope"
+    delete:
+      operationId: deleteProfile
+      parameters:
+        - $ref: "#/components/parameters/ProfileId"
+      responses:
+        "204":
+          description: Deleted
+  /profiles/{profileId}/buckets:
+    get:
+      operationId: listBuckets
+      parameters:
+        - $ref: "#/components/parameters/ProfileId"
+      responses:
+        "200":
+          description: Buckets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BucketListEnvelope"
+  /profiles/{profileId}/objects:
+    get:
+      operationId: listObjects
+      parameters:
+        - $ref: "#/components/parameters/ProfileId"
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: region
+          in: query
+          description: 覆盖 Profile 的默认 Region。
+          schema:
+            type: string
+        - name: prefix
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 200
+      responses:
+        "200":
+          description: Object page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ObjectPageEnvelope"
+  /profiles/{profileId}/buckets/{bucket}/domains:
+    get:
+      operationId: listBucketDomains
+      parameters:
+        - $ref: "#/components/parameters/ProfileId"
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Bound bucket domains
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DomainListEnvelope"
+  /transfers:
+    get:
+      operationId: listTransfers
+      responses:
+        "200":
+          description: Session transfer tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferListEnvelope"
+    post:
+      operationId: startTransfer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartTransferRequest"
+      responses:
+        "202":
+          description: Transfer accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferEnvelope"
+  /transfers/{transferId}:
+    delete:
+      operationId: cancelTransfer
+      parameters:
+        - name: transferId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Transfer canceled
+  /transfers/completed:
+    delete:
+      operationId: clearCompletedTransfers
+      responses:
+        "204":
+          description: Completed, failed, and canceled transfers removed
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    ProfileId:
+      name: profileId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    Provider:
+      type: string
+      enum:
+        - qiniu
+        - aliyun
+        - tencent
+        - rustfs
+        - s3
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+    Health:
+      type: object
+      required:
+        - status
+        - version
+      properties:
+        status:
+          type: string
+          const: ok
+        version:
+          type: string
+    HealthEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Health"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    Profile:
+      type: object
+      required:
+        - id
+        - name
+        - provider
+        - accessKeyHint
+        - uploadBucket
+        - uploadPrefix
+        - defaultDomain
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        provider:
+          $ref: "#/components/schemas/Provider"
+        region:
+          type: string
+        endpoint:
+          type: string
+          format: uri
+        uploadBucket:
+          type: string
+        uploadPrefix:
+          type: string
+        defaultDomain:
+          type: string
+        accessKeyHint:
+          type: string
+    Credentials:
+      type: object
+      required:
+        - accessKeyId
+        - accessKeySecret
+      properties:
+        accessKeyId:
+          type: string
+        accessKeySecret:
+          type: string
+    CreateProfileRequest:
+      type: object
+      required:
+        - name
+        - provider
+        - credentials
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        provider:
+          $ref: "#/components/schemas/Provider"
+        region:
+          type: string
+          description: 阿里云和腾讯云必填；RustFS/S3 默认 us-east-1。
+        endpoint:
+          type: string
+          format: uri
+          description: RustFS 或其他 S3 兼容服务的 API 地址。
+        uploadBucket:
+          type: string
+        uploadPrefix:
+          type: string
+        defaultDomain:
+          type: string
+        credentials:
+          $ref: "#/components/schemas/Credentials"
+    UpdateProfileRequest:
+      type: object
+      required:
+        - name
+        - provider
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        provider:
+          $ref: "#/components/schemas/Provider"
+        region:
+          type: string
+        endpoint:
+          type: string
+          format: uri
+        uploadBucket:
+          type: string
+        uploadPrefix:
+          type: string
+        defaultDomain:
+          type: string
+        credentials:
+          description: 留空时保留原凭据。
+          allOf:
+            - $ref: "#/components/schemas/Credentials"
+    ProfileEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Profile"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    ProfileListEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Profile"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    Bucket:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        region:
+          type: string
+    BucketListEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bucket"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    DomainListEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    Object:
+      type: object
+      required:
+        - key
+        - size
+        - isDirectory
+      properties:
+        key:
+          type: string
+        size:
+          type: integer
+          format: int64
+        isDirectory:
+          type: boolean
+        mimeType:
+          type: string
+        hash:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+    ObjectPage:
+      type: object
+      required:
+        - items
+        - hasMore
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Object"
+        cursor:
+          type: string
+        hasMore:
+          type: boolean
+    ObjectPageEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/ObjectPage"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    TransferDirection:
+      type: string
+      enum:
+        - upload
+        - download
+    TransferStatus:
+      type: string
+      enum:
+        - queued
+        - running
+        - completed
+        - failed
+        - canceled
+    TransferTask:
+      type: object
+      required:
+        - id
+        - direction
+        - status
+        - profileId
+        - bucket
+        - objectKey
+        - fileName
+        - transferred
+        - total
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        direction:
+          $ref: "#/components/schemas/TransferDirection"
+        status:
+          $ref: "#/components/schemas/TransferStatus"
+        profileId:
+          type: string
+        bucket:
+          type: string
+        region:
+          type: string
+        objectKey:
+          type: string
+        fileName:
+          type: string
+        transferred:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+        error:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    StartTransferRequest:
+      type: object
+      required:
+        - direction
+        - profileId
+        - bucket
+        - objectKey
+        - localPath
+      properties:
+        direction:
+          $ref: "#/components/schemas/TransferDirection"
+        profileId:
+          type: string
+        bucket:
+          type: string
+        region:
+          type: string
+        objectKey:
+          type: string
+        localPath:
+          type: string
+          description: Tauri 文件对话框返回的桌面绝对路径。
+        overwrite:
+          type: boolean
+          default: true
+        useHttps:
+          type: boolean
+          default: true
+    TransferEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/TransferTask"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
+    TransferListEnvelope:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransferTask"
+        error:
+          oneOf:
+            - $ref: "#/components/schemas/ApiError"
+            - type: "null"
