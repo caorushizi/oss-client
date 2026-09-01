@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1024"
+  height="1024"
+  viewBox="0 0 1024 1024"
+  fill="none"
+  role="img"
+  aria-labelledby="title description"
+>
+  <title id="title">OSS Client</title>
+  <desc id="description">Three nested blue hexagons</desc>
+
+  <path
+    fill="#C3D2FB"
+    d="M512 60 903 286v452L512 964 121 738V286L512 60Z"
+  />
+  <path
+    fill="#386BF3"
+    d="m512 218 255 147v294L512 806 257 659V365l255-147Z"
+  />
+  <path
+    fill="#3D4265"
+    d="m512 377 117 67.5v135L512 647l-117-67.5v-135L512 377Z"
+  />
+</svg>
