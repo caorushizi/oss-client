@@ -12,11 +12,12 @@
     "sidecar:build": "node ./scripts/build-sidecar.mjs",
     "contracts:generate": "pnpm --filter @oss-client/contracts generate",
     "check": "pnpm check:frontend && pnpm check:go && pnpm check:rust",
-    "check:frontend": "pnpm --filter @oss-client/desktop check",
+    "check:frontend": "pnpm design:check && pnpm --filter @oss-client/desktop check",
     "check:go": "go -C ./services/oss-sidecar test ./...",
     "check:rust": "cargo fmt --manifest-path ./apps/desktop/src-tauri/Cargo.toml --check && cargo check --manifest-path ./apps/desktop/src-tauri/Cargo.toml",
     "lint": "oxlint --type-aware ./apps/desktop/src ./apps/desktop/vite.config.ts",
     "format": "oxfmt .",
+    "design:check": "node ./scripts/check-design-system.mjs",
     "deps:check": "taze --recursive --silent --fail-on-outdated"
   },
   "devDependencies": {

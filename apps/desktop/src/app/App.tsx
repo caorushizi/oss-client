@@ -19,6 +19,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   Suspense,
 } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
@@ -103,6 +104,29 @@ const defaultClassicSettings: ClassicSettings = {
   uploadRename: false,
 };
 
+const themes = [
+  {
+    app: "linear-gradient(#8B5C68, #37394E)",
+    aside: "linear-gradient(#8B5C68, #484B58)",
+  },
+  {
+    app: "linear-gradient(#875D56, #3A3B4E)",
+    aside: "linear-gradient(#875D56, #484B58)",
+  },
+  {
+    app: "linear-gradient(#546F67, #333B4E)",
+    aside: "linear-gradient(#546F67, #484B58)",
+  },
+  {
+    app: "linear-gradient(#7D5A86, #39394E)",
+    aside: "linear-gradient(#7D5A86, #484B58)",
+  },
+  {
+    app: "linear-gradient(#80865A, #39394E)",
+    aside: "linear-gradient(#80865A, #484B58)",
+  },
+] as const;
+
 const viewOrder: Record<AppView, number> = {
   browser: 0,
   transfers: 1,
@@ -163,6 +187,17 @@ export function App() {
   );
   const [classicSettings, setClassicSettings] =
     useState<ClassicSettings>(loadClassicSettings);
+  const theme = useMemo(
+    () => themes[Math.floor(Math.random() * themes.length)],
+    [activeView],
+  );
+  const backgroundPosition = useMemo(
+    () =>
+      `${Math.ceil((Math.random() - 0.5) * 800)}px ${Math.ceil(
+        (Math.random() - 0.5) * 600,
+      )}px`,
+    [activeView],
+  );
   const deferredSearchValue = useDeferredValue(searchValue);
   const breadcrumbs = createBreadcrumbs(prefix);
   const profilesById = useMemo(
@@ -947,7 +982,7 @@ export function App() {
             </Breadcrumb>
           </div>
           <div className="legacy-browser-actions">
-            <InputGroup className="h-7 w-48 bg-black/15">
+            <InputGroup className="h-7 w-48">
               <InputGroupAddon>
                 <Search />
               </InputGroupAddon>
@@ -1169,8 +1204,16 @@ export function App() {
     );
   }
 
+  const shellStyle = {
+    "--legacy-app-gradient": theme.app,
+    "--legacy-aside-gradient": theme.aside,
+  } as CSSProperties;
+
   return (
-    <SidebarProvider className="legacy-app [--sidebar-width:225px]">
+    <SidebarProvider
+      className="legacy-app [--sidebar-width:225px]"
+      style={shellStyle}
+    >
       <AppSidebar
         activeView={activeView}
         activeBucket={activeBucket}
@@ -1218,6 +1261,7 @@ export function App() {
             "legacy-page-switch",
             hasNavigated && `is-${pageDirection}`,
           )}
+          style={{ backgroundPosition }}
         >
           {activeView === "browser" && renderBrowser()}
           {activeView === "transfers" && (

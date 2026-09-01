@@ -60,7 +60,9 @@ const fieldVariants = cva(
         horizontal:
           "flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
         responsive:
-          "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+          "flex-col *:w-full @md/field-group:grid @md/field-group:grid-cols-[8rem_minmax(18rem,28rem)] @md/field-group:items-center @md/field-group:justify-start @md/field-group:*:w-full @md/field-group:has-[>[data-slot=field-content]]:items-start [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+        "responsive-description":
+          "flex-col *:w-full @md/field-group:grid @md/field-group:grid-cols-2 @md/field-group:items-center @md/field-group:*:w-full @md/field-group:has-[>[data-slot=field-content]]:items-start [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
       },
     },
     defaultVariants: {
@@ -90,7 +92,7 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-content"
       className={cn(
-        "group/field-content flex flex-1 flex-col gap-0.5 leading-snug",
+        "group/field-content flex min-w-0 flex-1 flex-col gap-0.5 leading-snug",
         className,
       )}
       {...props}

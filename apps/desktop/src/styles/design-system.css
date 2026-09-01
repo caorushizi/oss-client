@@ -1,0 +1,159 @@
+:root {
+  /* Canvas keeps the original random page themes. Components sit above it. */
+  --canvas-fallback: #39394e;
+
+  /* Text hierarchy */
+  --text-primary: rgb(255 255 255 / 0.92);
+  --text-secondary: rgb(255 255 255 / 0.74);
+  --text-muted: rgb(255 255 255 / 0.56);
+  --text-disabled: rgb(255 255 255 / 0.34);
+
+  /* Glass surfaces: higher layers are progressively more opaque. */
+  --surface-subtle: rgb(255 255 255 / 0.045);
+  --surface-panel: rgb(38 40 56 / 0.54);
+  --surface-panel-hover: rgb(255 255 255 / 0.075);
+  --surface-selected: rgb(17 19 31 / 0.22);
+  --surface-elevated: rgb(40 42 58 / 0.62);
+  --surface-dialog: rgb(40 42 58 / 0.68);
+  --surface-input: rgb(13 15 26 / 0.2);
+  --surface-input-hover: rgb(13 15 26 / 0.28);
+  --surface-scrim: rgb(10 11 19 / 0.18);
+
+  /* Primary controls are more solid; secondary controls are more transparent. */
+  --control-primary: rgb(255 255 255 / 0.22);
+  --control-primary-hover: rgb(255 255 255 / 0.3);
+  --control-primary-border: rgb(255 255 255 / 0.2);
+  --control-secondary: rgb(255 255 255 / 0.1);
+  --control-secondary-hover: rgb(255 255 255 / 0.16);
+  --control-ghost-hover: rgb(255 255 255 / 0.08);
+  --control-danger: rgb(240 123 136 / 0.12);
+  --control-danger-hover: rgb(240 123 136 / 0.2);
+
+  /* Borders and focus */
+  --border-subtle: rgb(255 255 255 / 0.08);
+  --border-default: rgb(255 255 255 / 0.13);
+  --border-strong: rgb(255 255 255 / 0.22);
+  --focus-ring: rgb(216 194 220 / 0.48);
+
+  /* shadcn semantic aliases */
+  --background: var(--canvas-fallback);
+  --foreground: var(--text-primary);
+  --card: var(--surface-panel);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: rgb(184 156 187 / 0.76);
+  --primary-foreground: rgb(255 255 255 / 0.96);
+  --secondary: var(--control-secondary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-subtle);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--control-ghost-hover);
+  --accent-foreground: var(--text-primary);
+  --destructive: #f07b88;
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--focus-ring);
+  --chart-1: #6f8ff8;
+  --chart-2: #6dc795;
+  --chart-3: #d7a96b;
+  --chart-4: #c98bcf;
+  --chart-5: #ea7884;
+  --radius: 0.5rem;
+  --sidebar: rgb(53 55 70 / 0.28);
+  --sidebar-foreground: var(--text-secondary);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--surface-selected);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-subtle);
+  --sidebar-ring: var(--focus-ring);
+
+  --elevation-panel: 0 8px 24px rgb(11 12 21 / 0.1);
+  --elevation-elevated: 0 18px 48px rgb(9 10 18 / 0.28);
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-panel-hover: var(--surface-panel-hover);
+  --color-surface-selected: var(--surface-selected);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-dialog: var(--surface-dialog);
+  --color-surface-input: var(--surface-input);
+  --color-surface-input-hover: var(--surface-input-hover);
+  --color-surface-scrim: var(--surface-scrim);
+  --color-control-primary: var(--control-primary);
+  --color-control-primary-hover: var(--control-primary-hover);
+  --color-control-primary-border: var(--control-primary-border);
+  --color-control-secondary: var(--control-secondary);
+  --color-control-secondary-hover: var(--control-secondary-hover);
+  --color-control-ghost-hover: var(--control-ghost-hover);
+  --color-control-danger: var(--control-danger);
+  --color-control-danger-hover: var(--control-danger-hover);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --shadow-panel: var(--elevation-panel);
+  --shadow-elevated: var(--elevation-elevated);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer components {
+  .ds-panel {
+    border: 1px solid var(--border-default);
+    background: var(--surface-panel);
+    box-shadow: var(--elevation-panel);
+    backdrop-filter: blur(14px);
+  }
+
+  .ds-elevated {
+    border: 1px solid var(--border-default);
+    background: var(--surface-elevated);
+    box-shadow: var(--elevation-elevated);
+    backdrop-filter: blur(18px);
+  }
+}

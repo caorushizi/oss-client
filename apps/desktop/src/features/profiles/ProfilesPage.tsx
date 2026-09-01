@@ -180,24 +180,24 @@ export function ProfilesPage() {
     <section className="h-full overflow-auto px-6 py-6 text-foreground">
       <header className="mb-5">
         <h1 className="text-xl font-medium">存储配置</h1>
-        <p className="mt-1 text-sm text-foreground/60">
+        <p className="mt-1 text-sm text-text-muted">
           管理云存储账号；点击卡片即可修改配置。
         </p>
       </header>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-        <Card className="min-h-48 border border-dashed border-white/20 bg-white/[0.035] py-0 ring-0 transition-colors hover:border-white/35 hover:bg-white/[0.07]">
+        <Card className="min-h-48 border-dashed border-border-strong bg-surface-subtle py-0 shadow-none transition-colors hover:border-text-muted hover:bg-surface-panel-hover">
           <Button
             type="button"
             variant="ghost"
-            className="min-h-48 w-full flex-col gap-3 rounded-xl text-foreground/70 hover:bg-transparent hover:text-foreground"
+            className="min-h-48 w-full flex-col gap-3 rounded-xl text-text-secondary hover:bg-transparent hover:text-text-primary"
             onClick={openNewProfile}
           >
-            <span className="flex size-11 items-center justify-center rounded-full border border-white/15 bg-white/8">
+            <span className="flex size-11 items-center justify-center rounded-full border border-border-default bg-control-secondary">
               <Plus className="size-5" />
             </span>
             <span className="text-sm font-medium">新增配置</span>
-            <span className="text-xs font-normal text-foreground/45">
+            <span className="text-xs font-normal text-text-muted">
               添加云存储或 S3 兼容服务
             </span>
           </Button>
@@ -220,33 +220,31 @@ export function ProfilesPage() {
             <Card
               key={profile.id}
               className={cn(
-                "min-h-48 border border-white/12 bg-[#343548]/94 py-0 ring-0 transition-all hover:-translate-y-0.5 hover:border-white/25 hover:shadow-lg",
-                isActive && "border-white/30 bg-white/10 ring-1 ring-white/10",
+                "min-h-48 py-0 transition-all hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-panel-hover hover:shadow-elevated",
+                isActive &&
+                  "border-border-strong bg-surface-selected ring-1 ring-border-subtle",
               )}
             >
               <Button
                 type="button"
                 variant="ghost"
-                className="min-h-48 w-full flex-col items-stretch justify-start gap-4 rounded-xl p-4 text-left whitespace-normal hover:bg-white/[0.035]"
+                className="min-h-48 w-full flex-col items-stretch justify-start gap-4 rounded-xl p-4 text-left whitespace-normal hover:bg-control-ghost-hover"
                 onClick={() => openProfileEditor(profile)}
               >
                 <span className="flex w-full items-start gap-3">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-black/15">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface-input">
                     <ProviderIcon provider={profile.provider} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-base font-medium text-foreground">
                       {profile.name}
                     </span>
-                    <span className="mt-0.5 block text-xs font-normal text-foreground/55">
+                    <span className="mt-0.5 block text-xs font-normal text-text-muted">
                       {providerName(profile.provider)}
                     </span>
                   </span>
                   {isActive ? (
-                    <Badge
-                      variant="secondary"
-                      className="shrink-0 gap-1 bg-white/10 text-foreground/75"
-                    >
+                    <Badge variant="secondary" className="shrink-0 gap-1">
                       <Check className="size-3" />
                       当前
                     </Badge>
@@ -270,7 +268,7 @@ export function ProfilesPage() {
                   />
                 </span>
 
-                <span className="mt-auto flex w-full items-center justify-end gap-1 text-xs font-normal text-foreground/45 group-hover/button:text-foreground/70">
+                <span className="mt-auto flex w-full items-center justify-end gap-1 text-xs font-normal text-text-muted group-hover/button:text-text-secondary">
                   <Pencil className="size-3" />
                   点击修改配置
                 </span>
@@ -281,7 +279,7 @@ export function ProfilesPage() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="max-w-2xl bg-[#303243]/98">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {editingProfile ? "修改存储配置" : "新增存储配置"}
@@ -554,8 +552,8 @@ export function ProfilesPage() {
 function ProfileCardRow({ label, value }: { label: string; value: string }) {
   return (
     <span className="grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-2">
-      <span className="text-foreground/45">{label}</span>
-      <span className="truncate text-foreground/72" title={value}>
+      <span className="text-text-muted">{label}</span>
+      <span className="truncate text-text-secondary" title={value}>
         {value}
       </span>
     </span>

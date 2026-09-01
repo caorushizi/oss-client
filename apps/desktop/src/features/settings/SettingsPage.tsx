@@ -75,12 +75,12 @@ export function SettingsPage({
             checked={settings.uploadOverwrite}
             onCheckedChange={(checked) => update("uploadOverwrite", checked)}
           />
-          <Field orientation="responsive" className="py-3">
+          <Field orientation="responsive-description" className="py-3">
             <FieldContent>
-              <FieldLabel className="font-medium text-foreground/90">
+              <FieldLabel className="font-medium text-text-primary">
                 默认下载位置
               </FieldLabel>
-              <FieldDescription className="text-foreground/65">
+              <FieldDescription className="text-text-muted">
                 下载文件时默认保存到这个目录。
               </FieldDescription>
             </FieldContent>
@@ -94,9 +94,8 @@ export function SettingsPage({
                 <FolderSearch data-icon="inline-start" />
                 选择
               </Button>
-              <InputGroup className="h-7 min-w-0 flex-1 bg-black/20">
+              <InputGroup className="h-7 min-w-0 flex-1">
                 <InputGroupInput
-                  className="text-foreground/85 placeholder:text-foreground/45"
                   readOnly
                   aria-label="默认下载位置"
                   placeholder="请选择默认下载位置"
@@ -144,12 +143,12 @@ export function SettingsPage({
             checked={settings.showFloatWindow}
             onCheckedChange={(checked) => update("showFloatWindow", checked)}
           />
-          <Field orientation="responsive" className="py-3">
+          <Field orientation="responsive-description" className="py-3">
             <FieldContent>
-              <FieldLabel className="font-medium text-foreground/90">
+              <FieldLabel className="font-medium text-text-primary">
                 悬浮窗样式
               </FieldLabel>
-              <FieldDescription className="text-foreground/65">
+              <FieldDescription className="text-text-muted">
                 选择圆形或紧凑的椭圆形外观。
               </FieldDescription>
             </FieldContent>
@@ -160,11 +159,11 @@ export function SettingsPage({
                 update("floatWindowStyle", value as "circle" | "oval")
               }
             >
-              <Label className="flex items-center gap-2 font-normal text-foreground/85">
+              <Label className="flex items-center gap-2 font-normal text-text-secondary">
                 <RadioGroupItem value="circle" />
                 圆形
               </Label>
-              <Label className="flex items-center gap-2 font-normal text-foreground/85">
+              <Label className="flex items-center gap-2 font-normal text-text-secondary">
                 <RadioGroupItem value="oval" />
                 椭圆形
               </Label>
@@ -191,10 +190,10 @@ function SettingsSection({
 }) {
   return (
     <FieldSet className="gap-0">
-      <FieldLegend className="mb-2 text-sm font-medium text-foreground/80">
+      <FieldLegend className="mb-2 text-sm font-medium text-text-secondary">
         {title}
       </FieldLegend>
-      <FieldGroup className="gap-0 rounded-lg border border-white/15 bg-[#343548]/94 px-5 shadow-sm backdrop-blur-md">
+      <FieldGroup className="ds-panel gap-0 rounded-lg px-5">
         {children}
       </FieldGroup>
     </FieldSet>
@@ -216,10 +215,10 @@ function SwitchRow({
     <>
       <Field orientation="horizontal" className="py-3">
         <FieldContent>
-          <FieldLabel className="font-medium text-foreground/90">
+          <FieldLabel className="font-medium text-text-primary">
             {label}
           </FieldLabel>
-          <FieldDescription className="text-foreground/65">
+          <FieldDescription className="text-text-muted">
             {description}
           </FieldDescription>
         </FieldContent>
@@ -229,7 +228,7 @@ function SwitchRow({
           aria-label={label}
         />
       </Field>
-      <Separator className="bg-white/12 last:hidden" />
+      <Separator className="last:hidden" />
     </>
   );
 }
