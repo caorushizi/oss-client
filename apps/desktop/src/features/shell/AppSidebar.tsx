@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Spinner } from "@/components/ui/spinner";
 import type { Bucket } from "@/features/buckets/use-buckets";
+import appIconUrl from "../../../src-tauri/icons/icon-source.svg";
 
 export type AppView =
   | "browser"
@@ -48,12 +49,29 @@ export function AppSidebar({
   return (
     <Sidebar className="legacy-sidebar">
       <SidebarHeader className="legacy-title-bar p-0" data-tauri-drag-region>
-        <span data-tauri-drag-region>OSS Client</span>
+        <button
+          type="button"
+          className="cloud-brand"
+          aria-label="打开存储空间"
+          onClick={() => onNavigate("browser")}
+        >
+          <img
+            className="cloud-brand-mark"
+            src={appIconUrl}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+          />
+          <span className="cloud-brand-copy">
+            <strong>OSS Client</strong>
+            <small>Cloud atelier</small>
+          </span>
+        </button>
       </SidebarHeader>
       <SidebarContent className="gap-5 px-1 py-3">
         <SidebarGroup className="p-1">
           <SidebarGroupLabel className="h-7 justify-between px-2 text-sm font-normal text-sidebar-foreground/55">
-            <span>储存空间</span>
+            <span>存储空间</span>
             {bucketsLoading ? <Spinner className="size-3" /> : null}
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -140,7 +158,7 @@ export function AppSidebar({
                   onClick={() => onNavigate("profiles")}
                 >
                   <Boxes />
-                  <span>apps</span>
+                  <span>存储配置</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

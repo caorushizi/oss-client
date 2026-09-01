@@ -11,16 +11,15 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import { animated, useTransition } from "@react-spring/web";
 import {
   useCallback,
   useDeferredValue,
   useEffect,
-  lazy,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
-  Suspense,
 } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -56,9 +55,14 @@ import {
   type ObjectPage,
   type StorageObject,
 } from "../features/objects/use-objects";
+import { ProfilesPage } from "../features/profiles/ProfilesPage";
 import { useProfiles } from "../features/profiles/use-profiles";
-import type { ClassicSettings } from "../features/settings/SettingsPage";
+import {
+  SettingsPage,
+  type ClassicSettings,
+} from "../features/settings/SettingsPage";
 import { AppSidebar, type AppView } from "../features/shell/AppSidebar";
+import { TransferPage } from "../features/transfers/TransferPage";
 import {
   useTransfers,
   type TransferTask,
@@ -71,7 +75,7 @@ import { useAppStore } from "../stores/app-store";
 type ObjectLayout = "grid" | "table";
 type ObjectSort = { key: "name" | "size" | "date"; direction: "asc" | "desc" };
 type ExpandedUploadFile = { localPath: string; relativePath: string };
-type PageDirection = "up" | "down";
+type PageDirection = -1 | 1;
 type SelectionRectangle = {
   left: number;
   top: number;
@@ -104,28 +108,24 @@ const defaultClassicSettings: ClassicSettings = {
   uploadRename: false,
 };
 
-const themes = [
-  {
-    app: "linear-gradient(#8B5C68, #37394E)",
-    aside: "linear-gradient(#8B5C68, #484B58)",
-  },
-  {
-    app: "linear-gradient(#875D56, #3A3B4E)",
-    aside: "linear-gradient(#875D56, #484B58)",
-  },
-  {
-    app: "linear-gradient(#546F67, #333B4E)",
-    aside: "linear-gradient(#546F67, #484B58)",
-  },
-  {
-    app: "linear-gradient(#7D5A86, #39394E)",
-    aside: "linear-gradient(#7D5A86, #484B58)",
-  },
-  {
-    app: "linear-gradient(#80865A, #39394E)",
-    aside: "linear-gradient(#80865A, #484B58)",
-  },
-] as const;
+type SceneVisual = {
+  accent: string;
+  accentSoft: string;
+  background: string;
+  backgroundPosition: string;
+  key: string;
+  sidebarEnd: string;
+  sidebarStart: string;
+  view: AppView;
+};
+
+const viewHues: Record<AppView, number> = {
+  browser: 166,
+  transfers: 220,
+  completed: 142,
+  settings: 32,
+  profiles: 354,
+};
 
 const viewOrder: Record<AppView, number> = {
   browser: 0,
@@ -134,22 +134,6 @@ const viewOrder: Record<AppView, number> = {
   settings: 3,
   profiles: 4,
 };
-
-const ProfilesPage = lazy(() =>
-  import("../features/profiles/ProfilesPage").then((module) => ({
-    default: module.ProfilesPage,
-  })),
-);
-const SettingsPage = lazy(() =>
-  import("../features/settings/SettingsPage").then((module) => ({
-    default: module.SettingsPage,
-  })),
-);
-const TransferPage = lazy(() =>
-  import("../features/transfers/TransferPage").then((module) => ({
-    default: module.TransferPage,
-  })),
-);
 
 export function App() {
   const profiles = useProfiles();
@@ -164,7 +148,7 @@ export function App() {
   const transfers = useTransfers();
   const mutateTransfers = transfers.mutate;
   const [activeView, setActiveView] = useState<AppView>("browser");
-  const [pageDirection, setPageDirection] = useState<PageDirection>("down");
+  const [pageDirection, setPageDirection] = useState<PageDirection>(1);
   const [hasNavigated, setHasNavigated] = useState(false);
   const [transferError, setTransferError] = useState<string>();
   const [floatWindowError, setFloatWindowError] = useState<string>();
@@ -187,16 +171,13 @@ export function App() {
   );
   const [classicSettings, setClassicSettings] =
     useState<ClassicSettings>(loadClassicSettings);
-  const theme = useMemo(
-    () => themes[Math.floor(Math.random() * themes.length)],
-    [activeView],
-  );
-  const backgroundPosition = useMemo(
-    () =>
-      `${Math.ceil((Math.random() - 0.5) * 800)}px ${Math.ceil(
-        (Math.random() - 0.5) * 600,
-      )}px`,
-    [activeView],
+  const sceneKey =
+    activeView === "browser"
+      ? `browser:${activeBucket?.name ?? "empty"}`
+      : activeView;
+  const scene = useMemo(
+    () => createSceneVisual(sceneKey, activeView),
+    [activeView, sceneKey],
   );
   const deferredSearchValue = useDeferredValue(searchValue);
   const breadcrumbs = createBreadcrumbs(prefix);
@@ -211,9 +192,7 @@ export function App() {
 
   function navigate(nextView: AppView) {
     if (nextView === activeView) return;
-    setPageDirection(
-      viewOrder[nextView] < viewOrder[activeView] ? "down" : "up",
-    );
+    setPageDirection(viewOrder[nextView] < viewOrder[activeView] ? -1 : 1);
     setHasNavigated(true);
     setActiveView(nextView);
   }
@@ -306,7 +285,7 @@ export function App() {
   useEffect(() => {
     if (!isTauri()) return;
     const unlisten = listen("navigate-to-settings", () => {
-      setPageDirection("up");
+      setPageDirection(1);
       setHasNavigated(true);
       setActiveView("settings");
     });
@@ -451,7 +430,7 @@ export function App() {
 
   useEffect(() => {
     if (profiles.data && profiles.data.length === 0) {
-      setPageDirection("up");
+      setPageDirection(1);
       setHasNavigated(true);
       setActiveView("profiles");
     }
@@ -858,8 +837,27 @@ export function App() {
   }
 
   function openBucket(bucket: Bucket) {
+    if (activeView === "browser" && activeBucket?.name === bucket.name) {
+      return;
+    }
+
+    if (activeView === "browser") {
+      const currentIndex =
+        buckets.data?.findIndex(
+          (candidate) => candidate.name === activeBucket?.name,
+        ) ?? -1;
+      const nextIndex =
+        buckets.data?.findIndex(
+          (candidate) => candidate.name === bucket.name,
+        ) ?? currentIndex + 1;
+      setPageDirection(nextIndex < currentIndex ? -1 : 1);
+    } else {
+      setPageDirection(-1);
+    }
+
+    setHasNavigated(true);
     setActiveBucket(bucket);
-    navigate("browser");
+    setActiveView("browser");
   }
 
   function openObject(object: StorageObject) {
@@ -1225,12 +1223,45 @@ export function App() {
   }
 
   const shellStyle = {
-    "--legacy-app-gradient": theme.app,
-    "--legacy-aside-gradient": theme.aside,
+    "--cloud-accent": scene.accent,
+    "--cloud-accent-soft": scene.accentSoft,
+    "--cloud-sidebar-end": scene.sidebarEnd,
+    "--cloud-sidebar-start": scene.sidebarStart,
+    "--legacy-app-gradient": scene.background,
+    "--legacy-aside-gradient": `linear-gradient(180deg, ${scene.sidebarStart}, ${scene.sidebarEnd})`,
+    background: scene.background,
   } as CSSProperties;
+  const backgroundTransitions = useTransition(scene, {
+    keys: ({ key }) => key,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: {
+      duration: 480,
+    },
+    immediate: !hasNavigated,
+  });
+  const viewTransitions = useTransition(scene, {
+    keys: ({ key }) => key,
+    from: {
+      y: hasNavigated ? pageDirection * 100 : 0,
+    },
+    enter: { y: 0 },
+    leave: {
+      y: pageDirection * -100,
+    },
+    config: {
+      mass: 0.86,
+      tension: 210,
+      friction: 28,
+      precision: 0.001,
+    },
+    immediate: !hasNavigated,
+  });
 
   return (
     <SidebarProvider
+      data-view={activeView}
       className="legacy-app [--sidebar-width:225px]"
       style={shellStyle}
     >
@@ -1245,6 +1276,16 @@ export function App() {
       />
 
       <main className="legacy-main">
+        {backgroundTransitions((transitionStyle, currentScene) => (
+          <animated.div
+            aria-hidden="true"
+            className="legacy-scene-background"
+            style={{
+              background: currentScene.background,
+              opacity: transitionStyle.opacity,
+            }}
+          />
+        ))}
         <div className="legacy-drag-area" data-tauri-drag-region />
         <div className="legacy-window-controls">
           <IconButton
@@ -1275,24 +1316,18 @@ export function App() {
             <X />
           </IconButton>
         </div>
-        <div
-          key={activeView}
-          className={cn(
-            "legacy-page-switch",
-            hasNavigated && `is-${pageDirection}`,
-          )}
-          style={{ backgroundPosition }}
-        >
-          {activeView === "browser" && renderBrowser()}
-          {activeView === "transfers" && (
-            <Suspense
-              fallback={
-                <AppEmptyState
-                  title="正在加载"
-                  description="正在准备传输列表"
-                />
-              }
-            >
+        {viewTransitions((transitionStyle, currentScene) => (
+          <animated.div
+            className="legacy-page-switch"
+            style={{
+              backgroundPosition: currentScene.backgroundPosition,
+              transform: transitionStyle.y.to(
+                (y) => `translate3d(0, ${y}%, 0)`,
+              ),
+            }}
+          >
+            {currentScene.view === "browser" && renderBrowser()}
+            {currentScene.view === "transfers" && (
               <TransferPage
                 completed={false}
                 tasks={activeTransfers}
@@ -1300,17 +1335,8 @@ export function App() {
                 onCancel={cancelTransfer}
                 onClearCompleted={clearCompletedTransfers}
               />
-            </Suspense>
-          )}
-          {activeView === "completed" && (
-            <Suspense
-              fallback={
-                <AppEmptyState
-                  title="正在加载"
-                  description="正在准备完成记录"
-                />
-              }
-            >
+            )}
+            {currentScene.view === "completed" && (
               <TransferPage
                 completed
                 tasks={completedTransfers}
@@ -1318,26 +1344,9 @@ export function App() {
                 onCancel={cancelTransfer}
                 onClearCompleted={clearCompletedTransfers}
               />
-            </Suspense>
-          )}
-          {activeView === "profiles" && (
-            <Suspense
-              fallback={
-                <AppEmptyState
-                  title="正在加载"
-                  description="正在准备应用配置"
-                />
-              }
-            >
-              <ProfilesPage />
-            </Suspense>
-          )}
-          {activeView === "settings" && (
-            <Suspense
-              fallback={
-                <AppEmptyState title="正在加载" description="正在准备设置" />
-              }
-            >
+            )}
+            {currentScene.view === "profiles" && <ProfilesPage />}
+            {currentScene.view === "settings" && (
               <SettingsPage
                 settings={classicSettings}
                 setSettings={setClassicSettings}
@@ -1345,12 +1354,55 @@ export function App() {
                 openDownloadDirectory={openDownloadDirectory}
                 floatWindowError={floatWindowError}
               />
-            </Suspense>
-          )}
-        </div>
+            )}
+          </animated.div>
+        ))}
       </main>
     </SidebarProvider>
   );
+}
+
+function createSceneVisual(key: string, view: AppView): SceneVisual {
+  const hash = hashSceneKey(key);
+  const hueShift = (hash % 47) - 23;
+  const hue = (viewHues[view] + hueShift + 360) % 360;
+  const accentHue = (hue + 4 + ((hash >>> 6) % 11)) % 360;
+  const ambientX = 62 + ((hash >>> 11) % 25);
+  const ambientY = 14 + ((hash >>> 17) % 24);
+  const imageX = -72 + ((hash >>> 4) % 286);
+  const imageY = -62 + ((hash >>> 15) % 144);
+
+  return {
+    accent: `hsl(${accentHue} 48% 68%)`,
+    accentSoft: `hsl(${accentHue} 48% 68% / 0.17)`,
+    background: `
+      radial-gradient(
+        circle at ${ambientX}% ${ambientY}%,
+        hsl(${accentHue} 52% 58% / 0.17),
+        transparent 29%
+      ),
+      linear-gradient(
+        145deg,
+        hsl(${hue} 29% 10%),
+        hsl(${(hue + 8) % 360} 27% 17%) 55%,
+        hsl(${(hue + 18) % 360} 19% 21%)
+      )
+    `,
+    backgroundPosition: `${imageX}px calc(100% + ${imageY}px)`,
+    key,
+    sidebarEnd: `hsl(${(hue + 10) % 360} 21% 18% / 0.95)`,
+    sidebarStart: `hsl(${hue} 27% 12% / 0.96)`,
+    view,
+  };
+}
+
+function hashSceneKey(value: string) {
+  let hash = 2_166_136_261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16_777_619);
+  }
+  return hash >>> 0;
 }
 
 function installIconFont() {
