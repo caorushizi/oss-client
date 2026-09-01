@@ -208,6 +208,27 @@ fn open_directory(path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn open_external_url(url: String) -> Result<(), String> {
+    let url = url.trim();
+    if !url.starts_with("http://") && !url.starts_with("https://") {
+        return Err("只能打开 HTTP 或 HTTPS 地址".into());
+    }
+
+    #[cfg(target_os = "windows")]
+    let mut command = Command::new("explorer");
+    #[cfg(target_os = "macos")]
+    let mut command = Command::new("open");
+    #[cfg(all(unix, not(target_os = "macos")))]
+    let mut command = Command::new("xdg-open");
+
+    command
+        .arg(url)
+        .spawn()
+        .map_err(|error| format!("无法在浏览器中打开地址：{error}"))?;
+    Ok(())
+}
+
+#[tauri::command]
 fn expand_upload_paths(paths: Vec<String>) -> Result<Vec<ExpandedUploadFile>, String> {
     let mut files = Vec::new();
     for raw_path in paths {
@@ -498,6 +519,7 @@ pub fn run() {
             float_upload_context,
             hide_main_window,
             open_directory,
+            open_external_url,
             expand_upload_paths,
             prepare_download_path,
             quit_app

@@ -862,6 +862,26 @@ export function App() {
     navigate("browser");
   }
 
+  function openObject(object: StorageObject) {
+    if (object.isDirectory) {
+      setPrefix(object.key);
+      return;
+    }
+
+    const endpoint = activeProfile?.endpoint?.trim();
+    if (
+      objectLabel(object.key, prefix) !== "index.html" ||
+      !endpoint ||
+      !activeBucket
+    ) {
+      return;
+    }
+
+    void invoke("open_external_url", {
+      url: pathStyleObjectUrl(endpoint, activeBucket.name, object.key),
+    });
+  }
+
   async function selectDownloadDirectory() {
     const selected = await open({
       directory: true,
@@ -1083,9 +1103,7 @@ export function App() {
                   )}
                   aria-selected={selectedObjectKeys.has(object.key)}
                   onClick={(event) => selectObject(event, object.key)}
-                  onDoubleClick={() =>
-                    object.isDirectory && setPrefix(object.key)
-                  }
+                  onDoubleClick={() => openObject(object)}
                   title={objectLabel(object.key, prefix)}
                 >
                   {object.isDirectory ? (
@@ -1159,9 +1177,7 @@ export function App() {
                   role="row"
                   aria-selected={selectedObjectKeys.has(object.key)}
                   onClick={(event) => selectObject(event, object.key)}
-                  onDoubleClick={() =>
-                    object.isDirectory && setPrefix(object.key)
-                  }
+                  onDoubleClick={() => openObject(object)}
                 >
                   <span className="legacy-file-name">
                     {object.isDirectory ? (
@@ -1198,7 +1214,11 @@ export function App() {
             <strong>选中{selectedObjects.length}项</strong>
             /总共{visibleObjects.length}项
           </span>
-          <span>{activeProfile?.defaultDomain || "没有绑定域名"}</span>
+          <span>
+            {activeProfile?.defaultDomain?.trim() ||
+              activeProfile?.endpoint?.trim() ||
+              "没有绑定域名"}
+          </span>
         </footer>
       </section>
     );
@@ -1487,6 +1507,19 @@ function publicObjectUrl(domain: string, objectKey: string, useHttps: boolean) {
     .map((part) => encodeURIComponent(part))
     .join("/");
   return `${scheme}://${host}/${encodedKey}`;
+}
+
+function pathStyleObjectUrl(
+  endpoint: string,
+  bucket: string,
+  objectKey: string,
+) {
+  const base = endpoint.trim().replace(/\/+$/, "");
+  const encodedKey = objectKey
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
+  return `${base}/${encodeURIComponent(bucket)}/${encodedKey}`;
 }
 
 function joinLocalPath(directory: string, fileName: string) {
