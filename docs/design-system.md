@@ -54,12 +54,14 @@
 | `ring`           | 48%      | 键盘焦点             |
 
 所有交互控件必须保留 hover、focus-visible、disabled 和 invalid 状态。
+聚焦的 Field 必须提升到相邻表单行之上；控件直接使用 `ring` token，不得再次降低透明度，避免外发光被相邻表面遮挡。
 
 ## 组件使用规则
 
 - 页面级面板优先使用 `Card`；设置组等无 Card 结构的面板使用 `.ds-panel`。
 - 下拉菜单、Tooltip 等临时浮层使用 elevated 层。
 - 表单编辑使用 `Dialog`，危险确认使用 `AlertDialog`。
+- Dialog Footer 继承弹窗的 `surface-dialog`，仅使用分隔线划分操作区，不得叠加新的表面背景。
 - 输入控件统一使用 shadcn `Input`、`InputGroup`、`Select`、`Switch`、`RadioGroup`。
 - 编辑表单使用 `Field orientation="responsive"`：窄窗口单列展示，中等及以上窗口采用固定标签列和最大 28rem 的输入列，整组靠左排列。
 - 带较长说明文字的设置项使用 `Field orientation="responsive-description"`，在中等及以上窗口采用均衡两列。
