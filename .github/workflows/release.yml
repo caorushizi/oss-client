@@ -64,7 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           release_tag="$GITHUB_REF_NAME"
-          pnpm release:check-version -- --tag "$release_tag"
+          pnpm release:check-version --tag "$release_tag"
           printf 'tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
           printf 'version=%s\n' "${release_tag#v}" >> "$GITHUB_OUTPUT"
           printf 'sha=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -153,7 +153,7 @@ jobs:
             echo "::error title=Invalid reusable release::$release_tag does not point to HEAD"
             exit 1
           fi
-          pnpm release:check-version -- --tag "$release_tag"
+          pnpm release:check-version --tag "$release_tag"
 
           printf 'action=reuse\n' >> "$GITHUB_OUTPUT"
           printf 'tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
@@ -176,7 +176,7 @@ jobs:
               exit 1
               ;;
           esac
-          pnpm release:bump -- --bump "$REQUESTED_BUMP"
+          pnpm release:bump --bump "$REQUESTED_BUMP"
 
       - name: Commit, tag, and atomically push release version
         if: >-
@@ -225,7 +225,7 @@ jobs:
           done
 
           git diff --check
-          pnpm release:check-version -- --tag "$RELEASE_TAG"
+          pnpm release:check-version --tag "$RELEASE_TAG"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${expected[@]}"
@@ -407,7 +407,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify release versions
-        run: pnpm release:check-version -- --tag "${{ needs.prepare.outputs.release_tag }}"
+        run: pnpm release:check-version --tag "${{ needs.prepare.outputs.release_tag }}"
 
       - name: Verify Cargo lockfile
         shell: bash
@@ -497,7 +497,7 @@ jobs:
         if: runner.os != 'macOS'
         shell: bash
         run: |
-          pnpm sidecar:build -- --target "${{ matrix.target }}"
+          pnpm sidecar:build --target "${{ matrix.target }}"
           pnpm --filter @oss-client/desktop tauri build \
             --target "${{ matrix.target }}" \
             --bundles "${{ matrix.bundles }}" \
@@ -513,7 +513,7 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         run: |
-          pnpm sidecar:build -- --target "${{ matrix.target }}"
+          pnpm sidecar:build --target "${{ matrix.target }}"
           pnpm --filter @oss-client/desktop tauri build \
             --target "${{ matrix.target }}" \
             --bundles "${{ matrix.bundles }}" \
