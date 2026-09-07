@@ -263,7 +263,43 @@
 
 .legacy-page-switch {
   z-index: 1;
-  will-change: transform, opacity;
+  overflow: hidden;
+  isolation: isolate;
+  will-change: transform;
+}
+
+.legacy-page-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* The page transition supplies the entrance; a second canvas fade would lag. */
+.legacy-page-switch .scene-orb-canvas {
+  transition: none;
+}
+
+.scene-orb {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.scene-orb-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.scene-orb[data-ready="true"] .scene-orb-canvas {
+  opacity: 1;
 }
 
 .legacy-page-switch.is-up,
@@ -272,6 +308,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scene-orb-canvas {
+    transition: none;
+  }
+
   .legacy-app,
   .legacy-app .legacy-sidebar {
     animation: none !important;

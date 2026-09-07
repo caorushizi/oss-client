@@ -26,13 +26,14 @@ import { listen } from "@tauri-apps/api/event";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import transferDoneAudioSrc from "../assets/audios/tip.mp3";
-import iconfontSource from "../../../../renderer/assets/iconfont.js?raw";
+import iconfontSource from "../assets/iconfont.js?raw";
 import { AppEmptyState } from "../components/app/empty-state";
 import {
   FileTypeIcon as IconFont,
   fileIconName,
 } from "../components/app/file-type-icon";
 import { IconButton } from "../components/app/icon-button";
+import { SceneOrb } from "../components/app/scene-orb";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import {
   Breadcrumb,
@@ -112,7 +113,9 @@ type SceneVisual = {
   accent: string;
   accentSoft: string;
   background: string;
-  backgroundPosition: string;
+  orbHue: number;
+  orbOffsetX: number;
+  orbOffsetY: number;
   key: string;
   sidebarEnd: string;
   sidebarStart: string;
@@ -1273,6 +1276,8 @@ export function App() {
   });
   const viewTransitions = useTransition(scene, {
     keys: ({ key }) => key,
+    // Release each finished page even during a rapid sequence of navigations.
+    expires: 1,
     from: {
       y: hasNavigated ? pageDirection * 100 : 0,
     },
@@ -1349,42 +1354,52 @@ export function App() {
         {viewTransitions((transitionStyle, currentScene) => (
           <animated.div
             className="legacy-page-switch"
+            data-scene-key={currentScene.key}
+            inert={currentScene.key !== scene.key}
+            aria-hidden={currentScene.key !== scene.key}
             style={{
-              backgroundPosition: currentScene.backgroundPosition,
               transform: transitionStyle.y.to(
                 (y) => `translate3d(0, ${y}%, 0)`,
               ),
             }}
           >
-            {currentScene.view === "browser" && renderBrowser()}
-            {currentScene.view === "transfers" && (
-              <TransferPage
-                completed={false}
-                tasks={activeTransfers}
-                error={transferError}
-                onCancel={cancelTransfer}
-                onClearCompleted={clearCompletedTransfers}
-              />
-            )}
-            {currentScene.view === "completed" && (
-              <TransferPage
-                completed
-                tasks={completedTransfers}
-                error={transferError}
-                onCancel={cancelTransfer}
-                onClearCompleted={clearCompletedTransfers}
-              />
-            )}
-            {currentScene.view === "profiles" && <ProfilesPage />}
-            {currentScene.view === "settings" && (
-              <SettingsPage
-                settings={classicSettings}
-                setSettings={setClassicSettings}
-                selectDownloadDirectory={selectDownloadDirectory}
-                openDownloadDirectory={openDownloadDirectory}
-                floatWindowError={floatWindowError}
-              />
-            )}
+            <SceneOrb
+              hue={currentScene.orbHue}
+              offsetX={currentScene.orbOffsetX}
+              offsetY={currentScene.orbOffsetY}
+              active={currentScene.key === scene.key}
+            />
+            <div className="legacy-page-content">
+              {currentScene.view === "browser" && renderBrowser()}
+              {currentScene.view === "transfers" && (
+                <TransferPage
+                  completed={false}
+                  tasks={activeTransfers}
+                  error={transferError}
+                  onCancel={cancelTransfer}
+                  onClearCompleted={clearCompletedTransfers}
+                />
+              )}
+              {currentScene.view === "completed" && (
+                <TransferPage
+                  completed
+                  tasks={completedTransfers}
+                  error={transferError}
+                  onCancel={cancelTransfer}
+                  onClearCompleted={clearCompletedTransfers}
+                />
+              )}
+              {currentScene.view === "profiles" && <ProfilesPage />}
+              {currentScene.view === "settings" && (
+                <SettingsPage
+                  settings={classicSettings}
+                  setSettings={setClassicSettings}
+                  selectDownloadDirectory={selectDownloadDirectory}
+                  openDownloadDirectory={openDownloadDirectory}
+                  floatWindowError={floatWindowError}
+                />
+              )}
+            </div>
           </animated.div>
         ))}
       </main>
@@ -1399,8 +1414,6 @@ function createSceneVisual(key: string, view: AppView): SceneVisual {
   const accentHue = (hue + 4 + ((hash >>> 6) % 11)) % 360;
   const ambientX = 62 + ((hash >>> 11) % 25);
   const ambientY = 14 + ((hash >>> 17) % 24);
-  const imageX = -72 + ((hash >>> 4) % 286);
-  const imageY = -62 + ((hash >>> 15) % 144);
 
   return {
     accent: `hsl(${accentHue} 48% 68%)`,
@@ -1418,7 +1431,9 @@ function createSceneVisual(key: string, view: AppView): SceneVisual {
         hsl(${(hue + 18) % 360} 19% 21%)
       )
     `,
-    backgroundPosition: `${imageX}px calc(100% + ${imageY}px)`,
+    orbHue: accentHue,
+    orbOffsetX: -72 + ((hash >>> 4) % 286),
+    orbOffsetY: -62 + ((hash >>> 15) % 144),
     key,
     sidebarEnd: `hsl(${(hue + 10) % 360} 21% 18% / 0.95)`,
     sidebarStart: `hsl(${hue} 27% 12% / 0.96)`,

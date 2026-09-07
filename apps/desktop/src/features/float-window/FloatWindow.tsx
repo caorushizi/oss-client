@@ -2,8 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useCallback, useEffect, useState } from "react";
-import circleBackground from "../../../../../renderer/assets/images/circle-bg.png";
-import ovalBackground from "../../../../../renderer/assets/images/oval-bg.png";
+import circleBackground from "../../assets/images/circle-bg.png";
+import ovalBackground from "../../assets/images/oval-bg.png";
 import { apiRequest } from "../../lib/backend/client";
 import { cn } from "../../lib/utils";
 

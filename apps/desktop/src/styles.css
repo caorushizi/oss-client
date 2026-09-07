@@ -268,9 +268,6 @@ button {
   height: 100%;
   padding-top: 40px;
   background-color: transparent;
-  background-image: url("../../../renderer/assets/images/global.png");
-  background-repeat: no-repeat;
-  background-position: left bottom;
 }
 
 .legacy-page-switch.is-up {

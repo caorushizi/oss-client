@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>球面光流 · OSS Client</title>
+    <style>
+      :root {
+        color: #e6eeee;
+        background: #131d21;
+        font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        font-synthesis: none;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        max-width: 1826px;
+        margin: 0 auto;
+        padding: 36px 36px 28px;
+      }
+      header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 25px;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: 23px;
+        line-height: 1.4;
+        font-weight: 550;
+        letter-spacing: 0.035em;
+      }
+      p {
+        margin: 0;
+        color: #91a5ab;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+      .mode {
+        color: #c2d3d7;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .controls {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        padding: 15px 0;
+        border-top: 1px solid #304047;
+        border-bottom: 1px solid #304047;
+      }
+      .button-group {
+        display: flex;
+        gap: 6px;
+      }
+      button,
+      select {
+        min-height: 34px;
+        border: 1px solid #41545c;
+        border-radius: 5px;
+        background: #202c31;
+        color: #d7e4e7;
+        font: inherit;
+        font-size: 12px;
+      }
+      button {
+        padding: 0 14px;
+        cursor: pointer;
+      }
+      button:hover,
+      select:hover {
+        border-color: #78949e;
+      }
+      button[aria-pressed="true"] {
+        border-color: #94b8c4;
+        background: #344950;
+        color: #f0f7f8;
+      }
+      button:disabled,
+      select:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      button:focus-visible,
+      select:focus-visible,
+      input:focus-visible {
+        outline: 2px solid #b2d6e3;
+        outline-offset: 4px;
+      }
+      label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #bcced3;
+        font-size: 12px;
+      }
+      input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        accent-color: #a9cbd7;
+      }
+      select {
+        padding: 0 28px 0 9px;
+      }
+      .time {
+        min-width: 64px;
+        text-align: right;
+        color: #b7cbd1;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+      }
+      .timeline {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        padding-top: 3px;
+      }
+      .timeline input {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        accent-color: #a9cbd7;
+        cursor: pointer;
+      }
+      .view-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 20px;
+      }
+      .comparisons {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 24px;
+        margin-top: 16px;
+      }
+      main[data-layout="detail"] {
+        max-width: 937px;
+      }
+      main[data-layout="detail"] .comparisons {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      figure {
+        min-width: 0;
+        margin: 0;
+      }
+      figcaption {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+        color: #d1e0e4;
+        font-size: 13px;
+      }
+      figcaption span {
+        color: #829aa3;
+        font-size: 11px;
+      }
+      .stage {
+        position: relative;
+        width: 100%;
+        max-width: 865px;
+        aspect-ratio: 865 / 645;
+        overflow: hidden;
+        background: #202c31;
+        isolation: isolate;
+      }
+      .reference {
+        position: absolute;
+        left: 6.936416%;
+        top: -9.457364%;
+        width: 74.566474%;
+        height: auto;
+        max-width: none;
+        pointer-events: none;
+        user-select: none;
+      }
+      .scene-orb-canvas {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .loading {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        color: #8fa8b1;
+        font-size: 12px;
+      }
+      .stage[data-ready="true"] .loading {
+        display: none;
+      }
+      .notes {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px 24px;
+        margin-top: 18px;
+      }
+      .notes p {
+        font-size: 12px;
+      }
+      .tracking {
+        color: #d0e6ed;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 980px) {
+        main {
+          max-width: 905px;
+          padding: 24px 20px;
+        }
+        header {
+          align-items: flex-start;
+        }
+        main[data-layout="detail"] {
+          max-width: 905px;
+        }
+      }
+      @media (max-width: 719px) {
+        .comparisons {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      @media (max-width: 520px) {
+        main {
+          padding: 22px 14px;
+        }
+        header {
+          display: block;
+        }
+        .mode {
+          margin-top: 12px;
+        }
+        .controls {
+          gap: 12px;
+        }
+        h1 {
+          font-size: 21px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="preview" data-layout="compare">
+      <header>
+        <div>
+          <h1>球面光流</h1>
+          <p>细网、微光，与从右侧吹来的风。</p>
+        </div>
+        <div id="mode-label" class="mode">光流与风正在流动</div>
+      </header>
+      <div class="controls" aria-label="球壳预览控制">
+        <div class="button-group">
+          <button id="static" type="button" aria-pressed="false">
+            静态对照
+          </button>
+          <button id="play" type="button" aria-pressed="true">暂停</button>
+          <button id="reset" type="button">时间归零</button>
+        </div>
+        <label
+          >速度
+          <select id="speed" aria-label="播放速度">
+            <option value="1">1×</option>
+            <option value="0.25">0.25× 慢放</option>
+          </select>
+        </label>
+        <label><input id="wind" type="checkbox" checked />右 → 左的风</label>
+        <label><input id="track" type="checkbox" />跟踪节点</label>
+        <select id="node" aria-label="跟踪的左侧节点" disabled>
+          <option value="">正在准备节点</option>
+        </select>
+        <div class="timeline">
+          <label for="timeline">定位时间</label>
+          <input
+            id="timeline"
+            type="range"
+            min="0"
+            max="60"
+            step="0.1"
+            value="0"
+            aria-describedby="timeline-help"
+          />
+          <output id="time" class="time" for="timeline" aria-label="动画时间"
+            >00.0 秒</output
+          >
+        </div>
+      </div>
+      <div class="view-controls" role="group" aria-label="对照布局">
+        <button id="compare-view" type="button" aria-pressed="true">
+          并排对照
+        </button>
+        <button id="detail-view" type="button" aria-pressed="false">
+          放大查看
+        </button>
+      </div>
+      <div class="comparisons">
+        <figure>
+          <figcaption>原图<span>形态参考</span></figcaption>
+          <div class="stage">
+            <img
+              id="reference"
+              class="reference"
+              alt="原图：左侧破开的不规则网状球壳"
+              draggable="false"
+            />
+          </div>
+        </figure>
+        <figure>
+          <figcaption>动态效果<span>相同尺寸 · 相同背景</span></figcaption>
+          <div
+            id="orb"
+            class="stage"
+            role="img"
+            aria-label="可播放和暂停的球壳对照模型"
+          >
+            <span id="loading" class="loading" role="status"
+              >正在准备球壳…</span
+            >
+          </div>
+        </figure>
+      </div>
+      <div class="notes">
+        <p id="instruction">节点沿球面微动，直线随之伸缩；左侧亮点随风离开。</p>
+        <p id="tracking" class="tracking" hidden></p>
+        <p id="timeline-help">拖动时间会暂停播放，也可用方向键微调时间。</p>
+        <p id="reduced-motion" hidden>
+          系统已开启减少动态效果，当前保留静态预览。
+        </p>
+      </div>
+    </main>
+    <script type="module" src="/src/orb-preview.ts"></script>
+  </body>
+</html>
