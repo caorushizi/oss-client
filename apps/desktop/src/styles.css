@@ -72,6 +72,20 @@ body {
   overflow: hidden;
 }
 
+html.is-main-window,
+html.is-main-window body {
+  background: transparent;
+}
+
+/* Clip the entire document, including dialogs and other body portals. */
+html.is-main-window body {
+  clip-path: inset(0 round 12px);
+}
+
+html.is-main-window.is-expanded-window body {
+  clip-path: none;
+}
+
 html.is-float-window,
 html.is-float-window body,
 html.is-float-window #root {

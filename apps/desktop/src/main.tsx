@@ -13,6 +13,10 @@ import "./styles.css";
 const isFloatWindow = isTauri() && getCurrentWindow().label === "float";
 document.documentElement.classList.add("dark");
 document.documentElement.classList.toggle("is-float-window", isFloatWindow);
+document.documentElement.classList.toggle(
+  "is-main-window",
+  isTauri() && !isFloatWindow,
+);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

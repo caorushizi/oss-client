@@ -136,6 +136,36 @@ const viewOrder: Record<AppView, number> = {
 };
 
 export function App() {
+  useEffect(() => {
+    if (!isTauri()) return;
+    const currentWindow = getCurrentWindow();
+    let disposed = false;
+    let revision = 0;
+    const syncWindowShape = async () => {
+      const request = ++revision;
+      try {
+        const [maximized, fullscreen] = await Promise.all([
+          currentWindow.isMaximized(),
+          currentWindow.isFullscreen(),
+        ]);
+        if (!disposed && request === revision) {
+          document.documentElement.classList.toggle(
+            "is-expanded-window",
+            maximized || fullscreen,
+          );
+        }
+      } catch (error) {
+        console.error("Failed to synchronize window corners", error);
+      }
+    };
+    const unlisten = currentWindow.onResized(() => void syncWindowShape());
+    void unlisten.then(syncWindowShape).catch(console.error);
+    return () => {
+      disposed = true;
+      void unlisten.then((dispose) => dispose()).catch(console.error);
+    };
+  }, []);
+
   const profiles = useProfiles();
   const activeProfileId = useAppStore((state) => state.activeProfileId);
   const activeBucket = useAppStore((state) => state.activeBucket);
